@@ -1,7 +1,7 @@
 package com.the_chance.plugins
 
 
-import com.the_chance.data.ProductService
+import com.the_chance.data.services.ProductService
 import com.the_chance.data.ServerResponse
 import com.the_chance.endpoints.productsRoutes
 import io.ktor.server.routing.*

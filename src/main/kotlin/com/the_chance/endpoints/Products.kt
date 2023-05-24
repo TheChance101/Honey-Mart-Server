@@ -1,6 +1,6 @@
 package com.the_chance.endpoints
 
-import com.the_chance.data.ProductService
+import com.the_chance.data.services.ProductService
 import com.the_chance.data.ServerResponse
 import com.the_chance.utils.orZero
 import io.ktor.http.*
