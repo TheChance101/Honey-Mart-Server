@@ -41,4 +41,20 @@ class MarketService(database: Database) : BaseService() {
             it[isDeleted] = true
         }
     }
+
+    suspend fun updateMarket(marketId: Int, marketName: String): Market = dbQuery {
+        MarketTable.update({ MarketTable.id eq marketId }) {
+            it[name] = marketName
+        }
+        val updatedMarket = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
+        if (updatedMarket != null) {
+            Market(
+                id = updatedMarket[MarketTable.id].value,
+                name = updatedMarket[MarketTable.name]
+            )
+        } else {
+            throw NoSuchElementException("Market with ID $marketId not found.")
+        }
+    }
+
 }

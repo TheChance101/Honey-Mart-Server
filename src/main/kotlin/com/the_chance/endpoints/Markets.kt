@@ -42,5 +42,23 @@ fun Route.marketsRoutes(marketService: MarketService) {
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Market Deleted Successfully"))
             }
         }
+
+        put("/{id}") {
+            val marketId = call.parameters["id"]?.toIntOrNull()
+            val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
+
+            if (marketId == null) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ID"))
+            } else if (marketName.length < 4) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error("Market name length should be 4 characters or more")
+                )
+            } else {
+                val updatedMarket = marketService.updateMarket(marketId, marketName)
+                call.respond(HttpStatusCode.OK, ServerResponse.success(updatedMarket, "Market updated successfully"))
+            }
+        }
     }
+
 }
