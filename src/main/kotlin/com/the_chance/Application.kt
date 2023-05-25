@@ -1,10 +1,13 @@
 package com.the_chance
 
+import com.the_chance.data.services.MarketService
 import com.the_chance.data.services.ProductService
+import com.the_chance.plugins.configureMonitoring
+import com.the_chance.plugins.configureRouting
+import com.the_chance.plugins.configureSerialization
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import com.the_chance.plugins.*
 import org.jetbrains.exposed.sql.Database
 
 fun main() {
@@ -28,7 +31,8 @@ fun Application.module() {
     )
 
     val productService = ProductService(database)
+    val marketService = MarketService(database)
     configureSerialization()
     configureMonitoring()
-    configureRouting(productService)
+    configureRouting(productService, marketService)
 }
