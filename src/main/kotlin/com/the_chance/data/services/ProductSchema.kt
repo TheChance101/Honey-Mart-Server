@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class ProductService(private val database: Database) : BaseService() {
+
     init {
         transaction(database) { SchemaUtils.create(ProductTable) }
     }
