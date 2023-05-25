@@ -3,15 +3,10 @@ package com.the_chance.data.services
 import com.the_chance.data.models.Category
 import com.the_chance.data.tables.CategoriesTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
 
-class CategoryService(private val database: Database) : BaseService() {
-
-    init {
-        transaction(database) {
-            SchemaUtils.create(CategoriesTable)
-        }
-    }
+class CategoryService(
+    private val database: Database
+) : BaseService(database) {
 
     suspend fun create(categoryName: String, categoryImage: String): Category = dbQuery {
         val newCategory = CategoriesTable.insert {
@@ -38,22 +33,33 @@ class CategoryService(private val database: Database) : BaseService() {
         }
     }
 
-    suspend fun remove(categoryId: Int): Boolean = dbQuery {
-        CategoriesTable.update({ CategoriesTable.id eq categoryId }) {
-            it[isDeleted] = true
-        } > 0
+    suspend fun remove(categoryId: Int?): Boolean = dbQuery {
+        val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
+        val isCategoryDeleted = CategoriesTable.select { CategoriesTable.isDeleted eq false }.singleOrNull()
+
+        if (category != null && isCategoryDeleted != null) {
+            CategoriesTable.update({ CategoriesTable.isDeleted eq false }) {
+                it[isDeleted] = true
+            } > 0
+        } else {
+            throw NoSuchElementException("This category id $categoryId not found.")
+        }
     }
 
-    suspend fun update(categoryId: Int, categoryName: String, categoryImage: String): Boolean = dbQuery {
-        CategoriesTable.update({ CategoriesTable.id eq categoryId }) {
-            if (categoryName.isNotEmpty()){
-                it[name] = categoryName
-            }
+    suspend fun update(categoryId: Int?, categoryName: String, categoryImage: String): Boolean = dbQuery {
+        val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
 
-            if(categoryImage.isNotEmpty()){
-                it[image] = categoryImage
-            }
-
-        } > 0
+        if (category != null) {
+            CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
+                if (categoryName.isNotEmpty()) {
+                    categoryRow[name] = categoryName
+                }
+                if (categoryImage.isNotEmpty()) {
+                    categoryRow[image] = categoryImage
+                }
+            } > 0
+        } else {
+            throw NoSuchElementException("This category id $categoryId not found.")
+        }
     }
 }

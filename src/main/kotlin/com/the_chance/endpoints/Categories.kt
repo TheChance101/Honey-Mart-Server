@@ -2,11 +2,13 @@ package com.the_chance.endpoints
 
 import com.the_chance.data.ServerResponse
 import com.the_chance.data.services.CategoryService
+import com.the_chance.utils.toLowerCase
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.lang.Exception
 
 fun Route.categoryRoutes(categoryService: CategoryService) {
 
@@ -19,36 +21,64 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
         val params = call.receiveParameters()
         val categoryName = params["name"]?.trim().orEmpty()
         val categoryImage = params["image"]?.trim()?.trim().orEmpty()
+        val categoryList = categoryService.getAllCategories()
 
-        val newAddedProduct = categoryService.create(categoryName, categoryImage)
-        call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
+        if (categoryList.any { it.name.toLowerCase() == categoryName.toLowerCase() }) {
+            call.respond(HttpStatusCode.BadRequest, ServerResponse.error("This name category already exist..."))
+        } else {
+            if (categoryName.length < 4) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error("Category name should be more than 4 character...")
+                )
+            } else if (categoryImage.isEmpty()) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("All field is required..."))
+            } else {
+                categoryService.create(categoryName, categoryImage)
+                call.respond(HttpStatusCode.Created, ServerResponse.success("Category added successfully"))
+            }
+        }
     }
 
     delete("/category/{id}") {
         val params = call.receiveParameters()
-        val categoryId = params["id"]?.toInt()
-        val isDeleted = categoryId?.let { id -> categoryService.remove(id) }
+        val categoryId = params["id"]?.toIntOrNull()
 
-        if (isDeleted == true){
-            call.respond(HttpStatusCode.OK, ServerResponse.success(isDeleted))
-        }else{
-            call.respond(HttpStatusCode.NotFound, "User not found")
+        if (categoryId != null) {
+            try {
+                categoryService.remove(categoryId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Category deleted successfully"))
+
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+            }
+        } else {
+            call.respond(HttpStatusCode.NotFound, ServerResponse.error("Invalid Category Id"))
         }
-
     }
 
     put("/category/{id}") {
         val params = call.receiveParameters()
-        val categoryId = params["id"]?.toInt() ?: -1
+        val categoryId = params["id"]?.toIntOrNull()
         val categoryName = params["name"]?.trim().orEmpty()
         val categoryImage = params["image"]?.trim()?.trim().orEmpty()
 
-        val isUpdated = categoryService.update(categoryId, categoryName, categoryImage)
-
-        if (isUpdated) {
-            call.respond(HttpStatusCode.OK, ServerResponse.success(isUpdated))
+        if (categoryId != null) {
+            try {
+                if (categoryName.isNotEmpty() && categoryName.length < 4) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ServerResponse.error("Category name should be more than 4 character...")
+                    )
+                } else {
+                    categoryService.update(categoryId, categoryName, categoryImage)
+                    call.respond(HttpStatusCode.OK, ServerResponse.success("Category updated successfully"))
+                }
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+            }
         } else {
-            call.respond(HttpStatusCode.NotFound, "Category not found")
+            call.respond(HttpStatusCode.NotFound, ServerResponse.error("Invalid Category Id"))
         }
     }
 }

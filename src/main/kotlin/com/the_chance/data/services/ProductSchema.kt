@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
 
-class ProductService(private val database: Database) : BaseService() {
+class ProductService(private val database: Database) : BaseService(database) {
     init {
         transaction(database) {
             SchemaUtils.create(ProductTable)
