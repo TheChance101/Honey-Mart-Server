@@ -5,6 +5,7 @@ import com.the_chance.data.tables.MarketTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class MarketService(database: Database) : BaseService() {
@@ -22,5 +23,14 @@ class MarketService(database: Database) : BaseService() {
             id = newMarket[MarketTable.id].value,
             name = newMarket[MarketTable.name]
         )
+    }
+
+    suspend fun getAllMarkets(): List<Market> = dbQuery {
+        MarketTable.selectAll().map {
+            Market(
+                id = it[MarketTable.id].value,
+                name = it[MarketTable.name]
+            )
+        }
     }
 }
