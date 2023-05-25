@@ -14,19 +14,29 @@ fun Route.marketsRoutes(marketService: MarketService) {
 
         post {
             val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
+
             if (marketName.length < 4) {
                 call.respond(
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Market name length should be 4 characters or more")
                 )
             } else {
-                val newMarket = marketService.createMarket(marketName)
-                call.respond(
-                    HttpStatusCode.Created,
-                    ServerResponse.success(newMarket, "Market created Successfully")
-                )
+                val existingMarket = marketService.getMarketByName(marketName)
+                if (existingMarket != null) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ServerResponse.error("Market name already exists")
+                    )
+                } else {
+                    val newMarket = marketService.createMarket(marketName)
+                    call.respond(
+                        HttpStatusCode.Created,
+                        ServerResponse.success(newMarket, "Market created successfully")
+                    )
+                }
             }
         }
+
 
         get {
             val markets = marketService.getAllMarkets()
@@ -55,10 +65,22 @@ fun Route.marketsRoutes(marketService: MarketService) {
                     ServerResponse.error("Market name length should be 4 characters or more")
                 )
             } else {
-                val updatedMarket = marketService.updateMarket(marketId, marketName)
-                call.respond(HttpStatusCode.OK, ServerResponse.success(updatedMarket, "Market updated successfully"))
+                val existingMarket = marketService.getMarketByName(marketName)
+                if (existingMarket != null) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ServerResponse.error("Market name already exists")
+                    )
+                } else {
+                    val updatedMarket = marketService.updateMarket(marketId, marketName)
+                    call.respond(
+                        HttpStatusCode.OK,
+                        ServerResponse.success(updatedMarket, "Market updated successfully")
+                    )
+                }
             }
         }
+
     }
 
 }
