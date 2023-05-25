@@ -1,5 +1,6 @@
 package com.the_chance
 
+import com.the_chance.data.services.CategoryService
 import com.the_chance.data.services.ProductService
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -28,7 +29,9 @@ fun Application.module() {
     )
 
     val productService = ProductService(database)
+    val categoryService = CategoryService(database)
+
     configureSerialization()
     configureMonitoring()
-    configureRouting(productService)
+    configureRouting(productService, categoryService)
 }
