@@ -1,3 +1,9 @@
 package com.the_chance.data.models
 
-data class Market()
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Market(
+    val id: Int,
+    val name: String,
+)
