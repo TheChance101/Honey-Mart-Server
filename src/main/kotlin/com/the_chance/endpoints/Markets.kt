@@ -10,24 +10,37 @@ import io.ktor.server.routing.*
 
 fun Route.marketsRoutes(marketService: MarketService) {
 
-    post("/markets") {
-        val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-        if (marketName.length < 4) {
-            call.respond(
-                HttpStatusCode.BadRequest,
-                ServerResponse.error("Market name length should be 4 characters or more")
-            )
-        } else {
-            val newMarket = marketService.createMarket(marketName)
-            call.respond(
-                HttpStatusCode.Created,
-                ServerResponse.success(newMarket, "Market created Successfully")
-            )
-        }
-    }
+    route("/markets") {
 
-    get("/markets") {
-        val markets = marketService.getAllMarkets()
-        call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
+        post {
+            val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
+            if (marketName.length < 4) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error("Market name length should be 4 characters or more")
+                )
+            } else {
+                val newMarket = marketService.createMarket(marketName)
+                call.respond(
+                    HttpStatusCode.Created,
+                    ServerResponse.success(newMarket, "Market created Successfully")
+                )
+            }
+        }
+
+        get {
+            val markets = marketService.getAllMarkets()
+            call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
+        }
+
+        delete("/{id}") {
+            val marketId = call.parameters["id"]?.toIntOrNull()
+            if (marketId == null) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market Id"))
+            } else {
+                marketService.deleteMarket(marketId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Market Deleted Successfully"))
+            }
+        }
     }
 }
