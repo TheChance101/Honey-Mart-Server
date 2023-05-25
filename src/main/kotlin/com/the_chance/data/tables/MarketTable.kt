@@ -1,4 +1,7 @@
 package com.the_chance.data.tables
 
-object MarketTable {
+import org.jetbrains.exposed.dao.id.IntIdTable
+
+object MarketTable : IntIdTable() {
+    val name = text("name")
 }
