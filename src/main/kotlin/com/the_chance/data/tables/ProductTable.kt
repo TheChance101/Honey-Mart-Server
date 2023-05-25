@@ -5,4 +5,6 @@ import org.jetbrains.exposed.dao.id.UUIDTable
 object ProductTable : UUIDTable() {
     val name = text("name")
     val price = double("price")
+    val quantity = text("quantity")
+    val isDeleted = bool("isDeleted")
 }
