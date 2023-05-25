@@ -14,26 +14,17 @@ fun Route.marketsRoutes(marketService: MarketService) {
 
         post {
             val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-
             if (marketName.length < 4) {
                 call.respond(
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Market name length should be 4 characters or more")
                 )
             } else {
-                val existingMarket = marketService.getMarketByName(marketName)
-                if (existingMarket != null) {
-                    call.respond(
-                        HttpStatusCode.BadRequest,
-                        ServerResponse.error("Market name already exists")
-                    )
-                } else {
-                    val newMarket = marketService.createMarket(marketName)
-                    call.respond(
-                        HttpStatusCode.Created,
-                        ServerResponse.success(newMarket, "Market created successfully")
-                    )
-                }
+                val newMarket = marketService.createMarket(marketName)
+                call.respond(
+                    HttpStatusCode.Created,
+                    ServerResponse.success(newMarket, "Market created successfully")
+                )
             }
         }
 
@@ -64,23 +55,25 @@ fun Route.marketsRoutes(marketService: MarketService) {
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Market name length should be 4 characters or more")
                 )
+
             } else {
-                val existingMarket = marketService.getMarketByName(marketName)
-                if (existingMarket != null) {
-                    call.respond(
-                        HttpStatusCode.BadRequest,
-                        ServerResponse.error("Market name already exists")
-                    )
-                } else {
+                try {
                     val updatedMarket = marketService.updateMarket(marketId, marketName)
                     call.respond(
                         HttpStatusCode.OK,
                         ServerResponse.success(updatedMarket, "Market updated successfully")
                     )
+                } catch (e: Exception) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ServerResponse.error(e.message.toString())
+                    )
                 }
+
             }
         }
-
     }
 
 }
+
+
