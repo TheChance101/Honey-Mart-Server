@@ -26,7 +26,7 @@ class MarketService(database: Database) : BaseService() {
     suspend fun getAllMarkets(): List<Market> = dbQuery {
         MarketTable.selectAll().mapNotNull { row ->
             if (row[MarketTable.isDeleted]) {
-                return@mapNotNull null
+                null
             } else {
                 Market(
                     id = row[MarketTable.id].value,
@@ -54,6 +54,15 @@ class MarketService(database: Database) : BaseService() {
             )
         } else {
             throw NoSuchElementException("Market with ID $marketId not found.")
+        }
+    }
+
+    suspend fun getMarketByName(marketName: String): Market? = dbQuery {
+        MarketTable.select { MarketTable.name eq marketName }.singleOrNull()?.let { row ->
+            Market(
+                id = row[MarketTable.id].value,
+                name = row[MarketTable.name]
+            )
         }
     }
 
