@@ -9,6 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.marketsRoutes(marketService: MarketService) {
+
     post("/markets") {
         val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
         if (marketName.length < 4) {
@@ -23,5 +24,10 @@ fun Route.marketsRoutes(marketService: MarketService) {
                 ServerResponse.success(newMarket, "Market created Successfully")
             )
         }
+    }
+
+    get("/markets") {
+        val markets = marketService.getAllMarkets()
+        call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
     }
 }
