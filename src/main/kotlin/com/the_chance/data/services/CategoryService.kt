@@ -1,54 +1,59 @@
 package com.the_chance.data.services
 
 import com.the_chance.data.models.Category
-import com.the_chance.data.tables.CategoryTable
+import com.the_chance.data.tables.CategoriesTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
 
 class CategoryService(private val database: Database) : BaseService() {
 
     init {
         transaction(database) {
-            SchemaUtils.create(CategoryTable)
+            SchemaUtils.create(CategoriesTable)
         }
     }
 
     suspend fun create(categoryName: String, categoryImage: String): Category = dbQuery {
-        val newCategory = CategoryTable.insert {
+        val newCategory = CategoriesTable.insert {
             it[name] = categoryName
             it[image] = categoryImage
+            it[isDeleted] = false
         }
         Category(
-            newCategory[CategoryTable.id].value,
-            newCategory[CategoryTable.name],
-            newCategory[CategoryTable.image]
+            id = newCategory[CategoriesTable.id].value,
+            name = newCategory[CategoriesTable.name].toString(),
+            image = newCategory[CategoriesTable.image].toString(),
         )
     }
 
     suspend fun getAllCategories(): List<Category> {
         return dbQuery {
-            CategoryTable.selectAll().map {
+            CategoriesTable.select { CategoriesTable.isDeleted eq false }.map { resultRow ->
                 Category(
-                    id = it[CategoryTable.id].value,
-                    name = it[CategoryTable.name].toString(),
-                    image = it[CategoryTable.image].toString()
+                    id = resultRow[CategoriesTable.id].value,
+                    name = resultRow[CategoriesTable.name].toString(),
+                    image = resultRow[CategoriesTable.image].toString(),
                 )
             }
         }
     }
 
     suspend fun remove(categoryId: Int): Boolean = dbQuery {
-        CategoryTable.deleteWhere {
-            CategoryTable.id eq categoryId
+        CategoriesTable.update({ CategoriesTable.id eq categoryId }) {
+            it[isDeleted] = true
         } > 0
     }
 
     suspend fun update(categoryId: Int, categoryName: String, categoryImage: String): Boolean = dbQuery {
-        CategoryTable.update({ CategoryTable.id eq categoryId }) {
-            it[name] = categoryName
-            it[image] = categoryImage
+        CategoriesTable.update({ CategoriesTable.id eq categoryId }) {
+            if (categoryName.isNotEmpty()){
+                it[name] = categoryName
+            }
+
+            if(categoryImage.isNotEmpty()){
+                it[image] = categoryImage
+            }
+
         } > 0
     }
 }
