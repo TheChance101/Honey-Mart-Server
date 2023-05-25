@@ -2,9 +2,8 @@ package com.the_chance.data.services
 
 import com.the_chance.data.models.Product
 import com.the_chance.data.tables.ProductTable
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.*
-import java.util.*
+import org.jetbrains.exposed.sql.transactions.transaction
 
 class ProductService(private val database: Database) : BaseService() {
     init {
@@ -19,7 +18,7 @@ class ProductService(private val database: Database) : BaseService() {
             productRow[quantity] = productQuantity
         }
         Product(
-            id = newProduct[ProductTable.id].value.toString(),
+            id = newProduct[ProductTable.id].value,
             name = newProduct[ProductTable.name],
             price = newProduct[ProductTable.price],
             quantity = newProduct[ProductTable.quantity],
@@ -30,7 +29,7 @@ class ProductService(private val database: Database) : BaseService() {
         return dbQuery {
             ProductTable.select { ProductTable.isDeleted eq false }.map { productRow ->
                 Product(
-                    id = productRow[ProductTable.id].value.toString(),
+                    id = productRow[ProductTable.id].value,
                     name = productRow[ProductTable.name].toString(),
                     price = productRow[ProductTable.price],
                     quantity = productRow[ProductTable.quantity],
@@ -40,13 +39,13 @@ class ProductService(private val database: Database) : BaseService() {
     }
 
     suspend fun updateProduct(
-        productId: String,
+        productId: Long,
         productName: String?,
         productPrice: Double?,
         productQuantity: String?
     ): Int {
         return dbQuery {
-            ProductTable.update({ ProductTable.id eq UUID.fromString(productId) }) { productRow ->
+            ProductTable.update({ ProductTable.id eq productId }) { productRow ->
                 productName?.let { productRow[name] = it }
                 productPrice?.let { productRow[price] = it }
                 productQuantity?.let { productRow[quantity] = it }
@@ -54,9 +53,9 @@ class ProductService(private val database: Database) : BaseService() {
         }
     }
 
-    suspend fun deleteProduct(productId: String): Int {
+    suspend fun deleteProduct(productId: Long): Int {
         return dbQuery {
-            ProductTable.update({ ProductTable.id eq UUID.fromString(productId) }) { productRow ->
+            ProductTable.update({ ProductTable.id eq productId }) { productRow ->
                 productRow[isDeleted] = true
             }
         }

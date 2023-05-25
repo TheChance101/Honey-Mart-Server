@@ -33,14 +33,14 @@ fun Route.productsRoutes(productService: ProductService) {
     }
 
     post("/product/{id}") {
-        val productId = call.parameters["id"]?.trim().orEmpty()
+        val productId = call.parameters["id"]?.trim()?.toLongOrNull() ?: 0L
 
         val params = call.receiveParameters()
         val productName = params["name"]?.trim().orEmpty()
         val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
         val productQuantity = params["quantity"]?.trim().orEmpty()
 
-        if (productId.length < 4) {
+        if (productId < 1) {
             call.respond(ServerResponse.error("Not valid Product Id"))
         } else if (!productService.isValid(
                 productName = productName,
@@ -61,8 +61,8 @@ fun Route.productsRoutes(productService: ProductService) {
     }
 
     delete("/product/{id}") {
-        val productId = call.parameters["id"]?.trim().orEmpty()
-        if (productId.length < 4) {
+        val productId = call.parameters["id"]?.trim()?.toLongOrNull() ?: 0L
+        if (productId < 1) {
             call.respond(ServerResponse.error("Not valid Product Id"))
         } else {
             val deletedProduct = productService.deleteProduct(productId = productId)
