@@ -77,7 +77,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                 call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             }
         } else {
-            call.respond(HttpStatusCode.NotFound, ServerResponse.error("Invalid Category Id"))
+            call.respond(HttpStatusCode.NotFound, ServerResponse.error("The ID is required..."))
         }
     }
 }
