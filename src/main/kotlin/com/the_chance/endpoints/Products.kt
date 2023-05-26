@@ -22,53 +22,47 @@ fun Route.productsRoutes(productService: ProductService) {
             val params = call.receiveParameters()
             val productName = params["name"]?.trim().orEmpty()
             val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
-            val productQuantity = params["quantity"]?.trim().orEmpty()
+            val productQuantity = params["quantity"]?.trim()
 
-            if (productName.length < 4) {
-                call.respond(ServerResponse.error("Product name length should be 4 characters or more"))
-            } else if (productPrice < 0.0) {
-                call.respond(ServerResponse.error("Product Price should be positive number."))
-            } else {
+            try {
                 val newAddedProduct = productService.create(productName, productPrice, productQuantity)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
+            } catch (t: Throwable) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
         }
 
         put("{id}") {
             val productId = call.parameters["id"]?.trim()?.toLongOrNull() ?: 0L
 
-            val params = call.receiveParameters()
-            val productName = params["name"]?.trim().orEmpty()
-            val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
-            val productQuantity = params["quantity"]?.trim().orEmpty()
+            try {
+                val params = call.receiveParameters()
+                val productName = params["name"]?.trim()
+                val productPrice = params["price"]?.trim()?.toDoubleOrNull()
+                val productQuantity = params["quantity"]?.trim()
 
-            if (productId < 1) {
-                call.respond(ServerResponse.error("Not valid Product Id"))
-            } else if (!productService.isValid(
-                    productName = productName,
-                    productPrice = productPrice,
-                    productQuantity = productQuantity
-                )
-            ) {
-                call.respond(ServerResponse.error("Not valid Request."))
-            } else {
                 val updatedProduct = productService.updateProduct(
                     productId = productId,
                     productName = productName,
                     productPrice = productPrice,
                     productQuantity = productQuantity
                 )
-                call.respond(HttpStatusCode.Accepted, ServerResponse.success(updatedProduct))
+                call.respond(HttpStatusCode.Accepted, ServerResponse.success(true, updatedProduct))
+            } catch (t: Throwable) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
         }
 
         delete("{id}") {
             val productId = call.parameters["id"]?.trim()?.toLongOrNull() ?: 0L
-            if (productId < 1) {
-                call.respond(ServerResponse.error("Not valid Product Id"))
-            } else {
+            try {
                 val deletedProduct = productService.deleteProduct(productId = productId)
-                call.respond(HttpStatusCode.Accepted, ServerResponse.success(deletedProduct))
+                call.respond(
+                    HttpStatusCode.Accepted,
+                    ServerResponse.success(result = true, successMessage = deletedProduct)
+                )
+            } catch (t: Throwable) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
         }
     }
