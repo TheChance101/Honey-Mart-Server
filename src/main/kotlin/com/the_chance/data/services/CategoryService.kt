@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.*
 
 class CategoryService(
     private val database: Database
-) : BaseService(database) {
+) : BaseService(database, CategoriesTable) {
 
     suspend fun create(categoryName: String, categoryImage: String): Category = dbQuery {
         val newCategory = CategoriesTable.insert {
