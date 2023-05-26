@@ -22,12 +22,17 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
         val categoryImage = params["image"]?.trim()?.trim().orEmpty()
 
         try {
-            if (categoryName.length < 4) {
+            if (categoryName.length < 4 && categoryName.isNotEmpty()) {
                 call.respond(
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Category name should be more than 4 character...")
                 )
-            } else if (categoryImage.isEmpty() || categoryName.isEmpty()) {
+            } else if (categoryName.length > 20){
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error("Category name should be less than 20 character...")
+                )
+            }else if (categoryImage.isEmpty()) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("All field is required..."))
             } else {
                 categoryService.create(categoryName, categoryImage)
