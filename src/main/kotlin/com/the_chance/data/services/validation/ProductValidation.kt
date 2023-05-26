@@ -2,8 +2,6 @@ package com.the_chance.data.services.validation
 
 class ProductValidation {
 
-    val VALID_QUERY = 1
-
     fun checkCreateValidation(
         productName: String,
         productPrice: Double,
@@ -63,5 +61,9 @@ class ProductValidation {
 
     fun checkId(id: Long): Boolean {
         return id > 0L
+    }
+
+    companion object {
+        const val VALID_QUERY = 1
     }
 }

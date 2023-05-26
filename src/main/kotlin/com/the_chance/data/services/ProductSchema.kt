@@ -72,7 +72,7 @@ class ProductService(private val database: Database) : BaseService() {
                     productQuantity?.let { productRow[quantity] = it }
                 }
             }
-            return if (result == productValidation.VALID_QUERY) {
+            return if (result == ProductValidation.VALID_QUERY) {
                 "Product Updated successfully."
             } else {
                 throw Throwable("Not valid Product Id")
@@ -88,7 +88,7 @@ class ProductService(private val database: Database) : BaseService() {
                     ProductTable.update({ ProductTable.id eq productId }) { productRow ->
                         productRow[isDeleted] = true
                     }
-                } == productValidation.VALID_QUERY) {
+                } == ProductValidation.VALID_QUERY) {
                 "Product Deleted successfully."
             } else {
                 throw Throwable("The product id was not found.")
