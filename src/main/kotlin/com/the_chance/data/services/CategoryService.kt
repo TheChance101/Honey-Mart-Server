@@ -11,8 +11,6 @@ class CategoryService(
 
     suspend fun create(categoryName: String, categoryImage: String): Category = dbQuery {
         val categoryList = getAllCategories().filter { it.name.toLowerCase() == categoryName.toLowerCase() }
-//        val categoryList = CategoriesTable.select { CategoriesTable.name eq categoryName }.singleOrNull()
-
 
         if (categoryList.isEmpty()){
             val newCategory = CategoriesTable.insert {

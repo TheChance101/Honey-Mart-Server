@@ -7,11 +7,12 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
-abstract class BaseService(database: Database, table: Table) {
-
+abstract class BaseService(database: Database, vararg table: Table) {
     init {
         transaction(database) {
-            SchemaUtils.create(table)
+            table.forEach {
+                SchemaUtils.create(it)
+            }
         }
     }
 

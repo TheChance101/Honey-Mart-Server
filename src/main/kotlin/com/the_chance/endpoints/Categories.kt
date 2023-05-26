@@ -2,7 +2,6 @@ package com.the_chance.endpoints
 
 import com.the_chance.data.ServerResponse
 import com.the_chance.data.services.CategoryService
-import com.the_chance.utils.toLowerCase
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
