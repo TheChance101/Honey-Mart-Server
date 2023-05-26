@@ -2,6 +2,7 @@ package com.the_chance.data.services
 
 import com.the_chance.data.models.Category
 import com.the_chance.data.tables.CategoriesTable
+import com.the_chance.utils.toLowerCase
 import org.jetbrains.exposed.sql.*
 
 class CategoryService(
@@ -9,16 +10,25 @@ class CategoryService(
 ) : BaseService(database, CategoriesTable) {
 
     suspend fun create(categoryName: String, categoryImage: String): Category = dbQuery {
-        val newCategory = CategoriesTable.insert {
-            it[name] = categoryName
-            it[image] = categoryImage
-            it[isDeleted] = false
+        val categoryList = getAllCategories().filter { it.name.toLowerCase() == categoryName.toLowerCase() }
+//        val categoryList = CategoriesTable.select { CategoriesTable.name eq categoryName }.singleOrNull()
+
+
+        if (categoryList.isEmpty()){
+            val newCategory = CategoriesTable.insert {
+                it[name] = categoryName
+                it[image] = categoryImage
+                it[isDeleted] = false
+            }
+            Category(
+                id = newCategory[CategoriesTable.id].value,
+                name = newCategory[CategoriesTable.name].toString(),
+                image = newCategory[CategoriesTable.image].toString(),
+            )
+        }else{
+            throw NoSuchElementException("This category with name $categoryName already exist.")
         }
-        Category(
-            id = newCategory[CategoriesTable.id].value,
-            name = newCategory[CategoriesTable.name].toString(),
-            image = newCategory[CategoriesTable.image].toString(),
-        )
+
     }
 
     suspend fun getAllCategories(): List<Category> {

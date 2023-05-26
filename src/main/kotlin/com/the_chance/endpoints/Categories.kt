@@ -21,22 +21,21 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
         val params = call.receiveParameters()
         val categoryName = params["name"]?.trim().orEmpty()
         val categoryImage = params["image"]?.trim()?.trim().orEmpty()
-        val categoryList = categoryService.getAllCategories()
 
-        if (categoryList.any { it.name.toLowerCase() == categoryName.toLowerCase() }) {
-            call.respond(HttpStatusCode.BadRequest, ServerResponse.error("This name category already exist..."))
-        } else {
+        try {
             if (categoryName.length < 4) {
                 call.respond(
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Category name should be more than 4 character...")
                 )
-            } else if (categoryImage.isEmpty()) {
+            } else if (categoryImage.isEmpty() || categoryName.isEmpty()) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("All field is required..."))
             } else {
                 categoryService.create(categoryName, categoryImage)
                 call.respond(HttpStatusCode.Created, ServerResponse.success("Category added successfully"))
             }
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
         }
     }
 
