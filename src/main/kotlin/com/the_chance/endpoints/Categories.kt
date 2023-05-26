@@ -42,7 +42,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
 
     delete("/category/{id}") {
         val params = call.receiveParameters()
-        val categoryId = params["id"]?.toIntOrNull()
+        val categoryId = params["id"]?.toLongOrNull()
 
         if (categoryId != null) {
             try {
@@ -59,7 +59,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
 
     put("/category/{id}") {
         val params = call.receiveParameters()
-        val categoryId = params["id"]?.toIntOrNull()
+        val categoryId = params["id"]?.toLongOrNull()
         val categoryName = params["name"]?.trim().orEmpty()
         val categoryImage = params["image"]?.trim()?.trim().orEmpty()
 

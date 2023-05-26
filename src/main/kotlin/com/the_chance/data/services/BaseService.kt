@@ -1,6 +1,5 @@
 package com.the_chance.data.services
 
-import com.the_chance.data.tables.CategoriesTable
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils

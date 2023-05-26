@@ -33,7 +33,7 @@ class CategoryService(
         }
     }
 
-    suspend fun remove(categoryId: Int?): Boolean = dbQuery {
+    suspend fun remove(categoryId: Long): Boolean = dbQuery {
         val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
         val isCategoryDeleted = CategoriesTable.select { CategoriesTable.isDeleted eq false }.singleOrNull()
 
@@ -46,7 +46,7 @@ class CategoryService(
         }
     }
 
-    suspend fun update(categoryId: Int?, categoryName: String, categoryImage: String): Boolean = dbQuery {
+    suspend fun update(categoryId: Long, categoryName: String, categoryImage: String): Boolean = dbQuery {
         val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
 
         if (category != null) {
