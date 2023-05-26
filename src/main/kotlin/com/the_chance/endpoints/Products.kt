@@ -19,12 +19,12 @@ fun Route.productsRoutes(productService: ProductService) {
         }
 
         post {
-            val params = call.receiveParameters()
-            val productName = params["name"]?.trim().orEmpty()
-            val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
-            val productQuantity = params["quantity"]?.trim()
-
             try {
+                val params = call.receiveParameters()
+                val productName = params["name"]?.trim().orEmpty()
+                val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
+                val productQuantity = params["quantity"]?.trim()
+
                 val newAddedProduct = productService.create(productName, productPrice, productQuantity)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
             } catch (t: Throwable) {
@@ -33,9 +33,8 @@ fun Route.productsRoutes(productService: ProductService) {
         }
 
         put("{id}") {
-            val productId = call.parameters["id"]?.trim()?.toLongOrNull() ?: 0L
-
             try {
+                val productId = call.parameters["id"]?.trim()?.toLongOrNull()
                 val params = call.receiveParameters()
                 val productName = params["name"]?.trim()
                 val productPrice = params["price"]?.trim()?.toDoubleOrNull()
@@ -54,7 +53,7 @@ fun Route.productsRoutes(productService: ProductService) {
         }
 
         delete("{id}") {
-            val productId = call.parameters["id"]?.trim()?.toLongOrNull() ?: 0L
+            val productId = call.parameters["id"]?.trim()?.toLongOrNull()
             try {
                 val deletedProduct = productService.deleteProduct(productId = productId)
                 call.respond(
