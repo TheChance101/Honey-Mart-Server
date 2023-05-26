@@ -12,7 +12,7 @@ class CategoryService(
     suspend fun create(categoryName: String, categoryImage: String): Category = dbQuery {
         val categoryList = getAllCategories().filter { it.name.toLowerCase() == categoryName.toLowerCase() }
 
-        if (categoryList.isEmpty()){
+        if (categoryList.isEmpty()) {
             val newCategory = CategoriesTable.insert {
                 it[name] = categoryName
                 it[image] = categoryImage
@@ -23,7 +23,7 @@ class CategoryService(
                 name = newCategory[CategoriesTable.name].toString(),
                 image = newCategory[CategoriesTable.image].toString(),
             )
-        }else{
+        } else {
             throw NoSuchElementException("This category with name $categoryName already exist.")
         }
 
@@ -42,10 +42,11 @@ class CategoryService(
     }
 
     suspend fun remove(categoryId: Long): Boolean = dbQuery {
-        val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
-        val isCategoryDeleted = CategoriesTable.select { CategoriesTable.isDeleted eq false }.singleOrNull()
+        val category = CategoriesTable.select {
+            CategoriesTable.id eq categoryId and Op.build { CategoriesTable.isDeleted eq false }
+        }.singleOrNull()
 
-        if (category != null && isCategoryDeleted != null) {
+        if (category != null) {
             CategoriesTable.update({ CategoriesTable.isDeleted eq false }) {
                 it[isDeleted] = true
             } > 0
