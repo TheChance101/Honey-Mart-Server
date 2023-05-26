@@ -8,5 +8,4 @@ data class Product(
     val name: String,
     val quantity: String?,
     val price: Double,
-    val isDeleted: Boolean = false
 )
