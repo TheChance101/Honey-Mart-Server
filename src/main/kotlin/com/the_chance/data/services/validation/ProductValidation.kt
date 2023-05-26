@@ -25,7 +25,7 @@ class ProductValidation {
     }
 
     fun checkUpdateValidation(
-        productId: Long,
+        productId: Long?,
         productName: String?,
         productPrice: Double?,
         productQuantity: String?
@@ -59,8 +59,8 @@ class ProductValidation {
         return price in 0.1..999999.0
     }
 
-    fun checkId(id: Long): Boolean {
-        return id > 0L
+    fun checkId(id: Long?): Boolean {
+        return id != null
     }
 
     companion object {
