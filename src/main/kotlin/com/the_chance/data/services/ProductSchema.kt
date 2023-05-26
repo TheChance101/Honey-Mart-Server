@@ -53,7 +53,7 @@ class ProductService(private val database: Database) : BaseService() {
     }
 
     suspend fun updateProduct(
-        productId: Long,
+        productId: Long?,
         productName: String?,
         productPrice: Double?,
         productQuantity: String?
@@ -82,7 +82,7 @@ class ProductService(private val database: Database) : BaseService() {
         }
     }
 
-    suspend fun deleteProduct(productId: Long): String {
+    suspend fun deleteProduct(productId: Long?): String {
         return if (productValidation.checkId(productId)) {
             if (dbQuery {
                     ProductTable.update({ ProductTable.id eq productId }) { productRow ->
