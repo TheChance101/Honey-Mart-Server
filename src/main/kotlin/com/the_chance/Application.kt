@@ -1,5 +1,6 @@
 package com.the_chance
 
+import com.the_chance.data.services.CategoryProductService
 import com.the_chance.data.services.CategoryService
 import com.the_chance.data.services.MarketService
 import com.the_chance.data.services.ProductService
@@ -33,9 +34,10 @@ fun Application.module() {
 
     val productService = ProductService(database)
     val categoryService = CategoryService(database)
+    val categoryProductService = CategoryProductService(database)
 
     val marketService = MarketService(database)
     configureSerialization()
     configureMonitoring()
-    configureRouting(productService, categoryService, marketService)
+    configureRouting(productService, categoryService, marketService,categoryProductService)
 }
