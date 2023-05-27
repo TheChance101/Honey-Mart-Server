@@ -1,7 +1,9 @@
 package com.the_chance.endpoints
 
-import com.the_chance.data.services.ProductService
 import com.the_chance.data.ServerResponse
+import com.the_chance.data.services.ProductService
+import com.the_chance.data.services.validation.Error
+import com.the_chance.utils.errorHandler
 import com.the_chance.utils.orZero
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -28,7 +30,7 @@ fun Route.productsRoutes(productService: ProductService) {
                 val newAddedProduct = productService.create(productName, productPrice, productQuantity)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
             } catch (t: Throwable) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
             }
         }
 
@@ -46,9 +48,11 @@ fun Route.productsRoutes(productService: ProductService) {
                     productPrice = productPrice,
                     productQuantity = productQuantity
                 )
-                call.respond(HttpStatusCode.Accepted, ServerResponse.success(true, updatedProduct))
+                call.respond(HttpStatusCode.OK, ServerResponse.success(true, updatedProduct))
+            } catch (t: Error) {
+                t.errorHandler(call)
             } catch (t: Throwable) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
             }
         }
 
@@ -57,12 +61,13 @@ fun Route.productsRoutes(productService: ProductService) {
             try {
                 val deletedProduct = productService.deleteProduct(productId = productId)
                 call.respond(
-                    HttpStatusCode.Accepted,
+                    HttpStatusCode.OK,
                     ServerResponse.success(result = true, successMessage = deletedProduct)
                 )
-            } catch (t: Throwable) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
+            } catch (t: Error) {
+                t.errorHandler(call)
             }
         }
     }
 }
+
