@@ -56,7 +56,11 @@ class CategoryService(
     }
 
     suspend fun update(categoryId: Long, categoryName: String, categoryImage: String): Boolean = dbQuery {
-        val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
+        val category = CategoriesTable.select {
+            (CategoriesTable.id eq categoryId) and
+            (CategoriesTable.name eq categoryName) and
+            (CategoriesTable.image eq categoryImage)
+        }.singleOrNull()
 
         if (category != null) {
             CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
@@ -68,7 +72,7 @@ class CategoryService(
                 }
             } > 0
         } else {
-            throw NoSuchElementException("This category id $categoryId not found.")
+            throw NoSuchElementException("is already updated")
         }
     }
 }
