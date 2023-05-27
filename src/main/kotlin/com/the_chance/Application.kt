@@ -37,6 +37,5 @@ fun Application.module() {
     val marketService = MarketService(database)
     configureSerialization()
     configureMonitoring()
-    configureRouting(productService, categoryService)
-    configureRouting(productService, marketService)
+    configureRouting(productService, categoryService, marketService)
 }
