@@ -2,6 +2,7 @@ package com.the_chance.endpoints
 
 import com.the_chance.data.ServerResponse
 import com.the_chance.data.services.CategoryService
+import com.the_chance.utils.isValidStringInput
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -22,17 +23,17 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
         val categoryImage = params["image"]?.trim()?.trim().orEmpty()
 
         try {
-            if (categoryName.length < 4 && categoryName.isNotEmpty()) {
+            if (!isValidStringInput(categoryName) || categoryName.length < 4) {
                 call.respond(
                     HttpStatusCode.BadRequest,
-                    ServerResponse.error("Category name should be more than 4 character...")
+                    ServerResponse.error("Category name should be more than 4 character and only contain letters without numbers or symbols.")
                 )
-            } else if (categoryName.length > 20){
+            } else if (categoryName.length > 20) {
                 call.respond(
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Category name should be less than 20 character...")
                 )
-            }else if (categoryImage.isEmpty()) {
+            } else if (categoryImage.isEmpty()) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("All field is required..."))
             } else {
                 categoryService.create(categoryName, categoryImage)
@@ -68,10 +69,10 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
 
         if (categoryId != null) {
             try {
-                if (categoryName.isNotEmpty() && categoryName.length < 4) {
+                if (categoryName.length < 4  || !isValidStringInput(categoryName)) {
                     call.respond(
                         HttpStatusCode.BadRequest,
-                        ServerResponse.error("Category name should be more than 4 character...")
+                        ServerResponse.error("Category name should be more than 4 character and only contain letters without numbers or symbols.")
                     )
                 } else {
                     categoryService.update(categoryId, categoryName, categoryImage)

@@ -62,7 +62,7 @@ class CategoryService(
             (CategoriesTable.image eq categoryImage)
         }.singleOrNull()
 
-        if (category != null) {
+        if (category == null) {
             CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
                 if (categoryName.isNotEmpty()) {
                     categoryRow[name] = categoryName
