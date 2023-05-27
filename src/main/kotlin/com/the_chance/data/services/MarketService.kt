@@ -2,15 +2,12 @@ package com.the_chance.data.services
 
 import com.the_chance.data.models.Market
 import com.the_chance.data.tables.MarketTable
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 
-class MarketService(database: Database) : BaseService() {
-    init {
-        transaction(database) {
-            SchemaUtils.create(MarketTable)
-        }
-    }
+class MarketService(database: Database) : BaseService(database, MarketTable) {
 
     suspend fun createMarket(marketName: String): Market = dbQuery {
         val newMarket = MarketTable.insert {
@@ -33,13 +30,13 @@ class MarketService(database: Database) : BaseService() {
     }
 
 
-    suspend fun deleteMarket(marketId: Int) = dbQuery {
+    suspend fun deleteMarket(marketId: Long) = dbQuery {
         MarketTable.update({ MarketTable.id eq marketId }) {
             it[isDeleted] = true
         }
     }
 
-    suspend fun updateMarket(marketId: Int, marketName: String): Market = dbQuery {
+    suspend fun updateMarket(marketId: Long, marketName: String): Market = dbQuery {
         MarketTable.update({ MarketTable.id eq marketId }) {
             it[name] = marketName
         }
