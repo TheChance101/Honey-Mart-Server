@@ -1,18 +1,17 @@
 package com.the_chance.data.services
 
 import com.the_chance.data.models.Product
+import com.the_chance.data.services.validation.Error
+import com.the_chance.data.services.validation.ErrorType
 import com.the_chance.data.services.validation.ProductValidation
 import com.the_chance.data.tables.ProductTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.InvalidPropertiesFormatException
 
-class ProductService(private val database: Database) : BaseService() {
+class ProductService(private val database: Database) : BaseService(database, ProductTable) {
 
     private val productValidation by lazy { ProductValidation() }
-
-    init {
-        transaction(database) { SchemaUtils.create(ProductTable) }
-    }
 
     suspend fun create(productName: String, productPrice: Double, productQuantity: String?): Product {
         val errors = productValidation.checkCreateValidation(
@@ -53,10 +52,7 @@ class ProductService(private val database: Database) : BaseService() {
     }
 
     suspend fun updateProduct(
-        productId: Long?,
-        productName: String?,
-        productPrice: Double?,
-        productQuantity: String?
+        productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
     ): String {
         val errors = productValidation.checkUpdateValidation(
             productId = productId,
@@ -75,7 +71,7 @@ class ProductService(private val database: Database) : BaseService() {
             return if (result == ProductValidation.VALID_QUERY) {
                 "Product Updated successfully."
             } else {
-                throw Throwable("Not valid Product Id")
+                throw Error(ErrorType.NOT_FOUND)
             }
         } else {
             throw Throwable(errors.toString())
@@ -91,10 +87,10 @@ class ProductService(private val database: Database) : BaseService() {
                 } == ProductValidation.VALID_QUERY) {
                 "Product Deleted successfully."
             } else {
-                throw Throwable("The product id was not found.")
+                throw Error(ErrorType.NOT_FOUND)
             }
         } else {
-            throw Throwable("Not valid Product Id")
+            throw Error(ErrorType.INVALID_INPUT)
         }
     }
 }
