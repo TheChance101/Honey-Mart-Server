@@ -2,10 +2,13 @@ package com.the_chance.data.services
 
 import com.the_chance.data.models.Market
 import com.the_chance.data.tables.MarketTable
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
+import java.util.regex.Pattern
 
-class MarketService(private val database: Database) : BaseService(database, MarketTable) {
+class MarketService(database: Database) : BaseService(database, MarketTable) {
 
     suspend fun createMarket(marketName: String): Market = dbQuery {
         val newMarket = MarketTable.insert {
@@ -27,14 +30,24 @@ class MarketService(private val database: Database) : BaseService(database, Mark
         }
     }
 
-
-    suspend fun deleteMarket(marketId: Int) = dbQuery {
-        MarketTable.update({ MarketTable.id eq marketId }) {
-            it[isDeleted] = true
+    suspend fun deleteMarket(marketId: Long): Boolean = dbQuery {
+        if (isDeleted(marketId)) {
+            false
+        } else {
+            val existingMarket = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
+            if (existingMarket != null) {
+                MarketTable.update({ MarketTable.id eq marketId }) {
+                    it[MarketTable.isDeleted] = true
+                }
+                true
+            } else {
+                throw NoSuchElementException("Market with ID $marketId not found.")
+            }
         }
     }
 
-    suspend fun updateMarket(marketId: Int, marketName: String): Market = dbQuery {
+
+    suspend fun updateMarket(marketId: Long, marketName: String): Market = dbQuery {
         MarketTable.update({ MarketTable.id eq marketId }) {
             it[name] = marketName
         }
@@ -47,6 +60,19 @@ class MarketService(private val database: Database) : BaseService(database, Mark
         } else {
             throw NoSuchElementException("Market with ID $marketId not found.")
         }
+    }
+
+    fun isValidMarketName(name: String): Boolean {
+        val pattern = Pattern.compile("^[a-zA-Z]+(\\s[a-zA-Z]+)*$")
+        val matcher = pattern.matcher(name)
+        return matcher.matches()
+    }
+
+    suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
+        val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
+        market?.let {
+            it[MarketTable.isDeleted]
+        } ?: throw NoSuchElementException("Market with ID $marketId not found.")
     }
 
 }
