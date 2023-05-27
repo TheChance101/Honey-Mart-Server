@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
+import java.util.regex.Pattern
 
 class MarketService(database: Database) : BaseService(database, MarketTable) {
 
@@ -29,10 +30,22 @@ class MarketService(database: Database) : BaseService(database, MarketTable) {
         }
     }
 
-
-    suspend fun deleteMarket(marketId: Long) = dbQuery {
-        MarketTable.update({ MarketTable.id eq marketId }) {
-            it[isDeleted] = true
+    suspend fun deleteMarket(marketId: Long): Market? = dbQuery {
+        val existingMarket = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
+        if (existingMarket != null) {
+            if (existingMarket[MarketTable.isDeleted]) {
+                null
+            } else {
+                MarketTable.update({ MarketTable.id eq marketId }) {
+                    it[MarketTable.isDeleted] = true
+                }
+                Market(
+                    id = existingMarket[MarketTable.id].value,
+                    name = existingMarket[MarketTable.name]
+                )
+            }
+        } else {
+            throw NoSuchElementException("Market with ID $marketId not found.")
         }
     }
 
@@ -48,6 +61,22 @@ class MarketService(database: Database) : BaseService(database, MarketTable) {
             )
         } else {
             throw NoSuchElementException("Market with ID $marketId not found.")
+        }
+    }
+
+    fun isValidMarketName(name: String): Boolean {
+        val pattern = Pattern.compile("^[a-zA-Z]+(\\s[a-zA-Z]+)*$")
+        val matcher = pattern.matcher(name)
+        return matcher.matches()
+    }
+
+    suspend fun getMarketById(marketId: Long): Market? = dbQuery {
+        val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
+        market?.let {
+            Market(
+                id = it[MarketTable.id].value,
+                name = it[MarketTable.name]
+            )
         }
     }
 
