@@ -41,19 +41,19 @@ fun Route.marketsRoutes(marketService: MarketService) {
         delete("/{id}") {
             val marketId = call.parameters["id"]?.toLongOrNull()
             if (marketId == null) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market Id"))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ID"))
             } else {
                 try {
-                    val deletedMarket = marketService.deleteMarket(marketId)
-                    if (deletedMarket != null) {
+                    val isDeleted = marketService.deleteMarket(marketId)
+                    if (isDeleted) {
                         call.respond(
                             HttpStatusCode.OK,
-                            ServerResponse.success(deletedMarket, "Market Deleted Successfully")
+                            ServerResponse.success("Market Deleted Successfully")
                         )
                     } else {
                         call.respond(
                             HttpStatusCode.BadRequest,
-                            ServerResponse.error("Market with id $marketId already deleted")
+                            ServerResponse.error("Market with ID $marketId already deleted")
                         )
                     }
                 } catch (e: NoSuchElementException) {
@@ -73,11 +73,11 @@ fun Route.marketsRoutes(marketService: MarketService) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ID"))
             } else {
                 try {
-                    val existingMarket = marketService.getMarketById(marketId)
-                    if (existingMarket == null) {
+                    val isMarketDeleted = marketService.isDeleted(marketId)
+                    if (isMarketDeleted) {
                         call.respond(
                             HttpStatusCode.NotFound,
-                            ServerResponse.error("Market not found with ID: $marketId")
+                            ServerResponse.error("Market with ID: $marketId has been deleted")
                         )
                     } else if (!marketService.isValidMarketName(marketName)) {
                         call.respond(

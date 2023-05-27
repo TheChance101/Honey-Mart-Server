@@ -30,24 +30,22 @@ class MarketService(database: Database) : BaseService(database, MarketTable) {
         }
     }
 
-    suspend fun deleteMarket(marketId: Long): Market? = dbQuery {
-        val existingMarket = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
-        if (existingMarket != null) {
-            if (existingMarket[MarketTable.isDeleted]) {
-                null
-            } else {
+    suspend fun deleteMarket(marketId: Long): Boolean = dbQuery {
+        if (isDeleted(marketId)) {
+            false
+        } else {
+            val existingMarket = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
+            if (existingMarket != null) {
                 MarketTable.update({ MarketTable.id eq marketId }) {
                     it[MarketTable.isDeleted] = true
                 }
-                Market(
-                    id = existingMarket[MarketTable.id].value,
-                    name = existingMarket[MarketTable.name]
-                )
+                true
+            } else {
+                throw NoSuchElementException("Market with ID $marketId not found.")
             }
-        } else {
-            throw NoSuchElementException("Market with ID $marketId not found.")
         }
     }
+
 
     suspend fun updateMarket(marketId: Long, marketName: String): Market = dbQuery {
         MarketTable.update({ MarketTable.id eq marketId }) {
@@ -70,14 +68,11 @@ class MarketService(database: Database) : BaseService(database, MarketTable) {
         return matcher.matches()
     }
 
-    suspend fun getMarketById(marketId: Long): Market? = dbQuery {
+    suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
-            Market(
-                id = it[MarketTable.id].value,
-                name = it[MarketTable.name]
-            )
-        }
+            it[MarketTable.isDeleted]
+        } ?: throw NoSuchElementException("Market with ID $marketId not found.")
     }
 
 }
