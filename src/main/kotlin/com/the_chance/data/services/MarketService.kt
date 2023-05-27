@@ -5,12 +5,7 @@ import com.the_chance.data.tables.MarketTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class MarketService(database: Database) : BaseService() {
-    init {
-        transaction(database) {
-            SchemaUtils.create(MarketTable)
-        }
-    }
+class MarketService(private val database: Database) : BaseService(database, MarketTable) {
 
     suspend fun createMarket(marketName: String): Market = dbQuery {
         val newMarket = MarketTable.insert {
