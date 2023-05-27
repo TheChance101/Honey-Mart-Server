@@ -43,7 +43,7 @@ class CategoryService(
 
     suspend fun remove(categoryId: Long): Boolean = dbQuery {
         val category = CategoriesTable.select {
-            CategoriesTable.id eq categoryId and Op.build { CategoriesTable.isDeleted eq false }
+            (CategoriesTable.id eq categoryId) and (CategoriesTable.isDeleted eq false)
         }.singleOrNull()
 
         if (category != null) {
