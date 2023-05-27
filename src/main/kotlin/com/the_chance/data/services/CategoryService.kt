@@ -9,19 +9,21 @@ class CategoryService(
     private val database: Database
 ) : BaseService(database, CategoriesTable) {
 
-    suspend fun create(categoryName: String, categoryImage: String): Category = dbQuery {
-        val categoryList = getAllCategories().filter { it.name.toLowerCase() == categoryName.toLowerCase() }
+    suspend fun create(categoryName: String, categoryImage: String , categoryId: Long): Category = dbQuery {
+        val categoryList = getAllCategories(categoryId).filter { it.name.toLowerCase() == categoryName.toLowerCase() }
 
         if (categoryList.isEmpty()) {
             val newCategory = CategoriesTable.insert {
                 it[name] = categoryName
                 it[image] = categoryImage
                 it[isDeleted] = false
+                it[marketId] = categoryId
             }
             Category(
                 id = newCategory[CategoriesTable.id].value,
                 name = newCategory[CategoriesTable.name].toString(),
                 image = newCategory[CategoriesTable.image].toString(),
+                marketId = categoryId
             )
         } else {
             throw NoSuchElementException("This category with name $categoryName already exist.")
@@ -29,17 +31,22 @@ class CategoryService(
 
     }
 
-    suspend fun getAllCategories(): List<Category> {
+    suspend fun getAllCategories(categoryId: Long): List<Category> {
         return dbQuery {
-            CategoriesTable.select { CategoriesTable.isDeleted eq false }.map { resultRow ->
+            CategoriesTable.select {
+                CategoriesTable.marketId eq categoryId and
+                        CategoriesTable.isDeleted.eq(false)
+            }.map { resultRow ->
                 Category(
                     id = resultRow[CategoriesTable.id].value,
                     name = resultRow[CategoriesTable.name].toString(),
                     image = resultRow[CategoriesTable.image].toString(),
+                    marketId = categoryId
                 )
             }
         }
     }
+
 
     suspend fun remove(categoryId: Long): Boolean = dbQuery {
         val category = CategoriesTable.select {

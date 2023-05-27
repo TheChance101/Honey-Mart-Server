@@ -12,14 +12,21 @@ import java.lang.Exception
 fun Route.categoryRoutes(categoryService: CategoryService) {
 
     get("/categories") {
-        val categories = categoryService.getAllCategories()
-        call.respond(ServerResponse.success(categories))
+        val params = call.receiveParameters()
+        val marketId = params["marketId"]?.toLongOrNull() // Retrieve the marketId from the request parameters
+        if (marketId != null) {
+            val categories = categoryService.getAllCategories(marketId)
+            call.respond(ServerResponse.success(categories))
+        } else {
+            call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid marketId"))
+        }
     }
 
     post("/category") {
         val params = call.receiveParameters()
         val categoryName = params["name"]?.trim().orEmpty()
         val categoryImage = params["image"]?.trim()?.trim().orEmpty()
+        val marketId = params["marketId"]?.toLongOrNull() // Retrieve the marketId from the request parameters
 
         try {
             if (categoryName.length < 4 && categoryName.isNotEmpty()) {
@@ -27,15 +34,15 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Category name should be more than 4 character...")
                 )
-            } else if (categoryName.length > 20){
+            } else if (categoryName.length > 20) {
                 call.respond(
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Category name should be less than 20 character...")
                 )
-            }else if (categoryImage.isEmpty()) {
+            } else if (categoryImage.isEmpty()) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("All field is required..."))
             } else {
-                categoryService.create(categoryName, categoryImage)
+                categoryService.create(categoryName, categoryImage , marketId!!)
                 call.respond(HttpStatusCode.Created, ServerResponse.success("Category added successfully"))
             }
         } catch (e: Exception) {
