@@ -41,4 +41,11 @@ class MarketCategoriesService(database: Database) : BaseService(database, Market
             }
     }
 
+    suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
+        val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
+        market?.let {
+            it[MarketTable.isDeleted]
+        } ?: throw NoSuchElementException("Market with ID $marketId not found.")
+    }
+
 }

@@ -2,6 +2,7 @@ package com.the_chance.data.services
 
 import com.the_chance.data.models.Category
 import com.the_chance.data.tables.CategoriesTable
+import com.the_chance.data.tables.MarketTable
 import com.the_chance.utils.toLowerCase
 import org.jetbrains.exposed.sql.*
 
@@ -11,7 +12,7 @@ class CategoryService(
 
     suspend fun create(categoryName: String, marketId: Long): Category = dbQuery {
         val categoryList =
-            getAllCategories(marketId).filter { it.categoryName.toLowerCase() == categoryName.toLowerCase() }
+            getCategoriesByMarketId(marketId).filter { it.categoryName.toLowerCase() == categoryName.toLowerCase() }
 
         if (categoryList.isEmpty()) {
             val newCategory = CategoriesTable.insert {
@@ -29,7 +30,7 @@ class CategoryService(
 
     }
 
-    suspend fun getAllCategories(marketId: Long): List<Category> {
+    suspend fun getCategoriesByMarketId(marketId: Long): List<Category> {
         return dbQuery {
             CategoriesTable.select {
                 CategoriesTable.marketId eq marketId and
@@ -44,7 +45,7 @@ class CategoryService(
     }
 
 
-    suspend fun remove(categoryId: Long): Boolean = dbQuery {
+    suspend fun delete(categoryId: Long): Boolean = dbQuery {
         val category = CategoriesTable.select {
             CategoriesTable.id eq categoryId and Op.build { CategoriesTable.isDeleted eq false }
         }.singleOrNull()
@@ -70,5 +71,12 @@ class CategoryService(
         } else {
             throw NoSuchElementException("This category id $categoryId not found.")
         }
+    }
+
+    suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
+        val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
+        market?.let {
+            it[MarketTable.isDeleted]
+        } ?: throw NoSuchElementException("Category with ID $marketId not found.")
     }
 }
