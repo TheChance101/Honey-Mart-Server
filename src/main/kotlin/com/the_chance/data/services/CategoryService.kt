@@ -63,21 +63,22 @@ class CategoryService(
     }
 
     suspend fun update(categoryId: Long, categoryName: String, categoryImage: String): Boolean = dbQuery {
-        val category = CategoriesTable.select {
-            (CategoriesTable.id eq categoryId) and
-                    (CategoriesTable.name eq categoryName) and
-                    (CategoriesTable.image eq categoryImage)
-        }.singleOrNull()
+        val checkCategoryId = CategoriesTable.select { (CategoriesTable.id eq categoryId) }.singleOrNull()
+        val checkCategoryName = CategoriesTable.select { (CategoriesTable.name.lowerCase() eq categoryName.toLowerCase()) }.singleOrNull()
 
-        if (category == null) {
-            CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
-                if (categoryName.isNotEmpty()) {
-                    categoryRow[name] = categoryName
-                }
-                if (categoryImage.isNotEmpty()) {
-                    categoryRow[image] = categoryImage
-                }
-            } > 0
+        if (checkCategoryId != null) {
+            if (checkCategoryName == null) {
+                CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
+                    if (categoryName.isNotEmpty()) {
+                        categoryRow[name] = categoryName
+                    }
+                    if (categoryImage.isNotEmpty()) {
+                        categoryRow[image] = categoryImage
+                    }
+                } > 0
+            } else {
+                throw NoSuchElementException("This name already exist")
+            }
         } else {
             throw NoSuchElementException("is already updated")
         }
