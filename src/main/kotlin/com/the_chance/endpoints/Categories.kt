@@ -49,8 +49,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
     }
 
     delete("/category/{id}") {
-        val params = call.receiveParameters()
-        val categoryId = params["id"]?.toLongOrNull()
+        val categoryId = call.parameters["id"]?.trim()?.toLongOrNull()
 
         if (categoryId == null) {
             call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Category ID"))
@@ -77,7 +76,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
         }
     }
 
-    put("/category/{id}") {
+    put("/category") {
         val params = call.receiveParameters()
         val categoryId = params["id"]?.toLongOrNull()
         val categoryName = params["name"]?.trim().orEmpty()

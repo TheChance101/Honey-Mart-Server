@@ -28,20 +28,24 @@ class MarketCategoriesService(database: Database) : BaseService(database, Market
         markets
     }
 
-     suspend fun getCategoriesByMarket(marketId: Long): List<Category> = dbQuery {
-        CategoriesTable
-            .select {
-                (CategoriesTable.marketId eq marketId) and (CategoriesTable.isDeleted eq false)
+    suspend fun getCategoriesByMarket(marketId: Long): List<Category> {
+        return if (!isDeleted(marketId)) {
+            dbQuery {
+                CategoriesTable.select {
+                        (CategoriesTable.marketId eq marketId) and (CategoriesTable.isDeleted eq false)
+                    }.map {
+                        Category(
+                            categoryId = it[CategoriesTable.id].value,
+                            categoryName = it[CategoriesTable.name]
+                        )
+                    }
             }
-            .map {
-                Category(
-                    categoryId = it[CategoriesTable.id].value,
-                    categoryName = it[CategoriesTable.name]
-                )
-            }
+        } else {
+            throw NoSuchElementException("Market with ID $marketId not found.")
+        }
     }
 
-    suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
+    private suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
             it[MarketTable.isDeleted]
