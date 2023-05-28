@@ -1,6 +1,7 @@
 package com.the_chance.data.services
 
 import com.the_chance.data.models.Market
+import com.the_chance.data.tables.CategoriesTable
 import com.the_chance.data.tables.MarketTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insert
@@ -8,7 +9,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import java.util.regex.Pattern
 
-class MarketService(database: Database) : BaseService(database, MarketTable) {
+class MarketService(database: Database) : BaseService(database, MarketTable, CategoriesTable) {
 
     suspend fun createMarket(marketName: String): Market = dbQuery {
         val newMarket = MarketTable.insert {
@@ -16,16 +17,16 @@ class MarketService(database: Database) : BaseService(database, MarketTable) {
             it[isDeleted] = false
         }
         Market(
-            id = newMarket[MarketTable.id].value,
-            name = newMarket[MarketTable.name]
+            marketId = newMarket[MarketTable.id].value,
+            marketName = newMarket[MarketTable.name],
         )
     }
 
     suspend fun getAllMarkets(): List<Market> = dbQuery {
         MarketTable.select { MarketTable.isDeleted eq false }.map {
             Market(
-                id = it[MarketTable.id].value,
-                name = it[MarketTable.name]
+                marketId = it[MarketTable.id].value,
+                marketName = it[MarketTable.name],
             )
         }
     }
@@ -46,7 +47,6 @@ class MarketService(database: Database) : BaseService(database, MarketTable) {
         }
     }
 
-
     suspend fun updateMarket(marketId: Long, marketName: String): Market = dbQuery {
         MarketTable.update({ MarketTable.id eq marketId }) {
             it[name] = marketName
@@ -54,12 +54,18 @@ class MarketService(database: Database) : BaseService(database, MarketTable) {
         val updatedMarket = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         if (updatedMarket != null) {
             Market(
-                id = updatedMarket[MarketTable.id].value,
-                name = updatedMarket[MarketTable.name]
+                marketId = updatedMarket[MarketTable.id].value,
+                marketName = updatedMarket[MarketTable.name]
             )
         } else {
             throw NoSuchElementException("Market with ID $marketId not found.")
         }
+    }
+
+    fun isValidMarketName(name: String): Boolean {
+        val pattern = Pattern.compile("^[a-zA-Z0-9]+(\\s[a-zA-Z0-9]+)*$")
+        val matcher = pattern.matcher(name)
+        return matcher.matches()
     }
 
     suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
