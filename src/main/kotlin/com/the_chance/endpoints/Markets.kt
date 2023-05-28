@@ -2,6 +2,7 @@ package com.the_chance.endpoints
 
 import com.the_chance.data.ServerResponse
 import com.the_chance.data.services.MarketService
+import com.the_chance.utils.isValidStringInput
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -14,7 +15,7 @@ fun Route.marketsRoutes(marketService: MarketService) {
 
         post {
             val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-            if (!marketService.isValidMarketName(marketName)) {
+            if (!isValidStringInput(marketName)) {
                 call.respond(
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Invalid market name. It should only contain letters without numbers or symbols.")
@@ -79,7 +80,7 @@ fun Route.marketsRoutes(marketService: MarketService) {
                             HttpStatusCode.NotFound,
                             ServerResponse.error("Market with ID: $marketId has been deleted")
                         )
-                    } else if (!marketService.isValidMarketName(marketName)) {
+                    } else if (!isValidStringInput(marketName)) {
                         call.respond(
                             HttpStatusCode.BadRequest,
                             ServerResponse.error("Invalid market name. It should only contain letters without numbers or symbols.")

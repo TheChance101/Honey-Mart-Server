@@ -1,18 +1,26 @@
 package com.the_chance.data.services
 
 import com.the_chance.data.models.Category
+import com.the_chance.data.services.validation.CategoryValidation
 import com.the_chance.data.tables.CategoriesTable
 import com.the_chance.utils.toLowerCase
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.select
 
 class CategoryService(
     private val database: Database
 ) : BaseService(database, CategoriesTable) {
 
-    suspend fun create(categoryName: String, categoryImage: String): Category = dbQuery {
-        val categoryList = getAllCategories().filter { it.name.toLowerCase() == categoryName.toLowerCase() }
+    private val categoryValidation by lazy { CategoryValidation() }
 
-        if (categoryList.isEmpty()) {
+    suspend fun create(categoryName: String, categoryImage: String): Category = dbQuery {
+        val categoryList = CategoriesTable.select {
+            CategoriesTable.name.lowerCase() eq  categoryName.toLowerCase()
+        }.singleOrNull()
+        val errors = categoryValidation.checkCreateValidation(categoryName, categoryImage, categoryList)
+
+
+        if (errors.isEmpty()) {
             val newCategory = CategoriesTable.insert {
                 it[name] = categoryName
                 it[image] = categoryImage
@@ -24,9 +32,8 @@ class CategoryService(
                 image = newCategory[CategoriesTable.image].toString(),
             )
         } else {
-            throw NoSuchElementException("This category with name $categoryName already exist.")
+            throw Throwable(errors.joinToString { it })
         }
-
     }
 
     suspend fun getAllCategories(): List<Category> {
@@ -43,7 +50,7 @@ class CategoryService(
 
     suspend fun remove(categoryId: Long): Boolean = dbQuery {
         val category = CategoriesTable.select {
-            CategoriesTable.id eq categoryId and Op.build { CategoriesTable.isDeleted eq false }
+            (CategoriesTable.id eq categoryId) and (CategoriesTable.isDeleted eq false)
         }.singleOrNull()
 
         if (category != null) {
@@ -56,19 +63,24 @@ class CategoryService(
     }
 
     suspend fun update(categoryId: Long, categoryName: String, categoryImage: String): Boolean = dbQuery {
-        val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
+        val checkCategoryId = CategoriesTable.select { (CategoriesTable.id eq categoryId) }.singleOrNull()
+        val checkCategoryName = CategoriesTable.select { (CategoriesTable.name.lowerCase() eq categoryName.toLowerCase()) }.singleOrNull()
 
-        if (category != null) {
-            CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
-                if (categoryName.isNotEmpty()) {
-                    categoryRow[name] = categoryName
-                }
-                if (categoryImage.isNotEmpty()) {
-                    categoryRow[image] = categoryImage
-                }
-            } > 0
+        if (checkCategoryId != null) {
+            if (checkCategoryName == null) {
+                CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
+                    if (categoryName.isNotEmpty()) {
+                        categoryRow[name] = categoryName
+                    }
+                    if (categoryImage.isNotEmpty()) {
+                        categoryRow[image] = categoryImage
+                    }
+                } > 0
+            } else {
+                throw NoSuchElementException("This name already exist")
+            }
         } else {
-            throw NoSuchElementException("This category id $categoryId not found.")
+            throw NoSuchElementException("is already updated")
         }
     }
 }

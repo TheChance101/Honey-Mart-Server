@@ -62,12 +62,6 @@ class MarketService(database: Database) : BaseService(database, MarketTable) {
         }
     }
 
-    fun isValidMarketName(name: String): Boolean {
-        val pattern = Pattern.compile("^[a-zA-Z]+(\\s[a-zA-Z]+)*$")
-        val matcher = pattern.matcher(name)
-        return matcher.matches()
-    }
-
     suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
