@@ -67,15 +67,25 @@ class ProductService(private val database: Database) : BaseService(database, Pro
         }
     }
 
-    suspend fun getAllCategoryForProduct(productId: Long?): List<Category> = dbQuery {
-        (CategoriesTable innerJoin CategoryProductTable)
-            .select { CategoryProductTable.productId eq productId }
-            .map { categoryRow ->
-                Category(
-                    categoryId = categoryRow[CategoriesTable.id].value,
-                    categoryName = categoryRow[CategoriesTable.name].toString(),
-                )
+    suspend fun getAllCategoryForProduct(productId: Long?): List<Category> {
+        return if (productValidation.checkId(productId)) {
+            if (!isDeleted(productId!!)) {
+                dbQuery {
+                    (CategoriesTable innerJoin CategoryProductTable)
+                        .select { CategoryProductTable.productId eq productId }
+                        .map { categoryRow ->
+                            Category(
+                                categoryId = categoryRow[CategoriesTable.id].value,
+                                categoryName = categoryRow[CategoriesTable.name].toString(),
+                            )
+                        }
+                }
+            } else {
+                throw Error(ErrorType.DELETED_ITEM)
             }
+        } else {
+            throw Error(ErrorType.INVALID_INPUT)
+        }
     }
 
     suspend fun updateProduct(
