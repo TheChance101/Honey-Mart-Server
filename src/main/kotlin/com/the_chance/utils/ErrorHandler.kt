@@ -12,7 +12,8 @@ suspend fun Error.errorHandler(call: ApplicationCall) {
         ErrorType.INVALID_INPUT -> {
             call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(error.message))
         }
-        ErrorType.NOT_FOUND -> {
+
+        ErrorType.NOT_FOUND, ErrorType.DELETED_ITEM -> {
             call.respond(HttpStatusCode.NotFound, ServerResponse.error(error.message))
         }
     }
