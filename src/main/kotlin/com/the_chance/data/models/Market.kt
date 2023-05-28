@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Market(
-    val id: Int,
+    val id: Long,
     val name: String,
 )
