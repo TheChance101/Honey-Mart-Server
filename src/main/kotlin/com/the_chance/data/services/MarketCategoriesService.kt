@@ -32,20 +32,20 @@ class MarketCategoriesService(database: Database) : BaseService(database, Market
         return if (!isDeleted(marketId)) {
             dbQuery {
                 CategoriesTable.select {
-                        (CategoriesTable.marketId eq marketId) and (CategoriesTable.isDeleted eq false)
-                    }.map {
-                        Category(
-                            categoryId = it[CategoriesTable.id].value,
-                            categoryName = it[CategoriesTable.name]
-                        )
-                    }
+                    (CategoriesTable.marketId eq marketId) and (CategoriesTable.isDeleted eq false)
+                }.map {
+                    Category(
+                        categoryId = it[CategoriesTable.id].value,
+                        categoryName = it[CategoriesTable.name]
+                    )
+                }
             }
         } else {
             throw NoSuchElementException("Market with ID $marketId not found.")
         }
     }
 
-    private suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
+    suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
             it[MarketTable.isDeleted]
