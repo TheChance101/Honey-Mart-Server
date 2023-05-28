@@ -4,22 +4,19 @@ import com.the_chance.data.models.Product
 import com.the_chance.data.services.validation.Error
 import com.the_chance.data.services.validation.ErrorType
 import com.the_chance.data.services.validation.ProductValidation
-import com.the_chance.data.tables.MarketTable
 import com.the_chance.data.tables.ProductTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.InvalidPropertiesFormatException
 
 class ProductService(private val database: Database) : BaseService(database, ProductTable) {
 
     private val productValidation by lazy { ProductValidation() }
 
-    suspend fun create(productName: String, productPrice: Double, productQuantity: String?): Product {
+    suspend fun create(productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?): Product {
         val errors = productValidation.checkCreateValidation(
             productName = productName,
             productPrice = productPrice,
-            productQuantity = productQuantity
+            productQuantity = productQuantity,
+            categoriesId= categoriesId
         )
         return if (errors.isEmpty()) {
             dbQuery {

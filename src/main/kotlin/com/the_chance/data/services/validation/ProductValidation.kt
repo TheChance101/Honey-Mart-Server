@@ -2,7 +2,12 @@ package com.the_chance.data.services.validation
 
 class ProductValidation {
 
-    fun checkCreateValidation(productName: String, productPrice: Double, productQuantity: String?): List<String> {
+    fun checkCreateValidation(
+        productName: String,
+        productPrice: Double,
+        productQuantity: String?,
+        categoriesId: List<Long>?
+    ): List<String> {
         val error = mutableListOf<String>()
 
         if (!checkNameLength(productName)) {
@@ -16,6 +21,11 @@ class ProductValidation {
         if (productQuantity != null && !checkNameLength(productQuantity)) {
             error.add("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
         }
+
+        if (categoriesId == null || categoriesId.filterNot { it == 0L }.isEmpty()) {
+            error.add("The product must be assigned to at least one category.")
+        }
+
         return error
     }
 

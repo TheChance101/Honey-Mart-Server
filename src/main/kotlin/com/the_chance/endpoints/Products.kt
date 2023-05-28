@@ -26,8 +26,9 @@ fun Route.productsRoutes(productService: ProductService) {
                 val productName = params["name"]?.trim().orEmpty()
                 val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
                 val productQuantity = params["quantity"]?.trim()
+                val categoriesId = params["categoriesId"]?.trim()?.split(",")?.map { it.toLongOrNull() ?: 0L }
 
-                val newAddedProduct = productService.create(productName, productPrice, productQuantity)
+                val newAddedProduct = productService.create(productName, productPrice, productQuantity, categoriesId)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
             } catch (t: Throwable) {
                 call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
