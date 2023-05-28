@@ -47,7 +47,6 @@ class MarketService(database: Database) : BaseService(database, MarketTable, Cat
         }
     }
 
-
     suspend fun updateMarket(marketId: Long, marketName: String): Market = dbQuery {
         MarketTable.update({ MarketTable.id eq marketId }) {
             it[name] = marketName

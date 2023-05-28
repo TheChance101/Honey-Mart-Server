@@ -41,5 +41,4 @@ class MarketCategoriesService(database: Database) : BaseService(database, Market
             }
     }
 
-
 }
