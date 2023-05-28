@@ -1,0 +1,107 @@
+openapi: "3.0.3"
+info:
+  title: "HoneyMart API"
+  description: "A JSON API to deal with HoneyMart APP"
+  version: "1.0.0"
+servers:
+  - url: "http://127.0.0.1:8081"
+paths:
+  /categories:
+    get:
+      summary: "Get all categories"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoriesResponse"
+  /category:
+    post:
+      summary: "Create a new category"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/NewCategoryRequest"
+      responses:
+        "201":
+          description: "Category created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /category/{id}:
+    delete:
+      summary: "Delete a category by ID"
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the category to delete"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Category deleted successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+    put:
+      summary: "Update a category by ID"
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the category to update"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/UpdateCategoryRequest"
+      responses:
+        "200":
+          description: "Category updated successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+components:
+  schemas:
+    CategoriesResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/Category"
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        image:
+          type: string
+    NewCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        image:
+          type: string
+    UpdateCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        image:
+          type: string
+    SuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
