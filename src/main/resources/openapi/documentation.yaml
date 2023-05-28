@@ -49,15 +49,19 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/Category"
-  /category/{id}:
-    delete:
+    put:
       description: ""
       parameters:
       - name: "id"
-        in: "path"
-        required: true
+        in: "query"
+        required: false
         schema:
           type: "number"
+      - name: "name"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
       responses:
         "400":
           description: "Bad Request"
@@ -77,17 +81,13 @@ paths:
             '*/*':
               schema:
                 type: "string"
-    put:
+  /category/{id}:
+    delete:
       description: ""
       parameters:
       - name: "id"
         in: "path"
         required: true
-        schema:
-          type: "number"
-      - name: "name"
-        in: "query"
-        required: false
         schema:
           type: "string"
       responses:
@@ -244,18 +244,7 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/MarketWithCategories"
-  /products:
-    get:
-      description: ""
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/Product"
+  /product:
     post:
       description: ""
       parameters:
@@ -287,7 +276,7 @@ paths:
             '*/*':
               schema:
                 type: "string"
-  /products/{id}:
+  /product/{id}:
     delete:
       description: ""
       parameters:
@@ -357,6 +346,18 @@ paths:
             '*/*':
               schema:
                 type: "string"
+  /products:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Product"
   /json/kotlinx-serialization:
     get:
       description: ""
