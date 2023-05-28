@@ -13,11 +13,22 @@ import io.ktor.server.routing.*
 
 fun Route.productsRoutes(productService: ProductService) {
 
-    route("/products") {
 
-        get {
-            val products = productService.getAllProducts()
-            call.respond(ServerResponse.success(products))
+    get("/products") {
+        val products = productService.getAllProducts()
+        call.respond(ServerResponse.success(products))
+    }
+
+    route("/product") {
+
+        get("/{productId}") {
+            val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
+            try {
+                val products = productService.getAllCategoryForProduct(productId = productId)
+                call.respond(ServerResponse.success(products))
+            } catch (t: Throwable) {
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
+            }
         }
 
         post {

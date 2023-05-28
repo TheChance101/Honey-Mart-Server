@@ -1,9 +1,14 @@
 package com.the_chance.data.services
 
 import com.the_chance.data.models.Category
+import com.the_chance.data.models.Product
+import com.the_chance.data.models.ProductsInCategory
 import com.the_chance.data.tables.CategoriesTable
+import com.the_chance.data.tables.CategoryProductTable
+import com.the_chance.data.tables.ProductTable
 import com.the_chance.utils.toLowerCase
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class CategoryService(
     private val database: Database
@@ -70,5 +75,29 @@ class CategoryService(
         } else {
             throw NoSuchElementException("This category id $categoryId not found.")
         }
+    }
+
+    suspend fun getProductsFromCategory(categoryId: Long?): ProductsInCategory {
+        val categoryProducts = dbQuery {
+            (ProductTable innerJoin CategoryProductTable)
+                .select { CategoryProductTable.categoryId eq categoryId }
+                .map { productRow ->
+                    Product(
+                        id = productRow[ProductTable.id].value,
+                        name = productRow[ProductTable.name].toString(),
+                        price = productRow[ProductTable.price],
+                        quantity = productRow[ProductTable.quantity],
+                    )
+                }
+        }
+        val categoryName = dbQuery {
+            CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()?.get(CategoriesTable.name) ?: ""
+        }
+
+        return ProductsInCategory(
+            categoryId = categoryId!!,
+            categoryName = categoryName,
+            products = categoryProducts
+        )
     }
 }

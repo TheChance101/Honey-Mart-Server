@@ -16,6 +16,19 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
         call.respond(ServerResponse.success(categories))
     }
 
+    /**
+     * get all products in category
+     * */
+    get("/category/{categoryId}") {
+        val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
+        try {
+            val products = categoryService.getProductsFromCategory(categoryId = categoryId)
+            call.respond(ServerResponse.success(products))
+        } catch (t: Throwable) {
+            call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
+        }
+    }
+
     post("/category") {
         val params = call.receiveParameters()
         val categoryName = params["name"]?.trim().orEmpty()
@@ -27,12 +40,12 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Category name should be more than 4 character...")
                 )
-            } else if (categoryName.length > 20){
+            } else if (categoryName.length > 20) {
                 call.respond(
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Category name should be less than 20 character...")
                 )
-            }else if (categoryImage.isEmpty()) {
+            } else if (categoryImage.isEmpty()) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("All field is required..."))
             } else {
                 categoryService.create(categoryName, categoryImage)
@@ -84,4 +97,5 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
             call.respond(HttpStatusCode.NotFound, ServerResponse.error("The ID is required..."))
         }
     }
+
 }

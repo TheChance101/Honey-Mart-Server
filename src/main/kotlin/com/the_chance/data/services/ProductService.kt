@@ -1,36 +1,55 @@
 package com.the_chance.data.services
 
+import com.the_chance.data.models.Category
 import com.the_chance.data.models.Product
+import com.the_chance.data.models.ProductWithCategory
+import com.the_chance.data.models.ProductsInCategory
 import com.the_chance.data.services.validation.Error
 import com.the_chance.data.services.validation.ErrorType
 import com.the_chance.data.services.validation.ProductValidation
+import com.the_chance.data.tables.CategoriesTable
+import com.the_chance.data.tables.CategoryProductTable
 import com.the_chance.data.tables.ProductTable
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 
-class ProductService(private val database: Database) : BaseService(database, ProductTable) {
+class ProductService(private val database: Database) : BaseService(database, ProductTable, CategoryProductTable) {
 
     private val productValidation by lazy { ProductValidation() }
 
-    suspend fun create(productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?): Product {
+    suspend fun create(
+        productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
+    ): ProductWithCategory {
         val errors = productValidation.checkCreateValidation(
             productName = productName,
             productPrice = productPrice,
             productQuantity = productQuantity,
-            categoriesId= categoriesId
+            categoriesId = categoriesId
         )
         return if (errors.isEmpty()) {
-            dbQuery {
-                val newProduct = ProductTable.insert { productRow ->
-                    productRow[name] = productName
-                    productRow[price] = productPrice
-                    productRow[quantity] = productQuantity
+            if (isValidCategories(categoriesId!!)) {
+                dbQuery {
+                    val newProduct = ProductTable.insert { productRow ->
+                        productRow[name] = productName
+                        productRow[price] = productPrice
+                        productRow[quantity] = productQuantity
+                    }
+
+                    CategoryProductTable.batchInsert(categoriesId) { categoryId ->
+                        this[CategoryProductTable.productId] = newProduct[ProductTable.id]
+                        this[CategoryProductTable.categoryId] = categoryId
+                    }
+
+                    ProductWithCategory(
+                        id = newProduct[ProductTable.id].value,
+                        name = newProduct[ProductTable.name],
+                        price = newProduct[ProductTable.price],
+                        quantity = newProduct[ProductTable.quantity],
+                        category = getAllCategoryForProduct(newProduct[ProductTable.id].value)
+                    )
                 }
-                Product(
-                    id = newProduct[ProductTable.id].value,
-                    name = newProduct[ProductTable.name],
-                    price = newProduct[ProductTable.price],
-                    quantity = newProduct[ProductTable.quantity],
-                )
+            } else {
+                throw Throwable("not valid categories.")
             }
         } else {
             throw Throwable(errors.toString())
@@ -48,6 +67,18 @@ class ProductService(private val database: Database) : BaseService(database, Pro
                 )
             }
         }
+    }
+
+    suspend fun getAllCategoryForProduct(productId: Long?): List<Category> = dbQuery {
+        (CategoriesTable innerJoin CategoryProductTable)
+            .select { CategoryProductTable.productId eq productId }
+            .map { categoryRow ->
+                Category(
+                    id = categoryRow[CategoriesTable.id].value,
+                    name = categoryRow[CategoriesTable.name].toString(),
+                    image = ""
+                )
+            }
     }
 
     suspend fun updateProduct(
@@ -103,4 +134,11 @@ class ProductService(private val database: Database) : BaseService(database, Pro
             it[ProductTable.isDeleted]
         } ?: throw Error(ErrorType.NOT_FOUND)
     }
+
+    private suspend fun isValidCategories(categoryIds: List<Long>): Boolean {
+        return dbQuery {
+            CategoriesTable.select { CategoriesTable.id inList categoryIds }.toList().size == categoryIds.size
+        }
+    }
+
 }
