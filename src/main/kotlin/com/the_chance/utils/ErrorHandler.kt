@@ -13,8 +13,7 @@ suspend fun Error.errorHandler(call: ApplicationCall) {
             call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(error.message))
         }
 
-        ErrorType.NOT_FOUND,
-        ErrorType.DELETED_ITEM -> {
+        ErrorType.NOT_FOUND, ErrorType.DELETED_ITEM -> {
             call.respond(HttpStatusCode.NotFound, ServerResponse.error(error.message))
         }
     }
