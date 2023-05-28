@@ -10,7 +10,6 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 
 class CategoryProductService(private val database: Database) : BaseService(database, CategoryProductTable) {
-//    SchemaUtils.create(Products, Category, CategoryProductTable)
 
     suspend fun create(categoryId: Long?, productId: Long?): Int {
         return dbQuery {

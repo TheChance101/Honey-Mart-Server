@@ -20,13 +20,9 @@ class ProductValidation {
     }
 
     fun checkUpdateValidation(
-        productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
+        productName: String?, productPrice: Double?, productQuantity: String?
     ): List<String> {
         val error = mutableListOf<String>()
-
-        if (!checkId(productId)) {
-            error.add("Not valid Product Id")
-        }
 
         if (productName != null && !checkNameLength(productName)) {
             error.add("The product name should have a length greater than 6 and shorter than 20 characters .")

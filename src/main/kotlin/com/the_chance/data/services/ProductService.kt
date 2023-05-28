@@ -4,8 +4,10 @@ import com.the_chance.data.models.Product
 import com.the_chance.data.services.validation.Error
 import com.the_chance.data.services.validation.ErrorType
 import com.the_chance.data.services.validation.ProductValidation
+import com.the_chance.data.tables.MarketTable
 import com.the_chance.data.tables.ProductTable
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.InvalidPropertiesFormatException
 
@@ -54,43 +56,54 @@ class ProductService(private val database: Database) : BaseService(database, Pro
     suspend fun updateProduct(
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
     ): String {
-        val errors = productValidation.checkUpdateValidation(
-            productId = productId,
-            productName = productName,
-            productPrice = productPrice,
-            productQuantity = productQuantity
-        )
-        if (errors.isEmpty()) {
-            val result = dbQuery {
-                ProductTable.update({ ProductTable.id eq productId }) { productRow ->
-                    productName?.let { productRow[name] = it }
-                    productPrice?.let { productRow[price] = it }
-                    productQuantity?.let { productRow[quantity] = it }
+        if (productValidation.checkId(productId)) {
+            if (!isDeleted(productId!!)) {
+                val errors = productValidation.checkUpdateValidation(
+                    productName = productName,
+                    productPrice = productPrice,
+                    productQuantity = productQuantity
+                )
+                return if (errors.isEmpty()) {
+                    dbQuery {
+                        ProductTable.update({ ProductTable.id eq productId }) { productRow ->
+                            productName?.let { productRow[name] = it }
+                            productPrice?.let { productRow[price] = it }
+                            productQuantity?.let { productRow[quantity] = it }
+                        }
+                    }
+                    "Product Updated successfully."
+                } else {
+                    throw Throwable(errors.toString())
                 }
-            }
-            return if (result == ProductValidation.VALID_QUERY) {
-                "Product Updated successfully."
             } else {
-                throw Error(ErrorType.NOT_FOUND)
+                throw Error(ErrorType.DELETED_ITEM)
             }
         } else {
-            throw Throwable(errors.toString())
+            throw Error(ErrorType.NOT_FOUND)
         }
     }
 
     suspend fun deleteProduct(productId: Long?): String {
         return if (productValidation.checkId(productId)) {
-            if (dbQuery {
+            if (!isDeleted(productId!!)) {
+                dbQuery {
                     ProductTable.update({ ProductTable.id eq productId }) { productRow ->
                         productRow[isDeleted] = true
                     }
-                } == ProductValidation.VALID_QUERY) {
+                }
                 "Product Deleted successfully."
             } else {
-                throw Error(ErrorType.NOT_FOUND)
+                throw Error(ErrorType.DELETED_ITEM)
             }
         } else {
             throw Error(ErrorType.INVALID_INPUT)
         }
+    }
+
+    private suspend fun isDeleted(id: Long): Boolean = dbQuery {
+        val product = ProductTable.select { ProductTable.id eq id }.singleOrNull()
+        product?.let {
+            it[ProductTable.isDeleted]
+        } ?: throw Error(ErrorType.NOT_FOUND)
     }
 }
