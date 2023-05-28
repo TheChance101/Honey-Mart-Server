@@ -28,7 +28,7 @@ class MarketCategoriesService(database: Database) : BaseService(database, Market
         markets
     }
 
-    private suspend fun getCategoriesByMarket(marketId: Long): List<Category> = dbQuery {
+     suspend fun getCategoriesByMarket(marketId: Long): List<Category> = dbQuery {
         CategoriesTable
             .select {
                 (CategoriesTable.marketId eq marketId) and (CategoriesTable.isDeleted eq false)

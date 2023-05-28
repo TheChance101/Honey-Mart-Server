@@ -9,15 +9,15 @@ class CategoryService(
     private val database: Database
 ) : BaseService(database, CategoriesTable) {
 
-    suspend fun create(categoryName: String, categoryId: Long): Category = dbQuery {
+    suspend fun create(categoryName: String, marketId: Long): Category = dbQuery {
         val categoryList =
-            getAllCategories(categoryId).filter { it.categoryName.toLowerCase() == categoryName.toLowerCase() }
+            getAllCategories(marketId).filter { it.categoryName.toLowerCase() == categoryName.toLowerCase() }
 
         if (categoryList.isEmpty()) {
             val newCategory = CategoriesTable.insert {
                 it[name] = categoryName
                 it[isDeleted] = false
-                it[marketId] = categoryId
+                it[this.marketId] = marketId
             }
             Category(
                 categoryId = newCategory[CategoriesTable.id].value,
@@ -29,10 +29,10 @@ class CategoryService(
 
     }
 
-    suspend fun getAllCategories(categoryId: Long): List<Category> {
+    suspend fun getAllCategories(marketId: Long): List<Category> {
         return dbQuery {
             CategoriesTable.select {
-                CategoriesTable.marketId eq categoryId and
+                CategoriesTable.marketId eq marketId and
                         CategoriesTable.isDeleted.eq(false)
             }.map { resultRow ->
                 Category(
