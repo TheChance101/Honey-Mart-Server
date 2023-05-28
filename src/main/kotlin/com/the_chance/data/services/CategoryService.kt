@@ -21,7 +21,6 @@ class CategoryService(
             }
             Category(
                 categoryId = newCategory[CategoriesTable.id].value,
-                marketId = categoryId,
                 categoryName = newCategory[CategoriesTable.name].toString(),
             )
         } else {
@@ -38,7 +37,6 @@ class CategoryService(
             }.map { resultRow ->
                 Category(
                     categoryId = resultRow[CategoriesTable.id].value,
-                    marketId = categoryId,
                     categoryName = resultRow[CategoriesTable.name].toString(),
                 )
             }
