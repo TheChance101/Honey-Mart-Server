@@ -54,8 +54,4 @@ class ProductValidation {
     fun checkId(id: Long?): Boolean {
         return id != null
     }
-
-    companion object {
-        const val VALID_QUERY = 1
-    }
 }
