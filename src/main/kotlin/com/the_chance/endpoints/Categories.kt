@@ -10,11 +10,6 @@ import io.ktor.server.routing.*
 
 fun Route.categoryRoutes(categoryService: CategoryService) {
 
-    get("/categories") {
-        val categories = categoryService.getAllCategories()
-        call.respond(ServerResponse.success(categories))
-    }
-
     /**
      * get all products in category
      * */

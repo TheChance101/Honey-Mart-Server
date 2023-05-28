@@ -74,9 +74,8 @@ class ProductService(private val database: Database) : BaseService(database, Pro
             .select { CategoryProductTable.productId eq productId }
             .map { categoryRow ->
                 Category(
-                    id = categoryRow[CategoriesTable.id].value,
-                    name = categoryRow[CategoriesTable.name].toString(),
-                    image = ""
+                    categoryId = categoryRow[CategoriesTable.id].value,
+                    categoryName = categoryRow[CategoriesTable.name].toString(),
                 )
             }
     }
