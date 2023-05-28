@@ -9,21 +9,20 @@ class CategoryService(
     private val database: Database
 ) : BaseService(database, CategoriesTable) {
 
-    suspend fun create(categoryName: String, categoryImage: String , categoryId: Long): Category = dbQuery {
-        val categoryList = getAllCategories(categoryId).filter { it.name.toLowerCase() == categoryName.toLowerCase() }
+    suspend fun create(categoryName: String, categoryId: Long): Category = dbQuery {
+        val categoryList =
+            getAllCategories(categoryId).filter { it.categoryName.toLowerCase() == categoryName.toLowerCase() }
 
         if (categoryList.isEmpty()) {
             val newCategory = CategoriesTable.insert {
                 it[name] = categoryName
-                it[image] = categoryImage
                 it[isDeleted] = false
                 it[marketId] = categoryId
             }
             Category(
-                id = newCategory[CategoriesTable.id].value,
-                name = newCategory[CategoriesTable.name].toString(),
-                image = newCategory[CategoriesTable.image].toString(),
-                marketId = categoryId
+                categoryId = newCategory[CategoriesTable.id].value,
+                marketId = categoryId,
+                categoryName = newCategory[CategoriesTable.name].toString(),
             )
         } else {
             throw NoSuchElementException("This category with name $categoryName already exist.")
@@ -38,10 +37,9 @@ class CategoryService(
                         CategoriesTable.isDeleted.eq(false)
             }.map { resultRow ->
                 Category(
-                    id = resultRow[CategoriesTable.id].value,
-                    name = resultRow[CategoriesTable.name].toString(),
-                    image = resultRow[CategoriesTable.image].toString(),
-                    marketId = categoryId
+                    categoryId = resultRow[CategoriesTable.id].value,
+                    marketId = categoryId,
+                    categoryName = resultRow[CategoriesTable.name].toString(),
                 )
             }
         }
@@ -62,16 +60,13 @@ class CategoryService(
         }
     }
 
-    suspend fun update(categoryId: Long, categoryName: String, categoryImage: String): Boolean = dbQuery {
+    suspend fun update(categoryId: Long, categoryName: String): Boolean = dbQuery {
         val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
 
         if (category != null) {
             CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
                 if (categoryName.isNotEmpty()) {
                     categoryRow[name] = categoryName
-                }
-                if (categoryImage.isNotEmpty()) {
-                    categoryRow[image] = categoryImage
                 }
             } > 0
         } else {

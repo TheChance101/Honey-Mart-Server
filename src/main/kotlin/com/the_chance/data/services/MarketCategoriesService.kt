@@ -22,10 +22,9 @@ class MarketCategoriesService(database: Database) : BaseService(database, Market
             }
             .map {
                 Category(
-                    id = it[CategoriesTable.id].value,
-                    name = it[CategoriesTable.name],
-                    image = it[CategoriesTable.image],
-                    marketId = it[CategoriesTable.marketId].value
+                    categoryId = it[CategoriesTable.id].value,
+                    categoryName = it[CategoriesTable.name],
+                    marketId = it[CategoriesTable.marketId].value,
                 )
             }
     }

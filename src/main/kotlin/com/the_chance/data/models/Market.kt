@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Market(
-    val id: Long,
-    val name: String,
+    val marketId: Long,
+    val marketName: String,
+    val categories: List<Category> = emptyList()
 )

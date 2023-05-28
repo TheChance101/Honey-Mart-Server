@@ -25,7 +25,6 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
     post("/category") {
         val params = call.receiveParameters()
         val categoryName = params["name"]?.trim().orEmpty()
-        val categoryImage = params["image"]?.trim()?.trim().orEmpty()
         val marketId = params["marketId"]?.toLongOrNull() // Retrieve the marketId from the request parameters
 
         try {
@@ -39,10 +38,8 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("Category name should be less than 20 character...")
                 )
-            } else if (categoryImage.isEmpty()) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("All field is required..."))
             } else {
-                categoryService.create(categoryName, categoryImage , marketId!!)
+                categoryService.create(categoryName, marketId!!)
                 call.respond(HttpStatusCode.Created, ServerResponse.success("Category added successfully"))
             }
         } catch (e: Exception) {
@@ -71,7 +68,6 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
         val params = call.receiveParameters()
         val categoryId = params["id"]?.toLongOrNull()
         val categoryName = params["name"]?.trim().orEmpty()
-        val categoryImage = params["image"]?.trim()?.trim().orEmpty()
 
         if (categoryId != null) {
             try {
@@ -81,7 +77,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                         ServerResponse.error("Category name should be more than 4 character...")
                     )
                 } else {
-                    categoryService.update(categoryId, categoryName, categoryImage)
+                    categoryService.update(categoryId, categoryName)
                     call.respond(HttpStatusCode.OK, ServerResponse.success("Category updated successfully"))
                 }
             } catch (e: Exception) {
