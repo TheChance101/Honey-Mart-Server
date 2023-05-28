@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 info:
-  title: "HoneyMart API"
-  description: "JSON api to deal with HoneyMart APP"
+  title: "com_the_chance_honey_mart API"
+  description: "com_the_chance_honey_mart API"
   version: "1.0.0"
 servers:
 - url: "https://com_the_chance_honey_mart"
@@ -16,18 +16,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-  /categories:
-    get:
-      description: ""
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/Category"
   /category:
     post:
       description: ""
@@ -37,14 +25,20 @@ paths:
         required: false
         schema:
           type: "string"
-      - name: "image"
+      - name: "marketId"
         in: "query"
         required: false
         schema:
-          type: "string"
+          type: "number"
       responses:
         "400":
           description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
           content:
             '*/*':
               schema:
@@ -54,7 +48,7 @@ paths:
           content:
             '*/*':
               schema:
-                type: "string"
+                $ref: "#/components/schemas/Category"
   /category/{id}:
     delete:
       description: ""
@@ -65,6 +59,12 @@ paths:
         schema:
           type: "number"
       responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
         "200":
           description: "OK"
           content:
@@ -86,11 +86,6 @@ paths:
         schema:
           type: "number"
       - name: "name"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
-      - name: "image"
         in: "query"
         required: false
         schema:
@@ -207,6 +202,48 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/Market"
+  /markets/{id}/categories:
+    get:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "number"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Category"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /marketsWithCategories:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/MarketWithCategories"
   /products:
     get:
       description: ""
@@ -335,21 +372,31 @@ components:
     Category:
       type: "object"
       properties:
-        id:
+        categoryId:
           type: "integer"
           format: "int64"
-        name:
-          type: "string"
-        image:
+        categoryName:
           type: "string"
     Market:
       type: "object"
       properties:
-        id:
+        marketId:
           type: "integer"
           format: "int64"
-        name:
+        marketName:
           type: "string"
+    MarketWithCategories:
+      type: "object"
+      properties:
+        marketId:
+          type: "integer"
+          format: "int64"
+        marketName:
+          type: "string"
+        categories:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Category"
     Product:
       type: "object"
       properties:
