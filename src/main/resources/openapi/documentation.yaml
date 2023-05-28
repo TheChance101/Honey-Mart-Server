@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 info:
-  title: "com_the_chance_honey_mart API"
-  description: "com_the_chance_honey_mart API"
+  title: "HoneyMart API"
+  description: "JSON api to deal with HoneyMart APP"
   version: "1.0.0"
 servers:
 - url: "https://com_the_chance_honey_mart"
