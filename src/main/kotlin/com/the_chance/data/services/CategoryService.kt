@@ -5,6 +5,7 @@ import com.the_chance.data.services.validation.CategoryValidation
 import com.the_chance.data.tables.CategoriesTable
 import com.the_chance.utils.toLowerCase
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.select
 
 class CategoryService(
     private val database: Database
@@ -12,23 +13,24 @@ class CategoryService(
 
     private val categoryValidation by lazy { CategoryValidation() }
 
-    suspend fun create(categoryName: String, categoryImage: String): Category {
-        val categoryList = getAllCategories().filter { it.name.toLowerCase() == categoryName.toLowerCase() }
+    suspend fun create(categoryName: String, categoryImage: String): Category = dbQuery {
+        val categoryList = CategoriesTable.select {
+            CategoriesTable.name.lowerCase() like categoryName.toLowerCase()
+        }.singleOrNull()
         val errors = categoryValidation.checkCreateValidation(categoryName, categoryImage, categoryList)
 
-        return if (errors.isEmpty()) {
-            dbQuery {
-                val newCategory = CategoriesTable.insert {
-                    it[name] = categoryName
-                    it[image] = categoryImage
-                    it[isDeleted] = false
-                }
-                Category(
-                    id = newCategory[CategoriesTable.id].value,
-                    name = newCategory[CategoriesTable.name].toString(),
-                    image = newCategory[CategoriesTable.image].toString(),
-                )
+
+        if (errors.isEmpty()) {
+            val newCategory = CategoriesTable.insert {
+                it[name] = categoryName
+                it[image] = categoryImage
+                it[isDeleted] = false
             }
+            Category(
+                id = newCategory[CategoriesTable.id].value,
+                name = newCategory[CategoriesTable.name].toString(),
+                image = newCategory[CategoriesTable.image].toString(),
+            )
         } else {
             throw Throwable(errors.joinToString { it })
         }
