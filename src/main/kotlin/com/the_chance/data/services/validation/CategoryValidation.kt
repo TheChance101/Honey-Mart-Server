@@ -9,7 +9,7 @@ class CategoryValidation {
         val errorList = mutableListOf<String>()
 
         when {
-            category == null -> errorList.add("This category with name $categoryName already exist.")
+            category != null -> errorList.add("This category with name $categoryName already exist.")
             categoryImage.isEmpty() -> errorList.add("All field is required...")
             checkNameLength(categoryName) -> errorList.add("Category name should be more than 4 and shorter than 20 characters...")
             checkLetter(categoryName) -> errorList.add("category name should contain letters without numbers or symbols.")

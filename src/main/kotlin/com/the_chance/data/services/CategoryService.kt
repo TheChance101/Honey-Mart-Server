@@ -15,7 +15,7 @@ class CategoryService(
 
     suspend fun create(categoryName: String, categoryImage: String): Category = dbQuery {
         val categoryList = CategoriesTable.select {
-            CategoriesTable.name.lowerCase() like categoryName.toLowerCase()
+            CategoriesTable.name.lowerCase() eq  categoryName.toLowerCase()
         }.singleOrNull()
         val errors = categoryValidation.checkCreateValidation(categoryName, categoryImage, categoryList)
 
