@@ -3,7 +3,6 @@ package com.the_chance.data.services
 import com.the_chance.data.models.Category
 import com.the_chance.data.models.Product
 import com.the_chance.data.models.ProductWithCategory
-import com.the_chance.data.models.ProductsInCategory
 import com.the_chance.data.services.validation.Error
 import com.the_chance.data.services.validation.ErrorType
 import com.the_chance.data.services.validation.ProductValidation
@@ -11,7 +10,6 @@ import com.the_chance.data.tables.CategoriesTable
 import com.the_chance.data.tables.CategoryProductTable
 import com.the_chance.data.tables.ProductTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 
 class ProductService(private val database: Database) : BaseService(database, ProductTable, CategoryProductTable) {
 
