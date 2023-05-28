@@ -3,8 +3,10 @@ package com.the_chance.data.services
 import com.the_chance.data.models.Market
 import com.the_chance.data.tables.CategoriesTable
 import com.the_chance.data.tables.MarketTable
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 import java.util.regex.Pattern
 
 class MarketService(database: Database) : BaseService(database, MarketTable, CategoriesTable) {
@@ -17,36 +19,17 @@ class MarketService(database: Database) : BaseService(database, MarketTable, Cat
         Market(
             marketId = newMarket[MarketTable.id].value,
             marketName = newMarket[MarketTable.name],
-            categories = emptyList()
         )
     }
 
     suspend fun getAllMarkets(): List<Market> = dbQuery {
-        MarketTable
-            .join(
-                CategoriesTable,
-                JoinType.INNER,
-                additionalConstraint = { MarketTable.id eq CategoriesTable.marketId })
-            .select {
-                (MarketTable.isDeleted eq false) and (CategoriesTable.isDeleted eq false)
-
-            }.map {
-                Market(
-                    marketId = it[MarketTable.id].value,
-                    marketName = it[MarketTable.name],
-                )
-            }
+        MarketTable.select { MarketTable.isDeleted eq false }.map {
+            Market(
+                marketId = it[MarketTable.id].value,
+                marketName = it[MarketTable.name],
+            )
+        }
     }
-
-
-//    suspend fun getAllMarkets(): List<Market> = dbQuery {
-//        MarketTable.select { MarketTable.isDeleted eq false }.map {
-//            Market(
-//                marketId = it[MarketTable.id].value,
-//                marketName = it[MarketTable.name],
-//            )
-//        }
-//    }
 
     suspend fun deleteMarket(marketId: Long): Boolean = dbQuery {
         if (isDeleted(marketId)) {
@@ -81,7 +64,7 @@ class MarketService(database: Database) : BaseService(database, MarketTable, Cat
     }
 
     fun isValidMarketName(name: String): Boolean {
-        val pattern = Pattern.compile("^[a-zA-Z]+(\\s[a-zA-Z]+)*$")
+        val pattern = Pattern.compile("^[a-zA-Z0-9]+(\\s[a-zA-Z0-9]+)*$")
         val matcher = pattern.matcher(name)
         return matcher.matches()
     }
