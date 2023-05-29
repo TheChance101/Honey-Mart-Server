@@ -5,6 +5,14 @@ info:
   version: "1.0.0"
 servers:
 - url: "https://com_the_chance_honey_mart"
+
+tags:
+  - name: Categories
+    description: Operations about categories
+  - name: Markets
+    description: Operations about markets
+  - name: Products
+    description: Operations about products
 paths:
   /:
     get:
@@ -18,6 +26,8 @@ paths:
                 type: "string"
   /category:
     post:
+      tags:
+        - Categories
       description: ""
       parameters:
       - name: "name"
@@ -50,6 +60,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Category"
     put:
+      tags:
+        - Categories
       description: ""
       parameters:
       - name: "id"
@@ -83,6 +95,8 @@ paths:
                 type: "string"
   /category/{id}:
     delete:
+      tags:
+        - Categories
       description: ""
       parameters:
       - name: "id"
@@ -111,6 +125,8 @@ paths:
                 type: "string"
   /markets:
     get:
+      tags:
+        - Markets
       description: ""
       responses:
         "200":
@@ -122,6 +138,8 @@ paths:
                 items:
                   $ref: "#/components/schemas/Market"
     post:
+      tags:
+        - Markets
       description: ""
       parameters:
       - name: "name"
@@ -144,6 +162,8 @@ paths:
                 $ref: "#/components/schemas/Market"
   /markets/{id}:
     delete:
+      tags:
+        - Markets
       description: ""
       parameters:
       - name: "id"
@@ -171,6 +191,8 @@ paths:
               schema:
                 type: "string"
     put:
+      tags:
+        - Markets
       description: ""
       parameters:
       - name: "id"
@@ -204,6 +226,8 @@ paths:
                 $ref: "#/components/schemas/Market"
   /markets/{id}/categories:
     get:
+      tags:
+        - Markets
       description: ""
       parameters:
       - name: "id"
@@ -246,6 +270,8 @@ paths:
                   $ref: "#/components/schemas/MarketWithCategories"
   /product:
     post:
+      tags:
+        - Products
       description: ""
       parameters:
       - name: "name"
@@ -278,6 +304,8 @@ paths:
                 type: "string"
   /product/{id}:
     delete:
+      tags:
+        - Products
       description: ""
       parameters:
       - name: "id"
@@ -305,6 +333,8 @@ paths:
               schema:
                 type: "string"
     put:
+      tags:
+        - Products
       description: ""
       parameters:
       - name: "id"
@@ -348,6 +378,8 @@ paths:
                 type: "string"
   /products:
     get:
+      tags:
+        - Products
       description: ""
       responses:
         "200":
