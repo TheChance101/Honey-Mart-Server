@@ -2,6 +2,7 @@ package com.the_chance.endpoints
 
 import com.the_chance.data.ServerResponse
 import com.the_chance.data.services.MarketService
+import com.the_chance.utils.isValidMarketName
 import com.the_chance.utils.isValidStringInput
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -15,10 +16,10 @@ fun Route.marketsRoutes(marketService: MarketService) {
 
         post {
             val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-            if (!isValidStringInput(marketName)) {
+            if (!isValidMarketName(marketName)) {
                 call.respond(
                     HttpStatusCode.BadRequest,
-                    ServerResponse.error("Invalid market name. It should only contain letters without numbers or symbols.")
+                    ServerResponse.error("Invalid market name. Just can contain text and numbers")
                 )
             } else if (marketName.length < 4 || marketName.length > 14) {
                 call.respond(
@@ -49,7 +50,7 @@ fun Route.marketsRoutes(marketService: MarketService) {
                     if (isDeleted) {
                         call.respond(
                             HttpStatusCode.OK,
-                            ServerResponse.success("Market Deleted Successfully")
+                            ServerResponse.success(null ,"Market Deleted Successfully")
                         )
                     } else {
                         call.respond(
@@ -80,10 +81,10 @@ fun Route.marketsRoutes(marketService: MarketService) {
                             HttpStatusCode.NotFound,
                             ServerResponse.error("Market with ID: $marketId has been deleted")
                         )
-                    } else if (!isValidStringInput(marketName)) {
+                    } else if (!isValidMarketName(marketName)) {
                         call.respond(
                             HttpStatusCode.BadRequest,
-                            ServerResponse.error("Invalid market name. It should only contain letters without numbers or symbols.")
+                            ServerResponse.error("Invalid market name. Just can contain text and numbers")
                         )
                     } else if (marketName.length < 4 || marketName.length > 14) {
                         call.respond(
