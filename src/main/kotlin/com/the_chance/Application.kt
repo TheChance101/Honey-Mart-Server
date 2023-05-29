@@ -1,14 +1,19 @@
 package com.the_chance
 
-import com.the_chance.data.ProductService
+import com.the_chance.data.services.CategoryService
+import com.the_chance.data.services.MarketCategoriesService
+import com.the_chance.data.services.MarketService
+import com.the_chance.data.services.ProductService
+import com.the_chance.plugins.configureMonitoring
+import com.the_chance.plugins.configureRouting
+import com.the_chance.plugins.configureSerialization
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import com.the_chance.plugins.*
 import org.jetbrains.exposed.sql.Database
 
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module).start(wait = true)
+    embeddedServer(Netty, port = 8081, host = "0.0.0.0", module = Application::module).start(wait = true)
 }
 
 fun Application.module() {
@@ -28,7 +33,11 @@ fun Application.module() {
     )
 
     val productService = ProductService(database)
+    val categoryService = CategoryService(database)
+    val marketService = MarketService(database)
+    val  marketCategoriesService = MarketCategoriesService(database)
+
     configureSerialization()
     configureMonitoring()
-    configureRouting(productService)
+    configureRouting(productService, categoryService, marketService , marketCategoriesService)
 }
