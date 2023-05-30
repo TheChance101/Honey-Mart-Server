@@ -6,7 +6,9 @@ val kotlin_version: String by project
 val logback_version: String by project
 val exposed_version : String by project
 val h2_version : String by project
+val koin_version:String by project
 val swagger_codegen_version: String = "1.0.36"
+
 plugins {
     kotlin("jvm") version "1.8.10"
     id("io.ktor.plugin") version "2.2.4"
@@ -16,10 +18,12 @@ plugins {
 
 group = "com.the_chance"
 version = "0.0.1"
+
 application {
     mainClass.set("com.the_chance.ApplicationKt")
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
+
 }
 
 ktor {
@@ -55,5 +59,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
+    implementation ("io.insert-koin:koin-ktor:$koin_version")
+    implementation ("io.insert-koin:koin-logger-slf4j:$koin_version")
+
 }
 
