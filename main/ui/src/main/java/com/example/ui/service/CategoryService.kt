@@ -2,7 +2,6 @@ package com.example.ui.service
 
 
 import com.example.model.Category
-import org.jetbrains.exposed.sql.*
 
 interface CategoryService {
 

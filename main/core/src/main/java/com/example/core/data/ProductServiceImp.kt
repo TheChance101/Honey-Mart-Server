@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 
-class ProductServiceImp(private val database: Database) : BaseService(database, ProductTable), ProductService,
+class ProductServiceImp(private val database: CoreDataBase) : BaseService(database, ProductTable), ProductService,
     KoinComponent {
 
     private val productValidation by lazy { ProductValidation() }

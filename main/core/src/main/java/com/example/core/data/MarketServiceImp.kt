@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 
-class MarketServiceImp(database: Database) : BaseService(database, MarketTable, CategoriesTable), MarketService,
+class MarketServiceImp(database: CoreDataBase) : BaseService(database, MarketTable, CategoriesTable), MarketService,
     KoinComponent {
 
     override suspend fun createMarket(marketName: String): Market = dbQuery {

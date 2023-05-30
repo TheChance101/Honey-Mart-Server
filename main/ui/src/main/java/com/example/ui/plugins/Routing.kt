@@ -1,4 +1,4 @@
-package com.the_chance.plugins
+package com.example.ui.plugins
 
 
 import com.example.ui.ServerResponse

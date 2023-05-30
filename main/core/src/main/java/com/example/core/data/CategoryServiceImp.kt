@@ -7,7 +7,7 @@ import com.example.ui.service.CategoryService
 import org.jetbrains.exposed.sql.*
 import org.koin.core.component.KoinComponent
 
-class CategoryServiceImp(private val database: Database) : BaseService(database, CategoriesTable), CategoryService,
+class CategoryServiceImp(private val database: CoreDataBase) : BaseService(database, CategoriesTable), CategoryService,
     KoinComponent {
 
     override suspend fun create(categoryName: String, marketId: Long): Category = dbQuery {

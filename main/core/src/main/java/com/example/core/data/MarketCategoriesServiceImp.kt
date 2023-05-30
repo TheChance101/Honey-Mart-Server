@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
 
-class MarketCategoriesServiceImp(database: Database) : BaseService(database, MarketTable, CategoriesTable),
+class MarketCategoriesServiceImp(database: CoreDataBase) : BaseService(database, MarketTable, CategoriesTable),
     MarketCategoriesService,
     KoinComponent {
 
