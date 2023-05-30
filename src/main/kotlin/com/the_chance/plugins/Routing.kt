@@ -16,13 +16,14 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.plugins.openapi.*
 import io.swagger.codegen.v3.generators.html.*
+import org.koin.ktor.ext.inject
 
-fun Application.configureRouting(
-    productService: ProductService,
-    categoryService: CategoryService,
-    marketService: MarketService,
-    marketCategoriesService: MarketCategoriesService
-) {
+fun Application.configureRouting() {
+    val productService: ProductService by inject()
+    val marketService: MarketService by inject()
+    val categoryService: CategoryService by inject()
+    val marketCategoriesService: MarketCategoriesService by inject()
+
     routing {
         get("/") {
             call.respond(ServerResponse.success("Welcome to Honey Mart app"))
@@ -30,7 +31,7 @@ fun Application.configureRouting(
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml") {
             version = "4.15.5"
         }
-        openAPI(path="openapi", swaggerFile = "openapi/documentation.yaml") {
+        openAPI(path = "openapi", swaggerFile = "openapi/documentation.yaml") {
             codegen = StaticHtmlCodegen()
         }
         productsRoutes(productService)
