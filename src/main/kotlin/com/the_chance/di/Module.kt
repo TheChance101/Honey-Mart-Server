@@ -9,5 +9,5 @@ val myModule = module {
     single <MarketService>{ MarketServiceImp(get()) }
     single <CategoryService>{ CategoryServiceImp(get()) }
     single <MarketCategoriesService>{ MarketCategoriesServiceImp(get()) }
-    factory { getDatabaseInstance() }
+    single { getDatabaseInstance() }
 }
