@@ -1,5 +1,12 @@
-import groovy.xml.dom.DOMCategory.attributes
-import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems.jar
+//plugins {
+//    id("java-library")
+//    id("org.jetbrains.kotlin.jvm")
+//}
+//
+//java {
+//    sourceCompatibility = JavaVersion.VERSION_1_7
+//    targetCompatibility = JavaVersion.VERSION_1_7
+//}
 
 val ktor_version: String by project
 val kotlin_version: String by project
@@ -19,19 +26,6 @@ plugins {
 group = "com.the_chance"
 version = "0.0.1"
 
-application {
-    mainClass.set("com.the_chance.ApplicationKt")
-    val isDevelopment: Boolean = project.ext.has("development")
-    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
-
-}
-
-ktor {
-    fatJar {
-        archiveFileName.set("honey-mart.jar")
-    }
-}
-
 repositories {
     mavenCentral()
     gradlePluginPortal()
@@ -39,10 +33,6 @@ repositories {
 
 
 dependencies {
-
-    api(project("main:core"))
-    api(project("main:ui"))
-    api(project(":main:model"))
 
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
@@ -72,4 +62,3 @@ dependencies {
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
 
 }
-

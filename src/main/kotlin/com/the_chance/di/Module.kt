@@ -1,6 +1,13 @@
 package com.the_chance.di
 
-import com.the_chance.data.services.*
+import com.example.core.data.CategoryServiceImp
+import com.example.core.data.MarketCategoriesServiceImp
+import com.example.core.data.MarketServiceImp
+import com.example.core.data.ProductServiceImp
+import com.example.ui.service.CategoryService
+import com.example.ui.service.MarketCategoriesService
+import com.example.ui.service.MarketService
+import com.example.ui.service.ProductService
 import com.the_chance.getDatabaseInstance
 import org.koin.dsl.module
 

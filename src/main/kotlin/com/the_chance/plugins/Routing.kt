@@ -1,15 +1,15 @@
 package com.the_chance.plugins
 
 
-import com.the_chance.data.services.ProductService
-import com.the_chance.data.ServerResponse
-import com.the_chance.data.services.MarketService
-import com.the_chance.endpoints.marketsRoutes
-import com.the_chance.data.services.CategoryService
-import com.the_chance.data.services.MarketCategoriesService
-import com.the_chance.endpoints.categoryRoutes
-import com.the_chance.endpoints.marketCategoriesRoutes
-import com.the_chance.endpoints.productsRoutes
+import com.example.ui.ServerResponse
+import com.example.ui.service.ProductService
+import com.example.ui.service.MarketService
+import com.example.ui.endpoints.marketsRoutes
+import com.example.ui.service.CategoryService
+import com.example.ui.service.MarketCategoriesService
+import com.example.ui.endpoints.categoryRoutes
+import com.example.ui.endpoints.marketCategoriesRoutes
+import com.example.ui.endpoints.productsRoutes
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.application.*
