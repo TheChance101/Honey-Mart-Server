@@ -1,7 +1,9 @@
 package com.thechance.core.data
 
+import com.thechance.api.model.Category
 import com.thechance.core.data.validation.ProductValidation
 import com.thechance.api.model.Product
+import com.thechance.api.model.ProductWithCategory
 import com.thechance.api.service.ProductService
 import com.thechance.api.utils.ErrorType
 import com.thechance.core.data.tables.ProductTable
@@ -10,31 +12,51 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 import com.thechance.api.utils.Error
+import com.thechance.core.data.tables.CategoriesTable
+import com.thechance.core.data.tables.CategoryProductTable
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.batchInsert
 
 class ProductServiceImp(private val database: CoreDataBase) : BaseService(database, ProductTable), ProductService,
     KoinComponent {
 
+
     private val productValidation by lazy { ProductValidation() }
 
-    override suspend fun create(productName: String, productPrice: Double, productQuantity: String?): Product {
+    override suspend fun create(
+        productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
+    ): ProductWithCategory {
         val errors = productValidation.checkCreateValidation(
             productName = productName,
             productPrice = productPrice,
-            productQuantity = productQuantity
+            productQuantity = productQuantity,
+            categoriesId = categoriesId
         )
         return if (errors.isEmpty()) {
-            dbQuery {
-                val newProduct = ProductTable.insert { productRow ->
-                    productRow[name] = productName
-                    productRow[price] = productPrice
-                    productRow[quantity] = productQuantity
+            if (isValidCategories(categoriesId!!)) {
+                dbQuery {
+                    val newProduct = ProductTable.insert { productRow ->
+                        productRow[name] = productName
+                        productRow[price] = productPrice
+                        productRow[quantity] = productQuantity
+                    }
+
+                    CategoryProductTable.batchInsert(categoriesId) { categoryId ->
+                        this[CategoryProductTable.productId] = newProduct[ProductTable.id]
+                        this[CategoryProductTable.categoryId] = categoryId
+                    }
+
+                    ProductWithCategory(
+                        id = newProduct[ProductTable.id].value,
+                        name = newProduct[ProductTable.name],
+                        price = newProduct[ProductTable.price],
+                        quantity = newProduct[ProductTable.quantity],
+                        category = getAllCategoryForProduct(newProduct[ProductTable.id].value)
+                    )
                 }
-                Product(
-                    id = newProduct[ProductTable.id].value,
-                    name = newProduct[ProductTable.name],
-                    price = newProduct[ProductTable.price],
-                    quantity = newProduct[ProductTable.quantity],
-                )
+            } else {
+                throw Throwable("not valid categories.")
             }
         } else {
             throw Throwable(errors.toString())
@@ -51,6 +73,27 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
                     quantity = productRow[ProductTable.quantity],
                 )
             }
+        }
+    }
+
+    override suspend fun getAllCategoryForProduct(productId: Long?): List<Category> {
+        return if (productValidation.checkId(productId)) {
+            if (!isDeleted(productId!!)) {
+                dbQuery {
+                    (CategoriesTable innerJoin CategoryProductTable)
+                        .select { CategoryProductTable.productId eq productId }
+                        .map { categoryRow ->
+                            Category(
+                                categoryId = categoryRow[CategoriesTable.id].value,
+                                categoryName = categoryRow[CategoriesTable.name].toString(),
+                            )
+                        }
+                }
+            } else {
+                throw Error(ErrorType.DELETED_ITEM)
+            }
+        } else {
+            throw Error(ErrorType.INVALID_INPUT)
         }
     }
 
@@ -107,4 +150,11 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
             it[ProductTable.isDeleted]
         } ?: throw Error(ErrorType.NOT_FOUND)
     }
+
+    private suspend fun isValidCategories(categoryIds: List<Long>): Boolean {
+        return dbQuery {
+            CategoriesTable.select { CategoriesTable.id inList categoryIds }.toList().size == categoryIds.size
+        }
+    }
+
 }
