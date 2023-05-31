@@ -1,12 +1,19 @@
 package com.thechance.core.data.validation
 
-class ProductValidation {
+class ProductValidationImpl : ProductValidation, KoinComponent {
 
     fun checkCreateValidation(
         productName: String,
         productPrice: Double,
         productQuantity: String?,
         categoriesId: List<Long>?
+    ): List<String> {
+class ProductValidationImpl : ProductValidation, KoinComponent {
+
+    override fun checkCreateValidation(
+        productName: String,
+        productPrice: Double,
+        productQuantity: String?
     ): List<String> {
         val error = mutableListOf<String>()
 
@@ -29,7 +36,7 @@ class ProductValidation {
         return error
     }
 
-    fun checkUpdateValidation(
+    override fun checkUpdateValidation(
         productName: String?, productPrice: Double?, productQuantity: String?
     ): List<String> {
         val error = mutableListOf<String>()
@@ -47,6 +54,10 @@ class ProductValidation {
         }
 
         return error
+    }
+
+    override fun checkId(id: Long?): Boolean {
+        return id != null
     }
 
     private fun checkNameLength(productName: String): Boolean {

@@ -1,6 +1,5 @@
 package com.thechance.core.data
 
-import com.thechance.api.model.Category
 import com.thechance.core.data.validation.ProductValidation
 import com.thechance.api.model.Product
 import com.thechance.api.model.ProductWithCategory
@@ -20,11 +19,16 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
 
 
     private val productValidation by lazy { ProductValidation() }
+class ProductServiceImp(
+    private val productValidationImpl: ProductValidation
+) : BaseService(ProductTable), ProductService, KoinComponent {
 
     override suspend fun create(
         productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
     ): ProductWithCategory {
         val errors = productValidation.checkCreateValidation(
+    override suspend fun create(productName: String, productPrice: Double, productQuantity: String?): Product {
+        val errors = productValidationImpl.checkCreateValidation(
             productName = productName,
             productPrice = productPrice,
             productQuantity = productQuantity,
@@ -95,9 +99,9 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
     override suspend fun updateProduct(
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
     ): String {
-        if (productValidation.checkId(productId)) {
+        if (productValidationImpl.checkId(productId)) {
             if (!isDeleted(productId!!)) {
-                val errors = productValidation.checkUpdateValidation(
+                val errors = productValidationImpl.checkUpdateValidation(
                     productName = productName,
                     productPrice = productPrice,
                     productQuantity = productQuantity
@@ -123,7 +127,7 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
     }
 
     override suspend fun deleteProduct(productId: Long?): String {
-        return if (productValidation.checkId(productId)) {
+        return if (productValidationImpl.checkId(productId)) {
             if (!isDeleted(productId!!)) {
                 dbQuery {
                     ProductTable.update({ ProductTable.id eq productId }) { productRow ->

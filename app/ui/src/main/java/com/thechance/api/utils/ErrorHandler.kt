@@ -16,3 +16,7 @@ suspend fun Error.errorHandler(call: ApplicationCall) {
         }
     }
 }
+
+class InvalidInputException(message: String) : Exception(message)
+class IdNotFoundException(message: String) : Exception(message)
+class ItemNotAvailableException(message: String) : Exception(message)

@@ -1,4 +1,4 @@
-package com.thechance.core.data
+package com.thechance.core.data.service
 
 import com.thechance.api.model.Market
 import com.thechance.api.service.MarketService
@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 
-class MarketServiceImp(database: CoreDataBase) : BaseService(database, MarketTable, CategoriesTable), MarketService,
+class MarketServiceImp: BaseService(MarketTable, CategoriesTable), MarketService,
     KoinComponent {
 
     override suspend fun createMarket(marketName: String): Market = dbQuery {
