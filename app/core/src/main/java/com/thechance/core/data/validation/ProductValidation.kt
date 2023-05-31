@@ -1,4 +1,4 @@
-package com.the_chance.data.services.validation
+package com.example.core.data.validation
 
 class ProductValidation {
 

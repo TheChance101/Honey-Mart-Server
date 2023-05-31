@@ -1,19 +1,22 @@
-package com.the_chance.data.services
+package com.thechance.core.data
 
-import com.the_chance.data.models.Product
-import com.the_chance.data.services.validation.Error
-import com.the_chance.data.services.validation.ErrorType
-import com.the_chance.data.services.validation.ProductValidation
-import com.the_chance.data.tables.ProductTable
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.InvalidPropertiesFormatException
+import com.example.core.data.validation.ProductValidation
+import com.thechance.api.model.Product
+import com.thechance.api.service.ProductService
+import com.thechance.api.utils.ErrorType
+import com.thechance.core.data.tables.ProductTable
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
+import org.koin.core.component.KoinComponent
+import com.thechance.api.utils.Error
 
-class ProductService(private val database: Database) : BaseService(database, ProductTable) {
+class ProductServiceImp(private val database: CoreDataBase) : BaseService(database, ProductTable), ProductService,
+    KoinComponent {
 
     private val productValidation by lazy { ProductValidation() }
 
-    suspend fun create(productName: String, productPrice: Double, productQuantity: String?): Product {
+    override suspend fun create(productName: String, productPrice: Double, productQuantity: String?): Product {
         val errors = productValidation.checkCreateValidation(
             productName = productName,
             productPrice = productPrice,
@@ -38,7 +41,7 @@ class ProductService(private val database: Database) : BaseService(database, Pro
         }
     }
 
-    suspend fun getAllProducts(): List<Product> {
+    override suspend fun getAllProducts(): List<Product> {
         return dbQuery {
             ProductTable.select { ProductTable.isDeleted eq false }.map { productRow ->
                 Product(
@@ -51,7 +54,7 @@ class ProductService(private val database: Database) : BaseService(database, Pro
         }
     }
 
-    suspend fun updateProduct(
+    override suspend fun updateProduct(
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
     ): String {
         if (productValidation.checkId(productId)) {
@@ -81,7 +84,7 @@ class ProductService(private val database: Database) : BaseService(database, Pro
         }
     }
 
-    suspend fun deleteProduct(productId: Long?): String {
+    override suspend fun deleteProduct(productId: Long?): String {
         return if (productValidation.checkId(productId)) {
             if (!isDeleted(productId!!)) {
                 dbQuery {

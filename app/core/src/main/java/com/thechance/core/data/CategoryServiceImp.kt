@@ -1,16 +1,16 @@
-package com.the_chance.data.services
+package com.thechance.core.data
 
-import com.the_chance.data.models.Category
-import com.the_chance.data.tables.CategoriesTable
-import com.the_chance.data.tables.MarketTable
-import com.the_chance.utils.toLowerCase
+import com.thechance.api.model.Category
+import com.thechance.api.service.CategoryService
+import com.thechance.core.data.tables.CategoriesTable
+import com.thechance.core.data.tables.MarketTable
 import org.jetbrains.exposed.sql.*
+import org.koin.core.component.KoinComponent
 
-class CategoryService(
-    private val database: Database
-) : BaseService(database, CategoriesTable) {
+class CategoryServiceImp(private val database: CoreDataBase) : BaseService(database, CategoriesTable), CategoryService,
+    KoinComponent {
 
-    suspend fun create(categoryName: String, marketId: Long): Category = dbQuery {
+    override suspend fun create(categoryName: String, marketId: Long): Category = dbQuery {
         val categoryList =
             getCategoriesByMarketId(marketId).filter { it.categoryName.toLowerCase() == categoryName.toLowerCase() }
 
@@ -30,7 +30,7 @@ class CategoryService(
 
     }
 
-    suspend fun getCategoriesByMarketId(marketId: Long): List<Category> {
+    override suspend fun getCategoriesByMarketId(marketId: Long): List<Category> {
         return dbQuery {
             CategoriesTable.select {
                 CategoriesTable.marketId eq marketId and
@@ -45,7 +45,7 @@ class CategoryService(
     }
 
 
-    suspend fun delete(categoryId: Long): Boolean = dbQuery {
+    override suspend fun delete(categoryId: Long): Boolean = dbQuery {
         val category = CategoriesTable.select {
             CategoriesTable.id eq categoryId and Op.build { CategoriesTable.isDeleted eq false }
         }.singleOrNull()
@@ -59,7 +59,7 @@ class CategoryService(
         }
     }
 
-    suspend fun update(categoryId: Long, categoryName: String): Boolean = dbQuery {
+    override suspend fun update(categoryId: Long, categoryName: String): Boolean = dbQuery {
         val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
 
         if (category != null) {
@@ -73,7 +73,7 @@ class CategoryService(
         }
     }
 
-    suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
+    override suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
             it[MarketTable.isDeleted]

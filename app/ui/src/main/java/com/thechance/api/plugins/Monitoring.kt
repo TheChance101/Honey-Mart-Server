@@ -1,4 +1,4 @@
-package com.the_chance.plugins
+package com.thechance.api.plugins
 
 import io.ktor.server.plugins.callloging.*
 import org.slf4j.event.*

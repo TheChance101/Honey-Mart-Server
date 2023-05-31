@@ -1,4 +1,4 @@
-package com.the_chance.data.tables
+package com.thechance.core.data.tables
 
 import org.jetbrains.exposed.dao.id.LongIdTable
 

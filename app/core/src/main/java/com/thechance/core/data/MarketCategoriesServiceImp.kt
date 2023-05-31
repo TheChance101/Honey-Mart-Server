@@ -1,16 +1,19 @@
-package com.the_chance.data.services
+package com.thechance.core.data
 
-import com.the_chance.data.models.Category
-import com.the_chance.data.models.MarketWithCategories
-import com.the_chance.data.tables.CategoriesTable
-import com.the_chance.data.tables.MarketTable
-import org.jetbrains.exposed.sql.Database
+import com.thechance.api.model.Category
+import com.thechance.api.model.MarketWithCategories
+import com.thechance.api.service.MarketCategoriesService
+import com.thechance.core.data.tables.CategoriesTable
+import com.thechance.core.data.tables.MarketTable
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
+import org.koin.core.component.KoinComponent
 
-class MarketCategoriesService(database: Database) : BaseService(database, MarketTable, CategoriesTable) {
+class MarketCategoriesServiceImp(database: CoreDataBase) : BaseService(database, MarketTable, CategoriesTable),
+    MarketCategoriesService,
+    KoinComponent {
 
-    suspend fun getAllMarketsWithCategories(): List<MarketWithCategories> = dbQuery {
+    override suspend fun getAllMarketsWithCategories(): List<MarketWithCategories> = dbQuery {
         val markets = MarketTable
             .select {
                 MarketTable.isDeleted eq false
@@ -28,7 +31,7 @@ class MarketCategoriesService(database: Database) : BaseService(database, Market
         markets
     }
 
-    suspend fun getCategoriesByMarket(marketId: Long): List<Category> {
+    override suspend fun getCategoriesByMarket(marketId: Long): List<Category> {
         return if (!isDeleted(marketId)) {
             dbQuery {
                 CategoriesTable.select {
@@ -45,7 +48,7 @@ class MarketCategoriesService(database: Database) : BaseService(database, Market
         }
     }
 
-    suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
+    override suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
             it[MarketTable.isDeleted]

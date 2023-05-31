@@ -1,4 +1,4 @@
-package com.the_chance.utils
+package com.thechance.core.utils
 
 import java.util.*
 
