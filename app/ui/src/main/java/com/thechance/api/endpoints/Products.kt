@@ -7,12 +7,11 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import com.thechance.api.utils.Error
-import com.thechance.api.utils.errorHandler
+import org.xml.sax.ErrorHandler
 
 fun Route.productsRoutes(productService: ProductService) {
 
-    get ("/products"){
+    get("/products") {
         val products = productService.getAllProducts()
         call.respond(ServerResponse.success(products))
     }
@@ -23,7 +22,7 @@ fun Route.productsRoutes(productService: ProductService) {
             try {
                 val params = call.receiveParameters()
                 val productName = params["name"]?.trim().orEmpty()
-                val productPrice = params["price"]?.trim()?.toDoubleOrNull()?:0.0
+                val productPrice = params["price"]?.trim()?.toDoubleOrNull() ?: 0.0
                 val productQuantity = params["quantity"]?.trim()
 
                 val newAddedProduct = productService.create(productName, productPrice, productQuantity)
@@ -48,10 +47,8 @@ fun Route.productsRoutes(productService: ProductService) {
                     productQuantity = productQuantity
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success(true, updatedProduct))
-            } catch (t: Error) {
-                t.errorHandler(call)
-            } catch (t: Throwable) {
-                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.handleError(e))
             }
         }
 
@@ -63,8 +60,8 @@ fun Route.productsRoutes(productService: ProductService) {
                     HttpStatusCode.OK,
                     ServerResponse.success(result = true, successMessage = deletedProduct)
                 )
-            } catch (t: Error) {
-                t.errorHandler(call)
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.handleError(e))
             }
         }
     }
