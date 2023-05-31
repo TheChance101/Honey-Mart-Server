@@ -5,6 +5,8 @@ import com.thechance.api.service.MarketCategoriesService
 import com.thechance.api.service.MarketService
 import com.thechance.api.service.ProductService
 import com.thechance.core.data.*
+import com.thechance.core.data.validation.category.CategoryValidation
+import com.thechance.core.data.validation.category.CategoryValidationImpl
 import com.thechance.core.data.validation.product.ProductValidation
 import com.thechance.core.data.validation.product.ProductValidationImpl
 import org.koin.dsl.module
@@ -17,4 +19,5 @@ val myModule = module {
     single<MarketCategoriesService> { MarketCategoriesServiceImp(get()) }
 
     single<ProductValidation> { ProductValidationImpl() }
+    single<CategoryValidation> { CategoryValidationImpl() }
 }

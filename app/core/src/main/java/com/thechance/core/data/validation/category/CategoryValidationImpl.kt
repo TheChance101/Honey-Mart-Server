@@ -1,11 +1,12 @@
-package com.thechance.core.data.validation
+package com.thechance.core.data.validation.category
 
 import com.thechance.api.utils.isValidStringInput
 import org.jetbrains.exposed.sql.ResultRow
+import org.koin.core.component.KoinComponent
 
-class CategoryValidation {
+class CategoryValidationImpl: CategoryValidation, KoinComponent{
 
-    fun checkCreateValidation(categoryName: String, categoryImage: String, category: ResultRow?): List<String> {
+    override fun checkCreateValidation(categoryName: String, categoryImage: String, category: ResultRow?): List<String> {
         val errorList = mutableListOf<String>()
 
         when {
