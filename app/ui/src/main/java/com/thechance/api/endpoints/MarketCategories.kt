@@ -26,13 +26,13 @@ fun Route.marketCategoriesRoutes(marketService: MarketCategoriesService) {
                         HttpStatusCode.NotFound,
                         ServerResponse.error("Market with ID: $marketId has been deleted")
                     )
-                }else{
+                } else {
                     val categories = marketService.getCategoriesByMarket(marketId)
                     call.respond(HttpStatusCode.OK, ServerResponse.success(categories))
                 }
 
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.NotFound, ServerResponse.handleError(e))
             }
         }
     }
