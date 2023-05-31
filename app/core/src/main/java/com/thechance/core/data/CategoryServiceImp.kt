@@ -51,7 +51,6 @@ class CategoryServiceImp(private val database: CoreDataBase) : BaseService(datab
         }
     }
 
-
     override suspend fun delete(categoryId: Long): Boolean = dbQuery {
         val category = CategoriesTable.select {
             CategoriesTable.id eq categoryId and Op.build { CategoriesTable.isDeleted eq false }

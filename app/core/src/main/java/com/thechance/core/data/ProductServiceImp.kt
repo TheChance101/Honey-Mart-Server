@@ -7,19 +7,16 @@ import com.thechance.api.model.ProductWithCategory
 import com.thechance.api.service.ProductService
 import com.thechance.api.utils.ErrorType
 import com.thechance.core.data.tables.ProductTable
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 import com.thechance.api.utils.Error
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
-import org.jetbrains.exposed.sql.batchInsert
 
-class ProductServiceImp(private val database: CoreDataBase) : BaseService(database, ProductTable), ProductService,
-    KoinComponent {
+class ProductServiceImp(private val database: CoreDataBase) : BaseService(database, ProductTable, CategoryProductTable),
+    ProductService, KoinComponent {
 
 
     private val productValidation by lazy { ProductValidation() }
@@ -52,7 +49,14 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
                         name = newProduct[ProductTable.name],
                         price = newProduct[ProductTable.price],
                         quantity = newProduct[ProductTable.quantity],
-                        category = getAllCategoryForProduct(newProduct[ProductTable.id].value)
+                        category = (CategoriesTable innerJoin CategoryProductTable)
+                            .select { CategoryProductTable.productId eq newProduct[ProductTable.id].value }
+                            .map { categoryRow ->
+                                Category(
+                                    categoryId = categoryRow[CategoriesTable.id].value,
+                                    categoryName = categoryRow[CategoriesTable.name].toString(),
+                                )
+                            }
                     )
                 }
             } else {
@@ -79,16 +83,7 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
     override suspend fun getAllCategoryForProduct(productId: Long?): List<Category> {
         return if (productValidation.checkId(productId)) {
             if (!isDeleted(productId!!)) {
-                dbQuery {
-                    (CategoriesTable innerJoin CategoryProductTable)
-                        .select { CategoryProductTable.productId eq productId }
-                        .map { categoryRow ->
-                            Category(
-                                categoryId = categoryRow[CategoriesTable.id].value,
-                                categoryName = categoryRow[CategoriesTable.name].toString(),
-                            )
-                        }
-                }
+                getAllCategoryForProduct(productId)
             } else {
                 throw Error(ErrorType.DELETED_ITEM)
             }
@@ -151,9 +146,13 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
         } ?: throw Error(ErrorType.NOT_FOUND)
     }
 
+    /**
+     * validate that each categoryId is found and not deleted
+     * */
     private suspend fun isValidCategories(categoryIds: List<Long>): Boolean {
         return dbQuery {
-            CategoriesTable.select { CategoriesTable.id inList categoryIds }.toList().size == categoryIds.size
+            CategoriesTable.select { CategoriesTable.id inList categoryIds }
+                .filterNot { it[CategoriesTable.isDeleted] }.toList().size == categoryIds.size
         }
     }
 

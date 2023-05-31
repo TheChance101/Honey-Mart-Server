@@ -17,8 +17,7 @@ class MarketCategoriesServiceImp(database: CoreDataBase) : BaseService(database,
         val markets = MarketTable
             .select {
                 MarketTable.isDeleted eq false
-            }
-            .map {
+            }.map {
                 val marketId = it[MarketTable.id].value
                 val marketName = it[MarketTable.name]
                 MarketWithCategories(
