@@ -1,5 +1,9 @@
 package com.thechance.api
 
+import com.thechance.api.utils.IdNotFoundException
+import com.thechance.api.utils.InvalidInputException
+import com.thechance.api.utils.ItemNotAvailableException
+
 @kotlinx.serialization.Serializable
 data class ServerResponse<T>(
     val value: T?,
@@ -23,6 +27,31 @@ data class ServerResponse<T>(
                 isSuccess = true,
                 message = successMessage
             )
+        }
+
+        fun handleError(error: Exception): ServerResponse<Nothing> {
+            return when (error) {
+                is InvalidInputException -> ServerResponse(
+                    value = null,
+                    isSuccess = false,
+                    message = error.message
+                )
+                is IdNotFoundException -> ServerResponse(
+                    value = null,
+                    isSuccess = false,
+                    message = error.message
+                )
+                is ItemNotAvailableException -> ServerResponse(
+                    value = null,
+                    isSuccess = false,
+                    message = error.message
+                )
+                else -> ServerResponse(
+                    value = null,
+                    isSuccess = false,
+                    message = error.message ?: "An unknown error occurred"
+                )
+            }
         }
 
     }
