@@ -2,6 +2,7 @@ package com.thechance.api.service
 
 
 import com.thechance.api.model.Category
+import com.thechance.api.model.CategoryWithProduct
 
 interface CategoryService {
 
@@ -14,4 +15,7 @@ interface CategoryService {
     suspend fun update(categoryId: Long, categoryName: String): Boolean
 
     suspend fun isDeleted(marketId: Long): Boolean
+
+    suspend fun getProductsFromCategory(categoryId: Long?): CategoryWithProduct
+
 }
