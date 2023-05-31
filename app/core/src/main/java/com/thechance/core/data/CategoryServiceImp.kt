@@ -6,13 +6,19 @@ import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.MarketTable
 import org.jetbrains.exposed.sql.*
 import org.koin.core.component.KoinComponent
+import java.util.*
+import kotlin.NoSuchElementException
 
 class CategoryServiceImp(private val database: CoreDataBase) : BaseService(database, CategoriesTable), CategoryService,
     KoinComponent {
 
     override suspend fun create(categoryName: String, marketId: Long): Category = dbQuery {
         val categoryList =
-            getCategoriesByMarketId(marketId).filter { it.categoryName.toLowerCase() == categoryName.toLowerCase() }
+            getCategoriesByMarketId(marketId).filter {
+                it.categoryName.lowercase(Locale.getDefault()) == categoryName.lowercase(
+                    Locale.getDefault()
+                )
+            }
 
         if (categoryList.isEmpty()) {
             val newCategory = CategoriesTable.insert {

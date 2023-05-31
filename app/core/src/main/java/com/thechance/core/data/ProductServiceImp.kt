@@ -1,6 +1,5 @@
 package com.thechance.core.data
 
-import com.thechance.core.data.validation.ProductValidation
 import com.thechance.api.model.Product
 import com.thechance.api.service.ProductService
 import com.thechance.api.utils.ErrorType
@@ -10,14 +9,15 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 import com.thechance.api.utils.Error
+import com.thechance.core.data.validation.product.ProductValidation
 
-class ProductServiceImp(private val database: CoreDataBase) : BaseService(database, ProductTable), ProductService,
-    KoinComponent {
-
-    private val productValidation by lazy { ProductValidation() }
+class ProductServiceImp(
+    private val database: CoreDataBase,
+    private val productValidationImpl: ProductValidation
+) : BaseService(database, ProductTable), ProductService, KoinComponent {
 
     override suspend fun create(productName: String, productPrice: Double, productQuantity: String?): Product {
-        val errors = productValidation.checkCreateValidation(
+        val errors = productValidationImpl.checkCreateValidation(
             productName = productName,
             productPrice = productPrice,
             productQuantity = productQuantity
@@ -57,9 +57,9 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
     override suspend fun updateProduct(
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
     ): String {
-        if (productValidation.checkId(productId)) {
+        if (productValidationImpl.checkId(productId)) {
             if (!isDeleted(productId!!)) {
-                val errors = productValidation.checkUpdateValidation(
+                val errors = productValidationImpl.checkUpdateValidation(
                     productName = productName,
                     productPrice = productPrice,
                     productQuantity = productQuantity
@@ -85,7 +85,7 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
     }
 
     override suspend fun deleteProduct(productId: Long?): String {
-        return if (productValidation.checkId(productId)) {
+        return if (productValidationImpl.checkId(productId)) {
             if (!isDeleted(productId!!)) {
                 dbQuery {
                     ProductTable.update({ ProductTable.id eq productId }) { productRow ->
