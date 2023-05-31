@@ -29,31 +29,6 @@ data class ServerResponse<T>(
             )
         }
 
-        fun handleError(error: Exception): ServerResponse<Nothing> {
-            return when (error) {
-                is InvalidInputException -> ServerResponse(
-                    value = null,
-                    isSuccess = false,
-                    message = error.message
-                )
-                is IdNotFoundException -> ServerResponse(
-                    value = null,
-                    isSuccess = false,
-                    message = error.message
-                )
-                is ItemNotAvailableException -> ServerResponse(
-                    value = null,
-                    isSuccess = false,
-                    message = error.message
-                )
-                else -> ServerResponse(
-                    value = null,
-                    isSuccess = false,
-                    message = error.message ?: "An unknown error occurred"
-                )
-            }
-        }
-
     }
 
 }

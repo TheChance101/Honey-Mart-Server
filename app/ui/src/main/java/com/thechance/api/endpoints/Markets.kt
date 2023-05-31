@@ -2,12 +2,14 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.service.MarketService
+import com.thechance.api.utils.InvalidInputException
 import com.thechance.api.utils.isValidInput
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.swagger.codegen.v3.service.exception.NotFoundException
 
 
 fun Route.marketsRoutes(marketService: MarketService) {
@@ -58,8 +60,11 @@ fun Route.marketsRoutes(marketService: MarketService) {
                             ServerResponse.error("Market with ID $marketId already deleted")
                         )
                     }
-                } catch (e: Exception) {
-                    call.respond(HttpStatusCode.NotFound, ServerResponse.handleError(e))
+                } catch (e: InvalidInputException) {
+                    call.respond(HttpStatusCode.NotFound, e.message.toString())
+                }
+                catch (e: NotFoundException) {
+                    call.respond(HttpStatusCode.NotFound, e.message.toString())
                 }
             }
         }

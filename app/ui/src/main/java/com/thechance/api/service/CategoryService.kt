@@ -9,9 +9,11 @@ interface CategoryService {
 
     suspend fun getCategoriesByMarketId(marketId: Long): List<Category>
 
-    suspend fun delete(categoryId: Long): Boolean
+    suspend fun delete(categoryId: Long , marketId: Long): Boolean
 
     suspend fun update(categoryId: Long, categoryName: String): Category
 
-    suspend fun isDeleted(marketId: Long): Boolean
+    suspend fun isMarketDeleted(marketId: Long): Boolean
+    suspend fun isCategoryDeleted(categoryId: Long): Boolean
+
 }

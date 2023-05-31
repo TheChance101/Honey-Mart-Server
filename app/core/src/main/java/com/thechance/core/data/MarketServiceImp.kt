@@ -45,6 +45,7 @@ class MarketServiceImp(database: CoreDataBase) : BaseService(database, MarketTab
                 true
             } else {
                 throw IdNotFoundException("Market with ID $marketId not found.")
+
             }
         }
     }
