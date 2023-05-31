@@ -1,6 +1,6 @@
 package com.thechance.core.data
 
-import com.example.core.data.validation.ProductValidation
+import com.thechance.core.data.validation.ProductValidation
 import com.thechance.api.model.Product
 import com.thechance.api.service.ProductService
 import com.thechance.api.utils.ErrorType

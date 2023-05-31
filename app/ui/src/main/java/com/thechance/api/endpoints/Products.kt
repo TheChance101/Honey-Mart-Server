@@ -7,6 +7,8 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import com.thechance.api.utils.Error
+import com.thechance.api.utils.errorHandler
 
 fun Route.productsRoutes(productService: ProductService) {
 
@@ -47,7 +49,7 @@ fun Route.productsRoutes(productService: ProductService) {
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success(true, updatedProduct))
             } catch (t: Error) {
-//                t.errorHandler(call)
+                t.errorHandler(call)
             } catch (t: Throwable) {
                 call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
             }
@@ -62,7 +64,7 @@ fun Route.productsRoutes(productService: ProductService) {
                     ServerResponse.success(result = true, successMessage = deletedProduct)
                 )
             } catch (t: Error) {
-//                t.errorHandler(call)
+                t.errorHandler(call)
             }
         }
     }
