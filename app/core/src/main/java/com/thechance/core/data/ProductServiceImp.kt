@@ -3,13 +3,12 @@ package com.thechance.core.data
 import com.thechance.core.data.validation.ProductValidation
 import com.thechance.api.model.Product
 import com.thechance.api.service.ProductService
-import com.thechance.api.utils.ErrorType
+import com.thechance.api.utils.*
 import com.thechance.core.data.tables.ProductTable
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
-import com.thechance.api.utils.Error
 
 class ProductServiceImp(private val database: CoreDataBase) : BaseService(database, ProductTable), ProductService,
     KoinComponent {
@@ -77,10 +76,10 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
                     throw Throwable(errors.toString())
                 }
             } else {
-                throw Error(ErrorType.DELETED_ITEM)
+                throw ItemNotAvailableException("Item No longer Available")
             }
         } else {
-            throw Error(ErrorType.NOT_FOUND)
+            throw IdNotFoundException("Id Not Found")
         }
     }
 
@@ -94,10 +93,10 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
                 }
                 "Product Deleted successfully."
             } else {
-                throw Error(ErrorType.DELETED_ITEM)
+                throw ItemNotAvailableException("Item No longer Available")
             }
         } else {
-            throw Error(ErrorType.INVALID_INPUT)
+            throw InvalidInputException("Invalid Input")
         }
     }
 
@@ -105,6 +104,6 @@ class ProductServiceImp(private val database: CoreDataBase) : BaseService(databa
         val product = ProductTable.select { ProductTable.id eq id }.singleOrNull()
         product?.let {
             it[ProductTable.isDeleted]
-        } ?: throw Error(ErrorType.NOT_FOUND)
+        } ?: throw IdNotFoundException("Id Not Found")
     }
 }
