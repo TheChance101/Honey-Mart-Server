@@ -2,6 +2,7 @@ package com.thechance.core.data
 
 import com.thechance.api.model.Market
 import com.thechance.api.service.MarketService
+import com.thechance.api.utils.IdNotFoundException
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.MarketTable
 import org.jetbrains.exposed.sql.insert
@@ -43,7 +44,7 @@ class MarketServiceImp(database: CoreDataBase) : BaseService(database, MarketTab
                 }
                 true
             } else {
-                throw NoSuchElementException("Market with ID $marketId not found.")
+                throw IdNotFoundException("Market with ID $marketId not found.")
             }
         }
     }
@@ -59,7 +60,7 @@ class MarketServiceImp(database: CoreDataBase) : BaseService(database, MarketTab
                 marketName = updatedMarket[MarketTable.name]
             )
         } else {
-            throw NoSuchElementException("Market with ID $marketId not found.")
+            throw IdNotFoundException("Market with ID $marketId not found.")
         }
     }
 
@@ -67,7 +68,8 @@ class MarketServiceImp(database: CoreDataBase) : BaseService(database, MarketTab
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
             it[MarketTable.isDeleted]
-        } ?: throw NoSuchElementException("Market with ID $marketId not found.")
+        } ?: throw IdNotFoundException("Market with ID $marketId not found.")
+
     }
 
 }
