@@ -1,7 +1,7 @@
-package com.the_chance.endpoints
+package com.thechance.api.endpoints
 
-import com.the_chance.data.ServerResponse
-import com.the_chance.data.services.CategoryService
+import com.thechance.api.ServerResponse
+import com.thechance.api.service.CategoryService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

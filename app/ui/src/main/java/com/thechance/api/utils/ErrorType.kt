@@ -1,4 +1,4 @@
-package com.the_chance.data.services.validation
+package com.thechance.api.utils
 
 
 enum class ErrorType(val value: Int, val message: String) {

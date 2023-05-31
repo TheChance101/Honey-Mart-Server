@@ -1,10 +1,7 @@
-package com.the_chance.endpoints
+package com.thechance.api.endpoints
 
-import com.the_chance.data.ServerResponse
-import com.the_chance.data.services.ProductService
-import com.the_chance.data.services.validation.Error
-import com.the_chance.utils.errorHandler
-import com.the_chance.utils.orZero
+import com.thechance.api.ServerResponse
+import com.thechance.api.service.ProductService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -24,7 +21,7 @@ fun Route.productsRoutes(productService: ProductService) {
             try {
                 val params = call.receiveParameters()
                 val productName = params["name"]?.trim().orEmpty()
-                val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
+                val productPrice = params["price"]?.trim()?.toDoubleOrNull()?:0.0
                 val productQuantity = params["quantity"]?.trim()
 
                 val newAddedProduct = productService.create(productName, productPrice, productQuantity)
@@ -50,7 +47,7 @@ fun Route.productsRoutes(productService: ProductService) {
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success(true, updatedProduct))
             } catch (t: Error) {
-                t.errorHandler(call)
+//                t.errorHandler(call)
             } catch (t: Throwable) {
                 call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
             }
@@ -65,7 +62,7 @@ fun Route.productsRoutes(productService: ProductService) {
                     ServerResponse.success(result = true, successMessage = deletedProduct)
                 )
             } catch (t: Error) {
-                t.errorHandler(call)
+//                t.errorHandler(call)
             }
         }
     }

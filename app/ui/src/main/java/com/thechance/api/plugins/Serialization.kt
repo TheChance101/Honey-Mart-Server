@@ -1,4 +1,4 @@
-package com.the_chance.plugins
+package com.thechance.api.plugins
 
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*

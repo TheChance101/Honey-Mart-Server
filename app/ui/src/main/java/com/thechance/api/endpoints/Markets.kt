@@ -1,9 +1,7 @@
-package com.the_chance.endpoints
+package com.thechance.api.endpoints
 
-import com.the_chance.data.ServerResponse
-import com.the_chance.data.services.MarketService
-import com.the_chance.utils.isValidMarketName
-import com.the_chance.utils.isValidStringInput
+import com.thechance.api.ServerResponse
+import com.thechance.api.service.MarketService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -16,23 +14,13 @@ fun Route.marketsRoutes(marketService: MarketService) {
 
         post {
             val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-            if (!isValidMarketName(marketName)) {
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    ServerResponse.error("Invalid market name. Just can contain text and numbers")
-                )
-            } else if (marketName.length < 4 || marketName.length > 14) {
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    ServerResponse.error("Market name length should be between 4 and 14 characters")
-                )
-            } else {
-                val newMarket = marketService.createMarket(marketName)
-                call.respond(
-                    HttpStatusCode.Created,
-                    ServerResponse.success(newMarket, "Market created successfully")
-                )
-            }
+
+            call.respond(
+                HttpStatusCode.BadRequest,
+                ServerResponse.error("Invalid market name. Just can contain text and numbers")
+            )
+
+
         }
 
         get {
@@ -50,7 +38,7 @@ fun Route.marketsRoutes(marketService: MarketService) {
                     if (isDeleted) {
                         call.respond(
                             HttpStatusCode.OK,
-                            ServerResponse.success(null ,"Market Deleted Successfully")
+                            ServerResponse.success(null, "Market Deleted Successfully")
                         )
                     } else {
                         call.respond(
@@ -81,7 +69,7 @@ fun Route.marketsRoutes(marketService: MarketService) {
                             HttpStatusCode.NotFound,
                             ServerResponse.error("Market with ID: $marketId has been deleted")
                         )
-                    } else if (!isValidMarketName(marketName)) {
+                    } else if (false) {
                         call.respond(
                             HttpStatusCode.BadRequest,
                             ServerResponse.error("Invalid market name. Just can contain text and numbers")

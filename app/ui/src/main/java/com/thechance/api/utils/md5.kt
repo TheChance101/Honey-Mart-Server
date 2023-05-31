@@ -1,4 +1,4 @@
-package com.the_chance.utils
+package com.thechance.api.utils
 
 import java.math.BigInteger
 import java.security.MessageDigest

@@ -1,8 +1,6 @@
-package com.the_chance.utils
+package com.thechance.api.utils
 
-import com.the_chance.data.ServerResponse
-import com.the_chance.data.services.validation.Error
-import com.the_chance.data.services.validation.ErrorType
+import com.thechance.api.ServerResponse
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
