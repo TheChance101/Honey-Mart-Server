@@ -11,7 +11,7 @@ interface CategoryService {
 
     suspend fun delete(categoryId: Long): Boolean
 
-    suspend fun update(categoryId: Long, categoryName: String): Boolean
+    suspend fun update(categoryId: Long, categoryName: String): Category
 
     suspend fun isDeleted(marketId: Long): Boolean
 }
