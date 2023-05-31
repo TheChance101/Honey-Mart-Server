@@ -1,4 +1,4 @@
-package com.thechance.core.data
+package com.thechance.core.data.service
 
 import com.thechance.api.model.Category
 import com.thechance.api.model.MarketWithCategories
@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
 
-class MarketCategoriesServiceImp(database: CoreDataBase) : BaseService(database, MarketTable, CategoriesTable),
+class MarketCategoriesServiceImp: BaseService(MarketTable, CategoriesTable),
     MarketCategoriesService,
     KoinComponent {
 

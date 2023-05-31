@@ -1,4 +1,4 @@
-package com.thechance.core.data
+package com.thechance.core.data.database
 
 import org.jetbrains.exposed.sql.Database
 
