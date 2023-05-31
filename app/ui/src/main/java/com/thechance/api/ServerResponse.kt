@@ -1,4 +1,4 @@
-package com.the_chance.data
+package com.thechance.api
 
 @kotlinx.serialization.Serializable
 data class ServerResponse<T>(
