@@ -1,4 +1,4 @@
-package com.thechance.core.data
+package com.thechance.core.data.service
 
 import com.thechance.api.model.Market
 import com.thechance.api.service.MarketService

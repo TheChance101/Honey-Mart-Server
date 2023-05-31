@@ -1,5 +1,6 @@
-package com.thechance.core.data
+package com.thechance.core.data.service
 
+import com.thechance.core.data.database.CoreDataBase
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
