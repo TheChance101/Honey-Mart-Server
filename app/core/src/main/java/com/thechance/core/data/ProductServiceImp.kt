@@ -12,9 +12,8 @@ import com.thechance.api.utils.Error
 import com.thechance.core.data.validation.product.ProductValidation
 
 class ProductServiceImp(
-    private val database: CoreDataBase,
     private val productValidationImpl: ProductValidation
-) : BaseService(database, ProductTable), ProductService, KoinComponent {
+) : BaseService(ProductTable), ProductService, KoinComponent {
 
     override suspend fun create(productName: String, productPrice: Double, productQuantity: String?): Product {
         val errors = productValidationImpl.checkCreateValidation(

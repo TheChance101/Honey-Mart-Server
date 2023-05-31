@@ -9,14 +9,16 @@ import com.thechance.core.data.validation.category.CategoryValidation
 import com.thechance.core.data.validation.category.CategoryValidationImpl
 import com.thechance.core.data.validation.product.ProductValidation
 import com.thechance.core.data.validation.product.ProductValidationImpl
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val myModule = module {
     single<CoreDataBase> { CoreDataBaseImp() }
-    single<ProductService> { ProductServiceImp(get(), get()) }
-    single<MarketService> { MarketServiceImp(get()) }
-    single<CategoryService> { CategoryServiceImp(get()) }
-    single<MarketCategoriesService> { MarketCategoriesServiceImp(get()) }
+    singleOf(::ProductServiceImp){bind<ProductService>()} //temp
+    single<MarketService> { MarketServiceImp() }
+    single<CategoryService> { CategoryServiceImp() }
+    single<MarketCategoriesService> { MarketCategoriesServiceImp() }
 
     single<ProductValidation> { ProductValidationImpl() }
     single<CategoryValidation> { CategoryValidationImpl() }

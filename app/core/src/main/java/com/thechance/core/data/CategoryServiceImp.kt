@@ -9,7 +9,7 @@ import org.koin.core.component.KoinComponent
 import java.util.*
 import kotlin.NoSuchElementException
 
-class CategoryServiceImp(private val database: CoreDataBase) : BaseService(database, CategoriesTable), CategoryService,
+class CategoryServiceImp: BaseService(CategoriesTable), CategoryService,
     KoinComponent {
 
     override suspend fun create(categoryName: String, marketId: Long): Category = dbQuery {
