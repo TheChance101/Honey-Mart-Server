@@ -25,5 +25,5 @@ val myModule = module {
 
     single<ProductValidation> { ProductValidationImpl() }
     single<CategoryValidation> { CategoryValidationImpl() }
-    single<DeleteAllTablesService> { DeleteAllTablesServiceServiceImp(get()) }
+    single<DeleteAllTablesService> { DeleteAllTablesServiceServiceImp() }
 }
