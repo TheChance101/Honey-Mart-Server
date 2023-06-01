@@ -2,6 +2,9 @@ package com.thechance.core.data.service
 
 import com.thechance.api.model.Product
 import com.thechance.api.service.ProductService
+import com.thechance.api.utils.IdNotFoundException
+import com.thechance.api.utils.InvalidInputException
+import com.thechance.api.utils.ItemNotAvailableException
 import com.thechance.core.data.tables.ProductTable
 import com.thechance.core.data.validation.product.ProductValidation
 import org.jetbrains.exposed.sql.insert
@@ -74,10 +77,10 @@ class ProductServiceImp(
                     throw exception
                 }
             } else {
-                throw Exception("The item is no longer available.")
+                throw ItemNotAvailableException("The item is no longer available.")
             }
         } else {
-            throw Exception("Id Not found ")
+            throw IdNotFoundException("Id Not found ")
         }
     }
 
@@ -91,10 +94,10 @@ class ProductServiceImp(
                 }
                 "Product Deleted successfully."
             } else {
-                throw Exception("The item is no longer available.")
+                throw ItemNotAvailableException("The item is no longer available.")
             }
         } else {
-            throw Exception("Invalid input")
+            throw InvalidInputException("Invalid input")
         }
     }
 
@@ -102,6 +105,6 @@ class ProductServiceImp(
         val product = ProductTable.select { ProductTable.id eq id }.singleOrNull()
         product?.let {
             it[ProductTable.isDeleted]
-        } ?: throw Exception("The item is no longer available.")
+        } ?: throw ItemNotAvailableException("The item is no longer available.")
     }
 }

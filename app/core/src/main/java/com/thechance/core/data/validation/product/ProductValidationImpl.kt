@@ -10,28 +10,36 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
         productPrice: Double,
         productQuantity: String?
     ): Exception? {
-        return if (!checkNameLength(productName)) {
-            InvalidInputException("The product name should have a length greater than 6 and shorter than 20 characters .")
+        val exception = mutableListOf<String>()
+        if (!checkNameLength(productName)) {
+            exception.add("The product name should have a length greater than 6 and shorter than 20 characters .")
         } else if (!checkPrice(productPrice)) {
-            InvalidInputException("The product Price should be in range 0.1 to 1000.000 .")
+            exception.add("The product Price should be in range 0.1 to 1000.000 .")
         } else if (productQuantity != null && !checkNameLength(productQuantity)) {
-            InvalidInputException("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
-        } else {
+            exception.add("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
+        }
+        return if (exception.isEmpty()) {
             null
+        } else {
+            InvalidInputException(exception.toString())
         }
     }
 
     override fun checkUpdateValidation(
         productName: String?, productPrice: Double?, productQuantity: String?
     ): Exception? {
-        return if (productName != null && !checkNameLength(productName)) {
-            InvalidInputException("The product name should have a length greater than 6 and shorter than 20 characters .")
+        val exception = mutableListOf<String>()
+        if (productName != null && !checkNameLength(productName)) {
+            exception.add("The product name should have a length greater than 6 and shorter than 20 characters .")
         } else if (productPrice != null && !checkPrice(productPrice)) {
-            InvalidInputException("The product Price should be in range 0.1 to 1000.000 .")
+            exception.add("The product Price should be in range 0.1 to 1000.000 .")
         } else if (productQuantity != null && !checkNameLength(productQuantity)) {
-            InvalidInputException("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
-        } else {
+            exception.add("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
+        }
+        return if (exception.isEmpty()) {
             null
+        } else {
+            InvalidInputException(exception.toString())
         }
     }
 
