@@ -1,5 +1,6 @@
 package com.thechance.core.data.validation.product
 
+import com.thechance.api.utils.InvalidInputException
 import org.koin.core.component.KoinComponent
 
 class ProductValidationImpl : ProductValidation, KoinComponent {
@@ -8,41 +9,42 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
         productName: String,
         productPrice: Double,
         productQuantity: String?
-    ): List<String> {
-        val error = mutableListOf<String>()
-
+    ): Exception? {
+        val exception = mutableListOf<String>()
         if (!checkNameLength(productName)) {
-            error.add("The product name should have a length greater than 6 and shorter than 20 characters .")
+            exception.add("The product name should have a length greater than 6 and shorter than 20 characters .")
         }
-
         if (!checkPrice(productPrice)) {
-            error.add("The product Price should be in range 0.1 to 1000.000 .")
+            exception.add("The product Price should be in range 0.1 to 1000.000 .")
         }
-
         if (productQuantity != null && !checkNameLength(productQuantity)) {
-            error.add("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
+            exception.add("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
         }
-        return error
+        return if (exception.isEmpty()) {
+            null
+        } else {
+            InvalidInputException(exception.joinToString(" ,\n "))
+        }
     }
 
     override fun checkUpdateValidation(
         productName: String?, productPrice: Double?, productQuantity: String?
-    ): List<String> {
-        val error = mutableListOf<String>()
-
+    ): Exception? {
+        val exception = mutableListOf<String>()
         if (productName != null && !checkNameLength(productName)) {
-            error.add("The product name should have a length greater than 6 and shorter than 20 characters .")
+            exception.add("The product name should have a length greater than 6 and shorter than 20 characters .")
         }
-
         if (productPrice != null && !checkPrice(productPrice)) {
-            error.add("The product Price should be in range 0.1 to 1000.000 .")
+            exception.add("The product Price should be in range 0.1 to 1000.000 .")
         }
-
         if (productQuantity != null && !checkNameLength(productQuantity)) {
-            error.add("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
+            exception.add("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
         }
-
-        return error
+        return if (exception.isEmpty()) {
+            null
+        } else {
+            InvalidInputException(exception.joinToString(" ,\n "))
+        }
     }
 
     override fun checkId(id: Long?): Boolean {
