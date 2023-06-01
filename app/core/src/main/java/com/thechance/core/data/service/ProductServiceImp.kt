@@ -4,8 +4,14 @@ import com.thechance.api.model.Category
 import com.thechance.api.model.Product
 import com.thechance.api.model.ProductWithCategory
 import com.thechance.api.service.ProductService
-import com.thechance.api.utils.ErrorType
+import com.thechance.api.utils.IdNotFoundException
+import com.thechance.api.utils.InvalidInputException
+import com.thechance.api.utils.ItemNotAvailableException
 import com.thechance.core.data.tables.ProductTable
+import com.thechance.core.data.validation.product.ProductValidation
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 import com.thechance.api.utils.Error
 import com.thechance.core.data.tables.CategoriesTable
@@ -104,12 +110,12 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
     ): String {
         if (productValidation.checkId(productId)) {
             if (!isDeleted(productId!!)) {
-                val errors = productValidation.checkUpdateValidation(
+                val exception = productValidation.checkUpdateValidation(
                     productName = productName,
                     productPrice = productPrice,
                     productQuantity = productQuantity
                 )
-                return if (errors.isEmpty()) {
+                return if (exception == null) {
                     dbQuery {
                         ProductTable.update({ ProductTable.id eq productId }) { productRow ->
                             productName?.let { productRow[name] = it }
@@ -119,13 +125,13 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
                     }
                     "Product Updated successfully."
                 } else {
-                    throw Throwable(errors.toString())
+                    throw exception
                 }
             } else {
-                throw Error(ErrorType.DELETED_ITEM)
+                throw ItemNotAvailableException("The item is no longer available.")
             }
         } else {
-            throw Error(ErrorType.NOT_FOUND)
+            throw IdNotFoundException("Id Not found ")
         }
     }
 
@@ -174,18 +180,19 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
                 }
                 "Product Deleted successfully."
             } else {
-                throw Error(ErrorType.DELETED_ITEM)
+                throw ItemNotAvailableException("The item is no longer available.")
             }
         } else {
-            throw Error(ErrorType.INVALID_INPUT)
+            throw InvalidInputException("Invalid input")
         }
     }
 
-    private suspend fun isDeleted(id: Long): Boolean = dbQuery {
-        val product = ProductTable.select { ProductTable.id eq id }.singleOrNull()
-        product?.let {
-            it[ProductTable.isDeleted]
-        } ?: throw Error(ErrorType.NOT_FOUND)
+    private suspend fun isDeleted(id: Long): Boolean {
+        val product = dbQuery {
+            ProductTable.select { ProductTable.id eq id }.singleOrNull()
+                ?: throw ItemNotAvailableException("The item with ID $id was not found.")
+        }
+        return product[ProductTable.isDeleted]
     }
 
     /**
