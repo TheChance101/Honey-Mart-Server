@@ -12,6 +12,7 @@ import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.validation.product.ProductValidation
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 
 class ProductServiceImp(private val productValidation: ProductValidation) : BaseService(ProductTable), ProductService,
@@ -79,6 +80,7 @@ class ProductServiceImp(private val productValidation: ProductValidation) : Base
     override suspend fun getAllCategoryForProduct(productId: Long?): List<Category> {
         return if (productValidation.checkId(productId)) {
             if (!isDeleted(productId!!)) {
+                //error here need to fix
                 getAllCategoryForProduct(productId)
             } else {
                 throw Error(ErrorType.DELETED_ITEM)
@@ -115,6 +117,38 @@ class ProductServiceImp(private val productValidation: ProductValidation) : Base
             }
         } else {
             throw Error(ErrorType.NOT_FOUND)
+        }
+    }
+
+    override suspend fun updateProductCategory(productId: Long?, categoryIds: List<Long>): ProductWithCategory {
+        return dbQuery {
+            if (isValidCategories(categoryIds)) {
+                CategoryProductTable.deleteWhere { CategoryProductTable.productId eq productId }
+
+                CategoryProductTable.batchInsert(categoryIds) { categoryId ->
+                    this[CategoryProductTable.productId] = productId!!
+                    this[CategoryProductTable.categoryId] = categoryId
+                }
+                val product = ProductTable.select { ProductTable.id eq productId }.map {
+                    ProductWithCategory(
+                        id = it[ProductTable.id].value,
+                        name = it[ProductTable.name],
+                        price = it[ProductTable.price],
+                        quantity = it[ProductTable.quantity],
+                        category = (CategoriesTable innerJoin CategoryProductTable)
+                            .select { CategoryProductTable.productId eq it[ProductTable.id].value }
+                            .map { categoryRow ->
+                                Category(
+                                    categoryId = categoryRow[CategoriesTable.id].value,
+                                    categoryName = categoryRow[CategoriesTable.name].toString(),
+                                )
+                            }
+                    )
+                }.single()
+                product
+            } else {
+                throw Throwable()
+            }
         }
     }
 

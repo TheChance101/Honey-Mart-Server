@@ -10,6 +10,7 @@ import io.ktor.server.routing.*
 import com.thechance.api.utils.Error
 import com.thechance.api.utils.errorHandler
 import com.thechance.api.utils.orZero
+import com.thechance.api.utils.toLongIds
 
 fun Route.productsRoutes(productService: ProductService) {
 
@@ -61,6 +62,23 @@ fun Route.productsRoutes(productService: ProductService) {
                     productQuantity = productQuantity
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success(true, updatedProduct))
+            } catch (t: Error) {
+                t.errorHandler(call)
+            } catch (t: Throwable) {
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
+            }
+        }
+
+        put("{id}/updateCategories") {
+            try {
+                val productId = call.parameters["id"]?.trim()?.toLongOrNull()
+                val params = call.receiveParameters()
+                val categoriesId = params["categoriesId"]?.trim().toLongIds()
+
+                val updatedProductCategory = productService.updateProductCategory(
+                    productId = productId, categoryIds = categoriesId
+                )
+                call.respond(HttpStatusCode.OK, ServerResponse.success(updatedProductCategory))
             } catch (t: Error) {
                 t.errorHandler(call)
             } catch (t: Throwable) {

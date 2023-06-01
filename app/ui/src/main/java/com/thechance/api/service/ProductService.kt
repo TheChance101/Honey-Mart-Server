@@ -6,7 +6,12 @@ import com.thechance.api.model.ProductWithCategory
 
 interface ProductService {
 
-    suspend fun create(productName: String, productPrice: Double, productQuantity: String?,categoriesId: List<Long>?): ProductWithCategory
+    suspend fun create(
+        productName: String,
+        productPrice: Double,
+        productQuantity: String?,
+        categoriesId: List<Long>?
+    ): ProductWithCategory
 
     suspend fun getAllProducts(): List<Product>
 
@@ -17,5 +22,7 @@ interface ProductService {
     ): String
 
     suspend fun deleteProduct(productId: Long?): String
+
+    suspend fun updateProductCategory(productId: Long?, categoryIds: List<Long>): ProductWithCategory
 
 }
