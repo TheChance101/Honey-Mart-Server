@@ -24,7 +24,7 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
             error.add("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
         }
 
-        if (categoriesId == null || categoriesId.filterNot { it == 0L }.isEmpty()) {
+        if (isValidCategoryIds(categoriesId)) {
             error.add("The product must be assigned to at least one category.")
         }
 
@@ -55,12 +55,24 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
         return id != null
     }
 
+    override fun checkUpdateProductCategories(productId: Long?, categoryIds: List<Long>?): Boolean {
+        return checkId(productId) && isValidCategoryIds(categoryIds)
+    }
+
     private fun checkNameLength(productName: String): Boolean {
         return productName.length in 6..20
     }
 
     private fun checkPrice(price: Double): Boolean {
         return price in 0.1..999999.0
+    }
+
+    private fun isValidCategoryIds(categoryIds: List<Long>?): Boolean {
+        return if ((categoryIds.isNullOrEmpty() || categoryIds.filterNot { it == 0L }.isEmpty())) {
+            throw Exception("error in CategoryIds")
+        } else {
+            true
+        }
     }
 
 }

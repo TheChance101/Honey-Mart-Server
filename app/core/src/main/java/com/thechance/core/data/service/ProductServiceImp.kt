@@ -130,34 +130,37 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
     }
 
     override suspend fun updateProductCategory(productId: Long?, categoryIds: List<Long>): ProductWithCategory {
-        return dbQuery {
-            if (isValidCategories(categoryIds)) {
-                CategoryProductTable.deleteWhere { CategoryProductTable.productId eq productId }
+        return if (productValidation.checkUpdateProductCategories(productId, categoryIds)) {
+            dbQuery {
+                if (isValidCategories(categoryIds)) {
+                    CategoryProductTable.deleteWhere { CategoryProductTable.productId eq productId }
 
-                CategoryProductTable.batchInsert(categoryIds) { categoryId ->
-                    this[CategoryProductTable.productId] = productId!!
-                    this[CategoryProductTable.categoryId] = categoryId
+                    CategoryProductTable.batchInsert(categoryIds) { categoryId ->
+                        this[CategoryProductTable.productId] = productId!!
+                        this[CategoryProductTable.categoryId] = categoryId
+                    }
+                    ProductTable.select { ProductTable.id eq productId }.map {
+                        ProductWithCategory(
+                            id = it[ProductTable.id].value,
+                            name = it[ProductTable.name],
+                            price = it[ProductTable.price],
+                            quantity = it[ProductTable.quantity],
+                            category = (CategoriesTable innerJoin CategoryProductTable)
+                                .select { CategoryProductTable.productId eq it[ProductTable.id].value }
+                                .map { categoryRow ->
+                                    Category(
+                                        categoryId = categoryRow[CategoriesTable.id].value,
+                                        categoryName = categoryRow[CategoriesTable.name].toString(),
+                                    )
+                                }
+                        )
+                    }.single()
+                } else {
+                    throw Throwable()
                 }
-                val product = ProductTable.select { ProductTable.id eq productId }.map {
-                    ProductWithCategory(
-                        id = it[ProductTable.id].value,
-                        name = it[ProductTable.name],
-                        price = it[ProductTable.price],
-                        quantity = it[ProductTable.quantity],
-                        category = (CategoriesTable innerJoin CategoryProductTable)
-                            .select { CategoryProductTable.productId eq it[ProductTable.id].value }
-                            .map { categoryRow ->
-                                Category(
-                                    categoryId = categoryRow[CategoriesTable.id].value,
-                                    categoryName = categoryRow[CategoriesTable.name].toString(),
-                                )
-                            }
-                    )
-                }.single()
-                product
-            } else {
-                throw Throwable()
             }
+        } else {
+            throw Throwable("error in categoryIds")
         }
     }
 

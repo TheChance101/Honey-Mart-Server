@@ -8,4 +8,6 @@ interface ProductValidation {
     fun checkUpdateValidation(productName: String?, productPrice: Double?, productQuantity: String?): List<String>
 
     fun checkId(id: Long?): Boolean
+
+    fun checkUpdateProductCategories(productId: Long?, categoryIds: List<Long>?): Boolean
 }
