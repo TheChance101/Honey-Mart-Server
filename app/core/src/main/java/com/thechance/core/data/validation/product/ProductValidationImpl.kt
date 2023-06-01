@@ -13,15 +13,17 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
         val exception = mutableListOf<String>()
         if (!checkNameLength(productName)) {
             exception.add("The product name should have a length greater than 6 and shorter than 20 characters .")
-        } else if (!checkPrice(productPrice)) {
+        }
+        if (!checkPrice(productPrice)) {
             exception.add("The product Price should be in range 0.1 to 1000.000 .")
-        } else if (productQuantity != null && !checkNameLength(productQuantity)) {
+        }
+        if (productQuantity != null && !checkNameLength(productQuantity)) {
             exception.add("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
         }
         return if (exception.isEmpty()) {
             null
         } else {
-            InvalidInputException(exception.toString())
+            InvalidInputException(exception.joinToString(" ,\n "))
         }
     }
 
@@ -31,15 +33,17 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
         val exception = mutableListOf<String>()
         if (productName != null && !checkNameLength(productName)) {
             exception.add("The product name should have a length greater than 6 and shorter than 20 characters .")
-        } else if (productPrice != null && !checkPrice(productPrice)) {
+        }
+        if (productPrice != null && !checkPrice(productPrice)) {
             exception.add("The product Price should be in range 0.1 to 1000.000 .")
-        } else if (productQuantity != null && !checkNameLength(productQuantity)) {
+        }
+        if (productQuantity != null && !checkNameLength(productQuantity)) {
             exception.add("The product Quantity should have a length greater than 6 and shorter than 20 characters .")
         }
         return if (exception.isEmpty()) {
             null
         } else {
-            InvalidInputException(exception.toString())
+            InvalidInputException(exception.joinToString(" ,\n "))
         }
     }
 
