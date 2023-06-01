@@ -1,8 +1,14 @@
-package com.thechance.core.data.validation
+package com.thechance.core.data.validation.product
 
-class ProductValidation {
+import org.koin.core.component.KoinComponent
 
-    fun checkCreateValidation(productName: String, productPrice: Double, productQuantity: String?): List<String> {
+class ProductValidationImpl : ProductValidation, KoinComponent {
+
+    override fun checkCreateValidation(
+        productName: String,
+        productPrice: Double,
+        productQuantity: String?
+    ): List<String> {
         val error = mutableListOf<String>()
 
         if (!checkNameLength(productName)) {
@@ -19,8 +25,8 @@ class ProductValidation {
         return error
     }
 
-    fun checkUpdateValidation(
-         productName: String?, productPrice: Double?, productQuantity: String?
+    override fun checkUpdateValidation(
+        productName: String?, productPrice: Double?, productQuantity: String?
     ): List<String> {
         val error = mutableListOf<String>()
 
@@ -39,6 +45,10 @@ class ProductValidation {
         return error
     }
 
+    override fun checkId(id: Long?): Boolean {
+        return id != null
+    }
+
     private fun checkNameLength(productName: String): Boolean {
         return productName.length in 6..20
     }
@@ -46,9 +56,4 @@ class ProductValidation {
     private fun checkPrice(price: Double): Boolean {
         return price in 0.1..999999.0
     }
-
-    fun checkId(id: Long?): Boolean {
-        return id != null
-    }
-
 }
