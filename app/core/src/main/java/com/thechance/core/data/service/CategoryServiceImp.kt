@@ -4,17 +4,13 @@ import com.thechance.api.model.Category
 import com.thechance.api.model.CategoryWithProduct
 import com.thechance.api.model.Product
 import com.thechance.api.service.CategoryService
-import com.thechance.api.utils.Error
-import com.thechance.api.utils.ErrorType
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.tables.MarketTable
 import com.thechance.core.data.tables.ProductTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.component.KoinComponent
 import java.util.*
-import kotlin.NoSuchElementException
 
 class CategoryServiceImp: BaseService(CategoriesTable), CategoryService,
     KoinComponent {
@@ -126,7 +122,7 @@ class CategoryServiceImp: BaseService(CategoriesTable), CategoryService,
                 products = categoryProducts
             )
         } else {
-            throw Error(ErrorType.DELETED_ITEM)
+            throw Error()
         }
     }
 }

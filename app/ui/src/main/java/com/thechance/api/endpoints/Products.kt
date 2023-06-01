@@ -11,7 +11,7 @@ import io.ktor.server.routing.*
 
 fun Route.productsRoutes(productService: ProductService) {
 
-    get ("/products"){
+    get("/products") {
         val products = productService.getAllProducts()
         call.respond(ServerResponse.success(products))
     }
@@ -39,7 +39,8 @@ fun Route.productsRoutes(productService: ProductService) {
                 val newAddedProduct = productService.create(productName, productPrice, productQuantity, categoriesId)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
             } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
+                val error = e.message.toString()
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(error))
             } catch (t: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
@@ -81,10 +82,12 @@ fun Route.productsRoutes(productService: ProductService) {
                     productId = productId, categoryIds = categoriesId
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success(updatedProductCategory))
-            } catch (t: Error) {
-                t.errorHandler(call)
-            } catch (t: Throwable) {
-                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
+            } catch (e: InvalidInputException) {
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
+            } catch (e: IdNotFoundException) {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
             }
         }
 

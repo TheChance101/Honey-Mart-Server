@@ -7,67 +7,56 @@ import com.thechance.api.service.ProductService
 import com.thechance.api.utils.IdNotFoundException
 import com.thechance.api.utils.InvalidInputException
 import com.thechance.api.utils.ItemNotAvailableException
-import com.thechance.core.data.tables.ProductTable
-import com.thechance.core.data.validation.product.ProductValidation
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
-import org.koin.core.component.KoinComponent
-import com.thechance.api.utils.Error
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
+import com.thechance.core.data.tables.ProductTable
 import com.thechance.core.data.validation.product.ProductValidation
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.koin.core.component.KoinComponent
 
 
 class ProductServiceImp(private val productValidation: ProductValidation) :
-    BaseService(ProductTable, CategoryProductTable), ProductService,
-    KoinComponent {
+    BaseService(ProductTable, CategoryProductTable), ProductService, KoinComponent {
 
     override suspend fun create(
         productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
     ): ProductWithCategory {
-        val errors = productValidation.checkCreateValidation(
-            productName = productName,
-            productPrice = productPrice,
-            productQuantity = productQuantity,
+        productValidation.checkCreateValidation(
+            productName = productName, productPrice = productPrice, productQuantity = productQuantity,
             categoriesId = categoriesId
-        )
-        return if (errors.isEmpty()) {
-            if (isValidCategories(categoriesId!!)) {
-                dbQuery {
-                    val newProduct = ProductTable.insert { productRow ->
-                        productRow[name] = productName
-                        productRow[price] = productPrice
-                        productRow[quantity] = productQuantity
-                    }
+        )?.let { throw it }
 
-                    CategoryProductTable.batchInsert(categoriesId) { categoryId ->
-                        this[CategoryProductTable.productId] = newProduct[ProductTable.id]
-                        this[CategoryProductTable.categoryId] = categoryId
-                    }
-
-                    ProductWithCategory(
-                        id = newProduct[ProductTable.id].value,
-                        name = newProduct[ProductTable.name],
-                        price = newProduct[ProductTable.price],
-                        quantity = newProduct[ProductTable.quantity],
-                        category = (CategoriesTable innerJoin CategoryProductTable)
-                            .select { CategoryProductTable.productId eq newProduct[ProductTable.id].value }
-                            .map { categoryRow ->
-                                Category(
-                                    categoryId = categoryRow[CategoriesTable.id].value,
-                                    categoryName = categoryRow[CategoriesTable.name].toString(),
-                                )
-                            }
-                    )
+        return if (isValidCategories(categoriesId!!)) {
+            dbQuery {
+                val newProduct = ProductTable.insert { productRow ->
+                    productRow[name] = productName
+                    productRow[price] = productPrice
+                    productRow[quantity] = productQuantity
                 }
-            } else {
-                throw Throwable("not valid categories.")
+
+                CategoryProductTable.batchInsert(categoriesId) { categoryId ->
+                    this[CategoryProductTable.productId] = newProduct[ProductTable.id]
+                    this[CategoryProductTable.categoryId] = categoryId
+                }
+
+                ProductWithCategory(
+                    id = newProduct[ProductTable.id].value,
+                    name = newProduct[ProductTable.name],
+                    price = newProduct[ProductTable.price],
+                    quantity = newProduct[ProductTable.quantity],
+                    category = (CategoriesTable innerJoin CategoryProductTable)
+                        .select { CategoryProductTable.productId eq newProduct[ProductTable.id].value }
+                        .map { categoryRow ->
+                            Category(
+                                categoryId = categoryRow[CategoriesTable.id].value,
+                                categoryName = categoryRow[CategoriesTable.name].toString(),
+                            )
+                        }
+                )
             }
         } else {
-            throw Throwable(errors.toString())
+            throw Exception("not valid categories.")
         }
     }
 
@@ -85,59 +74,61 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
     }
 
     override suspend fun getAllCategoryForProduct(productId: Long?): List<Category> {
-        return if (productValidation.checkId(productId)) {
-            if (!isDeleted(productId!!)) {
-                dbQuery {
-                    (CategoriesTable innerJoin CategoryProductTable)
-                        .select { CategoryProductTable.productId eq productId }
-                        .map { categoryRow ->
-                            Category(
-                                categoryId = categoryRow[CategoriesTable.id].value,
-                                categoryName = categoryRow[CategoriesTable.name].toString()
-                            )
-                        }
-                }
-            } else {
-                throw Error(ErrorType.DELETED_ITEM)
+        productValidation.checkId(productId)?.let {
+            throw InvalidInputException(it)
+        }
+
+        return if (!isDeleted(productId!!)) {
+            dbQuery {
+                (CategoriesTable innerJoin CategoryProductTable)
+                    .select { CategoryProductTable.productId eq productId }
+                    .map { categoryRow ->
+                        Category(
+                            categoryId = categoryRow[CategoriesTable.id].value,
+                            categoryName = categoryRow[CategoriesTable.name].toString()
+                        )
+                    }
             }
         } else {
-            throw Error(ErrorType.INVALID_INPUT)
+            throw ItemNotAvailableException("The item is no longer available.")
         }
     }
+
 
     override suspend fun updateProduct(
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
     ): String {
-        if (productValidation.checkId(productId)) {
-            if (!isDeleted(productId!!)) {
-                val exception = productValidation.checkUpdateValidation(
-                    productName = productName,
-                    productPrice = productPrice,
-                    productQuantity = productQuantity
-                )
-                return if (exception == null) {
-                    dbQuery {
-                        ProductTable.update({ ProductTable.id eq productId }) { productRow ->
-                            productName?.let { productRow[name] = it }
-                            productPrice?.let { productRow[price] = it }
-                            productQuantity?.let { productRow[quantity] = it }
-                        }
+        productValidation.checkId(productId)?.let {
+            throw InvalidInputException(it)
+        }
+
+        if (!isDeleted(productId!!)) {
+            val exception = productValidation.checkUpdateValidation(
+                productName = productName,
+                productPrice = productPrice,
+                productQuantity = productQuantity
+            )
+            return if (exception == null) {
+                dbQuery {
+                    ProductTable.update({ ProductTable.id eq productId }) { productRow ->
+                        productName?.let { productRow[name] = it }
+                        productPrice?.let { productRow[price] = it }
+                        productQuantity?.let { productRow[quantity] = it }
                     }
-                    "Product Updated successfully."
-                } else {
-                    throw exception
                 }
+                "Product Updated successfully."
             } else {
-                throw ItemNotAvailableException("The item is no longer available.")
+                throw exception
             }
         } else {
-            throw IdNotFoundException("Id Not found ")
+            throw ItemNotAvailableException("The item is no longer available.")
         }
     }
 
     override suspend fun updateProductCategory(productId: Long?, categoryIds: List<Long>): ProductWithCategory {
-        return if (productValidation.checkUpdateProductCategories(productId, categoryIds)) {
-            dbQuery {
+        productValidation.checkUpdateProductCategories(productId, categoryIds)?.let { throw it }
+        return dbQuery {
+            if (!isDeleted(productId!!)) {
                 if (isValidCategories(categoryIds)) {
                     CategoryProductTable.deleteWhere { CategoryProductTable.productId eq productId }
 
@@ -145,7 +136,7 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
                         this[CategoryProductTable.productId] = productId!!
                         this[CategoryProductTable.categoryId] = categoryId
                     }
-                    ProductTable.select { ProductTable.id eq productId }.map {
+                    val product = ProductTable.select { ProductTable.id eq productId }.map {
                         ProductWithCategory(
                             id = it[ProductTable.id].value,
                             name = it[ProductTable.name],
@@ -161,31 +152,33 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
                                 }
                         )
                     }.single()
+                    product
                 } else {
-                    throw Throwable()
+                    throw InvalidInputException("error in categoryIds")
                 }
+            } else {
+                throw IdNotFoundException("Product with id $productId not found!")
             }
-        } else {
-            throw Throwable("error in categoryIds")
         }
     }
 
+
     override suspend fun deleteProduct(productId: Long?): String {
-        return if (productValidation.checkId(productId)) {
-            if (!isDeleted(productId!!)) {
-                dbQuery {
-                    ProductTable.update({ ProductTable.id eq productId }) { productRow ->
-                        productRow[isDeleted] = true
-                    }
+        productValidation.checkId(productId)?.let {
+            throw InvalidInputException(it)
+        }
+        return if (!isDeleted(productId!!)) {
+            dbQuery {
+                ProductTable.update({ ProductTable.id eq productId }) { productRow ->
+                    productRow[isDeleted] = true
                 }
-                "Product Deleted successfully."
-            } else {
-                throw ItemNotAvailableException("The item is no longer available.")
             }
+            "Product Deleted successfully."
         } else {
-            throw InvalidInputException("Invalid input")
+            throw ItemNotAvailableException("The item is no longer available.")
         }
     }
+
 
     private suspend fun isDeleted(id: Long): Boolean {
         val product = dbQuery {
