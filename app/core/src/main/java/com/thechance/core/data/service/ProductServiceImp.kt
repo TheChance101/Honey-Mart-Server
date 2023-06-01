@@ -15,7 +15,8 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 
-class ProductServiceImp(private val productValidation: ProductValidation) : BaseService(ProductTable), ProductService,
+class ProductServiceImp(private val productValidation: ProductValidation) :
+    BaseService(ProductTable, CategoryProductTable), ProductService,
     KoinComponent {
 
     override suspend fun create(
@@ -80,8 +81,16 @@ class ProductServiceImp(private val productValidation: ProductValidation) : Base
     override suspend fun getAllCategoryForProduct(productId: Long?): List<Category> {
         return if (productValidation.checkId(productId)) {
             if (!isDeleted(productId!!)) {
-                //error here need to fix
-                getAllCategoryForProduct(productId)
+                dbQuery {
+                    (CategoriesTable innerJoin CategoryProductTable)
+                        .select { CategoryProductTable.productId eq productId }
+                        .map { categoryRow ->
+                            Category(
+                                categoryId = categoryRow[CategoriesTable.id].value,
+                                categoryName = categoryRow[CategoriesTable.name].toString()
+                            )
+                        }
+                }
             } else {
                 throw Error(ErrorType.DELETED_ITEM)
             }
