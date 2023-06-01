@@ -2,7 +2,9 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.service.MarketService
-import com.thechance.api.utils.isValidMarketName
+import com.thechance.api.utils.IdNotFoundException
+import com.thechance.api.utils.InvalidInputException
+import com.thechance.api.utils.ItemNotAvailableException
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -16,22 +18,16 @@ fun Route.marketsRoutes(marketService: MarketService) {
 
         post {
             val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-            if (!isValidMarketName(marketName)) {
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    ServerResponse.error("Invalid market name. Just can contain text and numbers")
-                )
-            } else if (marketName.length < 4 || marketName.length > 14) {
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    ServerResponse.error("Market name length should be between 4 and 14 characters")
-                )
-            } else {
+            try {
                 val newMarket = marketService.createMarket(marketName)
                 call.respond(
                     HttpStatusCode.Created,
                     ServerResponse.success(newMarket, "Market created successfully")
                 )
+            } catch (e: InvalidInputException) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
+            } catch (e: InvalidInputException) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
         }
 
@@ -46,23 +42,13 @@ fun Route.marketsRoutes(marketService: MarketService) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ID"))
             } else {
                 try {
-                    val isDeleted = marketService.deleteMarket(marketId)
-                    if (isDeleted) {
-                        call.respond(
-                            HttpStatusCode.OK,
-                            ServerResponse.success(null ,"Market Deleted Successfully")
-                        )
-                    } else {
-                        call.respond(
-                            HttpStatusCode.BadRequest,
-                            ServerResponse.error("Market with ID $marketId already deleted")
-                        )
-                    }
+                    marketService.deleteMarket(marketId)
+                    call.respond(HttpStatusCode.OK, ServerResponse.success("Market Deleted Successfully"))
+
+                } catch (e: ItemNotAvailableException) {
+                    call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
                 } catch (e: NoSuchElementException) {
-                    call.respond(
-                        HttpStatusCode.NotFound,
-                        ServerResponse.error(e.message.toString())
-                    )
+                    call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
                 }
             }
         }
@@ -75,37 +61,21 @@ fun Route.marketsRoutes(marketService: MarketService) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ID"))
             } else {
                 try {
-                    val isMarketDeleted = marketService.isDeleted(marketId)
-                    if (isMarketDeleted) {
-                        call.respond(
-                            HttpStatusCode.NotFound,
-                            ServerResponse.error("Market with ID: $marketId has been deleted")
-                        )
-                    } else if (!isValidMarketName(marketName)) {
-                        call.respond(
-                            HttpStatusCode.BadRequest,
-                            ServerResponse.error("Invalid market name. Just can contain text and numbers")
-                        )
-                    } else if (marketName.length < 4 || marketName.length > 14) {
-                        call.respond(
-                            HttpStatusCode.BadRequest,
-                            ServerResponse.error("Market name length should be between 4 and 14 characters")
-                        )
-                    } else {
-                        val updatedMarket = marketService.updateMarket(marketId, marketName)
-                        call.respond(
-                            HttpStatusCode.OK,
-                            ServerResponse.success(updatedMarket, "Market updated successfully")
-                        )
-                    }
-                } catch (e: Exception) {
+                    val updatedMarket = marketService.updateMarket(marketId, marketName)
                     call.respond(
-                        HttpStatusCode.NotFound,
-                        ServerResponse.error(e.message.toString())
+                        HttpStatusCode.OK,
+                        ServerResponse.success(updatedMarket, "Market updated successfully")
                     )
+                } catch (e: ItemNotAvailableException) {
+                    call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+                } catch (e: InvalidInputException) {
+                    call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
+                } catch (e: IdNotFoundException) {
+                    call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
                 }
             }
         }
+
 
     }
 }
