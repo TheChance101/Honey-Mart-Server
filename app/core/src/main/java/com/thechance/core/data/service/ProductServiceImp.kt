@@ -101,10 +101,11 @@ class ProductServiceImp(
         }
     }
 
-    private suspend fun isDeleted(id: Long): Boolean = dbQuery {
-        val product = ProductTable.select { ProductTable.id eq id }.singleOrNull()
-        product?.let {
-            it[ProductTable.isDeleted]
-        } ?: throw ItemNotAvailableException("The item is no longer available.")
+    private suspend fun isDeleted(id: Long): Boolean {
+        val product = dbQuery {
+            ProductTable.select { ProductTable.id eq id }.singleOrNull()
+                ?: throw ItemNotAvailableException("The item with ID $id was not found.")
+        }
+        return product[ProductTable.isDeleted]
     }
 }

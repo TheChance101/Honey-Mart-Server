@@ -31,7 +31,7 @@ fun Route.productsRoutes(productService: ProductService) {
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
             } catch (e: InvalidInputException) {
                 call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
-            } catch (t: Throwable) {
+            } catch (t: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
         }
@@ -57,7 +57,7 @@ fun Route.productsRoutes(productService: ProductService) {
                 call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
                 call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-            } catch (t: Throwable) {
+            } catch (t: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
         }
@@ -76,7 +76,7 @@ fun Route.productsRoutes(productService: ProductService) {
                 call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
                 call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-            } catch (t: Throwable) {
+            } catch (t: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
         }
