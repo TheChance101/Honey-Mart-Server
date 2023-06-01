@@ -2,26 +2,24 @@ package com.thechance.core.data.service
 
 import com.thechance.api.model.Product
 import com.thechance.api.service.ProductService
-import com.thechance.api.utils.ErrorType
 import com.thechance.core.data.tables.ProductTable
+import com.thechance.core.data.validation.product.ProductValidation
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
-import com.thechance.api.utils.Error
-import com.thechance.core.data.validation.product.ProductValidation
 
 class ProductServiceImp(
     private val productValidationImpl: ProductValidation
 ) : BaseService(ProductTable), ProductService, KoinComponent {
 
     override suspend fun create(productName: String, productPrice: Double, productQuantity: String?): Product {
-        val errors = productValidationImpl.checkCreateValidation(
+        val exception = productValidationImpl.checkCreateValidation(
             productName = productName,
             productPrice = productPrice,
             productQuantity = productQuantity
         )
-        return if (errors.isEmpty()) {
+        return if (exception == null) {
             dbQuery {
                 val newProduct = ProductTable.insert { productRow ->
                     productRow[name] = productName
@@ -36,7 +34,7 @@ class ProductServiceImp(
                 )
             }
         } else {
-            throw Throwable(errors.toString())
+            throw exception
         }
     }
 
@@ -58,12 +56,12 @@ class ProductServiceImp(
     ): String {
         if (productValidationImpl.checkId(productId)) {
             if (!isDeleted(productId!!)) {
-                val errors = productValidationImpl.checkUpdateValidation(
+                val exception = productValidationImpl.checkUpdateValidation(
                     productName = productName,
                     productPrice = productPrice,
                     productQuantity = productQuantity
                 )
-                return if (errors.isEmpty()) {
+                return if (exception == null) {
                     dbQuery {
                         ProductTable.update({ ProductTable.id eq productId }) { productRow ->
                             productName?.let { productRow[name] = it }
@@ -73,13 +71,13 @@ class ProductServiceImp(
                     }
                     "Product Updated successfully."
                 } else {
-                    throw Throwable(errors.toString())
+                    throw exception
                 }
             } else {
-                throw Error(ErrorType.DELETED_ITEM)
+                throw Exception("The item is no longer available.")
             }
         } else {
-            throw Error(ErrorType.NOT_FOUND)
+            throw Exception("Id Not found ")
         }
     }
 
@@ -93,10 +91,10 @@ class ProductServiceImp(
                 }
                 "Product Deleted successfully."
             } else {
-                throw Error(ErrorType.DELETED_ITEM)
+                throw Exception("The item is no longer available.")
             }
         } else {
-            throw Error(ErrorType.INVALID_INPUT)
+            throw Exception("Invalid input")
         }
     }
 
@@ -104,6 +102,6 @@ class ProductServiceImp(
         val product = ProductTable.select { ProductTable.id eq id }.singleOrNull()
         product?.let {
             it[ProductTable.isDeleted]
-        } ?: throw Error(ErrorType.NOT_FOUND)
+        } ?: throw Exception("The item is no longer available.")
     }
 }
