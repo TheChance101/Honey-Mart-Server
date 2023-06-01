@@ -2,14 +2,8 @@ package com.thechance.api.plugins
 
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.endpoints.categoryRoutes
-import com.thechance.api.endpoints.marketCategoriesRoutes
-import com.thechance.api.endpoints.marketsRoutes
-import com.thechance.api.endpoints.productsRoutes
-import com.thechance.api.service.CategoryService
-import com.thechance.api.service.MarketCategoriesService
-import com.thechance.api.service.MarketService
-import com.thechance.api.service.ProductService
+import com.thechance.api.endpoints.*
+import com.thechance.api.service.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.openapi.*
 import io.ktor.server.plugins.swagger.*
@@ -23,6 +17,7 @@ fun Application.configureRouting() {
     val marketService: MarketService by inject()
     val categoryService: CategoryService by inject()
     val marketCategoriesService: MarketCategoriesService by inject()
+    val deleteAllTablesService: DeleteAllTablesService by inject()
 
     routing {
         get("/") {
@@ -38,5 +33,6 @@ fun Application.configureRouting() {
         categoryRoutes(categoryService)
         marketsRoutes(marketService)
         marketCategoriesRoutes(marketCategoriesService)
+        deleteAllTables(deleteAllTablesService)
     }
 }
