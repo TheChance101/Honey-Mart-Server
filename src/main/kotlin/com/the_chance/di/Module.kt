@@ -1,7 +1,7 @@
 package com.the_chance.di
 
 import com.thechance.api.service.*
-import com.thechance.core.data.DeleteAllTablesServiceServiceImp
+import com.thechance.core.data.service.DeleteAllTablesServiceServiceImp
 import com.thechance.core.data.database.CoreDataBase
 import com.thechance.core.data.database.CoreDataBaseImp
 import com.thechance.core.data.service.CategoryServiceImp
