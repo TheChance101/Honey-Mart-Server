@@ -1,7 +1,8 @@
 package com.thechance.core.data.validation.market
 
-import com.thechance.api.model.Market
-
 interface MarketValidation {
-    fun createMarket(marketName:String):Market
+    fun isValidMarketName(name: String): Boolean
+    fun checkCreateValidation(marketName: String): Exception?
+    fun checkNameLength(marketName: String): Boolean
+
 }
