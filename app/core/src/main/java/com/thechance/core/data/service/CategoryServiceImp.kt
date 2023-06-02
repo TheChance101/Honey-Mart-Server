@@ -20,7 +20,7 @@ class CategoryServiceImp(
 ) : BaseService(CategoriesTable), CategoryService,
         KoinComponent {
 
-    override suspend fun create(categoryName: String, marketId: Long, imageId: Int): Category {
+    override suspend fun create(categoryName: String?, marketId: Long?, imageId: Int?): Category {
         categoryValidation.checkCreateValidation(
                 categoryName = categoryName, marketId = marketId, imageId = imageId
         )?.let { throw it }
@@ -40,20 +40,20 @@ class CategoryServiceImp(
                 )
             }
         } else {
-            throw Exception("This category with name $categoryName already exist.")
+            throw NoSuchElementException("This category with name $categoryName already exist.")
         }
     }
 
-    private suspend fun isCategoryNameValidate(categoryName: String): ResultRow? {
+    private suspend fun isCategoryNameValidate(categoryName: String?): ResultRow? {
         return dbQuery {
             CategoriesTable.select {
-                CategoriesTable.name.lowerCase() eq categoryName.lowercase() and
+                CategoriesTable.name.lowerCase() eq categoryName?.lowercase() and
                         CategoriesTable.isDeleted.eq(false)
             }.singleOrNull()
         }
     }
 
-    override suspend fun getCategoriesByMarketId(marketId: Long): List<Category> {
+    override suspend fun getCategoriesByMarketId(marketId: Long?): List<Category> {
         return dbQuery {
             CategoriesTable.select {
                 CategoriesTable.marketId eq marketId and
@@ -85,7 +85,7 @@ class CategoryServiceImp(
         }
     }
 
-    override suspend fun update(categoryId: Long?, categoryName: String): String {
+    override suspend fun update(categoryId: Long?, categoryName: String?): String {
         categoryValidation.checkCategoryId(categoryId)?.let {
             throw InvalidInputException(it)
         }
@@ -98,7 +98,7 @@ class CategoryServiceImp(
             return if (exception == null) {
                 dbQuery {
                     CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
-                        if (categoryName.isNotEmpty()) {
+                        if (!categoryName.isNullOrEmpty()) {
                             categoryRow[name] = categoryName
                         }
                     }

@@ -6,7 +6,7 @@ import org.koin.core.component.KoinComponent
 
 class CategoryValidationImpl : CategoryValidation, KoinComponent {
 
-    override fun checkCreateValidation(categoryName: String, marketId: Long?, imageId: Int?): Exception? {
+    override fun checkCreateValidation(categoryName: String?, marketId: Long?, imageId: Int?): Exception? {
         val exception = mutableListOf<String>()
 
         checkCategoryName(categoryName)?.let {
