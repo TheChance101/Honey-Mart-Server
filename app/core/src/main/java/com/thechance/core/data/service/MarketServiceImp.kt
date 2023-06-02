@@ -3,7 +3,6 @@ package com.thechance.core.data.service
 import com.thechance.api.model.Market
 import com.thechance.api.service.MarketService
 import com.thechance.api.utils.IdNotFoundException
-import com.thechance.api.utils.InvalidInputException
 import com.thechance.api.utils.ItemNotAvailableException
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.MarketTable
@@ -51,7 +50,7 @@ class MarketServiceImp(private val marketValidationImpl: MarketValidation) : Bas
             val existingMarket = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
             if (existingMarket != null) {
                 MarketTable.update({ MarketTable.id eq marketId }) {
-                    it[MarketTable.isDeleted] = true
+                    it[isDeleted] = true
                 }
                 true
             } else {
@@ -87,34 +86,6 @@ class MarketServiceImp(private val marketValidationImpl: MarketValidation) : Bas
             )
         } ?: throw IdNotFoundException("Market with ID $marketId not found.")
     }
-
-
-//    override suspend fun updateMarket(marketId: Long, marketName: String): Market = dbQuery {
-//        val existingMarket = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
-//
-//        if (existingMarket == null) {
-//            throw IdNotFoundException("Market with ID $marketId not found.")
-//        } else if (isDeleted(marketId)) {
-//            throw ItemNotAvailableException("Market with ID: $marketId has been deleted")
-//        } else if (!marketValidationImpl.isValidMarketName(marketName)) {
-//            throw InvalidInputException("Invalid market name. Just can contain text and numbers")
-//        } else if (marketName.length < 4 || marketName.length > 14) {
-//            throw InvalidInputException("Market name length should be between 4 and 14 characters")
-//        } else {
-//            MarketTable.update({ MarketTable.id eq marketId }) {
-//                it[name] = marketName
-//            }
-//        }
-//
-//        val updatedMarket = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
-//
-//        updatedMarket?.let {
-//            Market(
-//                marketId = it[MarketTable.id].value,
-//                marketName = it[MarketTable.name]
-//            )
-//        } ?: throw IdNotFoundException("Market with ID $marketId not found.")
-//    }
 
     override suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
