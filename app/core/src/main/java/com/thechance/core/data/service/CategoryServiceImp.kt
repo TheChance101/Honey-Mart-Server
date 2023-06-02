@@ -112,16 +112,6 @@ class CategoryServiceImp(
         }
     }
 
-    /*
-    * for what this function
-     */
-    override suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
-        val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
-        market?.let {
-            it[MarketTable.isDeleted]
-        } ?: throw NoSuchElementException("Category with ID $marketId not found.")
-    }
-
 
     private suspend fun isCategoryDeleted(categoryId: Long): Boolean = dbQuery {
         val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
