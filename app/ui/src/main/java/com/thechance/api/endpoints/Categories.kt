@@ -27,6 +27,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
         val params = call.receiveParameters()
         val categoryName = params["name"]?.trim().orEmpty()
         val marketId = params["marketId"]?.toLongOrNull()
+        val imageId = params["imageId"]?.toIntOrNull()
 
         if (marketId == null) {
             call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ID"))
@@ -48,8 +49,11 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                         HttpStatusCode.BadRequest,
                         ServerResponse.error("Category name should be less than 20 character...")
                     )
+                } else if (imageId == null) {
+                    call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ImageID"))
                 } else {
-                    val newCategory = categoryService.create(categoryName, marketId)
+
+                    val newCategory = categoryService.create(categoryName, marketId, imageId)
                     call.respond(
                         HttpStatusCode.Created,
                         ServerResponse.success(newCategory, "Category added successfully")

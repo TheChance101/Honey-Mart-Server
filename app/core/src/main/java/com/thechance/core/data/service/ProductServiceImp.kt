@@ -51,6 +51,7 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
                             Category(
                                 categoryId = categoryRow[CategoriesTable.id].value,
                                 categoryName = categoryRow[CategoriesTable.name].toString(),
+                                imageId = categoryRow[CategoriesTable.imageId]
                             )
                         }
                 )
@@ -85,7 +86,8 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
                     .map { categoryRow ->
                         Category(
                             categoryId = categoryRow[CategoriesTable.id].value,
-                            categoryName = categoryRow[CategoriesTable.name].toString()
+                            categoryName = categoryRow[CategoriesTable.name].toString(),
+                            imageId = categoryRow[CategoriesTable.imageId]
                         )
                     }
             }
@@ -148,6 +150,7 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
                                     Category(
                                         categoryId = categoryRow[CategoriesTable.id].value,
                                         categoryName = categoryRow[CategoriesTable.name].toString(),
+                                        imageId = categoryRow[CategoriesTable.imageId]
                                     )
                                 }
                         )

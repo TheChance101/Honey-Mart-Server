@@ -6,7 +6,7 @@ import com.thechance.api.model.CategoryWithProduct
 
 interface CategoryService {
 
-    suspend fun create(categoryName: String, marketId: Long): Category
+    suspend fun create(categoryName: String, marketId: Long,imageId: Int): Category
 
     suspend fun getCategoriesByMarketId(marketId: Long): List<Category>
 

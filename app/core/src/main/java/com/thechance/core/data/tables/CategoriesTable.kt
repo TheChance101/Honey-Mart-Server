@@ -6,4 +6,5 @@ object CategoriesTable : LongIdTable() {
     val name = text("name")
     val isDeleted = bool("isDeleted")
     val marketId = reference("marketId", MarketTable)
+    val imageId = integer("imageId")
 }
