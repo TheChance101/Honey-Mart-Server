@@ -20,7 +20,7 @@ val myModule = module {
     single<CoreDataBase> { CoreDataBaseImp() }
     singleOf(::ProductServiceImp) { bind<ProductService>() }
     single<MarketService> { MarketServiceImp() }
-    single<CategoryService> { CategoryServiceImp() }
+    singleOf(::CategoryServiceImp) { bind<CategoryService>() }
     single<MarketCategoriesService> { MarketCategoriesServiceImp() }
 
     single<ProductValidation> { ProductValidationImpl() }

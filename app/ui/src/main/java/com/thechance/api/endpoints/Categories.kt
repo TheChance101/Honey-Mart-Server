@@ -2,6 +2,8 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.service.CategoryService
+import com.thechance.api.utils.IdNotFoundException
+import com.thechance.api.utils.InvalidInputException
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -18,50 +20,29 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
         try {
             val products = categoryService.getProductsFromCategory(categoryId = categoryId)
             call.respond(ServerResponse.success(products))
-        } catch (t: Throwable) {
-            call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
+        } catch (e: InvalidInputException) {
+            call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
+        } catch (e: IdNotFoundException) {
+            call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+        } catch (t: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
         }
     }
 
     post("/category") {
-        val params = call.receiveParameters()
-        val categoryName = params["name"]?.trim().orEmpty()
-        val marketId = params["marketId"]?.toLongOrNull()
-        val imageId = params["imageId"]?.toIntOrNull()
+        try {
+            val params = call.receiveParameters()
+            val categoryName = params["name"]?.trim().orEmpty()
+            val marketId = params["marketId"]?.toLongOrNull() ?: -1
+            val imageId = params["imageId"]?.toIntOrNull() ?: -1
 
-        if (marketId == null) {
-            call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ID"))
-        } else {
-            try {
-                val isMarketDeleted = categoryService.isDeleted(marketId)
-                if (isMarketDeleted) {
-                    call.respond(
-                        HttpStatusCode.NotFound,
-                        ServerResponse.error("Market with ID: $marketId has been deleted")
-                    )
-                } else if (categoryName.length < 4 && categoryName.isNotEmpty()) {
-                    call.respond(
-                        HttpStatusCode.BadRequest,
-                        ServerResponse.error("Category name should be more than 4 character...")
-                    )
-                } else if (categoryName.length > 20) {
-                    call.respond(
-                        HttpStatusCode.BadRequest,
-                        ServerResponse.error("Category name should be less than 20 character...")
-                    )
-                } else if (imageId == null) {
-                    call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ImageID"))
-                } else {
-
-                    val newCategory = categoryService.create(categoryName, marketId, imageId)
-                    call.respond(
-                        HttpStatusCode.Created,
-                        ServerResponse.success(newCategory, "Category added successfully")
-                    )
-                }
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
-            }
+            val newCategory = categoryService.create(categoryName, marketId, imageId)
+            call.respond(HttpStatusCode.Created, ServerResponse.success(newCategory, "Category added successfully"))
+        } catch (e: InvalidInputException) {
+            val error = e.message.toString()
+            call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(error))
+        } catch (t: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
         }
     }
 
@@ -75,19 +56,19 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                 val isDeleted = categoryService.delete(categoryId)
                 if (isDeleted) {
                     call.respond(
-                        HttpStatusCode.OK,
-                        ServerResponse.success("Category Deleted Successfully")
+                            HttpStatusCode.OK,
+                            ServerResponse.success("Category Deleted Successfully")
                     )
                 } else {
                     call.respond(
-                        HttpStatusCode.BadRequest,
-                        ServerResponse.error("Category with ID $categoryId already deleted")
+                            HttpStatusCode.BadRequest,
+                            ServerResponse.error("Category with ID $categoryId already deleted")
                     )
                 }
             } catch (e: NoSuchElementException) {
                 call.respond(
-                    HttpStatusCode.NotFound,
-                    ServerResponse.error(e.message.toString())
+                        HttpStatusCode.NotFound,
+                        ServerResponse.error(e.message.toString())
                 )
             }
         }
@@ -102,8 +83,8 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
             try {
                 if (categoryName.isNotEmpty() && categoryName.length < 4) {
                     call.respond(
-                        HttpStatusCode.BadRequest,
-                        ServerResponse.error("Category name should be more than 4 character...")
+                            HttpStatusCode.BadRequest,
+                            ServerResponse.error("Category name should be more than 4 character...")
                     )
                 } else {
                     categoryService.update(categoryId, categoryName)
