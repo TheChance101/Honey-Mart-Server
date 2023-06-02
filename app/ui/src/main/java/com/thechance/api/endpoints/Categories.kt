@@ -10,6 +10,19 @@ import io.ktor.server.routing.*
 
 fun Route.categoryRoutes(categoryService: CategoryService) {
 
+    /**
+     * get all products in category
+     * */
+    get("/category/{categoryId}") {
+        val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
+        try {
+            val products = categoryService.getProductsFromCategory(categoryId = categoryId)
+            call.respond(ServerResponse.success(products))
+        } catch (t: Throwable) {
+            call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
+        }
+    }
+
     post("/category") {
         val params = call.receiveParameters()
         val categoryName = params["name"]?.trim().orEmpty()

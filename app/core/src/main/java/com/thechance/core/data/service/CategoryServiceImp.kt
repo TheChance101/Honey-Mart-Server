@@ -1,13 +1,16 @@
 package com.thechance.core.data.service
 
 import com.thechance.api.model.Category
+import com.thechance.api.model.CategoryWithProduct
+import com.thechance.api.model.Product
 import com.thechance.api.service.CategoryService
 import com.thechance.core.data.tables.CategoriesTable
+import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.tables.MarketTable
+import com.thechance.core.data.tables.ProductTable
 import org.jetbrains.exposed.sql.*
 import org.koin.core.component.KoinComponent
 import java.util.*
-import kotlin.NoSuchElementException
 
 class CategoryServiceImp: BaseService(CategoriesTable), CategoryService,
     KoinComponent {
@@ -50,7 +53,6 @@ class CategoryServiceImp: BaseService(CategoriesTable), CategoryService,
         }
     }
 
-
     override suspend fun delete(categoryId: Long): Boolean = dbQuery {
         val category = CategoriesTable.select {
             CategoriesTable.id eq categoryId and Op.build { CategoriesTable.isDeleted eq false }
@@ -84,5 +86,43 @@ class CategoryServiceImp: BaseService(CategoriesTable), CategoryService,
         market?.let {
             it[MarketTable.isDeleted]
         } ?: throw NoSuchElementException("Category with ID $marketId not found.")
+    }
+
+
+    private suspend fun isCategoryDeleted(categoryId: Long): Boolean = dbQuery {
+        val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
+        category?.let {
+            it[CategoriesTable.isDeleted]
+        } ?: throw NoSuchElementException("Category with ID $categoryId not found.")
+    }
+
+
+    override suspend fun getProductsFromCategory(categoryId: Long?): CategoryWithProduct {
+        if (categoryId != null && isCategoryDeleted(categoryId)) {
+            val categoryProducts = dbQuery {
+                (ProductTable innerJoin CategoryProductTable)
+                    .select { CategoryProductTable.categoryId eq categoryId }
+                    .map { productRow ->
+                        Product(
+                            id = productRow[ProductTable.id].value,
+                            name = productRow[ProductTable.name].toString(),
+                            price = productRow[ProductTable.price],
+                            quantity = productRow[ProductTable.quantity],
+                        )
+                    }
+            }
+            val categoryName = dbQuery {
+                CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()?.get(CategoriesTable.name)
+                    ?: ""
+            }
+
+            return CategoryWithProduct(
+                categoryId = categoryId,
+                categoryName = categoryName,
+                products = categoryProducts
+            )
+        } else {
+            throw Error()
+        }
     }
 }

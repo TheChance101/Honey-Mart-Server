@@ -2,9 +2,7 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.service.ProductService
-import com.thechance.api.utils.IdNotFoundException
-import com.thechance.api.utils.InvalidInputException
-import com.thechance.api.utils.ItemNotAvailableException
+import com.thechance.api.utils.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -20,17 +18,29 @@ fun Route.productsRoutes(productService: ProductService) {
 
     route("/product") {
 
+        get("/{productId}") {
+            val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
+            try {
+                val products = productService.getAllCategoryForProduct(productId = productId)
+                call.respond(ServerResponse.success(products))
+            } catch (t: Throwable) {
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
+            }
+        }
+
         post {
             try {
                 val params = call.receiveParameters()
                 val productName = params["name"]?.trim().orEmpty()
-                val productPrice = params["price"]?.trim()?.toDoubleOrNull() ?: 0.0
+                val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
                 val productQuantity = params["quantity"]?.trim()
+                val categoriesId = params["categoriesId"]?.trim()?.split(",")?.map { it.toLongOrNull() ?: 0L }
 
-                val newAddedProduct = productService.create(productName, productPrice, productQuantity)
+                val newAddedProduct = productService.create(productName, productPrice, productQuantity, categoriesId)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
             } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
+                val error = e.message.toString()
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(error))
             } catch (t: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
@@ -59,6 +69,25 @@ fun Route.productsRoutes(productService: ProductService) {
                 call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (t: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
+            }
+        }
+
+        put("{id}/updateCategories") {
+            try {
+                val productId = call.parameters["id"]?.trim()?.toLongOrNull()
+                val params = call.receiveParameters()
+                val categoriesId = params["categoriesId"]?.trim().toLongIds()
+
+                val updatedProductCategory = productService.updateProductCategory(
+                    productId = productId, categoryIds = categoriesId
+                )
+                call.respond(HttpStatusCode.OK, ServerResponse.success(updatedProductCategory))
+            } catch (e: InvalidInputException) {
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
+            } catch (e: IdNotFoundException) {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
             }
         }
 
