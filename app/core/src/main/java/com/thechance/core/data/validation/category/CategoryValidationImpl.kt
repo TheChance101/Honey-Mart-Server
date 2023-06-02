@@ -2,7 +2,6 @@ package com.thechance.core.data.validation.category
 
 import com.thechance.api.utils.InvalidInputException
 import com.thechance.api.utils.isValidStringInput
-import org.jetbrains.exposed.sql.ResultRow
 import org.koin.core.component.KoinComponent
 
 class CategoryValidationImpl : CategoryValidation, KoinComponent {
@@ -33,6 +32,13 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
         }
     }
 
+    override fun checkCategoryId(categoryId: Long?): String? {
+        return if (categoryId == null) {
+            "Invalid categoryID"
+        } else {
+            null
+        }
+    }
 
     private fun checkCategoryName(categoryName: String?): String? {
         return categoryName?.let {

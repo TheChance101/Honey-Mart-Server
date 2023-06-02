@@ -4,6 +4,8 @@ import com.thechance.api.model.Category
 import com.thechance.api.model.CategoryWithProduct
 import com.thechance.api.model.Product
 import com.thechance.api.service.CategoryService
+import com.thechance.api.utils.InvalidInputException
+import com.thechance.api.utils.ItemNotAvailableException
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.tables.MarketTable
@@ -38,15 +40,15 @@ class CategoryServiceImp(
                 )
             }
         } else {
-            throw NoSuchElementException("This category with name $categoryName already exist.")
+            throw Exception("This category with name $categoryName already exist.")
         }
     }
 
     private suspend fun isCategoryNameValidate(categoryName: String): ResultRow? {
         return dbQuery {
             CategoriesTable.select {
-                (CategoriesTable.name.lowerCase() eq categoryName.lowercase()) and
-                        (CategoriesTable.isDeleted eq false)
+                CategoriesTable.name.lowerCase() eq categoryName.lowercase() and
+                        CategoriesTable.isDeleted.eq(false)
             }.singleOrNull()
         }
     }
@@ -66,17 +68,20 @@ class CategoryServiceImp(
         }
     }
 
-    override suspend fun delete(categoryId: Long): Boolean = dbQuery {
-        val category = CategoriesTable.select {
-            CategoriesTable.id eq categoryId and Op.build { CategoriesTable.isDeleted eq false }
-        }.singleOrNull()
+    override suspend fun delete(categoryId: Long?): String{
+        categoryValidation.checkCategoryId(categoryId)?.let {
+            throw InvalidInputException(it)
+        }
 
-        if (category != null) {
-            CategoriesTable.update({ CategoriesTable.isDeleted eq false }) {
-                it[isDeleted] = true
-            } > 0
+        return if (!isCategoryDeleted(categoryId!!)) {
+           dbQuery {
+               CategoriesTable.update({ CategoriesTable.isDeleted eq false }) {
+                   it[isDeleted] = true
+               }
+           }
+            "Category Deleted successfully."
         } else {
-            throw NoSuchElementException("This category id $categoryId not found.")
+            throw ItemNotAvailableException("The item is no longer available.")
         }
     }
 

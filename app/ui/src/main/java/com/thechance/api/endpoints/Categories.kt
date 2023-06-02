@@ -4,6 +4,7 @@ import com.thechance.api.ServerResponse
 import com.thechance.api.service.CategoryService
 import com.thechance.api.utils.IdNotFoundException
 import com.thechance.api.utils.InvalidInputException
+import com.thechance.api.utils.ItemNotAvailableException
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -49,28 +50,17 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
     delete("/category/{id}") {
         val categoryId = call.parameters["id"]?.trim()?.toLongOrNull()
 
-        if (categoryId == null) {
-            call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Category ID"))
-        } else {
-            try {
-                val isDeleted = categoryService.delete(categoryId)
-                if (isDeleted) {
-                    call.respond(
-                            HttpStatusCode.OK,
-                            ServerResponse.success("Category Deleted Successfully")
-                    )
-                } else {
-                    call.respond(
-                            HttpStatusCode.BadRequest,
-                            ServerResponse.error("Category with ID $categoryId already deleted")
-                    )
-                }
-            } catch (e: NoSuchElementException) {
-                call.respond(
-                        HttpStatusCode.NotFound,
-                        ServerResponse.error(e.message.toString())
-                )
-            }
+        try {
+            val deletedCategory = categoryService.delete(categoryId)
+            call.respond(HttpStatusCode.OK, ServerResponse.success(result = true, deletedCategory))
+        } catch (e: InvalidInputException) {
+            call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
+        } catch (e: ItemNotAvailableException) {
+            call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+        } catch (e: IdNotFoundException) {
+            call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+        } catch (t: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
         }
     }
 

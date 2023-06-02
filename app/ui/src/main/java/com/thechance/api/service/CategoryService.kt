@@ -10,7 +10,7 @@ interface CategoryService {
 
     suspend fun getCategoriesByMarketId(marketId: Long): List<Category>
 
-    suspend fun delete(categoryId: Long): Boolean
+    suspend fun delete(categoryId: Long?): String
 
     suspend fun update(categoryId: Long, categoryName: String): Boolean
 
