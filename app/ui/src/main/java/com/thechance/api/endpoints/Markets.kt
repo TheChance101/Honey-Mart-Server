@@ -11,7 +11,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-
 fun Route.marketsRoutes(marketService: MarketService) {
 
     route("/markets") {
@@ -24,8 +23,6 @@ fun Route.marketsRoutes(marketService: MarketService) {
                     HttpStatusCode.Created,
                     ServerResponse.success(newMarket, "Market created successfully")
                 )
-            } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             } catch (e: InvalidInputException) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
@@ -75,7 +72,6 @@ fun Route.marketsRoutes(marketService: MarketService) {
                 }
             }
         }
-
 
     }
 }
