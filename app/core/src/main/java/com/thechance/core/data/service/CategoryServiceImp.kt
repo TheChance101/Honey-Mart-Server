@@ -12,10 +12,10 @@ import org.jetbrains.exposed.sql.*
 import org.koin.core.component.KoinComponent
 import java.util.*
 
-class CategoryServiceImp: BaseService(CategoriesTable), CategoryService,
+class CategoryServiceImp : BaseService(CategoriesTable), CategoryService,
     KoinComponent {
 
-    override suspend fun create(categoryName: String, marketId: Long): Category = dbQuery {
+    override suspend fun create(categoryName: String, marketId: Long, imageId: Int): Category = dbQuery {
         val categoryList =
             getCategoriesByMarketId(marketId).filter {
                 it.categoryName.lowercase(Locale.getDefault()) == categoryName.lowercase(
@@ -28,10 +28,12 @@ class CategoryServiceImp: BaseService(CategoriesTable), CategoryService,
                 it[name] = categoryName
                 it[isDeleted] = false
                 it[this.marketId] = marketId
+                it[this.imageId] = imageId
             }
             Category(
                 categoryId = newCategory[CategoriesTable.id].value,
                 categoryName = newCategory[CategoriesTable.name].toString(),
+                imageId = newCategory[CategoriesTable.imageId]
             )
         } else {
             throw NoSuchElementException("This category with name $categoryName already exist.")
@@ -48,6 +50,7 @@ class CategoryServiceImp: BaseService(CategoriesTable), CategoryService,
                 Category(
                     categoryId = resultRow[CategoriesTable.id].value,
                     categoryName = resultRow[CategoriesTable.name].toString(),
+                    imageId = resultRow[CategoriesTable.imageId]
                 )
             }
         }

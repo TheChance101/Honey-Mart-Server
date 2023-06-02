@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
 
-class MarketCategoriesServiceImp: BaseService(MarketTable, CategoriesTable),
+class MarketCategoriesServiceImp : BaseService(MarketTable, CategoriesTable),
     MarketCategoriesService,
     KoinComponent {
 
@@ -38,7 +38,8 @@ class MarketCategoriesServiceImp: BaseService(MarketTable, CategoriesTable),
                 }.map {
                     Category(
                         categoryId = it[CategoriesTable.id].value,
-                        categoryName = it[CategoriesTable.name]
+                        categoryName = it[CategoriesTable.name],
+                        imageId = it[CategoriesTable.imageId]
                     )
                 }
             }
