@@ -25,7 +25,7 @@ class CategoryServiceImp(
                 categoryName = categoryName, marketId = marketId, imageId = imageId
         )?.let { throw it }
 
-        return if (isCategoryNameValidate(categoryName) == null) {
+        return if (!isCategoryNameValidate(categoryName!!)) {
             dbQuery {
                 val newCategory = CategoriesTable.insert {
                     it[name] = categoryName
@@ -44,13 +44,15 @@ class CategoryServiceImp(
         }
     }
 
-    private suspend fun isCategoryNameValidate(categoryName: String?): ResultRow? {
-        return dbQuery {
+    private suspend fun isCategoryNameValidate(categoryName: String): Boolean {
+        val category = dbQuery {
             CategoriesTable.select {
-                CategoriesTable.name.lowerCase() eq categoryName?.lowercase() and
+                CategoriesTable.name.lowerCase() eq categoryName.lowercase() and
                         CategoriesTable.isDeleted.eq(false)
             }.singleOrNull()
-        }
+        }?: throw ItemNotAvailableException("The item with ID $categoryName was not found.")
+
+        return category[CategoriesTable.isDeleted]
     }
 
     override suspend fun getCategoriesByMarketId(marketId: Long?): List<Category> {
