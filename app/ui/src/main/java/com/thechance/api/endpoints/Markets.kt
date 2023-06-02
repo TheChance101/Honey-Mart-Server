@@ -26,8 +26,6 @@ fun Route.marketsRoutes(marketService: MarketService) {
                 )
             } catch (e: InvalidInputException) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
-            } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
         }
 

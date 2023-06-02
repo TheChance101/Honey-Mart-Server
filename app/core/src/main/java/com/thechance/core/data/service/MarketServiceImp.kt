@@ -5,32 +5,35 @@ import com.thechance.api.service.MarketService
 import com.thechance.api.utils.IdNotFoundException
 import com.thechance.api.utils.InvalidInputException
 import com.thechance.api.utils.ItemNotAvailableException
-import com.thechance.api.utils.isValidMarketName
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.MarketTable
+import com.thechance.core.data.validation.market.MarketValidation
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 
-class MarketServiceImp : BaseService(MarketTable, CategoriesTable), MarketService, KoinComponent {
+class MarketServiceImp(private val marketValidationImpl: MarketValidation) : BaseService(MarketTable, CategoriesTable),
+    MarketService, KoinComponent {
 
-    override suspend fun createMarket(marketName: String): Market = dbQuery {
-        if (!isValidMarketName(marketName)) {
-            throw InvalidInputException("Invalid market name. Just can contain text and numbers")
-        } else if (marketName.length < 4 || marketName.length > 14) {
-            throw InvalidInputException("Market name length should be between 4 and 14 characters")
-        } else {
-            val newMarket = MarketTable.insert {
-                it[name] = marketName
-                it[isDeleted] = false
+    override suspend fun createMarket(marketName: String): Market {
+        val exception = marketValidationImpl.checkCreateValidation(marketName)
+        return if (exception == null) {
+            dbQuery {
+                val newMarket = MarketTable.insert {
+                    it[name] = marketName
+                    it[isDeleted] = false
+                }
+                Market(
+                    marketId = newMarket[MarketTable.id].value,
+                    marketName = newMarket[MarketTable.name],
+                )
             }
-            Market(
-                marketId = newMarket[MarketTable.id].value,
-                marketName = newMarket[MarketTable.name],
-            )
+        } else {
+            throw exception
         }
     }
+
 
     override suspend fun getAllMarkets(): List<Market> = dbQuery {
         MarketTable.select { MarketTable.isDeleted eq false }.map {
@@ -64,7 +67,7 @@ class MarketServiceImp : BaseService(MarketTable, CategoriesTable), MarketServic
             throw IdNotFoundException("Market with ID $marketId not found.")
         } else if (isDeleted(marketId)) {
             throw ItemNotAvailableException("Market with ID: $marketId has been deleted")
-        } else if (!isValidMarketName(marketName)) {
+        } else if (!marketValidationImpl.isValidMarketName(marketName)) {
             throw InvalidInputException("Invalid market name. Just can contain text and numbers")
         } else if (marketName.length < 4 || marketName.length > 14) {
             throw InvalidInputException("Market name length should be between 4 and 14 characters")
