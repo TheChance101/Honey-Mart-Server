@@ -4,6 +4,7 @@ import com.thechance.api.service.DeleteAllTablesService
 import com.thechance.core.data.database.CoreDataBase
 import com.thechance.core.data.service.BaseService
 import com.thechance.core.data.tables.CategoriesTable
+import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.tables.MarketTable
 import com.thechance.core.data.tables.ProductTable
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -18,7 +19,7 @@ class DeleteAllTablesServiceServiceImp :
 
     override suspend fun deleteAllTables() {
         transaction(database.getDatabaseInstance()) {
-            SchemaUtils.drop(*arrayOf(MarketTable, CategoriesTable, ProductTable))
+            SchemaUtils.drop(*arrayOf(MarketTable, CategoriesTable, ProductTable,CategoryProductTable))
         }
     }
 
