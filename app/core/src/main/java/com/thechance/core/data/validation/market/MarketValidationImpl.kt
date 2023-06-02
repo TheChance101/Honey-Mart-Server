@@ -19,6 +19,22 @@ class MarketValidationImpl : MarketValidation {
         }
     }
 
+    override fun checkUpdateValidation(marketName: String): Exception? {
+        val exception = mutableListOf<String>()
+        if (!isValidMarketName(marketName)) {
+            exception.add("Invalid market name. Just can contain text and numbers")
+        }
+        if (!checkNameLength(marketName)) {
+            exception.add("Market name length should be between 4 and 14 characters")
+        }
+        return if (exception.isEmpty()) {
+            null
+        } else {
+            InvalidInputException(exception.joinToString("\n"))
+        }
+    }
+
+
     override fun isValidMarketName(name: String): Boolean {
         val pattern = Pattern.compile("^[a-zA-Z0-9]+(\\s[a-zA-Z0-9]+)*$")
         val matcher = pattern.matcher(name)
