@@ -65,26 +65,19 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
     }
 
     put("/category") {
-        val params = call.receiveParameters()
-        val categoryId = params["id"]?.toLongOrNull()
-        val categoryName = params["name"]?.trim().orEmpty()
+        try {
+            val params = call.receiveParameters()
+            val categoryId = params["id"]?.toLongOrNull()
+            val categoryName = params["name"]?.trim().orEmpty()
 
-        if (categoryId != null) {
-            try {
-                if (categoryName.isNotEmpty() && categoryName.length < 4) {
-                    call.respond(
-                            HttpStatusCode.BadRequest,
-                            ServerResponse.error("Category name should be more than 4 character...")
-                    )
-                } else {
-                    categoryService.update(categoryId, categoryName)
-                    call.respond(HttpStatusCode.OK, ServerResponse.success("Category updated successfully"))
-                }
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-            }
-        } else {
-            call.respond(HttpStatusCode.NotFound, ServerResponse.error("The ID is required..."))
+            val updateCategory = categoryService.update(categoryId, categoryName)
+            call.respond(HttpStatusCode.OK, ServerResponse.success(result = true, updateCategory))
+        } catch (e: InvalidInputException) {
+            call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
+        } catch (e: IdNotFoundException) {
+            call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+        } catch (t: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
         }
     }
 }

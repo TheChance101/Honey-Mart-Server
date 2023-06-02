@@ -68,37 +68,53 @@ class CategoryServiceImp(
         }
     }
 
-    override suspend fun delete(categoryId: Long?): String{
+    override suspend fun delete(categoryId: Long?): String {
         categoryValidation.checkCategoryId(categoryId)?.let {
             throw InvalidInputException(it)
         }
 
         return if (!isCategoryDeleted(categoryId!!)) {
-           dbQuery {
-               CategoriesTable.update({ CategoriesTable.isDeleted eq false }) {
-                   it[isDeleted] = true
-               }
-           }
+            dbQuery {
+                CategoriesTable.update({ CategoriesTable.isDeleted eq false }) {
+                    it[isDeleted] = true
+                }
+            }
             "Category Deleted successfully."
         } else {
             throw ItemNotAvailableException("The item is no longer available.")
         }
     }
 
-    override suspend fun update(categoryId: Long, categoryName: String): Boolean = dbQuery {
-        val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
+    override suspend fun update(categoryId: Long?, categoryName: String): String {
+        categoryValidation.checkCategoryId(categoryId)?.let {
+            throw InvalidInputException(it)
+        }
 
-        if (category != null) {
-            CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
-                if (categoryName.isNotEmpty()) {
-                    categoryRow[name] = categoryName
+        if (!isCategoryDeleted(categoryId!!)) {
+            val exception = categoryValidation.checkUpdateValidation(
+                    categoryId = categoryId,
+                    categoryName = categoryName
+            )
+            return if (exception == null) {
+                dbQuery {
+                    CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
+                        if (categoryName.isNotEmpty()) {
+                            categoryRow[name] = categoryName
+                        }
+                    }
+                    "Product Updated successfully."
                 }
-            } > 0
+            } else {
+                throw exception
+            }
         } else {
-            throw NoSuchElementException("This category id $categoryId not found.")
+            throw ItemNotAvailableException("The item is no longer available.")
         }
     }
 
+    /*
+    * for what this function
+     */
     override suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {

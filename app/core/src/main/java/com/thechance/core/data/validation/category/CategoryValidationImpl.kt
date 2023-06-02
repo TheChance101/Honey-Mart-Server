@@ -32,6 +32,24 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
         }
     }
 
+    override fun checkUpdateValidation(categoryId: Long?, categoryName: String?): Exception? {
+        val exception = mutableListOf<String>()
+
+        checkCategoryName(categoryName)?.let {
+            exception.add(it)
+        }
+
+        checkLetter(categoryName)?.let {
+            exception.add(it)
+        }
+
+        return if (exception.isEmpty()) {
+            null
+        } else {
+            InvalidInputException(exception.joinToString(" ,\n "))
+        }
+    }
+
     override fun checkCategoryId(categoryId: Long?): String? {
         return if (categoryId == null) {
             "Invalid categoryID"
