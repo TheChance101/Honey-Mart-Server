@@ -87,7 +87,7 @@ class MarketServiceImp(private val marketValidationImpl: MarketValidation) : Bas
         } ?: throw IdNotFoundException("Market with ID $marketId not found.")
     }
 
-    override suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
+    private suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
             it[MarketTable.isDeleted]

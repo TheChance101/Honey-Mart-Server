@@ -35,13 +35,13 @@ class MarketValidationImpl : MarketValidation {
     }
 
 
-    override fun isValidMarketName(name: String): Boolean {
+    private fun isValidMarketName(name: String): Boolean {
         val pattern = Pattern.compile("^[a-zA-Z0-9]+(\\s[a-zA-Z0-9]+)*$")
         val matcher = pattern.matcher(name)
         return matcher.matches()
     }
 
-    override fun checkNameLength(marketName: String): Boolean {
+    private fun checkNameLength(marketName: String): Boolean {
         return marketName.length in 4..14
     }
 }
