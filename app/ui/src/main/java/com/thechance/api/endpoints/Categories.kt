@@ -53,7 +53,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
             try {
                 val params = call.receiveParameters()
                 val categoryId = params["id"]?.toLongOrNull()
-                val categoryName = params["name"]?.trim().orEmpty()
+                val categoryName = params["name"]?.trim()
                 val marketId = params["marketId"]?.toLongOrNull()
                 val imageId = params["imageId"]?.toIntOrNull()
 

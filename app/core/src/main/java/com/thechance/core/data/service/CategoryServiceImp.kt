@@ -93,8 +93,11 @@ class CategoryServiceImp(private val categoryValidation: CategoryValidation) : B
             if (!isCategoryDeleted(categoryId!!)) {
                 dbQuery {
                     CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
-                        if (!categoryName.isNullOrEmpty()) {
-                            categoryRow[name] = categoryName
+
+                        categoryName?.let { categoryRow[name] = it }
+
+                        imageId?.let {
+                            categoryRow[CategoriesTable.imageId] = it
                         }
                     }
                     "Product Updated successfully."

@@ -37,11 +37,7 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
     ): Exception? {
         val exception = mutableListOf<String>()
 
-        checkCategoryName(categoryName)?.let {
-            exception.add(it)
-        }
-
-        checkLetter(categoryName)?.let {
+        checkId(marketId)?.let {
             exception.add(it)
         }
 
@@ -49,12 +45,20 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
             exception.add(it)
         }
 
-        checkId(marketId)?.let {
-            exception.add(it)
-        }
+        if (categoryName.isNullOrEmpty() && imageId == null) {
+            exception.add("Can't do UPDATE without fields to update")
+        } else if (!categoryName.isNullOrEmpty()) {
+            checkCategoryName(categoryName)?.let {
+                exception.add(it)
+            }
 
-        checkImageId(imageId)?.let {
-            exception.add(it)
+            checkLetter(categoryName)?.let {
+                exception.add(it)
+            }
+        } else {
+            checkImageId(imageId)?.let {
+                exception.add(it)
+            }
         }
 
         return if (exception.isEmpty()) {
