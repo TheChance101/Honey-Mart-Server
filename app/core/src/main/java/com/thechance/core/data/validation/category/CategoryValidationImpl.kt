@@ -17,11 +17,11 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
             exception.add(it)
         }
 
-        checkMarketId(marketId).let {
+        checkMarketId(marketId)?.let {
             exception.add(it)
         }
 
-        checkImageId(imageId).let {
+        checkImageId(imageId)?.let {
             exception.add(it)
         }
 
@@ -79,15 +79,19 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
         }
     }
 
-    private fun checkMarketId(marketId: Long?): String {
-        return marketId?.let {
+    private fun checkMarketId(marketId: Long?): String? {
+        return if (marketId == null) {
+            "Invalid marketId"
+        } else {
             null
-        } ?: "Invalid marketID"
+        }
     }
 
-    private fun checkImageId(imageId: Int?): String {
-        return imageId?.let {
+    private fun checkImageId(imageId: Int?): String? {
+        return if (imageId == null) {
+            "Invalid imageID"
+        } else {
             null
-        } ?: "Invalid imageID"
+        }
     }
 }
