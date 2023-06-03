@@ -24,7 +24,7 @@ val myModule = module {
     single<CoreDataBase> { CoreDataBaseImp() }
     singleOf(::ProductServiceImp) { bind<ProductService>() }
     singleOf(::MarketServiceImp) { bind<MarketService>() }
-    single<CategoryService> { CategoryServiceImp() }
+    singleOf(::CategoryServiceImp) { bind<CategoryService>() }
     single<ProductValidation> { ProductValidationImpl() }
     single<MarketValidation> { MarketValidationImpl() }
     single<CategoryValidation> { CategoryValidationImpl() }
