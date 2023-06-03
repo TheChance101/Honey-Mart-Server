@@ -12,7 +12,7 @@ interface CategoryService {
 
     suspend fun delete(categoryId: Long?): String
 
-    suspend fun update(categoryId: Long?, categoryName: String?):  String
+    suspend fun update(categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?):  String
 
     suspend fun getAllProductsInCategory(categoryId: Long?): CategoryWithProduct
 

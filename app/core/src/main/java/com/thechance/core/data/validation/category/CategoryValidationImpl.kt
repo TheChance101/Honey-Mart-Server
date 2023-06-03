@@ -32,15 +32,33 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
         }
     }
 
-    override fun checkUpdateValidation(categoryId: Long?, categoryName: String?): Exception? {
+    override fun checkUpdateValidation(
+        categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?
+    ): Exception? {
         val exception = mutableListOf<String>()
 
-        checkCategoryName(categoryName)?.let {
+        checkId(marketId)?.let {
             exception.add(it)
         }
 
-        checkLetter(categoryName)?.let {
+        checkId(categoryId)?.let {
             exception.add(it)
+        }
+
+        if (categoryName.isNullOrEmpty() && imageId == null) {
+            exception.add("Can't do UPDATE without fields to update")
+        } else if (!categoryName.isNullOrEmpty()) {
+            checkCategoryName(categoryName)?.let {
+                exception.add(it)
+            }
+
+            checkLetter(categoryName)?.let {
+                exception.add(it)
+            }
+        } else {
+            checkImageId(imageId)?.let {
+                exception.add(it)
+            }
         }
 
         return if (exception.isEmpty()) {
@@ -50,7 +68,7 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
         }
     }
 
-    override fun checkCategoryId(categoryId: Long?): String? {
+    override fun checkId(categoryId: Long?): String? {
         return if (categoryId == null) {
             "Invalid categoryID"
         } else {

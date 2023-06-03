@@ -11,20 +11,17 @@ import io.ktor.server.routing.*
 
 fun Route.productsRoutes(productService: ProductService) {
 
-    get("/products") {
-        val products = productService.getAllProducts()
-        call.respond(ServerResponse.success(products))
-    }
-
     route("/product") {
 
         get("/{productId}") {
             val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
             try {
-                val products = productService.getAllCategoryForProduct(productId = productId)
-                call.respond(ServerResponse.success(products))
-            } catch (t: Throwable) {
-                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(t.message.toString()))
+                val categories = productService.getAllCategoryForProduct(productId = productId)
+                call.respond(ServerResponse.success(categories))
+            } catch (e: InvalidInputException) {
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+            }catch (e:ItemNotAvailableException){
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
             }
         }
 
@@ -34,15 +31,14 @@ fun Route.productsRoutes(productService: ProductService) {
                 val productName = params["name"]?.trim().orEmpty()
                 val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
                 val productQuantity = params["quantity"]?.trim()
-                val categoriesId = params["categoriesId"]?.trim()?.split(",")?.map { it.toLongOrNull() ?: 0L }
+                val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
 
                 val newAddedProduct = productService.create(productName, productPrice, productQuantity, categoriesId)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
             } catch (e: InvalidInputException) {
-                val error = e.message.toString()
-                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(error))
-            } catch (t: Exception) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
         }
 
@@ -62,13 +58,13 @@ fun Route.productsRoutes(productService: ProductService) {
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success(true, updatedProduct))
             } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
             } catch (e: ItemNotAvailableException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-            } catch (t: Exception) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
         }
 
@@ -83,30 +79,30 @@ fun Route.productsRoutes(productService: ProductService) {
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success(updatedProductCategory))
             } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
         }
 
         delete("{id}") {
             val productId = call.parameters["id"]?.trim()?.toLongOrNull()
             try {
-                val deletedProduct = productService.deleteProduct(productId = productId)
+                val result = productService.deleteProduct(productId = productId)
                 call.respond(
                     HttpStatusCode.OK,
-                    ServerResponse.success(result = true, successMessage = deletedProduct)
+                    ServerResponse.success(result = result, successMessage = "Product Deleted successfully.")
                 )
             } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
             } catch (e: ItemNotAvailableException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-            } catch (t: Exception) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
         }
     }

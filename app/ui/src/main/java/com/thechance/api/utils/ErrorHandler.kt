@@ -1,5 +1,12 @@
 package com.thechance.api.utils
 
-class InvalidInputException(message: String) : Exception(message)
-class IdNotFoundException(message: String) : Exception(message)
-class ItemNotAvailableException(message: String) : Exception(message)
+import io.ktor.http.*
+
+class InvalidInputException(message: String, val statusCode: HttpStatusCode = HttpStatusCode.BadRequest) :
+    Exception(message)
+
+class IdNotFoundException(message: String, val statusCode: HttpStatusCode = HttpStatusCode.NotFound) :
+    Exception(message)
+
+class ItemNotAvailableException(message: String, val statusCode: HttpStatusCode = HttpStatusCode.NotFound) :
+    Exception(message)

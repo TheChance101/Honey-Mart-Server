@@ -16,7 +16,6 @@ fun Application.configureRouting() {
     val productService: ProductService by inject()
     val marketService: MarketService by inject()
     val categoryService: CategoryService by inject()
-    val marketCategoriesService: MarketCategoriesService by inject()
     val deleteAllTablesService: DeleteAllTablesService by inject()
 
     routing {
@@ -32,7 +31,6 @@ fun Application.configureRouting() {
         productsRoutes(productService)
         categoryRoutes(categoryService)
         marketsRoutes(marketService)
-        marketCategoriesRoutes(marketCategoriesService)
         deleteAllTables(deleteAllTablesService)
     }
 }

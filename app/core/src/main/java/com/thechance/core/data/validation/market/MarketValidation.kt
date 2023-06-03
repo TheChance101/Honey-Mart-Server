@@ -1,8 +1,8 @@
 package com.thechance.core.data.validation.market
 
 interface MarketValidation {
-    fun checkCreateValidation(marketName: String): Exception?
+    fun checkId(id: Long?): Exception?
 
-    fun checkUpdateValidation(marketName: String): Exception?
+    fun checkMarketName(name: String?): Exception?
 
 }

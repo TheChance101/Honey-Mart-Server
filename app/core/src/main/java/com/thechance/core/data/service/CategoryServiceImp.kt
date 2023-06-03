@@ -48,7 +48,7 @@ class CategoryServiceImp(private val categoryValidation: CategoryValidation) : B
     }
 
     override suspend fun getCategoriesByMarketId(marketId: Long?): List<Category> {
-        categoryValidation.checkCategoryId(marketId)?.let { throw InvalidInputException(it) }
+        categoryValidation.checkId(marketId)?.let { throw InvalidInputException(it) }
         return if (!isMarketDeleted(marketId!!)) {
             dbQuery {
                 CategoriesTable.select {
@@ -68,7 +68,7 @@ class CategoryServiceImp(private val categoryValidation: CategoryValidation) : B
     }
 
     override suspend fun delete(categoryId: Long?): String {
-        categoryValidation.checkCategoryId(categoryId)?.let {
+        categoryValidation.checkId(categoryId)?.let {
             throw InvalidInputException(it)
         }
 
@@ -84,35 +84,35 @@ class CategoryServiceImp(private val categoryValidation: CategoryValidation) : B
         }
     }
 
-    override suspend fun update(categoryId: Long?, categoryName: String?): String {
-        categoryValidation.checkCategoryId(categoryId)?.let {
-            throw InvalidInputException(it)
-        }
+    override suspend fun update(categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?): String {
+        categoryValidation.checkUpdateValidation(
+            categoryId = categoryId, categoryName = categoryName, marketId = marketId, imageId = imageId
+        )?.let { throw it }
 
-        if (!isCategoryDeleted(categoryId!!)) {
-            val exception = categoryValidation.checkUpdateValidation(
-                categoryId = categoryId,
-                categoryName = categoryName
-            )
-            return if (exception == null) {
+        return if (isMarketDeleted(marketId!!)) {
+            if (!isCategoryDeleted(categoryId!!)) {
                 dbQuery {
                     CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
-                        if (!categoryName.isNullOrEmpty()) {
-                            categoryRow[name] = categoryName
+
+                        categoryName?.let { categoryRow[name] = it }
+
+                        imageId?.let {
+                            categoryRow[CategoriesTable.imageId] = it
                         }
                     }
                     "Product Updated successfully."
                 }
+
             } else {
-                throw exception
+                throw ItemNotAvailableException("This category is no longer available.")
             }
         } else {
-            throw ItemNotAvailableException("The item is no longer available.")
+            throw ItemNotAvailableException("This market with id $marketId is no longer available.")
         }
     }
 
     override suspend fun getAllProductsInCategory(categoryId: Long?): CategoryWithProduct {
-        categoryValidation.checkCategoryId(categoryId)?.let { throw InvalidInputException(it) }
+        categoryValidation.checkId(categoryId)?.let { throw InvalidInputException(it) }
 
         if (!isCategoryDeleted(categoryId!!)) {
             val categoryProducts = dbQuery {
