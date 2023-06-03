@@ -78,7 +78,6 @@ class MarketServiceImp(private val marketValidationImpl: MarketValidation) : Bas
         }
 
         val updatedMarket = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
-
         updatedMarket?.let {
             Market(
                 marketId = it[MarketTable.id].value,

@@ -17,8 +17,8 @@ import org.koin.dsl.module
 val myModule = module {
     single<CoreDataBase> { CoreDataBaseImp() }
     singleOf(::ProductServiceImp) { bind<ProductService>() }
+    singleOf(::CategoryServiceImp) { bind<CategoryService>() }
     singleOf(::MarketServiceImp) { bind<MarketService>() }
-    single<CategoryService> { CategoryServiceImp() }
     single<MarketCategoriesService> { MarketCategoriesServiceImp() }
     single<ProductValidation> { ProductValidationImpl() }
     single<MarketValidation> { MarketValidationImpl() }
