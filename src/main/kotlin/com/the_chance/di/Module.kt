@@ -1,9 +1,15 @@
 package com.the_chance.di
 
-import com.thechance.api.service.*
+import com.thechance.api.service.CategoryService
+import com.thechance.api.service.DeleteAllTablesService
+import com.thechance.api.service.MarketService
+import com.thechance.api.service.ProductService
 import com.thechance.core.data.database.CoreDataBase
 import com.thechance.core.data.database.CoreDataBaseImp
-import com.thechance.core.data.service.*
+import com.thechance.core.data.service.CategoryServiceImp
+import com.thechance.core.data.service.DeleteAllTablesServiceServiceImp
+import com.thechance.core.data.service.MarketServiceImp
+import com.thechance.core.data.service.ProductServiceImp
 import com.thechance.core.data.validation.category.CategoryValidation
 import com.thechance.core.data.validation.category.CategoryValidationImpl
 import com.thechance.core.data.validation.market.MarketValidation
@@ -19,7 +25,6 @@ val myModule = module {
     singleOf(::ProductServiceImp) { bind<ProductService>() }
     singleOf(::MarketServiceImp) { bind<MarketService>() }
     single<CategoryService> { CategoryServiceImp() }
-    single<MarketCategoriesService> { MarketCategoriesServiceImp() }
     single<ProductValidation> { ProductValidationImpl() }
     single<MarketValidation> { MarketValidationImpl() }
     single<CategoryValidation> { CategoryValidationImpl() }

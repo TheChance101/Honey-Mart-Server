@@ -4,36 +4,26 @@ import com.thechance.api.utils.InvalidInputException
 import java.util.regex.Pattern
 
 class MarketValidationImpl : MarketValidation {
-    override fun checkCreateValidation(marketName: String): Exception? {
-        val exception = mutableListOf<String>()
-        if (!isValidMarketName(marketName)) {
-            exception.add("Invalid market name. Just can contain text and numbers")
-        }
-        if (!checkNameLength(marketName)) {
-            exception.add("Market name length should be between 4 and 14 characters")
-        }
-        return if (exception.isEmpty()) {
-            null
+
+    override fun checkId(id: Long?): Exception? {
+        return if (id == null) {
+            InvalidInputException("Invalid product Id")
         } else {
-            InvalidInputException(exception.joinToString("\n"))
+            null
         }
     }
 
-    override fun checkUpdateValidation(marketName: String): Exception? {
-        val exception = mutableListOf<String>()
-        if (!isValidMarketName(marketName)) {
-            exception.add("Invalid market name. Just can contain text and numbers")
-        }
-        if (!checkNameLength(marketName)) {
-            exception.add("Market name length should be between 4 and 14 characters")
-        }
-        return if (exception.isEmpty()) {
-            null
+    override fun checkMarketName(name: String?): Exception? {
+        return if (name == null || !isValidMarketNameLength(name)) {
+            InvalidInputException("Market Name is required and should be between 4 and 14 characters")
         } else {
-            InvalidInputException(exception.joinToString("\n"))
+            if (!isValidMarketName(name)) {
+                InvalidInputException("Invalid market name. Just can contain text and numbers")
+            } else {
+                null
+            }
         }
     }
-
 
     private fun isValidMarketName(name: String): Boolean {
         val pattern = Pattern.compile("^[a-zA-Z0-9]+(\\s[a-zA-Z0-9]+)*$")
@@ -41,7 +31,8 @@ class MarketValidationImpl : MarketValidation {
         return matcher.matches()
     }
 
-    private fun checkNameLength(marketName: String): Boolean {
+    private fun isValidMarketNameLength(marketName: String): Boolean {
         return marketName.length in 4..14
     }
+
 }

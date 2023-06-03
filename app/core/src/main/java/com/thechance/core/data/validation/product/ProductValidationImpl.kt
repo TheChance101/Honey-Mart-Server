@@ -6,10 +6,7 @@ import org.koin.core.component.KoinComponent
 class ProductValidationImpl : ProductValidation, KoinComponent {
 
     override fun checkCreateValidation(
-        productName: String,
-        productPrice: Double,
-        productQuantity: String?,
-        categoriesId: List<Long>?
+        productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
     ): Exception? {
         val exception = mutableListOf<String>()
 

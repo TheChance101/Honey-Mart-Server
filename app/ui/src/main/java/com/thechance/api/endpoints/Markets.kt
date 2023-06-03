@@ -13,6 +13,11 @@ import io.ktor.server.routing.*
 
 fun Route.marketsRoutes(marketService: MarketService) {
 
+    get("/marketsWithCategories") {
+        val markets = marketService.getAllMarketsWithCategories()
+        call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
+    }
+
     route("/markets") {
 
         post {
@@ -33,6 +38,18 @@ fun Route.marketsRoutes(marketService: MarketService) {
             call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
         }
 
+        get("/{id}/categories") {
+            try {
+                val marketId = call.parameters["id"]?.toLongOrNull()
+                val categories = marketService.getCategoriesByMarket(marketId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success(categories))
+            } catch (e: IdNotFoundException) {
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+            }
+        }
+
         delete("/{id}") {
             val marketId = call.parameters["id"]?.toLongOrNull()
             if (marketId == null) {
@@ -41,10 +58,9 @@ fun Route.marketsRoutes(marketService: MarketService) {
                 try {
                     marketService.deleteMarket(marketId)
                     call.respond(HttpStatusCode.OK, ServerResponse.success("Market Deleted Successfully"))
-
                 } catch (e: ItemNotAvailableException) {
                     call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-                } catch (e: NoSuchElementException) {
+                } catch (e: IdNotFoundException) {
                     call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
                 }
             }
@@ -72,7 +88,6 @@ fun Route.marketsRoutes(marketService: MarketService) {
                 }
             }
         }
-
     }
 }
 

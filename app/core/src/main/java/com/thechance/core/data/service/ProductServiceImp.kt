@@ -7,6 +7,8 @@ import com.thechance.api.service.ProductService
 import com.thechance.api.utils.IdNotFoundException
 import com.thechance.api.utils.InvalidInputException
 import com.thechance.api.utils.ItemNotAvailableException
+import com.thechance.core.data.mapper.toCategory
+import com.thechance.core.data.mapper.toProductWithCategory
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.tables.ProductTable
@@ -27,7 +29,7 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
             categoriesId = categoriesId
         )?.let { throw it }
 
-        return if (isValidCategories(categoriesId!!)) {
+        return if (checkCategoriesInDb(categoriesId!!)) {
             dbQuery {
                 val newProduct = ProductTable.insert { productRow ->
                     productRow[name] = productName
@@ -83,19 +85,12 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
             dbQuery {
                 (CategoriesTable innerJoin CategoryProductTable)
                     .select { CategoryProductTable.productId eq productId }
-                    .map { categoryRow ->
-                        Category(
-                            categoryId = categoryRow[CategoriesTable.id].value,
-                            categoryName = categoryRow[CategoriesTable.name].toString(),
-                            imageId = categoryRow[CategoriesTable.imageId]
-                        )
-                    }
+                    .map { it.toCategory() }
             }
         } else {
             throw ItemNotAvailableException("The item is no longer available.")
         }
     }
-
 
     override suspend fun updateProduct(
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
@@ -104,71 +99,55 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
             throw InvalidInputException(it)
         }
 
-        if (!isDeleted(productId!!)) {
-            val exception = productValidation.checkUpdateValidation(
-                productName = productName,
-                productPrice = productPrice,
-                productQuantity = productQuantity
-            )
-            return if (exception == null) {
-                dbQuery {
-                    ProductTable.update({ ProductTable.id eq productId }) { productRow ->
-                        productName?.let { productRow[name] = it }
-                        productPrice?.let { productRow[price] = it }
-                        productQuantity?.let { productRow[quantity] = it }
-                    }
+        return if (!isDeleted(productId!!)) {
+            productValidation.checkUpdateValidation(
+                productName = productName, productPrice = productPrice, productQuantity = productQuantity
+            )?.let { throw it }
+
+            dbQuery {
+                ProductTable.update({ ProductTable.id eq productId }) { productRow ->
+                    productName?.let { productRow[name] = it }
+                    productPrice?.let { productRow[price] = it }
+                    productQuantity?.let { productRow[quantity] = it }
                 }
-                "Product Updated successfully."
-            } else {
-                throw exception
             }
+            "Product Updated successfully."
         } else {
-            throw ItemNotAvailableException("The item is no longer available.")
+            throw ItemNotAvailableException("This product is no longer available.")
         }
     }
 
     override suspend fun updateProductCategory(productId: Long?, categoryIds: List<Long>): ProductWithCategory {
         productValidation.checkUpdateProductCategories(productId, categoryIds)?.let { throw it }
-        return dbQuery {
-            if (!isDeleted(productId!!)) {
-                if (isValidCategories(categoryIds)) {
+        return if (!isDeleted(productId!!)) {
+            if (checkCategoriesInDb(categoryIds)) {
+                dbQuery {
                     CategoryProductTable.deleteWhere { CategoryProductTable.productId eq productId }
 
                     CategoryProductTable.batchInsert(categoryIds) { categoryId ->
-                        this[CategoryProductTable.productId] = productId!!
+                        this[CategoryProductTable.productId] = productId
                         this[CategoryProductTable.categoryId] = categoryId
                     }
+
                     val product = ProductTable.select { ProductTable.id eq productId }.map {
-                        ProductWithCategory(
-                            id = it[ProductTable.id].value,
-                            name = it[ProductTable.name],
-                            price = it[ProductTable.price],
-                            quantity = it[ProductTable.quantity],
-                            category = (CategoriesTable innerJoin CategoryProductTable)
-                                .select { CategoryProductTable.productId eq it[ProductTable.id].value }
-                                .map { categoryRow ->
-                                    Category(
-                                        categoryId = categoryRow[CategoriesTable.id].value,
-                                        categoryName = categoryRow[CategoriesTable.name].toString(),
-                                        imageId = categoryRow[CategoriesTable.imageId]
-                                    )
-                                }
-                        )
+                        val categories = (CategoriesTable innerJoin CategoryProductTable)
+                            .select { CategoryProductTable.productId eq it[ProductTable.id].value }
+                            .map { it.toCategory() }
+                        it.toProductWithCategory(categories)
                     }.single()
                     product
-                } else {
-                    throw InvalidInputException("error in categoryIds")
                 }
             } else {
-                throw IdNotFoundException("Product with id $productId not found!")
+                throw InvalidInputException(message = "Error in categoryIds")
             }
+        } else {
+            throw IdNotFoundException(message = "Product with id $productId already deleted!")
         }
     }
 
-
-    override suspend fun deleteProduct(productId: Long?): String {
+    override suspend fun deleteProduct(productId: Long?): Boolean {
         productValidation.checkId(productId)?.let {
-            throw InvalidInputException(it)
+            throw InvalidInputException(message = it)
         }
         return if (!isDeleted(productId!!)) {
             dbQuery {
@@ -176,17 +155,16 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
                     productRow[isDeleted] = true
                 }
             }
-            "Product Deleted successfully."
+            true
         } else {
-            throw ItemNotAvailableException("The item is no longer available.")
+            throw ItemNotAvailableException(message = "This product is no longer available.")
         }
     }
-
 
     private suspend fun isDeleted(id: Long): Boolean {
         val product = dbQuery {
             ProductTable.select { ProductTable.id eq id }.singleOrNull()
-                ?: throw ItemNotAvailableException("The item with ID $id was not found.")
+                ?: throw ItemNotAvailableException(message = "The item with ID $id was not found.")
         }
         return product[ProductTable.isDeleted]
     }
@@ -194,7 +172,7 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
     /**
      * validate that each categoryId is found and not deleted
      * */
-    private suspend fun isValidCategories(categoryIds: List<Long>): Boolean {
+    private suspend fun checkCategoriesInDb(categoryIds: List<Long>): Boolean {
         return dbQuery {
             CategoriesTable.select { CategoriesTable.id inList categoryIds }
                 .filterNot { it[CategoriesTable.isDeleted] }.toList().size == categoryIds.size
