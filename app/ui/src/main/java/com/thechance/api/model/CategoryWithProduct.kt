@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class CategoryWithProduct(
     val categoryId: Long,
     val categoryName: String,
+    val categoryImageId: Int,
     val products: List<Product>,
 )

@@ -12,6 +12,4 @@ interface MarketService {
 
     suspend fun updateMarket(marketId: Long, marketName: String): Market
 
-    suspend fun isDeleted(marketId: Long): Boolean
-
 }
