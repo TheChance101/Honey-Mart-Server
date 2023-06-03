@@ -6,16 +6,14 @@ import com.thechance.api.model.CategoryWithProduct
 
 interface CategoryService {
 
-    suspend fun create(categoryName: String, marketId: Long,imageId: Int): Category
+    suspend fun create(categoryName: String?, marketId: Long?,imageId: Int?): Category
 
-    suspend fun getCategoriesByMarketId(marketId: Long): List<Category>
+    suspend fun getCategoriesByMarketId(marketId: Long?): List<Category>
 
-    suspend fun delete(categoryId: Long): Boolean
+    suspend fun delete(categoryId: Long?): String
 
-    suspend fun update(categoryId: Long, categoryName: String): Boolean
+    suspend fun update(categoryId: Long?, categoryName: String?):  String
 
-    suspend fun isDeleted(marketId: Long): Boolean
-
-    suspend fun getProductsFromCategory(categoryId: Long?): CategoryWithProduct
+    suspend fun getAllProductsInCategory(categoryId: Long?): CategoryWithProduct
 
 }
