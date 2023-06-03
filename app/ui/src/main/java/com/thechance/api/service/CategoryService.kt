@@ -14,6 +14,6 @@ interface CategoryService {
 
     suspend fun update(categoryId: Long?, categoryName: String?):  String
 
-    suspend fun getProductsFromCategory(categoryId: Long?): CategoryWithProduct
+    suspend fun getAllProductsInCategory(categoryId: Long?): CategoryWithProduct
 
 }

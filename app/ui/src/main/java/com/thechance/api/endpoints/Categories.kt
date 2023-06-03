@@ -19,7 +19,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
     get("/category/{categoryId}") {
         val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
         try {
-            val products = categoryService.getallProductsInCategory(categoryId = categoryId)
+            val products = categoryService.getAllProductsInCategory(categoryId = categoryId)
             call.respond(ServerResponse.success(products))
         } catch (e: InvalidInputException) {
             call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
