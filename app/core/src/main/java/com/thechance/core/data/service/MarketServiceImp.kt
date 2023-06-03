@@ -78,9 +78,10 @@ class MarketServiceImp(private val marketValidationImpl: MarketValidation) : Bas
         }
     }
 
-    override suspend fun updateMarket(marketId: Long, marketName: String?): Market {
+    override suspend fun updateMarket(marketId: Long?, marketName: String?): Market {
+        marketValidationImpl.checkId(marketId)?.let { throw it }
         marketValidationImpl.checkMarketName(marketName)?.let { throw it }
-        return if (isDeleted(marketId)) {
+        return if (isDeleted(marketId!!)) {
             throw ItemNotAvailableException("Market with ID: $marketId has been deleted")
         } else {
             dbQuery {

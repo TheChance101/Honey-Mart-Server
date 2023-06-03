@@ -59,33 +59,30 @@ fun Route.marketsRoutes(marketService: MarketService) {
                     marketService.deleteMarket(marketId)
                     call.respond(HttpStatusCode.OK, ServerResponse.success("Market Deleted Successfully"))
                 } catch (e: ItemNotAvailableException) {
-                    call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+                    call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
                 } catch (e: IdNotFoundException) {
-                    call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
+                    call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
                 }
             }
         }
 
         put("/{id}") {
-            val marketId = call.parameters["id"]?.toLongOrNull()
-            val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-
-            if (marketId == null) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ID"))
-            } else {
-                try {
-                    val updatedMarket = marketService.updateMarket(marketId, marketName)
-                    call.respond(
-                        HttpStatusCode.OK,
-                        ServerResponse.success(updatedMarket, "Market updated successfully")
-                    )
-                } catch (e: ItemNotAvailableException) {
-                    call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-                } catch (e: InvalidInputException) {
-                    call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
-                } catch (e: IdNotFoundException) {
-                    call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-                }
+            try {
+                val marketId = call.parameters["id"]?.toLongOrNull()
+                val marketName = call.receiveParameters()["name"]?.trim()
+                val updatedMarket = marketService.updateMarket(marketId, marketName)
+                call.respond(
+                    HttpStatusCode.OK,
+                    ServerResponse.success(updatedMarket, "Market updated successfully")
+                )
+            } catch (e: ItemNotAvailableException) {
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+            } catch (e: InvalidInputException) {
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+            } catch (e: IdNotFoundException) {
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             }
         }
     }
