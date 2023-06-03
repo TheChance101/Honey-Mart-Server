@@ -50,7 +50,7 @@ class CategoryServiceImp(
                 CategoriesTable.name.lowerCase() eq categoryName.lowercase() and
                         CategoriesTable.isDeleted.eq(false)
             }.singleOrNull()
-        }?: throw ItemNotAvailableException("The item with ID $categoryName was not found.")
+        } ?: throw ItemNotAvailableException("The item with ID $categoryName was not found.")
 
         return category[CategoriesTable.isDeleted]
     }
@@ -137,14 +137,21 @@ class CategoryServiceImp(
                             )
                         }
             }
-            val categoryName = dbQuery {
-                CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()?.get(CategoriesTable.name)
-                        ?: ""
+            val resultRow = dbQuery {
+                CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
             }
+            val category = resultRow?.let {
+                Category(
+                        categoryId = resultRow[CategoriesTable.id].value,
+                        categoryName = resultRow[CategoriesTable.name].toString(),
+                        imageId = resultRow[CategoriesTable.imageId]
+                )
+            } ?: throw NoSuchElementException("Category with ID $categoryId not found.")
 
             return CategoryWithProduct(
-                    categoryId = categoryId,
-                    categoryName = categoryName,
+                    categoryId = category.categoryId,
+                    categoryName = category.categoryName,
+                    categoryImageId = category.imageId,
                     products = categoryProducts
             )
         } else {
