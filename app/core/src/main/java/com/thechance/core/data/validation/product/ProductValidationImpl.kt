@@ -38,16 +38,20 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
     ): Exception? {
         val exception = mutableListOf<String>()
 
-        checkProductName(productName)?.let {
-            exception.add(it)
-        }
-
-        checkProductQuantity(productQuantity)?.let {
-            exception.add(it)
-        }
-
-        checkPrice(productPrice)?.let {
-            exception.add(it)
+        if (productName.isNullOrEmpty() && productPrice == null && productQuantity.isNullOrEmpty()) {
+            exception.add("Can't do UPDATE without fields to update")
+        } else if (!productName.isNullOrEmpty()) {
+            checkProductName(productName)?.let {
+                exception.add(it)
+            }
+        } else if (productQuantity != null) {
+            checkProductQuantity(productQuantity)?.let {
+                exception.add(it)
+            }
+        } else if (productPrice != null) {
+            checkPrice(productPrice)?.let {
+                exception.add(it)
+            }
         }
 
         return if (exception.isEmpty()) {
