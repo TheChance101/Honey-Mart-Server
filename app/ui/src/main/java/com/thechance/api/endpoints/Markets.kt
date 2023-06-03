@@ -20,19 +20,6 @@ fun Route.marketsRoutes(marketService: MarketService) {
 
     route("/markets") {
 
-        post {
-            val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-            try {
-                val newMarket = marketService.createMarket(marketName)
-                call.respond(
-                    HttpStatusCode.Created,
-                    ServerResponse.success(newMarket, "Market created successfully")
-                )
-            } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
-            }
-        }
-
         get {
             val markets = marketService.getAllMarkets()
             call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
@@ -50,19 +37,16 @@ fun Route.marketsRoutes(marketService: MarketService) {
             }
         }
 
-        delete("/{id}") {
-            val marketId = call.parameters["id"]?.toLongOrNull()
-            if (marketId == null) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ID"))
-            } else {
-                try {
-                    marketService.deleteMarket(marketId)
-                    call.respond(HttpStatusCode.OK, ServerResponse.success("Market Deleted Successfully"))
-                } catch (e: ItemNotAvailableException) {
-                    call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
-                } catch (e: IdNotFoundException) {
-                    call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
-                }
+        post {
+            val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
+            try {
+                val newMarket = marketService.createMarket(marketName)
+                call.respond(
+                    HttpStatusCode.Created,
+                    ServerResponse.success(newMarket, "Market created successfully")
+                )
+            } catch (e: InvalidInputException) {
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
             }
         }
 
@@ -83,6 +67,22 @@ fun Route.marketsRoutes(marketService: MarketService) {
                 call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+            }
+        }
+
+        delete("/{id}") {
+            val marketId = call.parameters["id"]?.toLongOrNull()
+            if (marketId == null) {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid Market ID"))
+            } else {
+                try {
+                    marketService.deleteMarket(marketId)
+                    call.respond(HttpStatusCode.OK, ServerResponse.success("Market Deleted Successfully"))
+                } catch (e: ItemNotAvailableException) {
+                    call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                } catch (e: IdNotFoundException) {
+                    call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                }
             }
         }
     }
