@@ -19,7 +19,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
     get("/category/{categoryId}") {
         val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
         try {
-            val products = categoryService.getProductsFromCategory(categoryId = categoryId)
+            val products = categoryService.getallProductsInCategory(categoryId = categoryId)
             call.respond(ServerResponse.success(products))
         } catch (e: InvalidInputException) {
             call.respond(HttpStatusCode.NotAcceptable, ServerResponse.error(e.message.toString()))
@@ -34,8 +34,8 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
         try {
             val params = call.receiveParameters()
             val categoryName = params["name"]?.trim().orEmpty()
-            val marketId = params["marketId"]?.toLongOrNull() ?: -1
-            val imageId = params["imageId"]?.toIntOrNull() ?: -1
+            val marketId = params["marketId"]?.toLongOrNull()
+            val imageId = params["imageId"]?.toIntOrNull()
 
             val newCategory = categoryService.create(categoryName, marketId, imageId)
             call.respond(HttpStatusCode.Created, ServerResponse.success(newCategory, "Category added successfully"))
