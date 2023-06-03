@@ -16,9 +16,11 @@ fun Route.productsRoutes(productService: ProductService) {
         get("/{productId}") {
             val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
             try {
-                val products = productService.getAllCategoryForProduct(productId = productId)
-                call.respond(ServerResponse.success(products))
+                val categories = productService.getAllCategoryForProduct(productId = productId)
+                call.respond(ServerResponse.success(categories))
             } catch (e: InvalidInputException) {
+                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+            }catch (e:ItemNotAvailableException){
                 call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
             }
         }
