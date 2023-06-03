@@ -1,27 +1,26 @@
 package com.thechance.core.data.service
 
-import com.thechance.api.model.Category
-import com.thechance.api.model.Product
-import com.thechance.api.model.ProductWithCategory
-import com.thechance.api.service.ProductService
-import com.thechance.api.utils.IdNotFoundException
-import com.thechance.api.utils.InvalidInputException
-import com.thechance.api.utils.ItemNotAvailableException
 import com.thechance.core.data.mapper.toCategory
 import com.thechance.core.data.mapper.toProductWithCategory
+import com.thechance.core.data.model.Category
+import com.thechance.core.data.model.Product
+import com.thechance.core.data.model.ProductWithCategory
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.tables.ProductTable
+import com.thechance.core.data.utils.IdNotFoundException
+import com.thechance.core.data.utils.InvalidInputException
+import com.thechance.core.data.utils.ItemNotAvailableException
 import com.thechance.core.data.validation.product.ProductValidation
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.component.KoinComponent
 
 
-class ProductServiceImp(private val productValidation: ProductValidation) :
-    BaseService(ProductTable, CategoryProductTable), ProductService, KoinComponent {
+class ProductService(private val productValidation: ProductValidation) :
+    BaseService(ProductTable, CategoryProductTable), KoinComponent {
 
-    override suspend fun create(
+    suspend fun create(
         productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
     ): ProductWithCategory {
         productValidation.checkCreateValidation(
@@ -63,7 +62,7 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
         }
     }
 
-    override suspend fun getAllProducts(): List<Product> {
+    suspend fun getAllProducts(): List<Product> {
         return dbQuery {
             ProductTable.select { ProductTable.isDeleted eq false }.map { productRow ->
                 Product(
@@ -76,10 +75,8 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
         }
     }
 
-    override suspend fun getAllCategoryForProduct(productId: Long?): List<Category> {
-        productValidation.checkId(productId)?.let {
-            throw InvalidInputException(it)
-        }
+    suspend fun getAllCategoryForProduct(productId: Long?): List<Category> {
+        productValidation.checkId(productId)?.let { throw InvalidInputException() }
 
         return if (!isDeleted(productId!!)) {
             dbQuery {
@@ -88,16 +85,14 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
                     .map { it.toCategory() }
             }
         } else {
-            throw ItemNotAvailableException("The item is no longer available.")
+            throw ItemNotAvailableException()
         }
     }
 
-    override suspend fun updateProduct(
+    suspend fun updateProduct(
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
-    ): String {
-        productValidation.checkId(productId)?.let {
-            throw InvalidInputException(it)
-        }
+    ): Boolean {
+        productValidation.checkId(productId)?.let { throw InvalidInputException() }
 
         return if (!isDeleted(productId!!)) {
             productValidation.checkUpdateValidation(
@@ -111,13 +106,13 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
                     productQuantity?.let { productRow[quantity] = it }
                 }
             }
-            "Product Updated successfully."
+            true
         } else {
-            throw ItemNotAvailableException("This product is no longer available.")
+            throw ItemNotAvailableException()
         }
     }
 
-    override suspend fun updateProductCategory(productId: Long?, categoryIds: List<Long>): ProductWithCategory {
+    suspend fun updateProductCategory(productId: Long?, categoryIds: List<Long>): ProductWithCategory {
         productValidation.checkUpdateProductCategories(productId, categoryIds)?.let { throw it }
         return if (!isDeleted(productId!!)) {
             if (checkCategoriesInDb(categoryIds)) {
@@ -138,17 +133,16 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
                     product
                 }
             } else {
-                throw InvalidInputException(message = "Error in categoryIds")
+                throw InvalidInputException()
             }
         } else {
-            throw IdNotFoundException(message = "Product with id $productId already deleted!")
+            throw IdNotFoundException()
         }
     }
 
-    override suspend fun deleteProduct(productId: Long?): Boolean {
-        productValidation.checkId(productId)?.let {
-            throw InvalidInputException(message = it)
-        }
+    suspend fun deleteProduct(productId: Long?): Boolean {
+        productValidation.checkId(productId)?.let { throw InvalidInputException() }
+
         return if (!isDeleted(productId!!)) {
             dbQuery {
                 ProductTable.update({ ProductTable.id eq productId }) { productRow ->
@@ -157,14 +151,14 @@ class ProductServiceImp(private val productValidation: ProductValidation) :
             }
             true
         } else {
-            throw ItemNotAvailableException(message = "This product is no longer available.")
+            throw ItemNotAvailableException()
         }
     }
 
     private suspend fun isDeleted(id: Long): Boolean {
         val product = dbQuery {
             ProductTable.select { ProductTable.id eq id }.singleOrNull()
-                ?: throw ItemNotAvailableException(message = "The item with ID $id was not found.")
+                ?: throw ItemNotAvailableException()
         }
         return product[ProductTable.isDeleted]
     }

@@ -1,10 +1,10 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.service.CategoryService
-import com.thechance.api.utils.IdNotFoundException
-import com.thechance.api.utils.InvalidInputException
-import com.thechance.api.utils.ItemNotAvailableException
+import com.thechance.core.data.service.CategoryService
+import com.thechance.core.data.utils.IdNotFoundException
+import com.thechance.core.data.utils.InvalidInputException
+import com.thechance.core.data.utils.ItemNotAvailableException
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -23,9 +23,9 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                 val products = categoryService.getAllProductsInCategory(categoryId = categoryId)
                 call.respond(ServerResponse.success(products))
             } catch (e: InvalidInputException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (t: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
@@ -42,7 +42,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newCategory, "Category added successfully"))
             } catch (e: InvalidInputException) {
                 val error = e.message.toString()
-                call.respond(e.statusCode, ServerResponse.error(error))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(error))
             } catch (t: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
@@ -57,12 +57,12 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                 val marketId = params["marketId"]?.toLongOrNull()
                 val imageId = params["imageId"]?.toIntOrNull()
 
-                val updateCategory = categoryService.update(categoryId, categoryName, marketId, imageId)
-                call.respond(HttpStatusCode.OK, ServerResponse.success(result = true, updateCategory))
+                val isCategoryUpdated = categoryService.update(categoryId, categoryName, marketId, imageId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success(result = isCategoryUpdated))
             } catch (e: InvalidInputException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (t: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
@@ -72,18 +72,17 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
             val categoryId = call.parameters["id"]?.trim()?.toLongOrNull()
 
             try {
-                val deletedCategory = categoryService.delete(categoryId)
-                call.respond(HttpStatusCode.OK, ServerResponse.success(result = true, deletedCategory))
+                val isCategoryDeleted = categoryService.delete(categoryId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success(result = isCategoryDeleted))
             } catch (e: InvalidInputException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             } catch (e: ItemNotAvailableException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (t: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
         }
-
     }
 }

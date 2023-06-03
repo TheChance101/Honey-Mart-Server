@@ -1,4 +1,4 @@
-package com.thechance.api.utils
+package com.thechance.core.data.utils
 
 import java.util.regex.Pattern
 

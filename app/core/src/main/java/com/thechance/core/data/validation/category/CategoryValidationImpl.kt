@@ -1,7 +1,7 @@
 package com.thechance.core.data.validation.category
 
-import com.thechance.api.utils.InvalidInputException
-import com.thechance.api.utils.isValidStringInput
+import com.thechance.core.data.utils.InvalidInputException
+import com.thechance.core.data.utils.isValidStringInput
 import org.koin.core.component.KoinComponent
 
 class CategoryValidationImpl : CategoryValidation, KoinComponent {
@@ -28,7 +28,7 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
         return if (exception.isEmpty()) {
             null
         } else {
-            InvalidInputException(exception.joinToString(" ,\n "))
+            InvalidInputException()
         }
     }
 
@@ -64,7 +64,7 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
         return if (exception.isEmpty()) {
             null
         } else {
-            InvalidInputException(exception.joinToString(" ,\n "))
+            InvalidInputException()
         }
     }
 

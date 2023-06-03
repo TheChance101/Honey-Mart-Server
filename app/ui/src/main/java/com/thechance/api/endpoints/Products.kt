@@ -1,8 +1,12 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.service.ProductService
-import com.thechance.api.utils.*
+import com.thechance.api.utils.orZero
+import com.thechance.api.utils.toLongIds
+import com.thechance.core.data.service.ProductService
+import com.thechance.core.data.utils.IdNotFoundException
+import com.thechance.core.data.utils.InvalidInputException
+import com.thechance.core.data.utils.ItemNotAvailableException
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -19,9 +23,9 @@ fun Route.productsRoutes(productService: ProductService) {
                 val categories = productService.getAllCategoryForProduct(productId = productId)
                 call.respond(ServerResponse.success(categories))
             } catch (e: InvalidInputException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
-            }catch (e:ItemNotAvailableException){
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
+            } catch (e: ItemNotAvailableException) {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             }
         }
 
@@ -36,7 +40,7 @@ fun Route.productsRoutes(productService: ProductService) {
                 val newAddedProduct = productService.create(productName, productPrice, productQuantity, categoriesId)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
             } catch (e: InvalidInputException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
@@ -50,19 +54,19 @@ fun Route.productsRoutes(productService: ProductService) {
                 val productPrice = params["price"]?.trim()?.toDoubleOrNull()
                 val productQuantity = params["quantity"]?.trim()
 
-                val updatedProduct = productService.updateProduct(
+                val isProductUpdated = productService.updateProduct(
                     productId = productId,
                     productName = productName,
                     productPrice = productPrice,
                     productQuantity = productQuantity
                 )
-                call.respond(HttpStatusCode.OK, ServerResponse.success(true, updatedProduct))
+                call.respond(HttpStatusCode.OK, ServerResponse.success(isProductUpdated))
             } catch (e: InvalidInputException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             } catch (e: ItemNotAvailableException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
@@ -79,9 +83,9 @@ fun Route.productsRoutes(productService: ProductService) {
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success(updatedProductCategory))
             } catch (e: InvalidInputException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
@@ -96,11 +100,11 @@ fun Route.productsRoutes(productService: ProductService) {
                     ServerResponse.success(result = result, successMessage = "Product Deleted successfully.")
                 )
             } catch (e: InvalidInputException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             } catch (e: ItemNotAvailableException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
-                call.respond(e.statusCode, ServerResponse.error(e.message.toString()))
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }

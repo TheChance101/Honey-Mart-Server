@@ -1,10 +1,8 @@
 package com.thechance.core.data.mapper
 
-import com.thechance.api.model.Category
-import com.thechance.api.model.Market
-import com.thechance.api.model.ProductWithCategory
+import com.thechance.core.data.model.Category
+import com.thechance.core.data.model.ProductWithCategory
 import com.thechance.core.data.tables.CategoriesTable
-import com.thechance.core.data.tables.MarketTable
 import com.thechance.core.data.tables.ProductTable
 import org.jetbrains.exposed.sql.ResultRow
 
@@ -26,4 +24,3 @@ internal fun ResultRow.toProductWithCategory(categories: List<Category>): Produc
         category = categories
     )
 }
-

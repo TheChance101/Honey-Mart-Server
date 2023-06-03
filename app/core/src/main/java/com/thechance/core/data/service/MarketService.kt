@@ -1,15 +1,13 @@
 package com.thechance.core.data.service
 
-import com.thechance.api.model.Category
-import com.thechance.api.model.Market
-import com.thechance.api.model.MarketWithCategories
-import com.thechance.api.service.MarketService
-import com.thechance.api.utils.IdNotFoundException
-import com.thechance.api.utils.ItemNotAvailableException
 import com.thechance.core.data.mapper.toCategory
 import com.thechance.core.data.mapper.toMarket
+import com.thechance.core.data.model.Category
+import com.thechance.core.data.model.Market
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.MarketTable
+import com.thechance.core.data.utils.IdNotFoundException
+import com.thechance.core.data.utils.ItemNotAvailableException
 import com.thechance.core.data.validation.market.MarketValidation
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
@@ -17,10 +15,10 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 
-class MarketServiceImp(private val marketValidationImpl: MarketValidation) : BaseService(MarketTable, CategoriesTable),
-    MarketService, KoinComponent {
+class MarketService(private val marketValidationImpl: MarketValidation) : BaseService(MarketTable, CategoriesTable),
+    KoinComponent {
 
-    override suspend fun createMarket(marketName: String?): Market {
+    suspend fun createMarket(marketName: String?): Market {
         marketValidationImpl.checkMarketName(marketName)?.let { throw it }
 
         return dbQuery {
@@ -32,11 +30,11 @@ class MarketServiceImp(private val marketValidationImpl: MarketValidation) : Bas
         }
     }
 
-    override suspend fun getAllMarkets(): List<Market> = dbQuery {
+    suspend fun getAllMarkets(): List<Market> = dbQuery {
         MarketTable.select { MarketTable.isDeleted eq false }.map { it.toMarket() }
     }
 
-    override suspend fun getCategoriesByMarket(marketId: Long?): List<Category> {
+    suspend fun getCategoriesByMarket(marketId: Long?): List<Category> {
         marketValidationImpl.checkId(marketId)?.let { throw it }
 
         return if (!isDeleted(marketId!!)) {
@@ -46,30 +44,14 @@ class MarketServiceImp(private val marketValidationImpl: MarketValidation) : Bas
                 }.map { it.toCategory() }
             }
         } else {
-            throw NoSuchElementException("Market with ID $marketId not found.")
+            throw IdNotFoundException()
         }
     }
 
-    override suspend fun getAllMarketsWithCategories(): List<MarketWithCategories> = dbQuery {
-        val markets = MarketTable
-            .select {
-                MarketTable.isDeleted eq false
-            }.map {
-                val marketId = it[MarketTable.id].value
-                val marketName = it[MarketTable.name]
-                MarketWithCategories(
-                    marketId = marketId,
-                    marketName = marketName,
-                    categories = getCategoriesByMarket(marketId)
-                )
-            }
-        markets
-    }
-
-    override suspend fun deleteMarket(marketId: Long?): Boolean = dbQuery {
+    suspend fun deleteMarket(marketId: Long?): Boolean = dbQuery {
         marketValidationImpl.checkId(marketId)?.let { throw it }
         if (isDeleted(marketId!!)) {
-            throw ItemNotAvailableException("Market with ID $marketId already deleted")
+            throw ItemNotAvailableException()
         } else {
             MarketTable.update({ MarketTable.id eq marketId }) {
                 it[isDeleted] = true
@@ -78,11 +60,11 @@ class MarketServiceImp(private val marketValidationImpl: MarketValidation) : Bas
         }
     }
 
-    override suspend fun updateMarket(marketId: Long?, marketName: String?): Market {
+    suspend fun updateMarket(marketId: Long?, marketName: String?): Market {
         marketValidationImpl.checkId(marketId)?.let { throw it }
         marketValidationImpl.checkMarketName(marketName)?.let { throw it }
         return if (isDeleted(marketId!!)) {
-            throw ItemNotAvailableException("Market with ID: $marketId has been deleted")
+            throw ItemNotAvailableException()
         } else {
             dbQuery {
                 MarketTable.update({ MarketTable.id eq marketId }) {
@@ -97,7 +79,7 @@ class MarketServiceImp(private val marketValidationImpl: MarketValidation) : Bas
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
             it[MarketTable.isDeleted]
-        } ?: throw IdNotFoundException("Market with ID $marketId not found.")
+        } ?: throw IdNotFoundException()
     }
 
 }

@@ -1,7 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.service.DeleteAllTablesService
+import com.thechance.core.data.service.DeleteAllTablesService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*

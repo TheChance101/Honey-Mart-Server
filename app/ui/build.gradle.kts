@@ -1,5 +1,5 @@
 val ktor_version: String by project
-val koin_version:String by project
+val koin_version: String by project
 val swagger_version: String by project
 
 plugins {
@@ -20,6 +20,8 @@ repositories {
 
 dependencies {
 
+    implementation(project(":app:core"))
+
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
 
@@ -31,9 +33,9 @@ dependencies {
 
     implementation("io.ktor:ktor-server-call-logging-jvm:$ktor_version")
 
-    implementation ("io.insert-koin:koin-ktor:$koin_version")
-    implementation ("io.insert-koin:koin-logger-slf4j:$koin_version")
+    implementation("io.insert-koin:koin-ktor:$koin_version")
+    implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
 
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
 
 }

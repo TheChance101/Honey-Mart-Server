@@ -1,4 +1,4 @@
-package com.thechance.api.model
+package com.thechance.core.data.model
 
 import kotlinx.serialization.Serializable
 
