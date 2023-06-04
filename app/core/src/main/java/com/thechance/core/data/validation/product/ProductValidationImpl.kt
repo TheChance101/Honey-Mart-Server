@@ -1,6 +1,6 @@
 package com.thechance.core.data.validation.product
 
-import com.thechance.api.utils.InvalidInputException
+import com.thechance.core.data.utils.InvalidInputException
 import org.koin.core.component.KoinComponent
 
 class ProductValidationImpl : ProductValidation, KoinComponent {
@@ -29,7 +29,7 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
         return if (exception.isEmpty()) {
             null
         } else {
-            InvalidInputException(exception.joinToString(" ,\n "))
+            InvalidInputException()
         }
     }
 
@@ -57,7 +57,7 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
         return if (exception.isEmpty()) {
             null
         } else {
-            InvalidInputException(exception.joinToString(" ,\n "))
+            InvalidInputException()
         }
     }
 
@@ -82,7 +82,7 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
         return if (exceptions.isEmpty()) {
             null
         } else {
-            InvalidInputException(exceptions.toString())
+            InvalidInputException()
         }
     }
 
