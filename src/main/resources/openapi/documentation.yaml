@@ -6,16 +6,6 @@ info:
 servers:
 - url: "https://com_the_chance_honey_mart"
 paths:
-  /json/kotlinx-serialization:
-    get:
-      description: ""
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "string"
   /category:
     post:
       description: ""
@@ -317,7 +307,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/ProductWithCategory"
+                $ref: "#/components/schemas/Product"
         "400":
           description: "Bad Request"
           content:
@@ -444,7 +434,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/ProductWithCategory"
+                type: "boolean"
         "400":
           description: "Bad Request"
           content:
@@ -453,6 +443,16 @@ paths:
                 type: "string"
         "404":
           description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /json/kotlinx-serialization:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
           content:
             '*/*':
               schema:
@@ -491,20 +491,3 @@ components:
           format: "int64"
         marketName:
           type: "string"
-    ProductWithCategory:
-      type: "object"
-      properties:
-        id:
-          type: "integer"
-          format: "int64"
-        name:
-          type: "string"
-        quantity:
-          type: "string"
-        price:
-          type: "number"
-          format: "double"
-        category:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Category"
