@@ -47,7 +47,7 @@ class ProductService(private val productValidation: ProductValidation) :
                 )
             }
         } else {
-            throw Exception("not valid categories.")
+            throw Exception()
         }
     }
 

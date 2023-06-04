@@ -45,27 +45,6 @@ class CategoryService(private val categoryValidation: CategoryValidation) : Base
         }
     }
 
-    suspend fun getCategoriesByMarketId(marketId: Long?): List<Category> {
-        categoryValidation.checkId(marketId)?.let { throw InvalidInputException() }
-
-        return if (!isMarketDeleted(marketId!!)) {
-            dbQuery {
-                CategoriesTable.select {
-                    CategoriesTable.marketId eq marketId and
-                            CategoriesTable.isDeleted.eq(false)
-                }.map { resultRow ->
-                    Category(
-                        categoryId = resultRow[CategoriesTable.id].value,
-                        categoryName = resultRow[CategoriesTable.name].toString(),
-                        imageId = resultRow[CategoriesTable.imageId]
-                    )
-                }
-            }
-        } else {
-            throw IdNotFoundException()
-        }
-    }
-
     suspend fun delete(categoryId: Long?): Boolean {
         categoryValidation.checkId(categoryId)?.let { throw InvalidInputException() }
 
