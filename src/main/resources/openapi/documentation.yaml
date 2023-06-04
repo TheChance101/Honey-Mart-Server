@@ -1,21 +1,12 @@
 openapi: "3.0.3"
 info:
-  title: "HoneyMart API"
-  description: "Json API to deal with HoneyMart APP"
+  title: "com_the_chance_honey_mart API"
+  description: "com_the_chance_honey_mart API"
   version: "1.0.0"
 servers:
 - url: "https://com_the_chance_honey_mart"
-
-tags:
-  - name: Categories
-    description: Operations about categories
-  - name: Markets
-    description: Operations about markets
-  - name: Products
-    description: Operations about products
-
 paths:
-  /:
+  /json/kotlinx-serialization:
     get:
       description: ""
       responses:
@@ -27,8 +18,6 @@ paths:
                 type: "string"
   /category:
     post:
-      tags:
-        - Categories
       description: ""
       parameters:
       - name: "name"
@@ -60,8 +49,6 @@ paths:
               schema:
                 type: "string"
     put:
-      tags:
-        - Categories
       description: ""
       parameters:
       - name: "id"
@@ -105,8 +92,6 @@ paths:
                 type: "string"
   /category/{id}:
     delete:
-      tags:
-        - Categories
       description: ""
       parameters:
       - name: "id"
@@ -135,8 +120,6 @@ paths:
                 type: "string"
   /category/{categoryId}:
     get:
-      tags:
-        - Categories
       description: "get all products in category"
       parameters:
       - name: "categoryId"
@@ -150,7 +133,9 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CategoryWithProduct"
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Product"
         "400":
           description: "Bad Request"
           content:
@@ -181,8 +166,6 @@ paths:
                 type: "string"
   /markets:
     get:
-      tags:
-        - Markets
       description: ""
       responses:
         "200":
@@ -194,8 +177,6 @@ paths:
                 items:
                   $ref: "#/components/schemas/Market"
     post:
-      tags:
-        - Markets
       description: ""
       parameters:
       - name: "name"
@@ -218,8 +199,6 @@ paths:
                 type: "string"
   /markets/{id}:
     delete:
-      tags:
-        - Markets
       description: ""
       parameters:
       - name: "id"
@@ -247,8 +226,6 @@ paths:
               schema:
                 type: "string"
     put:
-      tags:
-        - Markets
       description: ""
       parameters:
       - name: "id"
@@ -282,8 +259,6 @@ paths:
                 type: "string"
   /markets/{id}/categories:
     get:
-      tags:
-        - Markets
       description: ""
       parameters:
       - name: "id"
@@ -306,24 +281,14 @@ paths:
             '*/*':
               schema:
                 type: "string"
-  /marketsWithCategories:
-    get:
-      tags:
-        - Markets
-      description: ""
-      responses:
-        "200":
-          description: "OK"
+        "400":
+          description: "Bad Request"
           content:
             '*/*':
               schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/MarketWithCategories"
+                type: "string"
   /product:
     post:
-      tags:
-        - Products
       description: ""
       parameters:
       - name: "name"
@@ -361,8 +326,6 @@ paths:
                 type: "string"
   /product/{id}:
     delete:
-      tags:
-        - Products
       description: ""
       parameters:
       - name: "id"
@@ -390,8 +353,6 @@ paths:
               schema:
                 type: "string"
     put:
-      tags:
-        - Products
       description: ""
       parameters:
       - name: "id"
@@ -435,8 +396,6 @@ paths:
                 type: "string"
   /product/{productId}:
     get:
-      tags:
-        - Products
       description: ""
       parameters:
       - name: "productId"
@@ -467,8 +426,6 @@ paths:
                 type: "string"
   /product/{id}/updateCategories:
     put:
-      tags:
-        - Products
       description: ""
       parameters:
       - name: "id"
@@ -500,16 +457,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-  /json/kotlinx-serialization:
-    get:
-      description: ""
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "string"
 components:
   schemas:
     Category:
@@ -536,21 +483,6 @@ components:
         price:
           type: "number"
           format: "double"
-    CategoryWithProduct:
-      type: "object"
-      properties:
-        categoryId:
-          type: "integer"
-          format: "int64"
-        categoryName:
-          type: "string"
-        categoryImageId:
-          type: "integer"
-          format: "int32"
-        products:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Product"
     Market:
       type: "object"
       properties:
@@ -559,18 +491,6 @@ components:
           format: "int64"
         marketName:
           type: "string"
-    MarketWithCategories:
-      type: "object"
-      properties:
-        marketId:
-          type: "integer"
-          format: "int64"
-        marketName:
-          type: "string"
-        categories:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Category"
     ProductWithCategory:
       type: "object"
       properties:

@@ -23,6 +23,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                 val products = categoryService.getAllProductsInCategory(categoryId = categoryId)
                 call.respond(ServerResponse.success(products))
             } catch (e: InvalidInputException) {
+
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             } catch (e: IdNotFoundException) {
                 call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
