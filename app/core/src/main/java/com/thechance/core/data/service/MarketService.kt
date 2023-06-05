@@ -9,6 +9,7 @@ import com.thechance.core.data.tables.MarketTable
 import com.thechance.core.data.utils.IdNotFoundException
 import com.thechance.core.data.utils.ItemAlreadyDeleted
 import com.thechance.core.data.utils.ItemNotAvailableException
+import com.thechance.core.data.utils.MarketItemDeletedException
 import com.thechance.core.data.validation.market.MarketValidation
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
@@ -52,7 +53,7 @@ class MarketService(private val marketValidationImpl: MarketValidation) : BaseSe
     suspend fun deleteMarket(marketId: Long?): Boolean = dbQuery {
         marketValidationImpl.checkId(marketId)?.let { throw it }
         if (isDeleted(marketId!!)) {
-            throw ItemNotAvailableException()
+            throw MarketItemDeletedException()
         } else {
             MarketTable.update({ MarketTable.id eq marketId }) {
                 it[isDeleted] = true
@@ -65,7 +66,7 @@ class MarketService(private val marketValidationImpl: MarketValidation) : BaseSe
         marketValidationImpl.checkId(marketId)?.let { throw it }
         marketValidationImpl.checkMarketName(marketName)?.let { throw it }
         return if (isDeleted(marketId!!)) {
-            throw ItemAlreadyDeleted()
+            throw MarketItemDeletedException()
         } else {
             dbQuery {
                 MarketTable.update({ MarketTable.id eq marketId }) {
