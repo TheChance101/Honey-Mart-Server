@@ -82,16 +82,16 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
             }
     }
 
-    override suspend fun isCategoryDeleted(categoryId: Long): Boolean? = dbQuery {
+    override suspend fun isCategoryDeleted(categoryId: Long): Boolean = dbQuery {
         val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
         category?.let {
             it[CategoriesTable.isDeleted]
-        }
+        } ?: false
     }
 
-    override suspend fun isMarketDeleted(marketId: Long): Boolean? = dbQuery {
+    override suspend fun isMarketDeleted(marketId: Long): Boolean = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
-        market?.let { it[MarketTable.isDeleted] }
+        market?.let { it[MarketTable.isDeleted] } ?: false
     }
 
     override suspend fun isCategoryNameUnique(categoryName: String): Boolean = dbQuery {

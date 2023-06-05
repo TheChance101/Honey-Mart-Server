@@ -26,7 +26,7 @@ class CategoryService(
             categoryName = categoryName, marketId = marketId, imageId = imageId
         )?.let { throw it }
 
-        return if (!isMarketDeleted(marketId!!)) {
+        return if (!categoryDataSource.isMarketDeleted(marketId!!)) {
             if (categoryDataSource.isCategoryNameUnique(categoryName!!)) {
                 categoryDataSource.createCategory(
                     categoryName = categoryName, marketId = marketId, imageId = imageId!!
@@ -41,7 +41,7 @@ class CategoryService(
 
     suspend fun getCategoriesByMarketId(marketId: Long?): List<Category> {
         categoryValidation.checkId(marketId)?.let { throw InvalidInputException() }
-        return if (!isMarketDeleted(marketId!!)) {
+        return if (!categoryDataSource.isMarketDeleted(marketId!!)) {
             categoryDataSource.getCategoriesByMarketId(marketId)
         } else {
             throw IdNotFoundException()
@@ -51,7 +51,7 @@ class CategoryService(
     suspend fun delete(categoryId: Long?): Boolean {
         categoryValidation.checkId(categoryId)?.let { throw InvalidInputException() }
 
-        return if (!isCategoryDeleted(categoryId!!)) {
+        return if (!categoryDataSource.isCategoryDeleted(categoryId!!)) {
             categoryDataSource.deleteCategory(categoryId)
             true
         } else {
@@ -68,8 +68,8 @@ class CategoryService(
             categoryId = categoryId, categoryName = categoryName, marketId = marketId, imageId = imageId
         )?.let { throw it }
 
-        return if (isMarketDeleted(marketId!!)) {
-            if (!isCategoryDeleted(categoryId!!)) {
+        return if (categoryDataSource.isMarketDeleted(marketId!!)) {
+            if (!categoryDataSource.isCategoryDeleted(categoryId!!)) {
                 categoryDataSource.updateCategory(
                     categoryId = categoryId, categoryName = categoryName, marketId = marketId, imageId = imageId
                 )
@@ -84,18 +84,11 @@ class CategoryService(
     suspend fun getAllProductsInCategory(categoryId: Long?): List<Product> {
         categoryValidation.checkId(categoryId)?.let { throw InvalidInputException() }
 
-        return if (!isCategoryDeleted(categoryId!!)) {
+        return if (!categoryDataSource.isCategoryDeleted(categoryId!!)) {
             categoryDataSource.getAllProductsInCategory(categoryId)
         } else {
             throw ItemNotAvailableException()
         }
-    }
-
-    private suspend fun isMarketDeleted(marketId: Long): Boolean {
-       return categoryDataSource.isMarketDeleted(marketId)?:throw IdNotFoundException()
-    }
-    private suspend fun isCategoryDeleted(categoryId: Long): Boolean {
-       return categoryDataSource.isCategoryDeleted(categoryId)?:throw IdNotFoundException()
     }
 
 }

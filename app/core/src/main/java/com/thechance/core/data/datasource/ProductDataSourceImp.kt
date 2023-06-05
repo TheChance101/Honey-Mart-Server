@@ -86,10 +86,9 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         }
     }
 
-    override suspend fun isDeleted(id: Long): Boolean? = dbQuery {
+    override suspend fun isDeleted(id: Long): Boolean = dbQuery {
         val product = ProductTable.select { ProductTable.id eq id }.singleOrNull()
-        product?.let { it[ProductTable.isDeleted] }
-
+        product?.let { it[ProductTable.isDeleted] } ?: false
     }
 
 

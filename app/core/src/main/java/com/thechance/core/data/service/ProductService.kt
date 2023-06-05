@@ -45,7 +45,7 @@ class ProductService(
 
     suspend fun getAllCategoryForProduct(productId: Long?): List<Category> {
         productValidation.checkId(productId)?.let { throw InvalidInputException() }
-        return if (!isDeleted(productId!!)) {
+        return if (!productDataSource.isDeleted(productId!!)) {
             productDataSource.getAllCategoryForProduct(productId)
         } else {
             throw ItemNotAvailableException()
@@ -57,7 +57,7 @@ class ProductService(
     ): Boolean {
         productValidation.checkId(productId)?.let { throw InvalidInputException() }
 
-        return if (!isDeleted(productId!!)) {
+        return if (!productDataSource.isDeleted(productId!!)) {
             productValidation.checkUpdateValidation(
                 productName = productName, productPrice = productPrice, productQuantity = productQuantity
             )?.let { throw it }
@@ -74,7 +74,7 @@ class ProductService(
 
     suspend fun updateProductCategory(productId: Long?, categoryIds: List<Long>): Boolean {
         productValidation.checkUpdateProductCategories(productId, categoryIds)?.let { throw it }
-        return if (!isDeleted(productId!!)) {
+        return if (!productDataSource.isDeleted(productId!!)) {
             if (productDataSource.checkCategoriesInDb(categoryIds)) {
                 productDataSource.updateProductCategory(productId, categoryIds)
             } else {
@@ -87,16 +87,13 @@ class ProductService(
 
     suspend fun deleteProduct(productId: Long?): Boolean {
         productValidation.checkId(productId)?.let { throw InvalidInputException() }
-        return if (!isDeleted(productId!!)) {
+        return if (!productDataSource.isDeleted(productId!!)) {
             productDataSource.deleteProduct(productId)
             true
         } else {
             throw ItemNotAvailableException()
         }
     }
-
-    private suspend fun isDeleted(id: Long): Boolean =
-        productDataSource.isDeleted(id)?: throw ItemNotAvailableException()
 
     /**
      * validate that each categoryId is found and not deleted

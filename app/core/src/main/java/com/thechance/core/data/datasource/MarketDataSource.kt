@@ -10,5 +10,5 @@ interface MarketDataSource {
     suspend fun getCategoriesByMarket(marketId: Long): List<Category>
     suspend fun deleteMarket(marketId: Long): Boolean
     suspend fun updateMarket(marketId: Long, marketName: String): Market
-    suspend fun isDeleted(marketId: Long): Boolean?
+    suspend fun isDeleted(marketId: Long): Boolean
 }
