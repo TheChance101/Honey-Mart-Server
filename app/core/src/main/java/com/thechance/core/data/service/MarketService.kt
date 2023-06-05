@@ -15,8 +15,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 
-class MarketService(private val marketValidationImpl: MarketValidation) : BaseService(MarketTable, CategoriesTable),
-    KoinComponent {
+class MarketService : BaseService(MarketTable, CategoriesTable), KoinComponent {
 
     suspend fun createMarket(marketName: String?): Market {
         return dbQuery {
@@ -33,8 +32,6 @@ class MarketService(private val marketValidationImpl: MarketValidation) : BaseSe
     }
 
     suspend fun getCategoriesByMarket(marketId: Long?): List<Category> {
-        marketValidationImpl.checkId(marketId)?.let { throw it }
-
         return if (!isDeleted(marketId!!)) {
             dbQuery {
                 CategoriesTable.select {

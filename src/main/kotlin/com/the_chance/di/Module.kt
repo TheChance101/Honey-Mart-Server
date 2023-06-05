@@ -6,6 +6,7 @@ import com.thechance.core.data.service.DeleteAllTablesService
 import com.thechance.core.data.service.MarketService
 import com.thechance.core.data.service.ProductService
 import com.thechance.core.data.usecase.category.*
+import com.thechance.core.data.usecase.market.*
 import com.thechance.core.data.validation.market.MarketValidation
 import com.thechance.core.data.validation.market.MarketValidationImpl
 import com.thechance.core.data.validation.product.ProductValidation
@@ -20,11 +21,21 @@ val myModule = module {
     singleOf(::MarketService) { bind<MarketService>() }
     singleOf(::CategoryService) { bind<CategoryService>() }
     singleOf(::DeleteAllTablesService) { bind<DeleteAllTablesService>() }
+
     singleOf(::CategoryUseCasesContainer) { bind<CategoryUseCasesContainer>() }
     singleOf(::CreateCategoryUseCase) { bind<CreateCategoryUseCase>() }
     singleOf(::DeleteCategoryUseCase) { bind<DeleteCategoryUseCase>() }
     singleOf(::GetAllCategoriesUseCase) { bind<GetAllCategoriesUseCase>() }
     singleOf(::UpdateCategoryUseCase) { bind<UpdateCategoryUseCase>() }
+
+    singleOf(::MarketUseCaseContainer) { bind<MarketUseCaseContainer>() }
+    singleOf(::CreateMarketUseCase) { bind<CreateMarketUseCase>() }
+    singleOf(::DeleteMarketUseCase) { bind<DeleteMarketUseCase>() }
+    singleOf(::GetMarketsUseCase) { bind<GetMarketsUseCase>() }
+    singleOf(::UpdateMarketUseCase) { bind<UpdateMarketUseCase>() }
+    singleOf(::GetCategoriesByMarketIdUseCase) { bind<GetCategoriesByMarketIdUseCase>() }
+
+
     single<ProductValidation> { ProductValidationImpl() }
     single<MarketValidation> { MarketValidationImpl() }
 }
