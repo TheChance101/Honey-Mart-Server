@@ -53,7 +53,7 @@ class CategoryService : BaseService(CategoriesTable),
     }
 
     suspend fun update(categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?): Boolean {
-        return if (isMarketDeleted(marketId!!)) {
+        return if (!isMarketDeleted(marketId!!)) {
             if (!isCategoryDeleted(categoryId!!)) {
                 dbQuery {
                     CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
