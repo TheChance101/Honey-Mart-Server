@@ -1,22 +1,23 @@
 package com.thechance.core.data.usecase.category
 
-import com.thechance.core.data.model.Category
 import com.thechance.core.data.service.CategoryService
 import com.thechance.core.data.utils.*
 import java.util.regex.Pattern
 
-class CreateCategoryUseCase(private val categoryService: CategoryService) {
-    suspend operator fun invoke(categoryName: String?, marketId: Long?, imageId: Int?): Category {
+class UpdateCategoryUseCase(private val categoryService: CategoryService) {
+    suspend operator fun invoke(categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?): Boolean {
         return if (checkCategoryName(categoryName)) {
             throw InvalidCategoryNameException()
         } else if (checkLetter(categoryName)) {
             throw InvalidCategoryNameLettersException()
-        } else if (checkMarketId(marketId)) {
+        } else if (checkId(marketId)) {
+            throw InvalidMarketIdException()
+        } else if (checkId(categoryId)) {
             throw InvalidMarketIdException()
         } else if (checkImageId(imageId)) {
             throw InvalidImageIdException()
         } else {
-            categoryService.create(categoryName, marketId, imageId)
+            categoryService.update(categoryId, categoryName, marketId, imageId)
         }
     }
 
@@ -32,9 +33,10 @@ class CreateCategoryUseCase(private val categoryService: CategoryService) {
         } ?: true
     }
 
-    private fun checkMarketId(marketId: Long?): Boolean {
-        return marketId == null
+    private fun checkId(id: Long?): Boolean {
+        return id == null
     }
+
 
     private fun checkImageId(imageId: Int?): Boolean {
         return imageId == null

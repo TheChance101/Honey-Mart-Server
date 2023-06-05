@@ -1,36 +1,10 @@
 package com.thechance.core.data.validation.category
 
 import com.thechance.core.data.utils.InvalidInputException
-import com.thechance.core.data.utils.isValidStringInput
+//import com.thechance.core.data.utils.isValidStringInput
 import org.koin.core.component.KoinComponent
 
 class CategoryValidationImpl : CategoryValidation, KoinComponent {
-
-    override fun checkCreateValidation(categoryName: String?, marketId: Long?, imageId: Int?): Exception? {
-        val exception = mutableListOf<String>()
-
-        checkCategoryName(categoryName)?.let {
-            exception.add(it)
-        }
-
-        checkLetter(categoryName)?.let {
-            exception.add(it)
-        }
-
-        checkMarketId(marketId)?.let {
-            exception.add(it)
-        }
-
-        checkImageId(imageId)?.let {
-            exception.add(it)
-        }
-
-        return if (exception.isEmpty()) {
-            null
-        } else {
-            InvalidInputException()
-        }
-    }
 
     override fun checkUpdateValidation(
         categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?
@@ -52,9 +26,9 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
                 exception.add(it)
             }
 
-            checkLetter(categoryName)?.let {
-                exception.add(it)
-            }
+//            checkLetter(categoryName)?.let {
+//                exception.add(it)
+//            }
         } else {
             checkImageId(imageId)?.let {
                 exception.add(it)
@@ -112,4 +86,6 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
             null
         }
     }
+
+
 }

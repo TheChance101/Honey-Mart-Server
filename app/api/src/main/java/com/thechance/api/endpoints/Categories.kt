@@ -2,8 +2,10 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.core.data.service.CategoryService
+import com.thechance.core.data.usecase.category.CategoryUseCasesContainer
 import com.thechance.core.data.usecase.category.CreateCategoryUseCase
 import com.thechance.core.data.utils.IdNotFoundException
+import com.thechance.core.data.utils.InvalidCategoryNameException
 import com.thechance.core.data.utils.InvalidInputException
 import com.thechance.core.data.utils.ItemNotAvailableException
 import io.ktor.http.*
@@ -12,7 +14,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.categoryRoutes(categoryService: CategoryService) {
+fun Route.categoryRoutes(categoryUseCasesContainer: CategoryUseCasesContainer) {
 
     route("/category") {
         /**
@@ -42,7 +44,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
 
                 val newCategory = CreateCategoryUseCase(categoryService).invoke(categoryName, marketId, imageId)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newCategory, "Category added successfully"))
-            } catch (e: InvalidInputException) {
+            } catch (e: InvalidCategoryNameException) {
                 val error = e.message.toString()
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(error))
             } catch (t: Exception) {
