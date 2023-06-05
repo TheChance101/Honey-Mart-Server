@@ -1,9 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.core.data.service.CategoryService
 import com.thechance.core.data.usecase.category.CategoryUseCasesContainer
-import com.thechance.core.data.usecase.category.CreateCategoryUseCase
 import com.thechance.core.data.utils.IdNotFoundException
 import com.thechance.core.data.utils.InvalidCategoryNameException
 import com.thechance.core.data.utils.InvalidInputException
@@ -23,7 +21,7 @@ fun Route.categoryRoutes(categoryUseCasesContainer: CategoryUseCasesContainer) {
         get("/{categoryId}") {
             val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
             try {
-                val products = categoryService.getAllProductsInCategory(categoryId = categoryId)
+                val products = categoryUseCasesContainer.getAllCategoriesUseCase(categoryId = categoryId)
                 call.respond(ServerResponse.success(products))
             } catch (e: InvalidInputException) {
 
@@ -42,7 +40,8 @@ fun Route.categoryRoutes(categoryUseCasesContainer: CategoryUseCasesContainer) {
                 val marketId = params["marketId"]?.toLongOrNull()
                 val imageId = params["imageId"]?.toIntOrNull()
 
-                val newCategory = CreateCategoryUseCase(categoryService).invoke(categoryName, marketId, imageId)
+                val newCategory =
+                    categoryUseCasesContainer.createCategoryUseCase.invoke(categoryName, marketId, imageId)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newCategory, "Category added successfully"))
             } catch (e: InvalidCategoryNameException) {
                 val error = e.message.toString()
@@ -61,7 +60,8 @@ fun Route.categoryRoutes(categoryUseCasesContainer: CategoryUseCasesContainer) {
                 val marketId = params["marketId"]?.toLongOrNull()
                 val imageId = params["imageId"]?.toIntOrNull()
 
-                val isCategoryUpdated = categoryService.update(categoryId, categoryName, marketId, imageId)
+                val isCategoryUpdated =
+                    categoryUseCasesContainer.updateCategoryUseCase.invoke(categoryId, categoryName, marketId, imageId)
                 call.respond(HttpStatusCode.OK, ServerResponse.success(result = isCategoryUpdated))
             } catch (e: InvalidInputException) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
@@ -74,9 +74,8 @@ fun Route.categoryRoutes(categoryUseCasesContainer: CategoryUseCasesContainer) {
 
         delete("/{id}") {
             val categoryId = call.parameters["id"]?.trim()?.toLongOrNull()
-
             try {
-                val isCategoryDeleted = categoryService.delete(categoryId)
+                val isCategoryDeleted = categoryUseCasesContainer.deleteCategoryUseCase.invoke(categoryId)
                 call.respond(HttpStatusCode.OK, ServerResponse.success(result = isCategoryDeleted))
             } catch (e: InvalidInputException) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))

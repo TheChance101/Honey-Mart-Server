@@ -3,20 +3,27 @@ package com.thechance.core.data.usecase.category
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.service.CategoryService
 import com.thechance.core.data.utils.*
+import org.koin.core.component.KoinComponent
 import java.util.regex.Pattern
 
-class CreateCategoryUseCase(private val categoryService: CategoryService) {
+class CreateCategoryUseCase(private val categoryService: CategoryService) : KoinComponent {
     suspend operator fun invoke(categoryName: String?, marketId: Long?, imageId: Int?): Category {
-        return if (checkCategoryName(categoryName)) {
-            throw InvalidCategoryNameException()
-        } else if (checkLetter(categoryName)) {
-            throw InvalidCategoryNameLettersException()
-        } else if (checkMarketId(marketId)) {
-            throw InvalidMarketIdException()
-        } else if (checkImageId(imageId)) {
-            throw InvalidImageIdException()
-        } else {
-            categoryService.create(categoryName, marketId, imageId)
+        return when {
+            checkCategoryName(categoryName) -> {
+                throw InvalidCategoryNameException()
+            }
+            checkLetter(categoryName) -> {
+                throw InvalidCategoryNameLettersException()
+            }
+            checkMarketId(marketId) -> {
+                throw InvalidMarketIdException()
+            }
+            checkImageId(imageId) -> {
+                throw InvalidImageIdException()
+            }
+            else -> {
+                categoryService.create(categoryName, marketId, imageId)
+            }
         }
     }
 

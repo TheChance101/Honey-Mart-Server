@@ -9,14 +9,11 @@ import com.thechance.core.data.tables.ProductTable
 import com.thechance.core.data.utils.IdNotFoundException
 import com.thechance.core.data.utils.InvalidInputException
 import com.thechance.core.data.utils.ItemNotAvailableException
-import com.thechance.core.data.validation.category.CategoryValidation
 import org.jetbrains.exposed.sql.*
 import org.koin.core.component.KoinComponent
-import java.util.*
 
-class CategoryService(private val categoryValidation: CategoryValidation) : BaseService(CategoriesTable),
+class CategoryService : BaseService(CategoriesTable),
     KoinComponent {
-
     suspend fun create(categoryName: String?, marketId: Long?, imageId: Int?): Category {
 
         return if (!isMarketDeleted(marketId!!)) {
@@ -43,8 +40,6 @@ class CategoryService(private val categoryValidation: CategoryValidation) : Base
     }
 
     suspend fun delete(categoryId: Long?): Boolean {
-        categoryValidation.checkId(categoryId)?.let { throw InvalidInputException() }
-
         return if (!isCategoryDeleted(categoryId!!)) {
             dbQuery {
                 CategoriesTable.update({ CategoriesTable.isDeleted eq false }) {
@@ -58,10 +53,6 @@ class CategoryService(private val categoryValidation: CategoryValidation) : Base
     }
 
     suspend fun update(categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?): Boolean {
-        categoryValidation.checkUpdateValidation(
-            categoryId = categoryId, categoryName = categoryName, marketId = marketId, imageId = imageId
-        )?.let { throw it }
-
         return if (isMarketDeleted(marketId!!)) {
             if (!isCategoryDeleted(categoryId!!)) {
                 dbQuery {
@@ -75,7 +66,6 @@ class CategoryService(private val categoryValidation: CategoryValidation) : Base
                     }
                     true
                 }
-
             } else {
                 throw ItemNotAvailableException()
             }
@@ -85,8 +75,6 @@ class CategoryService(private val categoryValidation: CategoryValidation) : Base
     }
 
     suspend fun getAllProductsInCategory(categoryId: Long?): List<Product> {
-        categoryValidation.checkId(categoryId)?.let { throw InvalidInputException() }
-
         return if (!isCategoryDeleted(categoryId!!)) {
             dbQuery {
                 (ProductTable innerJoin CategoryProductTable)

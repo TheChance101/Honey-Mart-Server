@@ -5,8 +5,7 @@ import com.thechance.core.data.service.CategoryService
 import com.thechance.core.data.service.DeleteAllTablesService
 import com.thechance.core.data.service.MarketService
 import com.thechance.core.data.service.ProductService
-import com.thechance.core.data.validation.category.CategoryValidation
-import com.thechance.core.data.validation.category.CategoryValidationImpl
+import com.thechance.core.data.usecase.category.*
 import com.thechance.core.data.validation.market.MarketValidation
 import com.thechance.core.data.validation.market.MarketValidationImpl
 import com.thechance.core.data.validation.product.ProductValidation
@@ -21,8 +20,11 @@ val myModule = module {
     singleOf(::MarketService) { bind<MarketService>() }
     singleOf(::CategoryService) { bind<CategoryService>() }
     singleOf(::DeleteAllTablesService) { bind<DeleteAllTablesService>() }
-
+    singleOf(::CategoryUseCasesContainer) { bind<CategoryUseCasesContainer>() }
+    singleOf(::CreateCategoryUseCase) { bind<CreateCategoryUseCase>() }
+    singleOf(::DeleteCategoryUseCase) { bind<DeleteCategoryUseCase>() }
+    singleOf(::GetAllCategoriesUseCase) { bind<GetAllCategoriesUseCase>() }
+    singleOf(::UpdateCategoryUseCase) { bind<UpdateCategoryUseCase>() }
     single<ProductValidation> { ProductValidationImpl() }
     single<MarketValidation> { MarketValidationImpl() }
-    single<CategoryValidation> { CategoryValidationImpl() }
 }
