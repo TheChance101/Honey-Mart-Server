@@ -1,19 +1,16 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.database.CoreDataBase
+import com.thechance.core.data.mapper.toCategory
+import com.thechance.core.data.mapper.toProduct
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.tables.MarketTable
 import com.thechance.core.data.tables.ProductTable
-import com.thechance.core.data.utils.IdNotFoundException
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import java.util.NoSuchElementException
 
 class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
 
@@ -36,16 +33,11 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
     }
 
     override suspend fun getCategoriesByMarketId(marketId: Long): List<Category> = dbQuery {
-        CategoriesTable.select {
-            CategoriesTable.marketId eq marketId and
-                    CategoriesTable.isDeleted.eq(false)
-        }.map { resultRow ->
-            Category(
-                categoryId = resultRow[CategoriesTable.id].value,
-                categoryName = resultRow[CategoriesTable.name].toString(),
-                imageId = resultRow[CategoriesTable.imageId]
-            )
-        }
+        CategoriesTable
+            .select {
+                CategoriesTable.marketId eq marketId and
+                        CategoriesTable.isDeleted.eq(false)
+            }.map { resultRow -> resultRow.toCategory() }
     }
 
     override suspend fun deleteCategory(categoryId: Long): Int = dbQuery {
@@ -73,12 +65,7 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
         (ProductTable innerJoin CategoryProductTable)
             .select { CategoryProductTable.categoryId eq categoryId }
             .map { productRow ->
-                Product(
-                    id = productRow[ProductTable.id].value,
-                    name = productRow[ProductTable.name].toString(),
-                    price = productRow[ProductTable.price],
-                    quantity = productRow[ProductTable.quantity],
-                )
+                productRow.toProduct()
             }
     }
 

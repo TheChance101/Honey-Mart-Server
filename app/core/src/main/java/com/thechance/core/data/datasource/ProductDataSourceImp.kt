@@ -1,6 +1,7 @@
 package com.thechance.core.data.datasource
 
 import com.thechance.core.data.mapper.toCategory
+import com.thechance.core.data.mapper.toProduct
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.tables.CategoriesTable
@@ -41,12 +42,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
     override suspend fun getAllProducts(): List<Product> = dbQuery {
         ProductTable.select { ProductTable.isDeleted eq false }.map { productRow ->
-            Product(
-                id = productRow[ProductTable.id].value,
-                name = productRow[ProductTable.name].toString(),
-                price = productRow[ProductTable.price],
-                quantity = productRow[ProductTable.quantity],
-            )
+           productRow.toProduct()
         }
     }
 

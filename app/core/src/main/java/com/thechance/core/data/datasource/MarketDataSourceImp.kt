@@ -6,10 +6,7 @@ import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Market
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.MarketTable
-import com.thechance.core.data.utils.IdNotFoundException
-import com.thechance.core.data.utils.ItemNotAvailableException
 import com.thechance.core.data.utils.dbQuery
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -20,7 +17,7 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
     override suspend fun createMarket(marketName: String): Market =
         dbQuery {
             val newMarket = MarketTable.insert {
-                it[name] = marketName!!
+                it[name] = marketName
                 it[isDeleted] = false
             }
             Market(marketId = newMarket[MarketTable.id].value, marketName = newMarket[MarketTable.name])
