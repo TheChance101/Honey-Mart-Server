@@ -6,6 +6,7 @@ import com.thechance.core.data.model.Product
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.tables.ProductTable
+import com.thechance.core.data.utils.CategoryNotFoundException
 import com.thechance.core.data.utils.IdNotFoundException
 import com.thechance.core.data.utils.InvalidInputException
 import com.thechance.core.data.utils.ItemNotAvailableException
@@ -24,7 +25,7 @@ class ProductService(private val productValidation: ProductValidation) :
         productValidation.checkCreateValidation(
             productName = productName, productPrice = productPrice, productQuantity = productQuantity,
             categoriesId = categoriesId
-        )?.let { throw it }
+        )
 
         return if (checkCategoriesInDb(categoriesId!!)) {
             dbQuery {
@@ -47,7 +48,7 @@ class ProductService(private val productValidation: ProductValidation) :
                 )
             }
         } else {
-            throw Exception()
+            throw CategoryNotFoundException()
         }
     }
 

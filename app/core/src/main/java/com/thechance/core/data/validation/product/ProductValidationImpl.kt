@@ -1,6 +1,6 @@
 package com.thechance.core.data.validation.product
 
-import com.thechance.core.data.utils.InvalidInputException
+import com.thechance.core.data.utils.*
 import org.koin.core.component.KoinComponent
 
 class ProductValidationImpl : ProductValidation, KoinComponent {
@@ -39,7 +39,7 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
         val exception = mutableListOf<String>()
 
         if (productName.isNullOrEmpty() && productPrice == null && productQuantity.isNullOrEmpty()) {
-            exception.add("Can't do UPDATE without fields to update")
+            throw ProductUpdateException()
         } else if (!productName.isNullOrEmpty()) {
             checkProductName(productName)?.let {
                 exception.add(it)
@@ -63,7 +63,7 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
 
     override fun checkId(id: Long?): String? {
         return if (id == null) {
-            "Invalid product Id"
+            throw IdNotFoundException()
         } else {
             null
         }
@@ -89,40 +89,40 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
     private fun checkProductName(productName: String?): String? {
         return productName?.let {
             return if (it.length !in 6..20) {
-                "The product name should have a length greater than 6 and shorter than 20 characters ."
+                throw ProductNameLengthException()
             } else {
                 null
             }
-        } ?: "The product name can not be empty"
+        } ?: throw ProductEmptyNameException()
     }
 
     private fun checkProductQuantity(quantity: String?): String? {
         return quantity?.let {
-            return if (it.length !in 6..20) {
-                "The product Quantity should have a length greater than 6 and shorter than 20 characters ."
+            return if (it.length !in 1..15) {
+                throw ProductQuantityLengthException()
             } else {
                 null
             }
-        } ?: "The product quantity can not be empty"
+        } ?: throw ProductEmptyQuantityException()
     }
 
     private fun checkPrice(price: Double?): String? {
         return price?.let {
             return if (it !in 0.1..999999.0) {
-                "The product Price should be in range 0.1 to 1000.000 ."
+                throw ProductPriceRangeException()
             } else {
                 null
             }
-        } ?: "The product price can not be empty"
+        } ?: throw ProductEmptyPriceException()
 
     }
 
     private fun isValidCategoryIds(categoryIds: List<Long>?): String? {
         return if (categoryIds.isNullOrEmpty() || categoryIds.filterNot { it == 0L }.isEmpty()) {
-            "The product must be assigned to at least one category."
-        } else {
+            throw ProductAssignCategoryException()
+        }else
+        {
             null
         }
     }
-
 }

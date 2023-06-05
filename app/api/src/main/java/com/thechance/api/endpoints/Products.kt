@@ -26,13 +26,13 @@ fun Route.productsRoutes(productService: ProductService) {
         }
 
         post {
-            val params = call.receiveParameters()
-            val productName = params["name"]?.trim().orEmpty()
-            val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
-            val productQuantity = params["quantity"]?.trim()
-            val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
-
             handleException(call) {
+                val params = call.receiveParameters()
+                val productName = params["name"]?.trim().orEmpty()
+                val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
+                val productQuantity = params["quantity"]?.trim()
+                val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
+
                 val newAddedProduct = productService.create(productName, productPrice, productQuantity, categoriesId)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
             }
