@@ -18,9 +18,6 @@ class CategoryService(private val categoryValidation: CategoryValidation) : Base
     KoinComponent {
 
     suspend fun create(categoryName: String?, marketId: Long?, imageId: Int?): Category {
-        categoryValidation.checkCreateValidation(
-            categoryName = categoryName, marketId = marketId, imageId = imageId
-        )?.let { throw it }
 
         return if (!isMarketDeleted(marketId!!)) {
             if (isCategoryNameUnique(categoryName!!)) {

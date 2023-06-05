@@ -2,6 +2,7 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.core.data.service.CategoryService
+import com.thechance.core.data.usecase.category.CreateCategoryUseCase
 import com.thechance.core.data.utils.IdNotFoundException
 import com.thechance.core.data.utils.InvalidInputException
 import com.thechance.core.data.utils.ItemNotAvailableException
@@ -39,7 +40,7 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
                 val marketId = params["marketId"]?.toLongOrNull()
                 val imageId = params["imageId"]?.toIntOrNull()
 
-                val newCategory = categoryService.create(categoryName, marketId, imageId)
+                val newCategory = CreateCategoryUseCase(categoryService).invoke(categoryName, marketId, imageId)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newCategory, "Category added successfully"))
             } catch (e: InvalidInputException) {
                 val error = e.message.toString()
