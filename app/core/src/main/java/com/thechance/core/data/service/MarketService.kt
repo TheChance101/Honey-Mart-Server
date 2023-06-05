@@ -47,7 +47,6 @@ class MarketService(private val marketValidationImpl: MarketValidation) : BaseSe
     }
 
     suspend fun deleteMarket(marketId: Long?): Boolean = dbQuery {
-        marketValidationImpl.checkId(marketId)?.let { throw it }
         if (isDeleted(marketId!!)) {
             throw ItemNotAvailableException()
         } else {
