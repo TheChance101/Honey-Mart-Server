@@ -48,8 +48,6 @@ class ProductService(private val productValidation: ProductValidation) :
     }
 
     suspend fun getAllCategoryForProduct(productId: Long?): List<Category> {
-        productValidation.checkId(productId)?.let { throw InvalidInputException() }
-
         return if (!isDeleted(productId!!)) {
             dbQuery {
                 (CategoriesTable innerJoin CategoryProductTable)
