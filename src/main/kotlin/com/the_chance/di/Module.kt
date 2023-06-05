@@ -21,6 +21,7 @@ val myModule = module {
     single<CategoryDataSource> { CategoryDataSourceImp() }
     single<MarketDataSource> { MarketDataSourceImp() }
     single<ProductDataSource> { ProductDataSourceImp() }
+
     singleOf(::ProductService) { bind<ProductService>() }
     singleOf(::MarketService) { bind<MarketService>() }
     singleOf(::CategoryService) { bind<CategoryService>() }

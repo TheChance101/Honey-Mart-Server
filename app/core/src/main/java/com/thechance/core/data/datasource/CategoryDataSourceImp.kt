@@ -35,7 +35,7 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
         )
     }
 
-    override suspend fun getCategoriesByMarketId(marketId: Long?): List<Category> = dbQuery {
+    override suspend fun getCategoriesByMarketId(marketId: Long): List<Category> = dbQuery {
         CategoriesTable.select {
             CategoriesTable.marketId eq marketId and
                     CategoriesTable.isDeleted.eq(false)
@@ -48,16 +48,16 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
         }
     }
 
-    override suspend fun deleteCategory(categoryId: Long?): Int = dbQuery {
+    override suspend fun deleteCategory(categoryId: Long): Int = dbQuery {
         CategoriesTable.update({ CategoriesTable.isDeleted eq false }) {
             it[isDeleted] = true
         }
     }
 
     override suspend fun updateCategory(
-        categoryId: Long?,
+        categoryId: Long,
         categoryName: String?,
-        marketId: Long?,
+        marketId: Long,
         imageId: Int?
     ): Boolean = dbQuery {
         CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
@@ -69,7 +69,7 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
         true
     }
 
-    override suspend fun getAllProductsInCategory(categoryId: Long?): List<Product> = dbQuery {
+    override suspend fun getAllProductsInCategory(categoryId: Long): List<Product> = dbQuery {
         (ProductTable innerJoin CategoryProductTable)
             .select { CategoryProductTable.categoryId eq categoryId }
             .map { productRow ->
@@ -82,18 +82,16 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
             }
     }
 
-    override suspend fun isCategoryDeleted(categoryId: Long): Boolean = dbQuery {
+    override suspend fun isCategoryDeleted(categoryId: Long): Boolean? = dbQuery {
         val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
         category?.let {
             it[CategoriesTable.isDeleted]
-        } ?: throw IdNotFoundException()
+        }
     }
 
-    override suspend fun isMarketDeleted(marketId: Long): Boolean = dbQuery {
+    override suspend fun isMarketDeleted(marketId: Long): Boolean? = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
-        market?.let {
-            it[MarketTable.isDeleted]
-        } ?: throw NoSuchElementException()
+        market?.let { it[MarketTable.isDeleted] }
     }
 
     override suspend fun isCategoryNameUnique(categoryName: String): Boolean = dbQuery {

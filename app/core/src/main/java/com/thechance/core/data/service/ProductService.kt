@@ -35,7 +35,7 @@ class ProductService(
 
         return if (productDataSource.checkCategoriesInDb(categoriesId!!)) {
             productDataSource.createProduct(
-                productName = productName, productPrice = productPrice, productQuantity = productQuantity,
+                productName = productName, productPrice = productPrice, productQuantity = productQuantity!!,
                 categoriesId = categoriesId
             )
         } else {
@@ -96,7 +96,7 @@ class ProductService(
     }
 
     private suspend fun isDeleted(id: Long): Boolean =
-        productDataSource.isDeleted(id)
+        productDataSource.isDeleted(id)?: throw ItemNotAvailableException()
 
     /**
      * validate that each categoryId is found and not deleted

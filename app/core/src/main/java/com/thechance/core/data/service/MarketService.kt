@@ -24,7 +24,7 @@ class MarketService(
 
     suspend fun createMarket(marketName: String?): Market {
         marketValidationImpl.checkMarketName(marketName)?.let { throw it }
-        return marketDataSource.createMarket(marketName)
+        return marketDataSource.createMarket(marketName!!)
     }
 
     suspend fun getAllMarkets(): List<Market> = marketDataSource.getAllMarkets()
@@ -32,7 +32,7 @@ class MarketService(
 
     suspend fun getCategoriesByMarket(marketId: Long?): List<Category> {
         marketValidationImpl.checkId(marketId)?.let { throw it }
-        return if (!marketDataSource.isDeleted(marketId!!)) {
+        return if (!isDeleted(marketId!!)) {
             marketDataSource.getCategoriesByMarket(marketId)
         } else {
             throw IdNotFoundException()
@@ -41,19 +41,26 @@ class MarketService(
 
     suspend fun deleteMarket(marketId: Long?): Boolean {
         marketValidationImpl.checkId(marketId)?.let { throw it }
-        return marketDataSource.deleteMarket(marketId)
+        return if (isDeleted(marketId!!)) {
+            throw ItemNotAvailableException()
+        } else {
+            marketDataSource.deleteMarket(marketId)
+        }
     }
 
 
     suspend fun updateMarket(marketId: Long?, marketName: String?): Market {
         marketValidationImpl.checkId(marketId)?.let { throw it }
         marketValidationImpl.checkMarketName(marketName)?.let { throw it }
-        return if (marketDataSource.isDeleted(marketId!!)) {
+        return if (isDeleted(marketId!!)) {
             throw ItemNotAvailableException()
         } else {
             marketDataSource.updateMarket(marketId, marketName!!)
         }
     }
+
+    suspend fun isDeleted(marketId: Long): Boolean =
+        marketDataSource.isDeleted(marketId) ?: throw IdNotFoundException()
 
 
 }

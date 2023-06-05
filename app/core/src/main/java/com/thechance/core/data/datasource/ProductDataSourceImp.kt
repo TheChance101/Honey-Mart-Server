@@ -5,6 +5,7 @@ import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
+import com.thechance.core.data.tables.MarketTable
 import com.thechance.core.data.tables.ProductTable
 import com.thechance.core.data.utils.ItemNotAvailableException
 import com.thechance.core.data.utils.dbQuery
@@ -16,7 +17,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
     override suspend fun createProduct(
         productName: String,
         productPrice: Double,
-        productQuantity: String?,
+        productQuantity: String,
         categoriesId: List<Long>
     ): Product = dbQuery {
         val newProduct = ProductTable.insert { productRow ->
@@ -39,24 +40,24 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
     }
 
     override suspend fun getAllProducts(): List<Product> = dbQuery {
-            ProductTable.select { ProductTable.isDeleted eq false }.map { productRow ->
-                Product(
-                    id = productRow[ProductTable.id].value,
-                    name = productRow[ProductTable.name].toString(),
-                    price = productRow[ProductTable.price],
-                    quantity = productRow[ProductTable.quantity],
-                )
-            }
+        ProductTable.select { ProductTable.isDeleted eq false }.map { productRow ->
+            Product(
+                id = productRow[ProductTable.id].value,
+                name = productRow[ProductTable.name].toString(),
+                price = productRow[ProductTable.price],
+                quantity = productRow[ProductTable.quantity],
+            )
         }
+    }
 
-    override suspend fun getAllCategoryForProduct(productId: Long?): List<Category> = dbQuery {
+    override suspend fun getAllCategoryForProduct(productId: Long): List<Category> = dbQuery {
         (CategoriesTable innerJoin CategoryProductTable)
             .select { CategoryProductTable.productId eq productId }
             .map { it.toCategory() }
     }
 
     override suspend fun updateProduct(
-        productId: Long?,
+        productId: Long,
         productName: String?,
         productPrice: Double?,
         productQuantity: String?
@@ -79,19 +80,18 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
             true
         }
 
-    override suspend fun deleteProduct(productId: Long?): Int = dbQuery {
+    override suspend fun deleteProduct(productId: Long): Int = dbQuery {
         ProductTable.update({ ProductTable.id eq productId }) { productRow ->
             productRow[isDeleted] = true
         }
     }
 
-    override suspend fun isDeleted(id: Long): Boolean {
-        val product = dbQuery {
-            ProductTable.select { ProductTable.id eq id }.singleOrNull()
-                ?: throw ItemNotAvailableException()
-        }
-        return product[ProductTable.isDeleted]
+    override suspend fun isDeleted(id: Long): Boolean? = dbQuery {
+        val product = ProductTable.select { ProductTable.id eq id }.singleOrNull()
+        product?.let { it[ProductTable.isDeleted] }
+
     }
+
 
     override suspend fun checkCategoriesInDb(categoryIds: List<Long>): Boolean = dbQuery {
         CategoriesTable.select { CategoriesTable.id inList categoryIds }
