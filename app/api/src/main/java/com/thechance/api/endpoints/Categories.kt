@@ -19,16 +19,9 @@ fun Route.categoryRoutes(categoryService: CategoryService) {
          * */
         get("/{categoryId}") {
             val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
-            try {
+            handleException(call) {
                 val products = categoryService.getAllProductsInCategory(categoryId = categoryId)
                 call.respond(ServerResponse.success(products))
-            } catch (e: InvalidInputException) {
-
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
-            } catch (e: IdNotFoundException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-            } catch (t: Exception) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(t.message.toString()))
             }
         }
 

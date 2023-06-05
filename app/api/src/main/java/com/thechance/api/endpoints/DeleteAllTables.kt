@@ -10,12 +10,9 @@ import io.ktor.server.routing.*
 fun Route.deleteAllTables(deleteAllService: DeleteAllTablesService) {
 
     delete("/deleteAllTables") {
-        try {
+        handleException(call) {
             deleteAllService.deleteAllTables()
             call.respond(HttpStatusCode.OK, ServerResponse.success("All Tables Deleted Successfully"))
-        } catch (e: Exception) {
-            call.respond(HttpStatusCode.InternalServerError, ServerResponse.error("Error!!"))
         }
-
     }
 }

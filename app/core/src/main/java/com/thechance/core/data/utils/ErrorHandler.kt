@@ -5,3 +5,5 @@ class InvalidInputException : Exception()
 class IdNotFoundException : Exception()
 
 class ItemNotAvailableException : Exception()
+
+class InternalServiceErrorException(): Exception()
