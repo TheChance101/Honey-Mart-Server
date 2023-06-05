@@ -103,8 +103,6 @@ class ProductService(private val productValidation: ProductValidation) :
     }
 
     suspend fun deleteProduct(productId: Long?): Boolean {
-        productValidation.checkId(productId)?.let { throw InvalidInputException() }
-
         return if (!isDeleted(productId!!)) {
             dbQuery {
                 ProductTable.update({ ProductTable.id eq productId }) { productRow ->
