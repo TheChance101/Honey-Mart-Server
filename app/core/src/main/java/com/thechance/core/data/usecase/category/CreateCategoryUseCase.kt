@@ -9,42 +9,32 @@ import java.util.regex.Pattern
 class CreateCategoryUseCase(private val categoryService: CategoryService) : KoinComponent {
     suspend operator fun invoke(categoryName: String?, marketId: Long?, imageId: Int?): Category {
         return when {
-            checkCategoryName(categoryName) -> {
+            checkName(categoryName) -> {
                 throw InvalidCategoryNameException()
             }
+
             checkLetter(categoryName) -> {
                 throw InvalidCategoryNameLettersException()
             }
-            checkMarketId(marketId) -> {
+
+            checkId(marketId) -> {
                 throw InvalidMarketIdException()
             }
-            checkImageId(imageId) -> {
+
+            checkId(imageId?.toLong()) -> {
                 throw InvalidImageIdException()
             }
+
             else -> {
                 categoryService.create(categoryName, marketId, imageId)
             }
         }
     }
 
-    private fun checkCategoryName(categoryName: String?): Boolean {
-        return categoryName?.let {
-            return it.length !in 6..20
-        } ?: true
-    }
-
     private fun checkLetter(categoryName: String?): Boolean {
         return categoryName?.let {
             return !isValidStringInput(it)
         } ?: true
-    }
-
-    private fun checkMarketId(marketId: Long?): Boolean {
-        return marketId == null
-    }
-
-    private fun checkImageId(imageId: Int?): Boolean {
-        return imageId == null
     }
 
     private fun isValidStringInput(name: String): Boolean {

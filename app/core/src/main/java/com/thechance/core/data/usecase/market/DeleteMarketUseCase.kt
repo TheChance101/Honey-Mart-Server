@@ -2,6 +2,7 @@ package com.thechance.core.data.usecase.market
 
 import com.thechance.core.data.service.MarketService
 import com.thechance.core.data.utils.InvalidMarketIdException
+import com.thechance.core.data.utils.checkId
 import org.koin.core.component.KoinComponent
 
 class DeleteMarketUseCase(private val marketService: MarketService) : KoinComponent {
@@ -11,9 +12,5 @@ class DeleteMarketUseCase(private val marketService: MarketService) : KoinCompon
         } else {
             marketService.deleteMarket(marketId)
         }
-    }
-
-    private fun checkId(id: Long?): Boolean {
-        return id == null
     }
 }

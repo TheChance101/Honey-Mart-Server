@@ -41,7 +41,7 @@ fun Route.categoryRoutes(categoryUseCasesContainer: CategoryUseCasesContainer) {
                 val imageId = params["imageId"]?.toIntOrNull()
 
                 val newCategory =
-                    categoryUseCasesContainer.createCategoryUseCase.invoke(categoryName, marketId, imageId)
+                    categoryUseCasesContainer.createCategoryUseCase(categoryName, marketId, imageId)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newCategory, "Category added successfully"))
             } catch (e: InvalidCategoryNameException) {
                 val error = e.message.toString()
@@ -61,7 +61,7 @@ fun Route.categoryRoutes(categoryUseCasesContainer: CategoryUseCasesContainer) {
                 val imageId = params["imageId"]?.toIntOrNull()
 
                 val isCategoryUpdated =
-                    categoryUseCasesContainer.updateCategoryUseCase.invoke(categoryId, categoryName, marketId, imageId)
+                    categoryUseCasesContainer.updateCategoryUseCase(categoryId, categoryName, marketId, imageId)
                 call.respond(HttpStatusCode.OK, ServerResponse.success(result = isCategoryUpdated))
             } catch (e: InvalidInputException) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))

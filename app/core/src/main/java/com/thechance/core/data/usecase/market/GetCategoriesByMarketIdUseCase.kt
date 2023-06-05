@@ -3,6 +3,7 @@ package com.thechance.core.data.usecase.market
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.service.MarketService
 import com.thechance.core.data.utils.InvalidMarketIdException
+import com.thechance.core.data.utils.checkId
 import org.koin.core.component.KoinComponent
 
 class GetCategoriesByMarketIdUseCase(private val marketService: MarketService) : KoinComponent {
@@ -13,9 +14,5 @@ class GetCategoriesByMarketIdUseCase(private val marketService: MarketService) :
         } else {
             marketService.getCategoriesByMarket(marketId)
         }
-    }
-
-    private fun checkId(id: Long?): Boolean {
-        return id == null
     }
 }
