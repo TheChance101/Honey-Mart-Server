@@ -9,14 +9,12 @@ import com.thechance.core.data.tables.ProductTable
 import com.thechance.core.data.utils.IdNotFoundException
 import com.thechance.core.data.utils.InvalidInputException
 import com.thechance.core.data.utils.ItemNotAvailableException
-import com.thechance.core.data.validation.product.ProductValidation
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.component.KoinComponent
 
 
-class ProductService(private val productValidation: ProductValidation) :
-    BaseService(ProductTable, CategoryProductTable), KoinComponent {
+class ProductService : BaseService(ProductTable, CategoryProductTable), KoinComponent {
 
     suspend fun create(
         productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
@@ -63,10 +61,6 @@ class ProductService(private val productValidation: ProductValidation) :
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
     ): Boolean {
         return if (!isDeleted(productId!!)) {
-            productValidation.checkUpdateValidation(
-                productName = productName, productPrice = productPrice, productQuantity = productQuantity
-            )?.let { throw it }
-
             dbQuery {
                 ProductTable.update({ ProductTable.id eq productId }) { productRow ->
                     productName?.let { productRow[name] = it }

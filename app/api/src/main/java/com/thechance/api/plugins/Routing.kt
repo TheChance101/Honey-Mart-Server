@@ -6,9 +6,9 @@ import com.thechance.api.endpoints.deleteAllTables
 import com.thechance.api.endpoints.marketsRoutes
 import com.thechance.api.endpoints.productsRoutes
 import com.thechance.core.data.service.DeleteAllTablesService
-import com.thechance.core.data.service.ProductService
 import com.thechance.core.data.usecase.category.CategoryUseCasesContainer
 import com.thechance.core.data.usecase.market.MarketUseCaseContainer
+import com.thechance.core.data.usecase.product.ProductUseCasesContainer
 import io.ktor.server.application.*
 import io.ktor.server.plugins.openapi.*
 import io.ktor.server.plugins.swagger.*
@@ -17,9 +17,9 @@ import io.swagger.codegen.v3.generators.html.StaticHtmlCodegen
 import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
-    val productService: ProductService by inject()
     val categoryUseCasesContainer: CategoryUseCasesContainer by inject()
     val marketUseCasesContainer: MarketUseCaseContainer by inject()
+    val productUseCasesContainer: ProductUseCasesContainer by inject()
     val deleteAllTablesService: DeleteAllTablesService by inject()
 
     routing {
@@ -29,7 +29,7 @@ fun Application.configureRouting() {
         openAPI(path = "openapi", swaggerFile = "openapi/documentation.yaml") {
             codegen = StaticHtmlCodegen()
         }
-        productsRoutes(productService)
+        productsRoutes(productUseCasesContainer)
         categoryRoutes(categoryUseCasesContainer)
         marketsRoutes(marketUseCasesContainer)
         deleteAllTables(deleteAllTablesService)

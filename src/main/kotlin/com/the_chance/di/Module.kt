@@ -7,10 +7,7 @@ import com.thechance.core.data.service.MarketService
 import com.thechance.core.data.service.ProductService
 import com.thechance.core.data.usecase.category.*
 import com.thechance.core.data.usecase.market.*
-import com.thechance.core.data.validation.market.MarketValidation
-import com.thechance.core.data.validation.market.MarketValidationImpl
-import com.thechance.core.data.validation.product.ProductValidation
-import com.thechance.core.data.validation.product.ProductValidationImpl
+import com.thechance.core.data.usecase.product.*
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -35,6 +32,11 @@ val myModule = module {
     singleOf(::UpdateMarketUseCase) { bind<UpdateMarketUseCase>() }
     singleOf(::GetCategoriesByMarketIdUseCase) { bind<GetCategoriesByMarketIdUseCase>() }
 
+    singleOf(::ProductUseCasesContainer) { bind<ProductUseCasesContainer>() }
+    singleOf(::CreateProductUseCase) { bind<CreateProductUseCase>() }
+    singleOf(::DeleteProductUseCase) { bind<DeleteProductUseCase>() }
+    singleOf(::UpdateProductUseCase) { bind<UpdateProductUseCase>() }
+    singleOf(::UpdateProductCategoryUseCase) { bind<UpdateProductCategoryUseCase>() }
+    singleOf(::GetCategoriesForProductUseCase) { bind<GetCategoriesForProductUseCase>() }
 
-    single<ProductValidation> { ProductValidationImpl() }
 }
