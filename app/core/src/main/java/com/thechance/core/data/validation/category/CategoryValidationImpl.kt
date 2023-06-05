@@ -1,7 +1,6 @@
 package com.thechance.core.data.validation.category
 
-import com.thechance.core.data.utils.InvalidInputException
-import com.thechance.core.data.utils.isValidStringInput
+import com.thechance.core.data.utils.*
 import org.koin.core.component.KoinComponent
 
 class CategoryValidationImpl : CategoryValidation, KoinComponent {
@@ -34,43 +33,33 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
 
     override fun checkUpdateValidation(
         categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?
-    ): Exception? {
-        val exception = mutableListOf<String>()
+    ) {
 
-        checkId(marketId)?.let {
-            exception.add(it)
-        }
+        checkId(marketId)
 
-        checkId(categoryId)?.let {
-            exception.add(it)
-        }
+        checkId(categoryId)
 
-        if (categoryName.isNullOrEmpty() && imageId == null) {
-            exception.add("Can't do UPDATE without fields to update")
-        } else if (!categoryName.isNullOrEmpty()) {
-            checkCategoryName(categoryName)?.let {
-                exception.add(it)
-            }
+        checkCategoryFields(categoryName, imageId)
 
-            checkLetter(categoryName)?.let {
-                exception.add(it)
-            }
+        if (!categoryName.isNullOrEmpty()) {
+            checkCategoryName(categoryName)
+            checkLetter(categoryName)
         } else {
-            checkImageId(imageId)?.let {
-                exception.add(it)
-            }
+            checkImageId(imageId)
         }
+    }
 
-        return if (exception.isEmpty()) {
+    private fun checkCategoryFields(categoryName: String?, imageId: Int?): String? {
+        return if (categoryName.isNullOrEmpty() && imageId == null) {
+            throw UpdateException()
+        } else {
             null
-        } else {
-            InvalidInputException()
         }
     }
 
     override fun checkId(categoryId: Long?): String? {
         return if (categoryId == null) {
-            "Invalid categoryID"
+            throw CategoryInvalidIDException()
         } else {
             null
         }
@@ -79,18 +68,18 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
     private fun checkCategoryName(categoryName: String?): String? {
         return categoryName?.let {
             return if (it.length !in 6..20) {
-                "The category name should have a length greater than 6 and shorter than 20 characters ."
+                throw CategoryNameLengthException()
             } else {
                 null
 
             }
-        } ?: "The category name can not be empty"
+        } ?: throw CategoryNameEmptyException()
     }
 
     private fun checkLetter(categoryName: String?): String? {
         return categoryName?.let {
             return if (!isValidStringInput(it)) {
-                "The category name must contain only letters."
+                throw CategoryNameLetterException()
             } else {
                 null
             }
@@ -99,7 +88,7 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
 
     private fun checkMarketId(marketId: Long?): String? {
         return if (marketId == null) {
-            "Invalid marketId"
+            throw CategoryInvalidIDException()
         } else {
             null
         }
@@ -107,7 +96,7 @@ class CategoryValidationImpl : CategoryValidation, KoinComponent {
 
     private fun checkImageId(imageId: Int?): String? {
         return if (imageId == null) {
-            "Invalid imageID"
+           throw CategoryImageIDException()
         } else {
             null
         }

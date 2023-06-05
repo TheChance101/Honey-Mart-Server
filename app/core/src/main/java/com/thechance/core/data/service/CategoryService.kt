@@ -6,13 +6,13 @@ import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.tables.MarketTable
 import com.thechance.core.data.tables.ProductTable
-import com.thechance.core.data.utils.IdNotFoundException
-import com.thechance.core.data.utils.InvalidInputException
-import com.thechance.core.data.utils.ItemNotAvailableException
+import com.thechance.core.data.utils.*
 import com.thechance.core.data.validation.category.CategoryValidation
 import org.jetbrains.exposed.sql.*
 import org.koin.core.component.KoinComponent
+import java.lang.Exception
 import java.util.*
+import kotlin.NoSuchElementException
 
 class CategoryService(private val categoryValidation: CategoryValidation) : BaseService(CategoriesTable),
     KoinComponent {
@@ -63,32 +63,25 @@ class CategoryService(private val categoryValidation: CategoryValidation) : Base
     suspend fun update(categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?): Boolean {
         categoryValidation.checkUpdateValidation(
             categoryId = categoryId, categoryName = categoryName, marketId = marketId, imageId = imageId
-        )?.let { throw it }
+        )
 
-        return if (isMarketDeleted(marketId!!)) {
-            if (!isCategoryDeleted(categoryId!!)) {
-                dbQuery {
-                    CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
+        isMarketDeleted(marketId!!)
+        isCategoryDeleted(categoryId!!)
+        return dbQuery {
+            CategoriesTable.update({ CategoriesTable.id eq categoryId }) { categoryRow ->
 
-                        categoryName?.let { categoryRow[name] = it }
+                categoryName?.let { categoryRow[name] = it }
 
-                        imageId?.let {
-                            categoryRow[CategoriesTable.imageId] = it
-                        }
-                    }
-                    true
+                imageId?.let {
+                    categoryRow[CategoriesTable.imageId] = it
                 }
-
-            } else {
-                throw ItemNotAvailableException()
             }
-        } else {
-            throw ItemNotAvailableException()
+            true
         }
     }
 
     suspend fun getAllProductsInCategory(categoryId: Long?): List<Product> {
-        categoryValidation.checkId(categoryId)?.let { throw InvalidInputException() }
+        categoryValidation.checkId(categoryId)
 
         return if (!isCategoryDeleted(categoryId!!)) {
             dbQuery {
@@ -112,14 +105,14 @@ class CategoryService(private val categoryValidation: CategoryValidation) : Base
         val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()
         category?.let {
             it[CategoriesTable.isDeleted]
-        } ?: throw IdNotFoundException()
+        } ?: throw CategoryInvalidIDException()
     }
 
     private suspend fun isMarketDeleted(marketId: Long): Boolean = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
             it[MarketTable.isDeleted]
-        } ?: throw NoSuchElementException()
+        } ?: throw MarketInvalidException()
     }
 
     /**

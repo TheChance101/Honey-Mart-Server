@@ -7,8 +7,6 @@ import com.thechance.core.data.model.Market
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.MarketTable
 import com.thechance.core.data.utils.IdNotFoundException
-import com.thechance.core.data.utils.ItemAlreadyDeleted
-import com.thechance.core.data.utils.ItemNotAvailableException
 import com.thechance.core.data.utils.MarketItemDeletedException
 import com.thechance.core.data.validation.market.MarketValidation
 import org.jetbrains.exposed.sql.and

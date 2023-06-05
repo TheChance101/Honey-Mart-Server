@@ -39,7 +39,7 @@ class ProductValidationImpl : ProductValidation, KoinComponent {
         val exception = mutableListOf<String>()
 
         if (productName.isNullOrEmpty() && productPrice == null && productQuantity.isNullOrEmpty()) {
-            throw ProductUpdateException()
+            throw UpdateException()
         } else if (!productName.isNullOrEmpty()) {
             checkProductName(productName)?.let {
                 exception.add(it)

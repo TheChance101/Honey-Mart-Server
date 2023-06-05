@@ -43,15 +43,12 @@ suspend fun handleException(
                 HttpStatusCode.BadRequest,
                 ServerResponse.error("The name should be only letters and numbers")
             )
-
-            is MarketNameNotFound -> call.respond(HttpStatusCode.NotFound, ServerResponse.error(""))
-            is ItemAlreadyDeleted -> call.respond(HttpStatusCode.BadRequest, ServerResponse.error(""))
             is MarketItemDeletedException -> call.respond(
                 HttpStatusCode.BadRequest,
                 ServerResponse.error("This Market is already deleted")
             )
 
-            is ProductUpdateException -> call.respond(
+            is UpdateException -> call.respond(
                 HttpStatusCode.BadRequest,
                 ServerResponse.error("Can't do UPDATE without fields to update")
             )
@@ -75,6 +72,7 @@ suspend fun handleException(
                 HttpStatusCode.BadRequest,
                 ServerResponse.error("The product Quantity should have value and shorter than 20 characters.")
             )
+
             is ProductPriceRangeException -> call.respond(
                 HttpStatusCode.BadRequest,
                 ServerResponse.error("The product Price should be in range 0.1 to 1000.000.")
@@ -89,10 +87,47 @@ suspend fun handleException(
                 HttpStatusCode.BadRequest,
                 ServerResponse.error("The product must be assigned to at least one category.")
             )
+
             is CategoryNotFoundException -> call.respond(
                 HttpStatusCode.NotFound,
                 ServerResponse.error("This categoryId not found")
             )
+
+            is CategoryInvalidIDException -> call.respond(
+                HttpStatusCode.BadRequest,
+                ServerResponse.error("Invalid categoryID")
+            )
+
+            is CategoryNameLengthException -> call.respond(
+                HttpStatusCode.BadRequest,
+                ServerResponse.error("The category name should have a length greater than 6 and shorter than 20 characters.")
+            )
+
+            is CategoryNameEmptyException -> call.respond(
+                HttpStatusCode.BadRequest,
+                ServerResponse.error("The category name can not be empty")
+            )
+
+            is CategoryNameLetterException -> call.respond(
+                HttpStatusCode.BadRequest,
+                ServerResponse.error("The category name must contain only letters.")
+            )
+
+            is CategoryImageIDException -> call.respond(
+                HttpStatusCode.BadRequest,
+                ServerResponse.error("Invalid imageID")
+            )
+            is MarketInvalidException ->  call.respond(
+                HttpStatusCode.NotFound,
+                ServerResponse.error("marketId not available ")
+            )
+
+            else -> {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    ServerResponse.error(e.message.toString())
+                )
+            }
         }
     }
 }
