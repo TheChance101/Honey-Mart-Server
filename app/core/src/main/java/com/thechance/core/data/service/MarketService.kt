@@ -19,8 +19,6 @@ class MarketService(private val marketValidationImpl: MarketValidation) : BaseSe
     KoinComponent {
 
     suspend fun createMarket(marketName: String?): Market {
-        marketValidationImpl.checkMarketName(marketName)?.let { throw it }
-
         return dbQuery {
             val newMarket = MarketTable.insert {
                 it[name] = marketName!!
