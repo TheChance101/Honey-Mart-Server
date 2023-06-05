@@ -36,7 +36,7 @@ repositories {
 dependencies {
 
     api(project("app:core"))
-    api(project("app:ui"))
+    api(project("app:api"))
 
     implementation("io.ktor:ktor-server-call-logging-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-swagger:$ktor_version")

@@ -23,7 +23,6 @@ fun Application.configureRouting() {
     val deleteAllTablesService: DeleteAllTablesService by inject()
 
     routing {
-
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml") {
             version = "4.15.5"
         }

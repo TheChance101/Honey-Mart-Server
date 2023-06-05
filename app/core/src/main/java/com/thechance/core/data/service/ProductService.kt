@@ -2,10 +2,8 @@ package com.thechance.core.data.service
 
 import com.thechance.core.data.datasource.ProductDataSource
 import com.thechance.core.data.mapper.toCategory
-import com.thechance.core.data.mapper.toProductWithCategory
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product
-import com.thechance.core.data.model.ProductWithCategory
 import com.thechance.core.data.tables.CategoriesTable
 import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.tables.ProductTable
@@ -29,24 +27,35 @@ class ProductService(
         productPrice: Double,
         productQuantity: String?,
         categoriesId: List<Long>?
-    ): ProductWithCategory {
+    ): Product {
         productValidation.checkCreateValidation(
             productName = productName, productPrice = productPrice, productQuantity = productQuantity,
             categoriesId = categoriesId
         )?.let { throw it }
 
-        return if (productDataSource.checkCategoriesInDb(categoriesId!!)) {
-            productDataSource.createProduct(
-                productName = productName, productPrice = productPrice, productQuantity = productQuantity,
-                categoriesId = categoriesId
-            )
-        } else {
-            throw Exception("not valid categories.")
-        }
-    }
+        return if(productDataSource.checkCategoriesInDb(categoriesId!!))  {
+            dbQuery {
+                val newProduct = ProductTable.insert { productRow ->
+                    productRow[name] = productName
+                    productRow[price] = productPrice
+                    productRow[quantity] = productQuantity
+                }
 
-    suspend fun getAllProducts(): List<Product> {
-        return productDataSource.getAllProducts()
+                CategoryProductTable.batchInsert(categoriesId) { categoryId ->
+                    this[CategoryProductTable.productId] = newProduct[ProductTable.id]
+                    this[CategoryProductTable.categoryId] = categoryId
+                }
+
+                Product(
+                    id = newProduct[ProductTable.id].value,
+                    name = newProduct[ProductTable.name],
+                    price = newProduct[ProductTable.price],
+                    quantity = newProduct[ProductTable.quantity],
+                )
+            }
+        } else {
+            throw Exception()
+        }
     }
 
     suspend fun getAllCategoryForProduct(productId: Long?): List<Category> {
@@ -78,11 +87,19 @@ class ProductService(
         }
     }
 
-    suspend fun updateProductCategory(productId: Long?, categoryIds: List<Long>): ProductWithCategory {
+    suspend fun updateProductCategory(productId: Long?, categoryIds: List<Long>): Boolean {
         productValidation.checkUpdateProductCategories(productId, categoryIds)?.let { throw it }
         return if (!isDeleted(productId!!)) {
             if (productDataSource.checkCategoriesInDb(categoryIds)) {
-                productDataSource.updateProductCategory(productId, categoryIds)
+                dbQuery {
+                    CategoryProductTable.deleteWhere { CategoryProductTable.productId eq productId }
+
+                    CategoryProductTable.batchInsert(categoryIds) { categoryId ->
+                        this[CategoryProductTable.productId] = productId
+                        this[CategoryProductTable.categoryId] = categoryId
+                    }
+                    true
+                }
             } else {
                 throw InvalidInputException()
             }

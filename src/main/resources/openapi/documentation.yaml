@@ -4,7 +4,7 @@ info:
   description: "Json API to deal with HoneyMart APP"
   version: "1.0.0"
 servers:
-- url: "https://com_the_chance_honey_mart"
+- url: "https://honey-mart-server-oe345.ondigitalocean.app/"
 
 tags:
   - name: Categories
@@ -15,16 +15,6 @@ tags:
     description: Operations about products
 
 paths:
-  /:
-    get:
-      description: ""
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "string"
   /category:
     post:
       tags:
@@ -150,7 +140,9 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CategoryWithProduct"
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Product"
         "400":
           description: "Bad Request"
           content:
@@ -306,20 +298,12 @@ paths:
             '*/*':
               schema:
                 type: "string"
-  /marketsWithCategories:
-    get:
-      tags:
-        - Markets
-      description: ""
-      responses:
-        "200":
-          description: "OK"
+        "400":
+          description: "Bad Request"
           content:
             '*/*':
               schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/MarketWithCategories"
+                type: "string"
   /product:
     post:
       tags:
@@ -352,7 +336,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/ProductWithCategory"
+                $ref: "#/components/schemas/Product"
         "400":
           description: "Bad Request"
           content:
@@ -487,7 +471,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/ProductWithCategory"
+                type: "boolean"
         "400":
           description: "Bad Request"
           content:
@@ -536,21 +520,6 @@ components:
         price:
           type: "number"
           format: "double"
-    CategoryWithProduct:
-      type: "object"
-      properties:
-        categoryId:
-          type: "integer"
-          format: "int64"
-        categoryName:
-          type: "string"
-        categoryImageId:
-          type: "integer"
-          format: "int32"
-        products:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Product"
     Market:
       type: "object"
       properties:
@@ -559,32 +528,3 @@ components:
           format: "int64"
         marketName:
           type: "string"
-    MarketWithCategories:
-      type: "object"
-      properties:
-        marketId:
-          type: "integer"
-          format: "int64"
-        marketName:
-          type: "string"
-        categories:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Category"
-    ProductWithCategory:
-      type: "object"
-      properties:
-        id:
-          type: "integer"
-          format: "int64"
-        name:
-          type: "string"
-        quantity:
-          type: "string"
-        price:
-          type: "number"
-          format: "double"
-        category:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Category"
