@@ -33,26 +33,11 @@ class ProductService(
             categoriesId = categoriesId
         )?.let { throw it }
 
-        return if(productDataSource.checkCategoriesInDb(categoriesId!!))  {
-            dbQuery {
-                val newProduct = ProductTable.insert { productRow ->
-                    productRow[name] = productName
-                    productRow[price] = productPrice
-                    productRow[quantity] = productQuantity
-                }
-
-                CategoryProductTable.batchInsert(categoriesId) { categoryId ->
-                    this[CategoryProductTable.productId] = newProduct[ProductTable.id]
-                    this[CategoryProductTable.categoryId] = categoryId
-                }
-
-                Product(
-                    id = newProduct[ProductTable.id].value,
-                    name = newProduct[ProductTable.name],
-                    price = newProduct[ProductTable.price],
-                    quantity = newProduct[ProductTable.quantity],
-                )
-            }
+        return if (productDataSource.checkCategoriesInDb(categoriesId!!)) {
+            productDataSource.createProduct(
+                productName = productName, productPrice = productPrice, productQuantity = productQuantity,
+                categoriesId = categoriesId
+            )
         } else {
             throw Exception()
         }
@@ -91,15 +76,7 @@ class ProductService(
         productValidation.checkUpdateProductCategories(productId, categoryIds)?.let { throw it }
         return if (!isDeleted(productId!!)) {
             if (productDataSource.checkCategoriesInDb(categoryIds)) {
-                dbQuery {
-                    CategoryProductTable.deleteWhere { CategoryProductTable.productId eq productId }
-
-                    CategoryProductTable.batchInsert(categoryIds) { categoryId ->
-                        this[CategoryProductTable.productId] = productId
-                        this[CategoryProductTable.categoryId] = categoryId
-                    }
-                    true
-                }
+                productDataSource.updateProductCategory(productId, categoryIds)
             } else {
                 throw InvalidInputException()
             }
