@@ -59,8 +59,6 @@ class MarketService(private val marketValidationImpl: MarketValidation) : BaseSe
     }
 
     suspend fun updateMarket(marketId: Long?, marketName: String?): Market {
-        marketValidationImpl.checkId(marketId)?.let { throw it }
-        marketValidationImpl.checkMarketName(marketName)?.let { throw it }
         return if (isDeleted(marketId!!)) {
             throw ItemNotAvailableException()
         } else {
