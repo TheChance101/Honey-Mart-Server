@@ -19,35 +19,27 @@ fun Route.productsRoutes(productService: ProductService) {
 
         get("/{productId}") {
             val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
-            try {
+            handleException(call) {
                 val categories = productService.getAllCategoryForProduct(productId = productId)
                 call.respond(ServerResponse.success(categories))
-            } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
-            } catch (e: ItemNotAvailableException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
             }
         }
 
         post {
-            try {
-                val params = call.receiveParameters()
-                val productName = params["name"]?.trim().orEmpty()
-                val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
-                val productQuantity = params["quantity"]?.trim()
-                val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
+            val params = call.receiveParameters()
+            val productName = params["name"]?.trim().orEmpty()
+            val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
+            val productQuantity = params["quantity"]?.trim()
+            val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
 
+            handleException(call) {
                 val newAddedProduct = productService.create(productName, productPrice, productQuantity, categoriesId)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
-            } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
         }
 
         put("{id}") {
-            try {
+            handleException(call) {
                 val productId = call.parameters["id"]?.trim()?.toLongOrNull()
                 val params = call.receiveParameters()
                 val productName = params["name"]?.trim()
@@ -61,52 +53,30 @@ fun Route.productsRoutes(productService: ProductService) {
                     productQuantity = productQuantity
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success(isProductUpdated))
-            } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
-            } catch (e: ItemNotAvailableException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-            } catch (e: IdNotFoundException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
         }
 
         put("{id}/updateCategories") {
-            try {
-                val productId = call.parameters["id"]?.trim()?.toLongOrNull()
-                val params = call.receiveParameters()
-                val categoriesId = params["categoriesId"]?.trim().toLongIds()
+            val productId = call.parameters["id"]?.trim()?.toLongOrNull()
+            val params = call.receiveParameters()
+            val categoriesId = params["categoriesId"]?.trim().toLongIds()
 
+            handleException(call) {
                 val updatedProductCategory = productService.updateProductCategory(
                     productId = productId, categoryIds = categoriesId
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success(updatedProductCategory))
-            } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
-            } catch (e: IdNotFoundException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
         }
 
         delete("{id}") {
             val productId = call.parameters["id"]?.trim()?.toLongOrNull()
-            try {
+            handleException(call) {
                 val result = productService.deleteProduct(productId = productId)
                 call.respond(
                     HttpStatusCode.OK,
                     ServerResponse.success(result = result, successMessage = "Product Deleted successfully.")
                 )
-            } catch (e: InvalidInputException) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
-            } catch (e: ItemNotAvailableException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-            } catch (e: IdNotFoundException) {
-                call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
             }
         }
     }
