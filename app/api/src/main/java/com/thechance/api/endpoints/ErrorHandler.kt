@@ -1,10 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.core.data.utils.IdNotFoundException
-import com.thechance.core.data.utils.InternalServiceErrorException
-import com.thechance.core.data.utils.InvalidInputException
-import com.thechance.core.data.utils.ItemNotAvailableException
+import com.thechance.core.data.utils.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -23,7 +20,11 @@ suspend fun handleException(
         call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
     } catch (e: InternalServiceErrorException) {
         call.respond(HttpStatusCode.InternalServerError, ServerResponse.error(e.message.toString()))
-    } catch (e: Exception) {
+    } catch (e: MarketNameNotFound) {
+        call.respond(HttpStatusCode.NotFound, ServerResponse.error(e.message.toString()))
+    }catch (e: ItemAlreadyDeleted) {
         call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
+    }catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ServerResponse.error(e.message.toString()))
     }
 }

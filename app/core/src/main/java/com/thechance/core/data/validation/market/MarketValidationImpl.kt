@@ -1,13 +1,14 @@
 package com.thechance.core.data.validation.market
 
 import com.thechance.core.data.utils.InvalidInputException
+import com.thechance.core.data.utils.MarketNameNotFound
 import java.util.regex.Pattern
 
 class MarketValidationImpl : MarketValidation {
 
     override fun checkId(id: Long?): Exception? {
         return if (id == null) {
-            InvalidInputException()
+            InvalidInputException("this Id $id not available")
         } else {
             null
         }
@@ -15,10 +16,10 @@ class MarketValidationImpl : MarketValidation {
 
     override fun checkMarketName(name: String?): Exception? {
         return if (name == null || !isValidMarketNameLength(name)) {
-            InvalidInputException()
+            InvalidInputException("The name should be between 4 to 14 letter")
         } else {
             if (!isValidMarketName(name)) {
-                InvalidInputException()
+                InvalidInputException("The name should be only letters and numbers")
             } else {
                 null
             }

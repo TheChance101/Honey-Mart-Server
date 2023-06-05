@@ -37,9 +37,10 @@ fun Route.marketsRoutes(marketService: MarketService) {
         }
 
         put("/{id}") {
+            val marketId = call.parameters["id"]?.toLongOrNull()
+            val marketName = call.receiveParameters()["name"]?.trim()
+
             handleException(call) {
-                val marketId = call.parameters["id"]?.toLongOrNull()
-                val marketName = call.receiveParameters()["name"]?.trim()
                 val updatedMarket = marketService.updateMarket(marketId, marketName)
                 call.respond(
                     HttpStatusCode.OK,
