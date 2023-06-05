@@ -37,5 +37,4 @@ val myModule = module {
 
 
     single<ProductValidation> { ProductValidationImpl() }
-    single<MarketValidation> { MarketValidationImpl() }
 }

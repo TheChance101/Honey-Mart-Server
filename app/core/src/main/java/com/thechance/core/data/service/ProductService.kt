@@ -21,10 +21,6 @@ class ProductService(private val productValidation: ProductValidation) :
     suspend fun create(
         productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
     ): Product {
-        productValidation.checkCreateValidation(
-            productName = productName, productPrice = productPrice, productQuantity = productQuantity,
-            categoriesId = categoriesId
-        )?.let { throw it }
 
         return if (checkCategoriesInDb(categoriesId!!)) {
             dbQuery {
@@ -68,8 +64,6 @@ class ProductService(private val productValidation: ProductValidation) :
     suspend fun updateProduct(
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
     ): Boolean {
-        productValidation.checkId(productId)?.let { throw InvalidInputException() }
-
         return if (!isDeleted(productId!!)) {
             productValidation.checkUpdateValidation(
                 productName = productName, productPrice = productPrice, productQuantity = productQuantity
@@ -89,7 +83,6 @@ class ProductService(private val productValidation: ProductValidation) :
     }
 
     suspend fun updateProductCategory(productId: Long?, categoryIds: List<Long>): Boolean {
-        productValidation.checkUpdateProductCategories(productId, categoryIds)?.let { throw it }
         return if (!isDeleted(productId!!)) {
             if (checkCategoriesInDb(categoryIds)) {
                 dbQuery {
