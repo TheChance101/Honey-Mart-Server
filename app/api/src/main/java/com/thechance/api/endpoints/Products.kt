@@ -1,26 +1,24 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.utils.handleException
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
-import com.thechance.core.data.service.ProductService
-import com.thechance.core.data.utils.IdNotFoundException
-import com.thechance.core.data.utils.InvalidInputException
-import com.thechance.core.data.utils.ItemNotAvailableException
+import com.thechance.core.data.usecase.product.ProductUseCasesContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.productsRoutes(productService: ProductService) {
+fun Route.productsRoutes(productUseCasesContainer: ProductUseCasesContainer) {
 
     route("/product") {
 
         get("/{productId}") {
             val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
             handleException(call) {
-                val categories = productService.getAllCategoryForProduct(productId = productId)
+                val categories = productUseCasesContainer.getCategoriesForProductUseCase(productId = productId)
                 call.respond(ServerResponse.success(categories))
             }
         }
@@ -33,7 +31,9 @@ fun Route.productsRoutes(productService: ProductService) {
                 val productQuantity = params["quantity"]?.trim()
                 val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
 
-                val newAddedProduct = productService.create(productName, productPrice, productQuantity, categoriesId)
+                val newAddedProduct = productUseCasesContainer.createProductUseCase(
+                    productName, productPrice, productQuantity, categoriesId
+                )
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
             }
         }
@@ -46,7 +46,8 @@ fun Route.productsRoutes(productService: ProductService) {
                 val productPrice = params["price"]?.trim()?.toDoubleOrNull()
                 val productQuantity = params["quantity"]?.trim()
 
-                val isProductUpdated = productService.updateProduct(
+
+                val isProductUpdated = productUseCasesContainer.updateProductUseCase(
                     productId = productId,
                     productName = productName,
                     productPrice = productPrice,
@@ -62,7 +63,7 @@ fun Route.productsRoutes(productService: ProductService) {
             val categoriesId = params["categoriesId"]?.trim().toLongIds()
 
             handleException(call) {
-                val updatedProductCategory = productService.updateProductCategory(
+                val updatedProductCategory = productUseCasesContainer.updateProductCategoryUseCase(
                     productId = productId, categoryIds = categoriesId
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success(updatedProductCategory))
@@ -72,11 +73,12 @@ fun Route.productsRoutes(productService: ProductService) {
         delete("{id}") {
             val productId = call.parameters["id"]?.trim()?.toLongOrNull()
             handleException(call) {
-                val result = productService.deleteProduct(productId = productId)
+                val result = productUseCasesContainer.deleteProductUseCase(productId = productId)
                 call.respond(
                     HttpStatusCode.OK,
                     ServerResponse.success(result = result, successMessage = "Product Deleted successfully.")
                 )
+
             }
         }
     }
