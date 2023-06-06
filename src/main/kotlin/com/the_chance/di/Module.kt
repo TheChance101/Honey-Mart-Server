@@ -1,6 +1,7 @@
 package com.the_chance.di
 
 import com.thechance.core.data.database.CoreDataBase
+import com.thechance.core.data.datasource.*
 import com.thechance.core.data.service.CategoryService
 import com.thechance.core.data.service.DeleteAllTablesService
 import com.thechance.core.data.service.MarketService
@@ -17,11 +18,14 @@ import org.koin.dsl.module
 
 val myModule = module {
     single { CoreDataBase() }
+    single<CategoryDataSource> { CategoryDataSourceImp() }
+    single<MarketDataSource> { MarketDataSourceImp() }
+    single<ProductDataSource> { ProductDataSourceImp() }
+
     singleOf(::ProductService) { bind<ProductService>() }
     singleOf(::MarketService) { bind<MarketService>() }
     singleOf(::CategoryService) { bind<CategoryService>() }
     singleOf(::DeleteAllTablesService) { bind<DeleteAllTablesService>() }
-
     single<ProductValidation> { ProductValidationImpl() }
     single<MarketValidation> { MarketValidationImpl() }
     single<CategoryValidation> { CategoryValidationImpl() }
