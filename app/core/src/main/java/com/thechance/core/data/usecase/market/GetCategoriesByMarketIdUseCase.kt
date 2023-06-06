@@ -1,18 +1,18 @@
 package com.thechance.core.data.usecase.market
 
 import com.thechance.core.data.model.Category
-import com.thechance.core.data.service.MarketService
+import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.utils.InvalidMarketIdException
-import com.thechance.core.data.utils.checkId
+import com.thechance.core.data.utils.isValidId
 import org.koin.core.component.KoinComponent
 
-class GetCategoriesByMarketIdUseCase(private val marketService: MarketService) : KoinComponent {
+class GetCategoriesByMarketIdUseCase(private val repository: HoneyMartRepository) : KoinComponent {
 
     suspend operator fun invoke(marketId: Long?): List<Category> {
-        return if (checkId(marketId)) {
+        return if (isValidId(marketId)) {
             throw InvalidMarketIdException()
         } else {
-            marketService.getCategoriesByMarket(marketId)
+            repository.getCategoriesByMarket(marketId!!)
         }
     }
 }

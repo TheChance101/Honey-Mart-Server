@@ -1,34 +1,48 @@
 package com.thechance.core.data.usecase.category
 
-import com.thechance.core.data.service.CategoryService
+import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.utils.*
 import org.koin.core.component.KoinComponent
 
-class UpdateCategoryUseCase(private val categoryService: CategoryService) : KoinComponent {
+class UpdateCategoryUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?): Boolean {
+        isValidInput(categoryId, categoryName, marketId, imageId)?.let { throw it }
+
+        if (repository.isCategoryDeleted(categoryId!!)) {
+            throw CategoryDeletedException()
+        }
+
+        if (repository.isMarketDeleted(marketId!!)) {
+            throw MarketDeletedException()
+        }
+
+        return repository.updateCategory(categoryId, categoryName, marketId, imageId)
+    }
+
+    private fun isValidInput(categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?): Exception? {
         return when {
             checkName(categoryName) -> {
-                throw InvalidCategoryNameException()
+                InvalidCategoryNameException()
             }
 
             checkLetter(categoryName) -> {
-                throw InvalidCategoryNameLettersException()
+                InvalidCategoryNameLettersException()
             }
 
-            checkId(marketId) -> {
-                throw InvalidMarketIdException()
+            isValidId(marketId) -> {
+                InvalidMarketIdException()
             }
 
-            checkId(categoryId) -> {
-                throw InvalidCategoryIdException()
+            isValidId(categoryId) -> {
+                InvalidCategoryIdException()
             }
 
-            checkId(imageId?.toLong()) -> {
-                throw InvalidImageIdException()
+            isValidId(imageId?.toLong()) -> {
+                InvalidImageIdException()
             }
 
             else -> {
-                categoryService.update(categoryId, categoryName, marketId, imageId)
+                null
             }
         }
     }

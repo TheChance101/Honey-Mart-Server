@@ -18,3 +18,14 @@ class InvalidImageIdException : Exception()
 class IdNotFoundException : Exception()
 
 class ItemNotAvailableException : Exception()
+
+//Delete
+class MarketDeletedException : Exception()
+
+class CategoryDeletedException : Exception()
+
+class ProductDeletedException : Exception()
+
+class NotValidCategoryList : Exception()
+
+class CategoryNameNotUniqueException : Exception()

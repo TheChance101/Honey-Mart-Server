@@ -1,7 +1,7 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.mapper.toCategory
-import com.thechance.core.data.mapper.toProduct
+import com.thechance.core.data.datasource.mapper.toCategory
+import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.tables.CategoriesTable
@@ -40,10 +40,11 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
             }.map { resultRow -> resultRow.toCategory() }
     }
 
-    override suspend fun deleteCategory(categoryId: Long): Int = dbQuery {
+    override suspend fun deleteCategory(categoryId: Long): Boolean = dbQuery {
         CategoriesTable.update({ CategoriesTable.isDeleted eq false }) {
             it[isDeleted] = true
         }
+        true
     }
 
     override suspend fun updateCategory(

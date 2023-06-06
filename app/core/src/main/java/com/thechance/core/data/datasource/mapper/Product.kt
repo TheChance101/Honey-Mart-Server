@@ -1,4 +1,4 @@
-package com.thechance.core.data.mapper
+package com.thechance.core.data.datasource.mapper
 
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product

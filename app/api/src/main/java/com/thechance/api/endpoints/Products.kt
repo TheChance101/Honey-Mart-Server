@@ -3,7 +3,6 @@ package com.thechance.api.endpoints
 import com.thechance.api.ServerResponse
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
-import com.thechance.core.data.service.ProductService
 import com.thechance.core.data.usecase.product.ProductUseCasesContainer
 import com.thechance.core.data.utils.IdNotFoundException
 import com.thechance.core.data.utils.InvalidInputException

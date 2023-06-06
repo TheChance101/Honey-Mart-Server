@@ -1,7 +1,7 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.mapper.toCategory
-import com.thechance.core.data.mapper.toMarket
+import com.thechance.core.data.datasource.mapper.toCategory
+import com.thechance.core.data.datasource.mapper.toMarket
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Market
 import com.thechance.core.data.tables.CategoriesTable

@@ -1,21 +1,22 @@
 package com.thechance.core.data.usecase.category
 
-import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product
-import com.thechance.core.data.service.CategoryService
+import com.thechance.core.data.repository.HoneyMartRepository
+import com.thechance.core.data.utils.CategoryDeletedException
 import com.thechance.core.data.utils.InvalidCategoryIdException
+import com.thechance.core.data.utils.isValidId
 import org.koin.core.component.KoinComponent
 
-class GetAllCategoriesUseCase(private val categoryService: CategoryService) : KoinComponent {
+class GetAllCategoriesUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(categoryId: Long?): List<Product> {
-        return if (checkId(categoryId)) {
+        return if (isValidId(categoryId)) {
             throw InvalidCategoryIdException()
         } else {
-            categoryService.getAllProductsInCategory(categoryId)
+            if (!repository.isCategoryDeleted(categoryId!!)) {
+                repository.getAllProductsInCategory(categoryId)
+            } else {
+                throw CategoryDeletedException()
+            }
         }
-    }
-
-    private fun checkId(id: Long?): Boolean {
-        return id == null
     }
 }

@@ -20,7 +20,7 @@ internal fun isValidNameLength(name: String): Boolean {
     return name.length in 4..14
 }
 
-internal fun checkId(id: Long?): Boolean {
+internal fun isValidId(id: Long?): Boolean {
     return id == null || id == 0L
 }
 

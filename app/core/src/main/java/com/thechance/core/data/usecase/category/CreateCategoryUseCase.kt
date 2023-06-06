@@ -1,32 +1,47 @@
 package com.thechance.core.data.usecase.category
 
 import com.thechance.core.data.model.Category
-import com.thechance.core.data.service.CategoryService
+import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.utils.*
 import org.koin.core.component.KoinComponent
 import java.util.regex.Pattern
 
-class CreateCategoryUseCase(private val categoryService: CategoryService) : KoinComponent {
+class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(categoryName: String?, marketId: Long?, imageId: Int?): Category {
+
+        isValidInput(categoryName, marketId, imageId)?.let { throw it }
+
+        return if (!repository.isMarketDeleted(marketId!!)) {
+            if (repository.isCategoryNameUnique(categoryName!!)) {
+                repository.createCategory(categoryName, marketId, imageId!!)
+            } else {
+                throw CategoryNameNotUniqueException()
+            }
+        } else {
+            throw MarketDeletedException()
+        }
+    }
+
+    private fun isValidInput(categoryName: String?, marketId: Long?, imageId: Int?): Exception? {
         return when {
             checkName(categoryName) -> {
-                throw InvalidCategoryNameException()
+                InvalidCategoryNameException()
             }
 
             checkLetter(categoryName) -> {
-                throw InvalidCategoryNameLettersException()
+                InvalidCategoryNameLettersException()
             }
 
-            checkId(marketId) -> {
-                throw InvalidMarketIdException()
+            isValidId(marketId) -> {
+                InvalidMarketIdException()
             }
 
-            checkId(imageId?.toLong()) -> {
-                throw InvalidImageIdException()
+            isValidId(imageId?.toLong()) -> {
+                InvalidImageIdException()
             }
 
             else -> {
-                categoryService.create(categoryName, marketId, imageId)
+                null
             }
         }
     }

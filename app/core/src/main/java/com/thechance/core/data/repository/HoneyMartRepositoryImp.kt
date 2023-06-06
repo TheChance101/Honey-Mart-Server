@@ -41,7 +41,7 @@ class HoneyMartRepositoryImp(
     override suspend fun getCategoriesByMarketId(marketId: Long): List<Category> =
         categoryDataSource.getCategoriesByMarketId(marketId)
 
-    override suspend fun deleteCategory(categoryId: Long): Int =
+    override suspend fun deleteCategory(categoryId: Long): Boolean =
         categoryDataSource.deleteCategory(categoryId)
 
     override suspend fun updateCategory(
@@ -54,7 +54,7 @@ class HoneyMartRepositoryImp(
     override suspend fun getAllProductsInCategory(categoryId: Long): List<Product> =
         categoryDataSource.getAllProductsInCategory(categoryId)
 
-    override suspend fun isCategoryDeleted(categoryId: Long): Boolean? =
+    override suspend fun isCategoryDeleted(categoryId: Long): Boolean =
         categoryDataSource.isCategoryDeleted(categoryId)
 
     override suspend fun isCategoryNameUnique(categoryName: String): Boolean =
@@ -78,7 +78,7 @@ class HoneyMartRepositoryImp(
 
     override suspend fun updateProduct(
         productId: Long, productName: String?, productPrice: Double?, productQuantity: String?
-    ): Int = productDataSource.updateProduct(
+    ): Boolean = productDataSource.updateProduct(
         productId = productId, productName = productName, productPrice = productPrice,
         productQuantity = productQuantity
     )
@@ -86,7 +86,7 @@ class HoneyMartRepositoryImp(
     override suspend fun updateProductCategory(productId: Long, categoryIds: List<Long>): Boolean =
         productDataSource.updateProductCategory(productId, categoryIds)
 
-    override suspend fun deleteProduct(productId: Long): Int =
+    override suspend fun deleteProduct(productId: Long): Boolean =
         productDataSource.deleteProduct(productId)
 
     override suspend fun checkCategoriesInDb(categoryIds: List<Long>): Boolean =

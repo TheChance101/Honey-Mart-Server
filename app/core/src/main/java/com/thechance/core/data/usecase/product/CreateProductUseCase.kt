@@ -1,33 +1,36 @@
 package com.thechance.core.data.usecase.product
 
 import com.thechance.core.data.model.Product
-import com.thechance.core.data.service.ProductService
+import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.utils.*
 import org.koin.core.component.KoinComponent
 
-class CreateProductUseCase(private val productService: ProductService) : KoinComponent {
+class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(
-        productName: String,
-        productPrice: Double,
-        productQuantity: String?,
-        categoriesId: List<Long>?
+        productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
     ): Product {
+        isValidInput(productName, productPrice, productQuantity, categoriesId)?.let { throw it }
+
+        return if (repository.checkCategoriesInDb(categoriesId!!)) {
+            repository.createProduct(productName, productPrice, productQuantity!!, categoriesId!!)
+        } else {
+            throw NotValidCategoryList()
+        }
+    }
+
+    private fun isValidInput(
+        productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
+    ): Exception? {
         return when {
-            checkName(productName) -> {
-                throw InvalidProductNameException()
-            }
-            checkProductQuantity(productQuantity) -> {
-                throw InvalidProductQuantityException()
-            }
-            checkPrice(productPrice) -> {
-                throw InvalidProductPriceException()
-            }
-            isValidIds(categoriesId) -> {
-                throw InvalidCategoryIdException()
-            }
-            else -> {
-                productService.create(productName, productPrice, productQuantity, categoriesId)
-            }
+            checkName(productName) -> { InvalidProductNameException() }
+
+            checkProductQuantity(productQuantity) -> { InvalidProductQuantityException() }
+
+            checkPrice(productPrice) -> { InvalidProductPriceException() }
+
+            isValidIds(categoriesId) -> { InvalidCategoryIdException() }
+
+            else -> { null }
         }
     }
 
@@ -41,6 +44,5 @@ class CreateProductUseCase(private val productService: ProductService) : KoinCom
         return price?.let {
             return it !in 0.1..999999.0
         } ?: true
-
     }
 }
