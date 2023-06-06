@@ -1,7 +1,7 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.mapper.toCategory
-import com.thechance.core.data.mapper.toProduct
+import com.thechance.core.data.datasource.mapper.toCategory
+import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.tables.CategoriesTable
@@ -57,12 +57,13 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         productName: String?,
         productPrice: Double?,
         productQuantity: String?
-    ): Int = dbQuery {
+    ): Boolean = dbQuery {
         ProductTable.update({ ProductTable.id eq productId }) { productRow ->
             productName?.let { productRow[name] = it }
             productPrice?.let { productRow[price] = it }
             productQuantity?.let { productRow[quantity] = it }
         }
+        true
     }
 
     override suspend fun updateProductCategory(productId: Long, categoryIds: List<Long>): Boolean =
@@ -76,10 +77,11 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
             true
         }
 
-    override suspend fun deleteProduct(productId: Long): Int = dbQuery {
+    override suspend fun deleteProduct(productId: Long): Boolean = dbQuery {
         ProductTable.update({ ProductTable.id eq productId }) { productRow ->
             productRow[isDeleted] = true
         }
+        true
     }
 
     override suspend fun isDeleted(id: Long): Boolean = dbQuery {
@@ -92,5 +94,6 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         CategoriesTable.select { CategoriesTable.id inList categoryIds }
             .filterNot { it[CategoriesTable.isDeleted] }.toList().size == categoryIds.size
     }
+
 
 }

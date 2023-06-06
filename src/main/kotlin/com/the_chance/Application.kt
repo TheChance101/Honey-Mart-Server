@@ -1,10 +1,11 @@
 package com.the_chance
 
 
-import com.the_chance.di.myModule
+import com.the_chance.di.appModules
 import com.thechance.api.plugins.configureMonitoring
 import com.thechance.api.plugins.configureRouting
 import com.thechance.api.plugins.configureSerialization
+import com.thechance.core.data.database.CoreDataBase
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -19,8 +20,9 @@ fun main() {
 fun Application.module() {
     install(Koin) {
         slf4jLogger()
-        modules(myModule)
+        modules(appModules)
     }
+    CoreDataBase()
     configureSerialization()
     configureMonitoring()
     configureRouting()
