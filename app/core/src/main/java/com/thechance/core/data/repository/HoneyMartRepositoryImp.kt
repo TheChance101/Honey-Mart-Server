@@ -27,7 +27,7 @@ class HoneyMartRepositoryImp(
     override suspend fun updateMarket(marketId: Long, marketName: String): Market =
         marketDataSource.updateMarket(marketId, marketName)
 
-    override suspend fun isMarketDeleted(marketId: Long): Boolean =
+    override suspend fun isMarketDeleted(marketId: Long): Boolean? =
         marketDataSource.isDeleted(marketId)
 
     //endregion
@@ -54,7 +54,7 @@ class HoneyMartRepositoryImp(
     override suspend fun getAllProductsInCategory(categoryId: Long): List<Product> =
         categoryDataSource.getAllProductsInCategory(categoryId)
 
-    override suspend fun isCategoryDeleted(categoryId: Long): Boolean =
+    override suspend fun isCategoryDeleted(categoryId: Long): Boolean? =
         categoryDataSource.isCategoryDeleted(categoryId)
 
     override suspend fun isCategoryNameUnique(categoryName: String): Boolean =
@@ -92,7 +92,7 @@ class HoneyMartRepositoryImp(
     override suspend fun checkCategoriesInDb(categoryIds: List<Long>): Boolean =
         productDataSource.checkCategoriesInDb(categoryIds)
 
-    override suspend fun isProductDeleted(id: Long): Boolean =
+    override suspend fun isProductDeleted(id: Long): Boolean? =
         productDataSource.isDeleted(id)
 
     //endregion

@@ -43,10 +43,8 @@ fun Route.categoryRoutes(categoryUseCasesContainer: CategoryUseCasesContainer) {
                 val marketId = params["marketId"]?.toLongOrNull()
                 val imageId = params["imageId"]?.toIntOrNull()
 
-                val isCategoryUpdated =
-                    categoryUseCasesContainer.updateCategoryUseCase(categoryId, categoryName, marketId, imageId)
-                call.respond(HttpStatusCode.OK, ServerResponse.success(result = isCategoryUpdated))
-
+                categoryUseCasesContainer.updateCategoryUseCase(categoryId, categoryName, marketId, imageId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
             }
         }
 

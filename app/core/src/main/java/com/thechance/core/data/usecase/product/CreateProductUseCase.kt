@@ -26,7 +26,7 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
 
             checkProductQuantity(productQuantity) -> { InvalidProductQuantityException() }
 
-            checkPrice(productPrice) -> { InvalidProductPriceException() }
+            InvalidPrice(productPrice) -> { InvalidProductPriceException() }
 
             isValidIds(categoriesId) -> { InvalidCategoryIdException() }
 
@@ -40,9 +40,4 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         } ?: true
     }
 
-    private fun checkPrice(price: Double?): Boolean {
-        return price?.let {
-            return it !in 0.1..999999.0
-        } ?: true
-    }
 }

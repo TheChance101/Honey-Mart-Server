@@ -10,8 +10,7 @@ interface CategoryDataSource {
     suspend fun deleteCategory(categoryId: Long): Boolean
     suspend fun updateCategory(categoryId: Long, categoryName: String?, marketId: Long, imageId: Int?): Boolean
     suspend fun getAllProductsInCategory(categoryId: Long): List<Product>
-    suspend fun isCategoryDeleted(categoryId: Long): Boolean
-    suspend fun isMarketDeleted(marketId: Long): Boolean
+    suspend fun isCategoryDeleted(categoryId: Long): Boolean?
     suspend fun isCategoryNameUnique(categoryName: String): Boolean
 
 }

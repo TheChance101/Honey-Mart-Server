@@ -8,12 +8,20 @@ class UpdateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
     suspend operator fun invoke(categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?): Boolean {
         isValidInput(categoryId, categoryName, marketId, imageId)?.let { throw it }
 
-        if (repository.isCategoryDeleted(categoryId!!)) {
+        val isCategoryDeleted = repository.isCategoryDeleted(categoryId!!)
+        if (isCategoryDeleted == null) {
+            throw IdNotFoundException()
+        } else if (isCategoryDeleted) {
             throw CategoryDeletedException()
+
         }
 
-        if (repository.isMarketDeleted(marketId!!)) {
+        val isMarketDeleted = repository.isMarketDeleted(marketId!!)
+        if (isMarketDeleted == null) {
+            throw IdNotFoundException()
+        } else if (isMarketDeleted) {
             throw MarketDeletedException()
+
         }
 
         return repository.updateCategory(categoryId, categoryName, marketId, imageId)
@@ -29,15 +37,15 @@ class UpdateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
                 InvalidCategoryNameLettersException()
             }
 
-            isValidId(marketId) -> {
+            isInvalidId(marketId) -> {
                 InvalidMarketIdException()
             }
 
-            isValidId(categoryId) -> {
+            isInvalidId(categoryId) -> {
                 InvalidCategoryIdException()
             }
 
-            isValidId(imageId?.toLong()) -> {
+            isInvalidId(imageId?.toLong()) -> {
                 InvalidImageIdException()
             }
 

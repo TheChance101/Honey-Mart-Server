@@ -48,11 +48,11 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         Market(marketId = marketId, marketName = marketName)
     }
 
-    override suspend fun isDeleted(marketId: Long): Boolean = dbQuery {
+    override suspend fun isDeleted(marketId: Long): Boolean? = dbQuery {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
             it[MarketTable.isDeleted]
-        } ?: false
+        }
     }
 
 }

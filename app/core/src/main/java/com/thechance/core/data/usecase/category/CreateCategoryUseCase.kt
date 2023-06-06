@@ -11,14 +11,17 @@ class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
 
         isValidInput(categoryName, marketId, imageId)?.let { throw it }
 
-        return if (!repository.isMarketDeleted(marketId!!)) {
+        val isMarketDeleted = repository.isMarketDeleted(marketId!!)
+        return if (isMarketDeleted == null) {
+            throw IdNotFoundException()
+        } else if (isMarketDeleted) {
+            throw MarketDeletedException()
+        } else {
             if (repository.isCategoryNameUnique(categoryName!!)) {
                 repository.createCategory(categoryName, marketId, imageId!!)
             } else {
                 throw CategoryNameNotUniqueException()
             }
-        } else {
-            throw MarketDeletedException()
         }
     }
 
@@ -32,11 +35,11 @@ class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
                 InvalidCategoryNameLettersException()
             }
 
-            isValidId(marketId) -> {
+            isInvalidId(marketId) -> {
                 InvalidMarketIdException()
             }
 
-            isValidId(imageId?.toLong()) -> {
+            isInvalidId(imageId?.toLong()) -> {
                 InvalidImageIdException()
             }
 

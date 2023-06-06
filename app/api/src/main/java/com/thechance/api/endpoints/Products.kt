@@ -46,14 +46,10 @@ fun Route.productsRoutes(productUseCasesContainer: ProductUseCasesContainer) {
                 val productPrice = params["price"]?.trim()?.toDoubleOrNull()
                 val productQuantity = params["quantity"]?.trim()
 
-
-                val isProductUpdated = productUseCasesContainer.updateProductUseCase(
-                    productId = productId,
-                    productName = productName,
-                    productPrice = productPrice,
-                    productQuantity = productQuantity
+                 productUseCasesContainer.updateProductUseCase(
+                    productId = productId, productName = productName, productPrice = productPrice, productQuantity = productQuantity
                 )
-                call.respond(HttpStatusCode.OK, ServerResponse.success(isProductUpdated))
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
             }
         }
 
@@ -63,10 +59,8 @@ fun Route.productsRoutes(productUseCasesContainer: ProductUseCasesContainer) {
             val categoriesId = params["categoriesId"]?.trim().toLongIds()
 
             handleException(call) {
-                val updatedProductCategory = productUseCasesContainer.updateProductCategoryUseCase(
-                    productId = productId, categoryIds = categoriesId
-                )
-                call.respond(HttpStatusCode.OK, ServerResponse.success(updatedProductCategory))
+                productUseCasesContainer.updateProductCategoryUseCase(productId = productId, categoryIds = categoriesId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
             }
         }
 

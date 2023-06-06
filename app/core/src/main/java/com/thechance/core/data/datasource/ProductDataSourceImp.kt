@@ -16,10 +16,7 @@ import org.koin.core.component.KoinComponent
 
 class ProductDataSourceImp : ProductDataSource, KoinComponent {
     override suspend fun createProduct(
-        productName: String,
-        productPrice: Double,
-        productQuantity: String,
-        categoriesId: List<Long>
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
     ): Product = dbQuery {
         val newProduct = ProductTable.insert { productRow ->
             productRow[name] = productName
@@ -42,7 +39,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
     override suspend fun getAllProducts(): List<Product> = dbQuery {
         ProductTable.select { ProductTable.isDeleted eq false }.map { productRow ->
-           productRow.toProduct()
+            productRow.toProduct()
         }
     }
 
@@ -53,10 +50,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
     }
 
     override suspend fun updateProduct(
-        productId: Long,
-        productName: String?,
-        productPrice: Double?,
-        productQuantity: String?
+        productId: Long, productName: String?, productPrice: Double?, productQuantity: String?
     ): Boolean = dbQuery {
         ProductTable.update({ ProductTable.id eq productId }) { productRow ->
             productName?.let { productRow[name] = it }
@@ -84,9 +78,11 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         true
     }
 
-    override suspend fun isDeleted(id: Long): Boolean = dbQuery {
+    override suspend fun isDeleted(id: Long): Boolean? = dbQuery {
         val product = ProductTable.select { ProductTable.id eq id }.singleOrNull()
-        product?.let { it[ProductTable.isDeleted] } ?: false
+        product?.let {
+            it[ProductTable.isDeleted]
+        }
     }
 
 
