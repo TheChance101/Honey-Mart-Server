@@ -29,11 +29,71 @@ suspend fun handleException(
                 ServerResponse.error("This Id not Found")
             )
 
-            else -> {
+            is InvalidCategoryNameException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("error in category name"))
+            }
+
+            is InvalidMarketNameException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("error in market name"))
+            }
+
+            is InvalidProductNameException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("error in product name"))
+            }
+
+            is InvalidProductQuantityException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("error in quantity."))
+            }
+
+            is InvalidProductPriceException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("error in product price"))
+            }
+
+            is InvalidCategoryNameLettersException -> {
                 call.respond(
-                    HttpStatusCode.InternalServerError,
-                    ServerResponse.error(e.message.toString())
+                    HttpStatusCode.NotFound,
+                    ServerResponse.error("error in InvalidCategoryNameLettersException")
                 )
+            }
+
+            is InvalidMarketIdException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("can not found market with this id"))
+            }
+
+            is InvalidCategoryIdException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("can not found category with this id"))
+            }
+
+            is InvalidProductIdException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("can not found product with this id"))
+            }
+
+            is InvalidImageIdException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("image not found"))
+            }
+
+            is MarketDeletedException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("can not found this market"))
+            }
+
+            is CategoryDeletedException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("can not found this category"))
+            }
+
+            is ProductDeletedException -> {
+                call.respond(HttpStatusCode.NotFound, ServerResponse.error("can not found this product"))
+            }
+
+            is NotValidCategoryList -> {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("wrong categories ids  "))
+            }
+
+            is CategoryNameNotUniqueException -> {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("this category name already exist."))
+            }
+
+            else -> {
+                call.respond(HttpStatusCode.InternalServerError, ServerResponse.error(e.message.toString()))
             }
         }
     }
