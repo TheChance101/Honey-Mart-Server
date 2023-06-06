@@ -12,7 +12,7 @@ interface HoneyMartRepository {
     suspend fun getCategoriesByMarket(marketId: Long): List<Category>
     suspend fun deleteMarket(marketId: Long): Boolean
     suspend fun updateMarket(marketId: Long, marketName: String): Market
-    suspend fun isMarketDeleted(marketId: Long): Boolean
+    suspend fun isMarketDeleted(marketId: Long): Boolean?
     //endregion
 
     //region category
@@ -21,7 +21,7 @@ interface HoneyMartRepository {
     suspend fun deleteCategory(categoryId: Long): Boolean
     suspend fun updateCategory(categoryId: Long, categoryName: String?, marketId: Long, imageId: Int?): Boolean
     suspend fun getAllProductsInCategory(categoryId: Long): List<Product>
-    suspend fun isCategoryDeleted(categoryId: Long): Boolean
+    suspend fun isCategoryDeleted(categoryId: Long): Boolean?
     suspend fun isCategoryNameUnique(categoryName: String): Boolean
     //endregion
 
@@ -41,6 +41,6 @@ interface HoneyMartRepository {
     suspend fun deleteProduct(productId: Long): Boolean
     suspend fun checkCategoriesInDb(categoryIds: List<Long>): Boolean
 
-    suspend fun isProductDeleted(id: Long): Boolean
+    suspend fun isProductDeleted(id: Long): Boolean?
     //endregion
 }

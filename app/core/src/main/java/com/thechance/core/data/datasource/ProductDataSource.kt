@@ -17,6 +17,6 @@ interface ProductDataSource {
 
     suspend fun updateProductCategory(productId: Long, categoryIds: List<Long>): Boolean
     suspend fun deleteProduct(productId: Long): Boolean
-    suspend fun isDeleted(id: Long): Boolean
+    suspend fun isDeleted(id: Long): Boolean?
     suspend fun checkCategoriesInDb(categoryIds: List<Long>): Boolean
 }
