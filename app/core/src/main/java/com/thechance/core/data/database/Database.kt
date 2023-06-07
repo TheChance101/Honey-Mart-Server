@@ -1,9 +1,6 @@
 package com.thechance.core.data.database
 
-import com.thechance.core.data.tables.CategoriesTable
-import com.thechance.core.data.tables.CategoryProductTable
-import com.thechance.core.data.tables.MarketTable
-import com.thechance.core.data.tables.ProductTable
+import com.thechance.core.data.tables.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -11,7 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class CoreDataBase {
 
     private val tables by lazy {
-        listOf(MarketTable, CategoriesTable, ProductTable, CategoryProductTable)
+        listOf(MarketTable, CategoriesTable, ProductTable, CategoryProductTable, OrderTable, OrderProductTable)
     }
 
     init {
