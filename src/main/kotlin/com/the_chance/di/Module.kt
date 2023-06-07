@@ -6,6 +6,9 @@ import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.repository.HoneyMartRepositoryImp
 import com.thechance.core.data.usecase.category.*
 import com.thechance.core.data.usecase.market.*
+import com.thechance.core.data.usecase.order.CreateOrderUseCase
+import com.thechance.core.data.usecase.order.GetOrdersForMarketUseCase
+import com.thechance.core.data.usecase.order.OrderUseCasesContainer
 import com.thechance.core.data.usecase.product.*
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -15,6 +18,7 @@ val dataSourceModules = module {
     single<CategoryDataSource> { CategoryDataSourceImp() }
     single<MarketDataSource> { MarketDataSourceImp() }
     single<ProductDataSource> { ProductDataSourceImp() }
+    single<OrderDataSource> { OrderDataSourceImp() }
 }
 
 val productUseCaseModule = module {
@@ -43,6 +47,12 @@ val categoryUseCaseModule = module {
     singleOf(::UpdateCategoryUseCase) { bind<UpdateCategoryUseCase>() }
 }
 
+val orderUseCaseModule = module {
+    singleOf(::OrderUseCasesContainer) { bind<OrderUseCasesContainer>() }
+    singleOf(::CreateOrderUseCase) { bind<CreateOrderUseCase>() }
+    singleOf(::GetOrdersForMarketUseCase) { bind<GetOrdersForMarketUseCase>() }
+}
+
 val appModules = module {
     single { CoreDataBase() }
     singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
@@ -50,7 +60,8 @@ val appModules = module {
         dataSourceModules,
         categoryUseCaseModule,
         marketUseCaseModule,
-        productUseCaseModule
+        productUseCaseModule,
+        orderUseCaseModule
     )
 }
 
