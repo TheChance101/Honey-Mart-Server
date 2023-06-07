@@ -1,15 +1,11 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toOrder
 import com.thechance.core.data.model.Order
 import com.thechance.core.data.model.OrderItem
-import com.thechance.core.data.tables.CategoriesTable
-import com.thechance.core.data.tables.CategoryProductTable
 import com.thechance.core.data.tables.OrderProductTable
 import com.thechance.core.data.tables.OrderTable
 import com.thechance.core.data.utils.dbQuery
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
