@@ -28,7 +28,7 @@ internal fun isValidIds(ids: List<Long>?): Boolean {
     return ids.isNullOrEmpty() || ids.filterNot { it == 0L }.isEmpty()
 }
 
-internal fun InvalidPrice(price: Double?): Boolean {
+internal fun invalidPrice(price: Double?): Boolean {
     return price?.let {
         return it !in 0.1..999999.0
     } ?: true

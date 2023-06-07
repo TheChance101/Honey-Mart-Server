@@ -8,6 +8,6 @@ data class Order(
     val marketId: Long,
     val orderDate: String,
     val totalPrice: Double,
-    val isPaid: Boolean,
+    val isPaid: Boolean = false,
     val isCanceled: Boolean = false
 )

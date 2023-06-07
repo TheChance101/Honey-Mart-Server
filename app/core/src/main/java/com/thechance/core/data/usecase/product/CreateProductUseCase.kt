@@ -26,7 +26,7 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
 
             checkProductQuantity(productQuantity) -> { InvalidProductQuantityException() }
 
-            InvalidPrice(productPrice) -> { InvalidProductPriceException() }
+            invalidPrice(productPrice) -> { InvalidProductPriceException() }
 
             isValidIds(categoriesId) -> { InvalidCategoryIdException() }
 

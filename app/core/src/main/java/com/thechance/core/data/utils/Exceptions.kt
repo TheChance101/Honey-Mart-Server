@@ -7,6 +7,7 @@ class InvalidMarketNameException : Exception()
 class InvalidProductNameException : Exception()
 class InvalidProductQuantityException : Exception()
 class InvalidProductPriceException : Exception()
+class InvalidOrderTotalPriceException : Exception()
 
 class InvalidCategoryNameLettersException : Exception()
 class InvalidMarketIdException : Exception()
