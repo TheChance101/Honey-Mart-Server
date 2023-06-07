@@ -2,16 +2,16 @@ package com.thechance.core.data.repository
 
 import com.thechance.core.data.datasource.CategoryDataSource
 import com.thechance.core.data.datasource.MarketDataSource
+import com.thechance.core.data.datasource.OrderDataSource
 import com.thechance.core.data.datasource.ProductDataSource
-import com.thechance.core.data.model.Category
-import com.thechance.core.data.model.Market
-import com.thechance.core.data.model.Product
+import com.thechance.core.data.model.*
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
     private val marketDataSource: MarketDataSource,
     private val categoryDataSource: CategoryDataSource,
-    private val productDataSource: ProductDataSource
+    private val productDataSource: ProductDataSource,
+    private val orderDataSource: OrderDataSource
 ) : HoneyMartRepository, KoinComponent {
 
     //region market
@@ -96,5 +96,18 @@ class HoneyMartRepositoryImp(
         productDataSource.isDeleted(id)
 
     //endregion
+
+    //region order
+    override suspend fun createOrder(
+        marketId: Long,
+        orderDate: String,
+        totalPrice: Double,
+        isPaid: Boolean,
+        products: List<OrderItem>
+    ): Order =
+        orderDataSource.createOrder(marketId, orderDate, totalPrice, isPaid, products)
+
+    override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> =
+        orderDataSource.getAllOrdersForMarket(marketId)
 
 }

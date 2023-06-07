@@ -1,8 +1,6 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.data.model.Category
-import com.thechance.core.data.model.Market
-import com.thechance.core.data.model.Product
+import com.thechance.core.data.model.*
 
 interface HoneyMartRepository {
 
@@ -43,4 +41,16 @@ interface HoneyMartRepository {
 
     suspend fun isProductDeleted(id: Long): Boolean?
     //endregion
+
+    //region order
+    suspend fun createOrder(
+        marketId: Long,
+        orderDate:String,
+        totalPrice: Double,
+        isPaid: Boolean,
+        products: List<OrderItem>
+    ): Order
+
+    suspend fun getAllOrdersForMarket(marketId:Long):List<Order>
+    //end region
 }
