@@ -42,5 +42,15 @@ fun Route.orderRoutes(orderUseCasesContainer: OrderUseCasesContainer) {
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedOrder))
             }
         }
+        /**
+         * cancel order
+         */
+        put("/cancel/{orderId}") {
+            handleException(call) {
+                val orderId = call.parameters["orderId"]?.trim()?.toLongOrNull()
+                orderUseCasesContainer.cancelOrderUseCase(orderId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Canceled Successfully"))
+            }
+        }
     }
 }

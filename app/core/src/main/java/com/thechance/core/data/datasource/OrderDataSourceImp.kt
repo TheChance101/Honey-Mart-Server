@@ -9,6 +9,7 @@ import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 
 class OrderDataSourceImp : OrderDataSource {
     override suspend fun createOrder(
@@ -43,5 +44,13 @@ class OrderDataSourceImp : OrderDataSource {
     ): List<Order> = dbQuery {
         OrderTable.select { OrderTable.marketId eq marketId }
             .map { it.toOrder() }
+    }
+
+    override suspend fun cancelOrder(orderId: Long) {
+        dbQuery {
+            OrderTable.update({ OrderTable.id eq orderId }) { tableRow ->
+                tableRow[isCanceled] = true
+            }
+        }
     }
 }

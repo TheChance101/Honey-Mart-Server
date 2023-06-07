@@ -10,6 +10,7 @@ internal fun ResultRow.toOrder(): Order {
         marketId = this[OrderTable.marketId],
         orderDate = this[OrderTable.orderDate],
         totalPrice = this[OrderTable.totalPrice],
-        isPaid = this[OrderTable.isPaid]
+        isPaid = this[OrderTable.isPaid],
+        isCanceled = this[OrderTable.isCanceled]
     )
 }

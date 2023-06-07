@@ -6,6 +6,7 @@ import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.repository.HoneyMartRepositoryImp
 import com.thechance.core.data.usecase.category.*
 import com.thechance.core.data.usecase.market.*
+import com.thechance.core.data.usecase.order.CancelOrderUseCase
 import com.thechance.core.data.usecase.order.CreateOrderUseCase
 import com.thechance.core.data.usecase.order.GetOrdersForMarketUseCase
 import com.thechance.core.data.usecase.order.OrderUseCasesContainer
@@ -51,6 +52,7 @@ val orderUseCaseModule = module {
     singleOf(::OrderUseCasesContainer) { bind<OrderUseCasesContainer>() }
     singleOf(::CreateOrderUseCase) { bind<CreateOrderUseCase>() }
     singleOf(::GetOrdersForMarketUseCase) { bind<GetOrdersForMarketUseCase>() }
+    singleOf(::CancelOrderUseCase) { bind<CancelOrderUseCase>() }
 }
 
 val appModules = module {

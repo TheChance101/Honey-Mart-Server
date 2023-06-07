@@ -110,4 +110,9 @@ class HoneyMartRepositoryImp(
     override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> =
         orderDataSource.getAllOrdersForMarket(marketId)
 
+    override suspend fun cancelOrder(orderId: Long) {
+        orderDataSource.cancelOrder(orderId)
+    }
+    //end region
+
 }

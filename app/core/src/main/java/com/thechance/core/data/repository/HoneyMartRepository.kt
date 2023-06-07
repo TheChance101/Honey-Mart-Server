@@ -52,5 +52,6 @@ interface HoneyMartRepository {
     ): Order
 
     suspend fun getAllOrdersForMarket(marketId:Long):List<Order>
+    suspend fun cancelOrder(orderId:Long)
     //end region
 }
