@@ -3,9 +3,11 @@ package com.thechance.api.plugins
 
 import com.thechance.api.endpoints.categoryRoutes
 import com.thechance.api.endpoints.marketsRoutes
+import com.thechance.api.endpoints.orderRoutes
 import com.thechance.api.endpoints.productsRoutes
 import com.thechance.core.data.usecase.category.CategoryUseCasesContainer
 import com.thechance.core.data.usecase.market.MarketUseCaseContainer
+import com.thechance.core.data.usecase.order.OrderUseCasesContainer
 import com.thechance.core.data.usecase.product.ProductUseCasesContainer
 import io.ktor.server.application.*
 import io.ktor.server.plugins.openapi.*
@@ -18,6 +20,7 @@ fun Application.configureRouting() {
     val categoryUseCasesContainer: CategoryUseCasesContainer by inject()
     val marketUseCasesContainer: MarketUseCaseContainer by inject()
     val productUseCasesContainer: ProductUseCasesContainer by inject()
+    val orderUseCasesContainer: OrderUseCasesContainer by inject()
 
     routing {
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml") {
@@ -29,5 +32,6 @@ fun Application.configureRouting() {
         productsRoutes(productUseCasesContainer)
         categoryRoutes(categoryUseCasesContainer)
         marketsRoutes(marketUseCasesContainer)
+        orderRoutes(orderUseCasesContainer)
     }
 }
