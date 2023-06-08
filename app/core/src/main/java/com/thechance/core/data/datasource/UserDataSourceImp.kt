@@ -5,12 +5,13 @@ import com.thechance.core.data.security.hashing.HashingService
 import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.data.tables.UserTable
 import com.thechance.core.data.utils.dbQuery
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
 
 class UserDataSourceImp : UserDataSource, KoinComponent {
-    override suspend fun createUser(userName: String, password: String , saltedHash:SaltedHash): Boolean {
+    override suspend fun createUser(userName: String, password: String, saltedHash: SaltedHash): Boolean {
         return dbQuery {
             val newUser = UserTable.insert {
                 it[UserTable.userName] = userName
@@ -34,6 +35,20 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
             UserTable.select {
                 UserTable.userName eq userName
             }.count() > 0
+        }
+    }
+
+    override suspend fun getUserById(id: Long): UserAuthRequest? {
+        return dbQuery {
+            UserTable.select(UserTable.id eq id).map {
+                UserAuthRequest(
+                    userId = it[UserTable.id].value,
+                    userName = it[UserTable.userName],
+                    password = it[UserTable.password],
+                    salt = it[UserTable.salt]
+                )
+            }.singleOrNull()
+
         }
     }
 

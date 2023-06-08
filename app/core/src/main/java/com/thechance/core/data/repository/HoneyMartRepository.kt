@@ -8,6 +8,8 @@ interface HoneyMartRepository {
     suspend fun createUser(userName: String, password: String): Boolean
     suspend fun isUserNameExists(userName: String): Boolean
 
+    suspend fun isValidatePassword(userId:Long,password: String):Boolean
+
     //endregion
 
 

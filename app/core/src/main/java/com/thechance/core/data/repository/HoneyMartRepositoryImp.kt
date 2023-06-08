@@ -3,6 +3,8 @@ package com.thechance.core.data.repository
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.model.*
 import com.thechance.core.data.security.hashing.HashingService
+import com.thechance.core.data.security.hashing.SaltedHash
+import com.thechance.core.data.tables.UserTable
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
@@ -23,6 +25,21 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isUserNameExists(userName: String): Boolean =
         userDataSource.isUserNameExists(userName)
+
+    override suspend fun isValidatePassword(userId: Long, password: String): Boolean {
+        val user = userDataSource.getUserById(userId)
+        val isValidPassword = hashingService.verify(
+            value = password,
+            saltedHash = SaltedHash(
+                hash = user?.password!!,
+                salt = user.salt
+            )
+        )
+        if (isValidPassword) {
+            return true
+        }
+        return false
+    }
 
     //endregion
 
