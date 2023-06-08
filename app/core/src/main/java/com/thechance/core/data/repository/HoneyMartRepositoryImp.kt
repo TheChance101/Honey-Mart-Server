@@ -4,7 +4,9 @@ import com.thechance.core.data.datasource.*
 import com.thechance.core.data.model.*
 import com.thechance.core.data.security.hashing.HashingService
 import com.thechance.core.data.security.hashing.SaltedHash
-import com.thechance.core.data.tables.UserTable
+import com.thechance.core.data.security.token.TokenClaim
+import com.thechance.core.data.security.token.TokenConfig
+import com.thechance.core.data.security.token.TokenService
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
@@ -13,7 +15,9 @@ class HoneyMartRepositoryImp(
     private val productDataSource: ProductDataSource,
     private val userDataSource: UserDataSource,
     private val ownerDataSource: OwnerDataSource,
-    private val hashingService: HashingService
+    private val hashingService: HashingService,
+    private val tokenService: TokenService,
+    private val tokenConfig: TokenConfig
 ) : HoneyMartRepository, KoinComponent {
 
 
@@ -26,7 +30,7 @@ class HoneyMartRepositoryImp(
     override suspend fun isUserNameExists(userName: String): Boolean =
         userDataSource.isUserNameExists(userName)
 
-    override suspend fun isValidatePassword(userId: Long, password: String): Boolean {
+    override suspend fun isValidatePassword(userId: Long, password: String): String {
         val user = userDataSource.getUserById(userId)
         val isValidPassword = hashingService.verify(
             value = password,
@@ -35,10 +39,17 @@ class HoneyMartRepositoryImp(
                 salt = user.salt
             )
         )
-        if (isValidPassword) {
-            return true
+        return if (isValidPassword) {
+            return tokenService.generate(
+                config = tokenConfig,
+                TokenClaim(
+                    name = "userId",
+                    value = user.userId.toString()
+                )
+            )
+        } else {
+            ""
         }
-        return false
     }
 
     //endregion

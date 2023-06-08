@@ -27,11 +27,11 @@ fun Route.userRoutes(userUseCasesContainer: UserUseCaseContainer) {
         post("/login") {
             handleException(call) {
                 val params = call.receiveParameters()
-                val name = params["name"]?.trim()
+                val userId = params["userId"]?.trim()?.toLongOrNull()
                 val password = params["password"]?.trim()
 
-
-                call.respond(HttpStatusCode.Created, ServerResponse.success("Logged in Successfully"))
+                val token = userUseCasesContainer.verifyUserUseCase(userId!!, password!!)
+                call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
             }
         }
 
