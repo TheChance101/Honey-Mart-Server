@@ -32,25 +32,28 @@ class HoneyMartRepositoryImp(
 
     override suspend fun validateUser(name: String, password: String): String {
         val user = userDataSource.getUserByName(name)
-        val isValidPassword = hashingService.verify(
-            value = password,
-            saltedHash = SaltedHash(
-                hash = user?.password!!,
-                salt = user.salt
-            )
-        )
-        return if (isValidPassword) {
-            return tokenService.generate(
-                config = tokenConfig,
-                TokenClaim(
-                    name = "userId",
-                    value = user.userId.toString()
+        return user?.let { user ->
+            val isValidPassword = hashingService.verify(
+                value = password,
+                saltedHash = SaltedHash(
+                    hash = user.password,
+                    salt = user.salt
                 )
             )
-        } else {
-            ""
-        }
+            if (isValidPassword) {
+                tokenService.generate(
+                    config = tokenConfig,
+                    TokenClaim(
+                        name = "userId",
+                        value = user.userId.toString()
+                    )
+                )
+            } else {
+                ""
+            }
+        } ?: ""
     }
+
 
     //endregion
 

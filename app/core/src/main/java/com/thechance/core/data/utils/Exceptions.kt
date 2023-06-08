@@ -39,4 +39,3 @@ class InvalidPasswordException : Exception()
 class UserInvalidException : Exception()
 class UnKnownUserException() : Exception()
 class InvalidUserNameOrPasswordException():Exception()
-

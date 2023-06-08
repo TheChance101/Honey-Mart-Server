@@ -16,16 +16,8 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
                 it[UserTable.userName] = userName
                 it[UserTable.password] = saltedHash.hash
                 it[UserTable.salt] = saltedHash.salt
-//                it[UserTable.isDeleted] = false
             }
-            User(
-                userId = newUser[UserTable.id].value,
-                userName = newUser[UserTable.userName],
-                password = newUser[UserTable.password],
-                salt = newUser[UserTable.salt]
-            )
             true
-
         }
     }
 
@@ -50,6 +42,5 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
 
         }
     }
-
 
 }
