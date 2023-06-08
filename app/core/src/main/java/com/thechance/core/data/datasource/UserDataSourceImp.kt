@@ -10,9 +10,9 @@ import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
 
 class UserDataSourceImp : UserDataSource, KoinComponent {
-    override suspend fun createUser(userName: String, password: String, saltedHash: SaltedHash): Boolean {
+    override suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean {
         return dbQuery {
-            val newUser = UserTable.insert {
+            UserTable.insert {
                 it[UserTable.userName] = userName
                 it[UserTable.password] = saltedHash.hash
                 it[UserTable.salt] = saltedHash.salt

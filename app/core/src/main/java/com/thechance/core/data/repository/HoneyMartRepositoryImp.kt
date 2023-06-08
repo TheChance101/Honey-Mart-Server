@@ -24,7 +24,7 @@ class HoneyMartRepositoryImp(
     //region user
     override suspend fun createUser(userName: String, password: String): Boolean {
         val saltedHash = hashingService.generateSaltedHash(password)
-        return userDataSource.createUser(userName, password, saltedHash)
+        return userDataSource.createUser(userName, saltedHash)
     }
 
     override suspend fun isUserNameExists(userName: String): Boolean =

@@ -5,7 +5,7 @@ import com.thechance.core.data.security.hashing.SaltedHash
 
 interface UserDataSource {
 
-    suspend fun createUser(userName: String, password: String  , saltedHash: SaltedHash): Boolean
+    suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean
     suspend fun isUserNameExists(userName: String): Boolean
 
     suspend fun getUserByName(name:String):User?
