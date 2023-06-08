@@ -28,8 +28,8 @@ fun Application.module() {
     CoreDataBase()
     configureSerialization()
     configureMonitoring()
-    configureRouting()
     configureSecurity()
+    configureRouting()
 
 
 }

@@ -5,6 +5,7 @@ import com.thechance.api.utils.handleException
 import com.thechance.core.data.usecase.market.MarketUseCaseContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -25,17 +26,19 @@ fun Route.marketsRoutes(marketUseCaseContainer: MarketUseCaseContainer) {
                 call.respond(HttpStatusCode.OK, ServerResponse.success(categories))
             }
         }
-
-        post {
-            val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-            handleException(call) {
-                val newMarket = marketUseCaseContainer.createMarketUseCase(marketName)
-                call.respond(
-                    HttpStatusCode.Created,
-                    ServerResponse.success(newMarket, "Market created successfully")
-                )
+        authenticate {
+            post {
+                val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
+                handleException(call) {
+                    val newMarket = marketUseCaseContainer.createMarketUseCase(marketName)
+                    call.respond(
+                        HttpStatusCode.Created,
+                        ServerResponse.success(newMarket, "Market created successfully")
+                    )
+                }
             }
         }
+
 
         put("/{id}") {
 
