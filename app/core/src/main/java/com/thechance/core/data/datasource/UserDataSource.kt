@@ -8,7 +8,7 @@ interface UserDataSource {
     suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean
     suspend fun isUserNameExists(userName: String): Boolean
 
-    suspend fun getUserByName(name:String):User?
+    suspend fun getUserByName(userName:String):User
 
 
 }

@@ -11,7 +11,7 @@ class CreateUserUseCase(
     suspend operator fun invoke(userName: String?, password: String?): Boolean {
         isValidInput(userName, password)?.let { throw it }
         return if (repository.isUserNameExists(userName!!)) {
-            throw UserInvalidException()
+            throw UserAlreadyExistException()
         } else if (!repository.createUser(userName, password!!)) {
             throw UnKnownUserException()
         } else {
@@ -24,11 +24,11 @@ class CreateUserUseCase(
     private fun isValidInput(userName: String?, password: String?): Exception? {
         return when {
             checkName(userName) -> {
-                InvalidUserNameException()
+                InvalidUserNameOrPasswordException()
             }
 
             checkPassword(password) -> {
-                InvalidPasswordException()
+                InvalidUserNameOrPasswordException()
             }
 
             else -> {

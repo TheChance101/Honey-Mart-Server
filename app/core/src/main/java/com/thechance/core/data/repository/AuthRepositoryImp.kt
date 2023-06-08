@@ -16,7 +16,7 @@ class AuthRepositoryImp(
     private val hashingService: HashingService,
     private val tokenService: TokenService,
     private val tokenConfig: TokenConfig
-):AuthRepository {
+) : AuthRepository {
     //region user
     override suspend fun createUser(userName: String, password: String): Boolean {
         val saltedHash = hashingService.generateSaltedHash(password)
@@ -26,24 +26,21 @@ class AuthRepositoryImp(
     override suspend fun isUserNameExists(userName: String): Boolean =
         userDataSource.isUserNameExists(userName)
 
-    override suspend fun validateUser(name: String, password: String): String {
-        val user = userDataSource.getUserByName(name)
-        return user?.let { user ->
-            if (isValidPassword(user, password)) {
-                tokenService.generate(
-                    config = tokenConfig,
-                    TokenClaim(
-                        name = "userId",
-                        value = user.userId.toString()
-                    )
-                )
-            } else {
-                ""
-            }
-        } ?: ""
+    override suspend fun getUserByName(userName:String):User{
+        return userDataSource.getUserByName(userName)
     }
 
-    private fun isValidPassword(user: User, password: String) = hashingService.verify(
+    override fun getToken(user: User): String {
+        return tokenService.generate(
+            config = tokenConfig,
+            TokenClaim(
+                name = "userId",
+                value = user.userId.toString()
+            )
+        )
+    }
+
+    override fun isValidPassword(user: User, password: String) = hashingService.verify(
         value = password,
         saltedHash = SaltedHash(
             hash = user.password,

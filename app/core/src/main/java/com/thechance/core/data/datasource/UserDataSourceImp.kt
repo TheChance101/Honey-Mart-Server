@@ -29,16 +29,16 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getUserByName(name: String): User? {
+    override suspend fun getUserByName(userName: String): User {
         return dbQuery {
-            UserTable.select(UserTable.userName eq name).map {
+            UserTable.select(UserTable.userName eq userName).map {
                 User(
                     userId = it[UserTable.id].value,
                     userName = it[UserTable.userName],
                     password = it[UserTable.password],
                     salt = it[UserTable.salt]
                 )
-            }.singleOrNull()
+            }.single()
 
         }
     }

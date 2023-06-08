@@ -1,6 +1,7 @@
 package com.thechance.core.data.repository
 
 import com.thechance.core.data.model.Owner
+import com.thechance.core.data.model.User
 
 interface AuthRepository {
     //region user
@@ -10,7 +11,7 @@ interface AuthRepository {
     suspend fun isUserNameExists(userName: String): Boolean
 
     // Login user
-    suspend fun validateUser(name:String, password: String):String
+    //suspend fun validateUser(userName:String, password: String):String
 
     //endregion
 
@@ -20,4 +21,7 @@ interface AuthRepository {
     suspend fun isOwnerNameExists(ownerName: String): Boolean
 
     //endregion
+    suspend fun getUserByName(userName: String): User
+    fun isValidPassword(user: User, password: String): Boolean
+    fun getToken(user: User): String
 }
