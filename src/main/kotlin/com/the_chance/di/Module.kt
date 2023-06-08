@@ -4,6 +4,8 @@ import com.thechance.core.data.database.CoreDataBase
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.repository.HoneyMartRepositoryImp
+import com.thechance.core.data.security.hashing.SHA256HashingService
+import com.thechance.core.data.security.token.JwtTokenService
 import com.thechance.core.data.usecase.category.*
 import com.thechance.core.data.usecase.market.*
 import com.thechance.core.data.usecase.owner.CreateOwnerUseCase
@@ -59,6 +61,8 @@ val ownerUseCaseModule = module {
 
 val appModules = module {
     single { CoreDataBase() }
+    single { JwtTokenService() }
+    single { SHA256HashingService() }
     singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
     includes(
         dataSourceModules,

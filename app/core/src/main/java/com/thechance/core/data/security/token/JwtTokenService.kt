@@ -2,9 +2,10 @@ package com.thechance.core.data.security.token
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import org.koin.core.component.KoinComponent
 import java.util.*
 
-class JwtTokenService : TokenService {
+class JwtTokenService : TokenService , KoinComponent {
     override fun generate(config: TokenConfig, vararg claims: TokenClaim): String {
         var token = JWT.create()
             .withAudience(config.audience)
