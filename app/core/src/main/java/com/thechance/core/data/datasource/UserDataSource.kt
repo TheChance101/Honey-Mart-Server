@@ -1,6 +1,6 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.model.UserAuthRequest
+import com.thechance.core.data.model.User
 import com.thechance.core.data.security.hashing.SaltedHash
 
 interface UserDataSource {
@@ -8,7 +8,7 @@ interface UserDataSource {
     suspend fun createUser(userName: String, password: String  , saltedHash: SaltedHash): Boolean
     suspend fun isUserNameExists(userName: String): Boolean
 
-    suspend fun getUserByName(name:String):UserAuthRequest?
+    suspend fun getUserByName(name:String):User?
 
 
 }

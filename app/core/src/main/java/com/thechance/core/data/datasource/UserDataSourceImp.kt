@@ -1,7 +1,6 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.model.UserAuthRequest
-import com.thechance.core.data.security.hashing.HashingService
+import com.thechance.core.data.model.User
 import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.data.tables.UserTable
 import com.thechance.core.data.utils.dbQuery
@@ -19,7 +18,7 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
                 it[UserTable.salt] = saltedHash.salt
 //                it[UserTable.isDeleted] = false
             }
-            UserAuthRequest(
+            User(
                 userId = newUser[UserTable.id].value,
                 userName = newUser[UserTable.userName],
                 password = newUser[UserTable.password],
@@ -38,10 +37,10 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getUserByName(name: String): UserAuthRequest? {
+    override suspend fun getUserByName(name: String): User? {
         return dbQuery {
             UserTable.select(UserTable.userName eq name).map {
-                UserAuthRequest(
+                User(
                     userId = it[UserTable.id].value,
                     userName = it[UserTable.userName],
                     password = it[UserTable.password],
