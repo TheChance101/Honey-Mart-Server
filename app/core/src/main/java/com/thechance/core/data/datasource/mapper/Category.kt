@@ -1,8 +1,8 @@
 package com.thechance.core.data.datasource.mapper
 
 import com.thechance.core.data.model.Category
-import com.thechance.core.data.tables.CategoriesTable
-import com.thechance.core.data.tables.ProductTable
+import com.thechance.core.data.database.tables.CategoriesTable
+import com.thechance.core.data.database.tables.ProductTable
 import org.jetbrains.exposed.sql.ResultRow
 
 

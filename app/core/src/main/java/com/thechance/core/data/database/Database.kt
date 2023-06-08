@@ -1,6 +1,6 @@
 package com.thechance.core.data.database
 
-import com.thechance.core.data.tables.*
+import com.thechance.core.data.database.tables.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class CoreDataBase {
 
     private val tables by lazy {
-        listOf(MarketTable, CategoriesTable, ProductTable, CategoryProductTable,UserTable,OwnerTable)
+        listOf(MarketTable, CategoriesTable, ProductTable, CategoryProductTable, UserTable, OwnerTable, CartTable)
     }
 
     init {

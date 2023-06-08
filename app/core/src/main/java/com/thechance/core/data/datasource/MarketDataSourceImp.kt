@@ -4,8 +4,8 @@ import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toMarket
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Market
-import com.thechance.core.data.tables.CategoriesTable
-import com.thechance.core.data.tables.MarketTable
+import com.thechance.core.data.database.tables.CategoriesTable
+import com.thechance.core.data.database.tables.MarketTable
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert

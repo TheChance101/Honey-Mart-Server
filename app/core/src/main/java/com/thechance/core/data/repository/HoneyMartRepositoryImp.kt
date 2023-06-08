@@ -20,6 +20,20 @@ class HoneyMartRepositoryImp(
     override suspend fun isUserNameExists(userName: String): Boolean =
         userDataSource.isUserNameExists(userName)
 
+    override suspend fun getCart(cartId: Long): List<ProductInCart> =
+        userDataSource.getCart(cartId)
+
+
+    override suspend fun addToCart(cartId: Long, productId: Long, quantity: Int): Boolean =
+        userDataSource.addToCart(cartId, productId, quantity)
+
+
+    override suspend fun removeFromCart(cartId: Long, productId: Long): Boolean =
+        userDataSource.removeFromCart(cartId, productId)
+
+    override suspend fun updateQuantity(cartId: Long, productId: Long, quantity: Int): Boolean =
+        userDataSource.changeQuantity(cartId, productId, quantity)
+
     //endregion
 
     //region owner

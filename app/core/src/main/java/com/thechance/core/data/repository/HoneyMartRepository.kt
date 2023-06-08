@@ -5,8 +5,17 @@ import com.thechance.core.data.model.*
 interface HoneyMartRepository {
 
     //region user
+    // need to move to another repo.
     suspend fun createUser(userName: String, password: String): User
     suspend fun isUserNameExists(userName: String): Boolean
+
+    suspend fun getCart(cartId: Long): List<ProductInCart>
+
+    suspend fun addToCart(cartId: Long, productId: Long, quantity: Int): Boolean
+
+    suspend fun removeFromCart(cartId: Long, productId: Long): Boolean
+
+    suspend fun updateQuantity(cartId: Long, productId: Long, quantity: Int): Boolean
 
     //endregion
 

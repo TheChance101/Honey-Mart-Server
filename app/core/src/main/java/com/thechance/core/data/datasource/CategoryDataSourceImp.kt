@@ -4,10 +4,10 @@ import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product
-import com.thechance.core.data.tables.CategoriesTable
-import com.thechance.core.data.tables.CategoryProductTable
-import com.thechance.core.data.tables.MarketTable
-import com.thechance.core.data.tables.ProductTable
+import com.thechance.core.data.database.tables.CategoriesTable
+import com.thechance.core.data.database.tables.CategoryProductTable
+import com.thechance.core.data.database.tables.MarketTable
+import com.thechance.core.data.database.tables.ProductTable
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.koin.core.component.KoinComponent

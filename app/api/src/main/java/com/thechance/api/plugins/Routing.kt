@@ -2,6 +2,7 @@ package com.thechance.api.plugins
 
 
 import com.thechance.api.endpoints.*
+import com.thechance.core.data.usecase.cart.GetCartUseCase
 import com.thechance.core.data.usecase.category.CategoryUseCasesContainer
 import com.thechance.core.data.usecase.market.MarketUseCaseContainer
 import com.thechance.core.data.usecase.owner.OwnerUseCaseContainer
@@ -20,6 +21,7 @@ fun Application.configureRouting() {
     val productUseCasesContainer: ProductUseCasesContainer by inject()
     val userUseCasesContainer: UserUseCaseContainer by inject()
     val ownerUseCaseContainer: OwnerUseCaseContainer by inject()
+    val getCartUseCase: GetCartUseCase by inject()
 
     routing {
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml") {
@@ -33,5 +35,6 @@ fun Application.configureRouting() {
         marketsRoutes(marketUseCasesContainer)
         userRoutes(userUseCasesContainer)
         ownerRoutes(ownerUseCaseContainer)
+        cartRoutes(getCartUseCase)
     }
 }
