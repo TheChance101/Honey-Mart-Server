@@ -38,3 +38,4 @@ class InvalidPasswordException : Exception()
 
 class UserInvalidException : Exception()
 
+class CountInvalidInputException : Exception()

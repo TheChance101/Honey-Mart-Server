@@ -1,13 +1,12 @@
 package com.thechance.core.data.datasource
 
 import com.thechance.core.data.database.tables.CartTable
-import com.thechance.core.data.database.tables.MarketTable
 import com.thechance.core.data.database.tables.ProductTable
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.model.User
-import com.thechance.core.data.database.tables.UserTable
+import com.thechance.core.data.database.tables.NormalUserTable
 import com.thechance.core.data.datasource.mapper.toProduct
-import com.thechance.core.data.model.Market
+import com.thechance.core.data.model.Cart
 import com.thechance.core.data.model.ProductInCart
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.*
@@ -17,37 +16,46 @@ import org.koin.core.component.KoinComponent
 class UserDataSourceImp : UserDataSource, KoinComponent {
     override suspend fun createUser(userName: String, password: String): User {
         return dbQuery {
-            val newUser = UserTable.insert {
-                it[UserTable.userName] = userName
-                it[UserTable.password] = password
-                it[UserTable.isDeleted] = false
+            val newUser = NormalUserTable.insert {
+                it[NormalUserTable.userName] = userName
+                it[NormalUserTable.password] = password
+                it[NormalUserTable.isDeleted] = false
             }
             User(
-                userId = newUser[UserTable.id].value,
-                userName = newUser[UserTable.userName],
-                password = newUser[UserTable.password],
+                userId = newUser[NormalUserTable.id].value,
+                userName = newUser[NormalUserTable.userName],
+                password = newUser[NormalUserTable.password],
             )
         }
     }
 
     override suspend fun isUserNameExists(userName: String): Boolean {
         return dbQuery {
-            UserTable.select {
-                UserTable.userName eq userName
+            NormalUserTable.select {
+                NormalUserTable.userName eq userName
             }.count() > 0
         }
     }
 
-    override suspend fun createCart(): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun addToCart(userId: Long, productId: Long, quantity: Int): Boolean {
+        return dbQuery {
+            CartTable.insert {
+                it[CartTable.userId] = userId
+                it[CartTable.productId] = productId
+                it[CartTable.quantity] = quantity
+            }
+            true
+        }
     }
 
     //region cart
-    override suspend fun getCart(cartId: Long): List<ProductInCart> {
+    override suspend fun getCart(userId: Long): Cart {
         return dbQuery {
-            CartTable.selectAll()
+            var total = 0.0
+            val products = CartTable.select { CartTable.userId eq userId }
                 .map { productRow ->
                     val product = getProduct(productId = productRow[CartTable.productId].value)
+                    total += product.price
                     ProductInCart(
                         id = product.id,
                         name = product.name,
@@ -55,6 +63,7 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
                         quantity = productRow[CartTable.quantity]
                     )
                 }
+            Cart(products = products, total = total)
         }
     }
 
@@ -66,15 +75,6 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
-    override suspend fun addToCart(cartId: Long, productId: Long, quantity: Int): Boolean {
-        return dbQuery {
-            CartTable.insert {
-                it[CartTable.productId] = productId
-                it[CartTable.quantity] = quantity
-            }
-            true
-        }
-    }
 
     override suspend fun removeFromCart(cartId: Long, productId: Long): Boolean {
         return dbQuery {

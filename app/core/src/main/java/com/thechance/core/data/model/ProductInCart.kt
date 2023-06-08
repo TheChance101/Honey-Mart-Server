@@ -8,7 +8,7 @@ data class ProductInCart(val id: Long, val name: String, val quantity: Int, val 
 
 @Serializable
 data class Cart(
-    val products: List<Product>,
+    val products: List<ProductInCart>,
     val total: Double
 )
 

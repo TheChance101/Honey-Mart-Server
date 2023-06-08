@@ -4,6 +4,8 @@ import com.thechance.core.data.database.CoreDataBase
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.repository.HoneyMartRepositoryImp
+import com.thechance.core.data.usecase.cart.AddProductToCartUseCase
+import com.thechance.core.data.usecase.cart.CartUseCasesContainer
 import com.thechance.core.data.usecase.cart.GetCartUseCase
 import com.thechance.core.data.usecase.category.*
 import com.thechance.core.data.usecase.market.*
@@ -59,8 +61,9 @@ val ownerUseCaseModule = module {
 }
 
 val cartUseCase = module {
+    singleOf(::CartUseCasesContainer) { bind<CartUseCasesContainer>() }
     singleOf(::GetCartUseCase) { bind<GetCartUseCase>() }
-
+    singleOf(::AddProductToCartUseCase) { bind<AddProductToCartUseCase>() }
 }
 
 val appModules = module {

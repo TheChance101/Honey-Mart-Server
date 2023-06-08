@@ -10,7 +10,7 @@ import org.koin.core.component.KoinComponent
 
 class GetCartUseCase(private val repository: HoneyMartRepository) : KoinComponent {
 
-    suspend operator fun invoke(userId: Long?): List<ProductInCart> {
+    suspend operator fun invoke(userId: Long?): Cart {
         return if (isInvalidId(userId)) {
             throw InvalidUserIdException()
         } else {

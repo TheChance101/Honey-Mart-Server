@@ -15,7 +15,6 @@ class CreateUserUseCase(private val repository: HoneyMartRepository) : KoinCompo
         } else {
             repository.createUser(userName, password!!)
         }
-
     }
 
 

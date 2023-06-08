@@ -1,5 +1,6 @@
 package com.thechance.core.data.datasource
 
+import com.thechance.core.data.model.Cart
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.model.ProductInCart
 import com.thechance.core.data.model.User
@@ -11,14 +12,14 @@ interface UserDataSource {
     suspend fun isUserNameExists(userName: String): Boolean
 
     //region cart
-    suspend fun createCart(): Boolean
-    suspend fun getCart(cartId: Long): List<ProductInCart>
 
-    suspend fun addToCart(cartId: Long, productId: Long, quantity: Int): Boolean
+    suspend fun getCart(userId: Long): Cart
 
-    suspend fun removeFromCart(cartId: Long, productId: Long): Boolean
+    suspend fun addToCart(userId: Long, productId: Long, quantity: Int): Boolean
 
-    suspend fun changeQuantity(cartId: Long, productId: Long, quantity: Int): Boolean
+    suspend fun removeFromCart(userId: Long, productId: Long): Boolean
+
+    suspend fun changeQuantity(userId: Long, productId: Long, quantity: Int): Boolean
 
     //endregion
 }

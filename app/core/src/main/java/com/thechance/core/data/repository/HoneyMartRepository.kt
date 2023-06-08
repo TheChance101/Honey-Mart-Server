@@ -9,9 +9,9 @@ interface HoneyMartRepository {
     suspend fun createUser(userName: String, password: String): User
     suspend fun isUserNameExists(userName: String): Boolean
 
-    suspend fun getCart(cartId: Long): List<ProductInCart>
+    suspend fun getCart(userId: Long): Cart
 
-    suspend fun addToCart(cartId: Long, productId: Long, quantity: Int): Boolean
+    suspend fun addToCart(userId: Long, productId: Long, quantity: Int): Boolean
 
     suspend fun removeFromCart(cartId: Long, productId: Long): Boolean
 
