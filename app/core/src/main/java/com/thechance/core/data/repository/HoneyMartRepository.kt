@@ -5,9 +5,12 @@ import com.thechance.core.data.model.*
 interface HoneyMartRepository {
 
     //region user
+
+    // Create User
     suspend fun createUser(userName: String, password: String): Boolean
     suspend fun isUserNameExists(userName: String): Boolean
 
+    // Login user
     suspend fun validateUser(name:String, password: String):String
 
     //endregion
