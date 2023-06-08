@@ -2,6 +2,8 @@ package com.the_chance.di
 
 import com.thechance.core.data.database.CoreDataBase
 import com.thechance.core.data.datasource.*
+import com.thechance.core.data.repository.AuthRepository
+import com.thechance.core.data.repository.AuthRepositoryImp
 import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.repository.HoneyMartRepositoryImp
 import com.thechance.core.data.security.hashing.HashingService
@@ -82,6 +84,7 @@ val appModules = module {
 
     }
     singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
+    singleOf(::AuthRepositoryImp) { bind<AuthRepository>() }
     includes(
         dataSourceModules,
         categoryUseCaseModule,

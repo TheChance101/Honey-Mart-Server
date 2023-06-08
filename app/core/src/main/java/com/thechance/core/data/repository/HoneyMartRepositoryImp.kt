@@ -12,60 +12,8 @@ import org.koin.core.component.KoinComponent
 class HoneyMartRepositoryImp(
     private val marketDataSource: MarketDataSource,
     private val categoryDataSource: CategoryDataSource,
-    private val productDataSource: ProductDataSource,
-    private val userDataSource: UserDataSource,
-    private val ownerDataSource: OwnerDataSource,
-    private val hashingService: HashingService,
-    private val tokenService: TokenService,
-    private val tokenConfig: TokenConfig
+    private val productDataSource: ProductDataSource
 ) : HoneyMartRepository, KoinComponent {
-
-
-    //region user
-    override suspend fun createUser(userName: String, password: String): Boolean {
-        val saltedHash = hashingService.generateSaltedHash(password)
-        return userDataSource.createUser(userName, saltedHash)
-    }
-
-    override suspend fun isUserNameExists(userName: String): Boolean =
-        userDataSource.isUserNameExists(userName)
-
-    override suspend fun validateUser(name: String, password: String): String {
-        val user = userDataSource.getUserByName(name)
-        return user?.let { user ->
-            if (isValidPassword(user, password)) {
-                tokenService.generate(
-                    config = tokenConfig,
-                    TokenClaim(
-                        name = "userId",
-                        value = user.userId.toString()
-                    )
-                )
-            } else {
-                ""
-            }
-        } ?: ""
-    }
-
-    private fun isValidPassword(user: User, password: String) = hashingService.verify(
-        value = password,
-        saltedHash = SaltedHash(
-            hash = user.password,
-            salt = user.salt
-        )
-    )
-
-
-    //endregion
-
-    //region owner
-    override suspend fun createOwner(userName: String, password: String): Owner =
-        ownerDataSource.createOwner(userName, password)
-
-    override suspend fun isOwnerNameExists(ownerName: String): Boolean =
-        ownerDataSource.isOwnerNameExists(ownerName)
-
-    //endregion
 
     //region market
     override suspend fun createMarket(marketName: String): Market = marketDataSource.createMarket(marketName)

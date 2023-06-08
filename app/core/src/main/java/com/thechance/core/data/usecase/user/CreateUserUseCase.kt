@@ -1,11 +1,11 @@
 package com.thechance.core.data.usecase.user
 
-import com.thechance.core.data.repository.HoneyMartRepository
+import com.thechance.core.data.repository.AuthRepository
 import com.thechance.core.data.utils.*
 import org.koin.core.component.KoinComponent
 
 class CreateUserUseCase(
-    private val repository: HoneyMartRepository,
+    private val repository: AuthRepository,
 ) : KoinComponent {
 
     suspend operator fun invoke(userName: String?, password: String?): Boolean {
