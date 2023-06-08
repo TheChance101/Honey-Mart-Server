@@ -17,6 +17,7 @@ import com.thechance.core.data.usecase.product.*
 import com.thechance.core.data.usecase.user.CreateUserUseCase
 import com.thechance.core.data.usecase.user.UserUseCaseContainer
 import com.thechance.core.data.usecase.user.VerifyUserUseCase
+import io.ktor.server.config.*
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -69,15 +70,16 @@ val appModules = module {
     single { CoreDataBase() }
     single<TokenService> { JwtTokenService() }
     single<HashingService> { SHA256HashingService() }
+
     single<TokenConfig> {
-        val issuer = "http://0.0.0.0:8080"
-        val audience = "http://0.0.0.0:8080"
         TokenConfig(
-            issuer = issuer,
-            audience = audience,
+            issuer = ApplicationConfig("jwt.issuer").toString(),
+            audience = ApplicationConfig("jwt.audience").toString(),
             expiresIn = TimeUnit.HOURS.toMillis(1),
             secret = System.getenv("HONEY_JWT_SECRET")
         )
+
+
     }
     singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
     includes(

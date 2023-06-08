@@ -6,19 +6,13 @@ import com.thechance.core.data.security.token.TokenConfig
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import java.util.concurrent.TimeUnit
+import io.ktor.server.config.*
 
+fun Application.configureSecurity(config: TokenConfig) {
 
-fun Application.configureSecurity() {
-    val config = TokenConfig(
-        issuer = "http://0.0.0.0:8080",
-        audience = "http://0.0.0.0:8080",
-        expiresIn = TimeUnit.HOURS.toMillis(1),
-        secret = System.getenv("HONEY_JWT_SECRET")
-    )
     authentication {
         jwt {
-            realm = "ktor sample app"
+            realm = this@configureSecurity.environment.config.tryGetString("jwt.realm").toString()
             verifier(
                 JWT
                     .require(Algorithm.HMAC256(config.secret))
