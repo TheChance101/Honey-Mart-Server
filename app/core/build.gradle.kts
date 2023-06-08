@@ -23,6 +23,6 @@ dependencies {
 
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
 
-
+    implementation("org.mindrot:jbcrypt:0.4")
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
 }

@@ -1,5 +1,6 @@
 package com.thechance.core.data.utils
 
+import org.mindrot.jbcrypt.BCrypt
 import java.util.regex.Pattern
 
 internal fun checkName(name: String?): Boolean {
@@ -17,6 +18,10 @@ internal fun checkPassword(password: String?): Boolean {
         !isValidString(password)
     }
 }
+internal fun encryptPassword(password: String): String {
+    return BCrypt.hashpw(password, BCrypt.gensalt())
+}
+
 
 internal fun isValidString(name: String): Boolean {
     val pattern = Pattern.compile("^[a-zA-Z0-9]+(\\s[a-zA-Z0-9]+)*$")

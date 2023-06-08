@@ -1,10 +1,8 @@
 package com.thechance.core.data.usecase.owner
 
 import com.thechance.core.data.model.Owner
-import com.thechance.core.data.model.User
 import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.utils.*
-import com.thechance.core.data.utils.checkName
 import org.koin.core.component.KoinComponent
 
 class CreateOwnerUseCase(private val repository: HoneyMartRepository) : KoinComponent {
@@ -14,7 +12,7 @@ class CreateOwnerUseCase(private val repository: HoneyMartRepository) : KoinComp
         return if (repository.isOwnerNameExists(ownerName!!)) {
             throw UserInvalidException()
         } else {
-            repository.createOwner(ownerName, password!!)
+            repository.createOwner(ownerName, encryptPassword(password!!))
         }
     }
 

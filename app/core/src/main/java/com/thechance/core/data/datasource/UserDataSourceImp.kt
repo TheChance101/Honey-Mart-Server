@@ -18,7 +18,6 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
             User(
                 userId = newUser[UserTable.id].value,
                 userName = newUser[UserTable.userName],
-                password = newUser[UserTable.password],
             )
         }
     }
