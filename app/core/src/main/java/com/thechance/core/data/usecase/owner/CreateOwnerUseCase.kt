@@ -1,7 +1,6 @@
 package com.thechance.core.data.usecase.owner
 
 import com.thechance.core.data.model.Owner
-import com.thechance.core.data.model.User
 import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.utils.*
 import com.thechance.core.data.utils.checkName

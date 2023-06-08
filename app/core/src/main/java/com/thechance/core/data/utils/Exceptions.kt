@@ -37,4 +37,5 @@ class InvalidUserIdException : Exception()
 class InvalidPasswordException : Exception()
 
 class UserInvalidException : Exception()
+class UnKnownUserException() : Exception()
 

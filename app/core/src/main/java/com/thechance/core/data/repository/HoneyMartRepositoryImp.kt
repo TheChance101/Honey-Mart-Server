@@ -2,6 +2,7 @@ package com.thechance.core.data.repository
 
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.model.*
+import com.thechance.core.data.security.hashing.HashingService
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
@@ -9,13 +10,16 @@ class HoneyMartRepositoryImp(
     private val categoryDataSource: CategoryDataSource,
     private val productDataSource: ProductDataSource,
     private val userDataSource: UserDataSource,
-    private val ownerDataSource: OwnerDataSource
+    private val ownerDataSource: OwnerDataSource,
+    private val hashingService: HashingService
 ) : HoneyMartRepository, KoinComponent {
 
 
     //region user
-    override suspend fun createUser(userName: String, password: String): User =
-        userDataSource.createUser(userName, password)
+    override suspend fun createUser(userName: String, password: String): Boolean {
+        val saltedHash = hashingService.generateSaltedHash(password)
+        return userDataSource.createUser(userName, password, saltedHash)
+    }
 
     override suspend fun isUserNameExists(userName: String): Boolean =
         userDataSource.isUserNameExists(userName)

@@ -1,6 +1,8 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.model.User
+import com.thechance.core.data.model.UserAuthRequest
+import com.thechance.core.data.security.hashing.HashingService
+import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.data.tables.UserTable
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.insert
@@ -8,18 +10,22 @@ import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
 
 class UserDataSourceImp : UserDataSource, KoinComponent {
-    override suspend fun createUser(userName: String, password: String): User {
+    override suspend fun createUser(userName: String, password: String , saltedHash:SaltedHash): Boolean {
         return dbQuery {
             val newUser = UserTable.insert {
                 it[UserTable.userName] = userName
-                it[UserTable.password] = password
-                it[UserTable.isDeleted] = false
+                it[UserTable.password] = saltedHash.hash
+                it[UserTable.salt] = saltedHash.salt
+//                it[UserTable.isDeleted] = false
             }
-            User(
+            UserAuthRequest(
                 userId = newUser[UserTable.id].value,
                 userName = newUser[UserTable.userName],
                 password = newUser[UserTable.password],
+                salt = newUser[UserTable.salt]
             )
+            true
+
         }
     }
 
@@ -30,7 +36,6 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
             }.count() > 0
         }
     }
-
 
 
 }

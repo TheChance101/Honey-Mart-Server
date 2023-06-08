@@ -103,6 +103,9 @@ suspend fun handleException(
             is InvalidUserIdException -> {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("invalid user id"))
             }
+            is UnKnownUserException -> {
+                call.respond(HttpStatusCode.Conflict, ServerResponse.error("Unknown user , please try again"))
+            }
 
             else -> {
                 call.respond(HttpStatusCode.InternalServerError, ServerResponse.error(e.message.toString()))

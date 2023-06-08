@@ -13,7 +13,7 @@ fun Route.userRoutes(userUseCasesContainer: UserUseCaseContainer) {
 
     route("/user") {
 
-        post {
+        post("/signup") {
             handleException(call){
                 val params = call.receiveParameters()
                 val name = params["name"]?.trim()
