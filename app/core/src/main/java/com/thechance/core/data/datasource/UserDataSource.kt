@@ -8,7 +8,7 @@ interface UserDataSource {
     suspend fun createUser(userName: String, password: String  , saltedHash: SaltedHash): Boolean
     suspend fun isUserNameExists(userName: String): Boolean
 
-    suspend fun getUserById(id:Long):UserAuthRequest?
+    suspend fun getUserByName(name:String):UserAuthRequest?
 
 
 }

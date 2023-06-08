@@ -8,8 +8,8 @@ class VerifyUserUseCase(
     private val repository: HoneyMartRepository,
 ) : KoinComponent {
 
-    suspend operator fun invoke(userId: Long, password: String): String {
-        val token = repository.isValidatePassword(userId, password)
+    suspend operator fun invoke(name: String?, password: String?): String {
+        val token = repository.validateUser(name!!, password!!)
         return token.ifEmpty {
             throw InvalidUserNameOrPasswordException()
         }

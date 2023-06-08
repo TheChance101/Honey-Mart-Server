@@ -30,8 +30,8 @@ class HoneyMartRepositoryImp(
     override suspend fun isUserNameExists(userName: String): Boolean =
         userDataSource.isUserNameExists(userName)
 
-    override suspend fun isValidatePassword(userId: Long, password: String): String {
-        val user = userDataSource.getUserById(userId)
+    override suspend fun validateUser(name: String, password: String): String {
+        val user = userDataSource.getUserByName(name)
         val isValidPassword = hashingService.verify(
             value = password,
             saltedHash = SaltedHash(

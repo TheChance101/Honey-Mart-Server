@@ -38,9 +38,9 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getUserById(id: Long): UserAuthRequest? {
+    override suspend fun getUserByName(name: String): UserAuthRequest? {
         return dbQuery {
-            UserTable.select(UserTable.id eq id).map {
+            UserTable.select(UserTable.userName eq name).map {
                 UserAuthRequest(
                     userId = it[UserTable.id].value,
                     userName = it[UserTable.userName],

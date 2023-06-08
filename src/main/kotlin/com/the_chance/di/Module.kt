@@ -4,8 +4,11 @@ import com.thechance.core.data.database.CoreDataBase
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.repository.HoneyMartRepositoryImp
+import com.thechance.core.data.security.hashing.HashingService
 import com.thechance.core.data.security.hashing.SHA256HashingService
 import com.thechance.core.data.security.token.JwtTokenService
+import com.thechance.core.data.security.token.TokenConfig
+import com.thechance.core.data.security.token.TokenService
 import com.thechance.core.data.usecase.category.*
 import com.thechance.core.data.usecase.market.*
 import com.thechance.core.data.usecase.owner.CreateOwnerUseCase
@@ -13,9 +16,11 @@ import com.thechance.core.data.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.data.usecase.product.*
 import com.thechance.core.data.usecase.user.CreateUserUseCase
 import com.thechance.core.data.usecase.user.UserUseCaseContainer
+import com.thechance.core.data.usecase.user.VerifyUserUseCase
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import java.util.concurrent.TimeUnit
 
 val dataSourceModules = module {
     single<CategoryDataSource> { CategoryDataSourceImp() }
@@ -53,6 +58,7 @@ val categoryUseCaseModule = module {
 val userUseCaseModule = module {
     singleOf(::UserUseCaseContainer) { bind<UserUseCaseContainer>() }
     singleOf(::CreateUserUseCase) { bind<CreateUserUseCase>() }
+    singleOf(::VerifyUserUseCase) { bind<VerifyUserUseCase>() }
 }
 val ownerUseCaseModule = module {
     singleOf(::OwnerUseCaseContainer) { bind<OwnerUseCaseContainer>() }
@@ -61,8 +67,18 @@ val ownerUseCaseModule = module {
 
 val appModules = module {
     single { CoreDataBase() }
-    single { JwtTokenService() }
-    single { SHA256HashingService() }
+    single<TokenService> { JwtTokenService() }
+    single<HashingService> { SHA256HashingService() }
+    single<TokenConfig> {
+        val issuer = "http://0.0.0.0:8080"
+        val audience = "http://0.0.0.0:8080"
+        TokenConfig(
+            issuer = issuer,
+            audience = audience,
+            expiresIn = TimeUnit.HOURS.toMillis(1),
+            secret = System.getenv("HONEY_JWT_SECRET")
+        )
+    }
     singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
     includes(
         dataSourceModules,
