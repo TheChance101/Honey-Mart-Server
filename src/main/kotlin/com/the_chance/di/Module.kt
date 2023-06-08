@@ -61,22 +61,23 @@ val ownerUseCaseModule = module {
 }
 
 val cartUseCase = module {
-    singleOf(::CartUseCasesContainer) { bind<CartUseCasesContainer>() }
     singleOf(::GetCartUseCase) { bind<GetCartUseCase>() }
     singleOf(::AddProductToCartUseCase) { bind<AddProductToCartUseCase>() }
+    singleOf(::DeleteCategoryUseCase) { bind<DeleteCategoryUseCase>() }
+    singleOf(::CartUseCasesContainer) { bind<CartUseCasesContainer>() }
 }
 
 val appModules = module {
     single { CoreDataBase() }
     singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
     includes(
+        cartUseCase,
         dataSourceModules,
         categoryUseCaseModule,
         marketUseCaseModule,
         productUseCaseModule,
         userUseCaseModule,
         ownerUseCaseModule,
-        cartUseCase
     )
 }
 

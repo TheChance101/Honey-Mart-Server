@@ -10,12 +10,13 @@ interface HoneyMartRepository {
     suspend fun isUserNameExists(userName: String): Boolean
 
     suspend fun getCart(userId: Long): Cart
+    suspend fun isProductInCart(userId: Long, productId: Long): Boolean
 
     suspend fun addToCart(userId: Long, productId: Long, quantity: Int): Boolean
 
-    suspend fun removeFromCart(cartId: Long, productId: Long): Boolean
+    suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean
 
-    suspend fun updateQuantity(cartId: Long, productId: Long, quantity: Int): Boolean
+    suspend fun updateProductCountInCart(cartId: Long, productId: Long, quantity: Int): Boolean
 
     //endregion
 

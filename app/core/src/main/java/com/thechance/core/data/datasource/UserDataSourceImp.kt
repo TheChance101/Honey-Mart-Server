@@ -14,6 +14,8 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.component.KoinComponent
 
 class UserDataSourceImp : UserDataSource, KoinComponent {
+
+    //region user
     override suspend fun createUser(userName: String, password: String): User {
         return dbQuery {
             val newUser = NormalUserTable.insert {
@@ -37,6 +39,10 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
+    //endregion
+
+    //region cart
+
     override suspend fun addToCart(userId: Long, productId: Long, quantity: Int): Boolean {
         return dbQuery {
             CartTable.insert {
@@ -48,7 +54,14 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
-    //region cart
+    override suspend fun isProductInCart(userId: Long, productId: Long): Boolean {
+        return dbQuery {
+            val product =
+                CartTable.select { (CartTable.userId eq userId) and (CartTable.productId eq productId) }.singleOrNull()
+            product != null
+        }
+    }
+
     override suspend fun getCart(userId: Long): Cart {
         return dbQuery {
             var total = 0.0
@@ -75,22 +88,22 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
-
-    override suspend fun removeFromCart(cartId: Long, productId: Long): Boolean {
+    override suspend fun deleteProductInCart(userId: Long, productId: Long): Boolean {
         return dbQuery {
-            CartTable.deleteWhere { CartTable.productId eq productId }
+            CartTable.deleteWhere { (CartTable.userId eq userId) and (CartTable.productId eq productId) }
             true
         }
     }
 
-    override suspend fun changeQuantity(cartId: Long, productId: Long, quantity: Int): Boolean {
+    override suspend fun updateCount(userId: Long, productId: Long, quantity: Int): Boolean {
         return dbQuery {
-            CartTable.update({ CartTable.productId eq productId }) {
+            CartTable.update({ (CartTable.userId eq userId) and (CartTable.productId eq productId) }) {
                 it[CartTable.quantity] = quantity
             }
             true
         }
     }
+
     //endregion
 
 }

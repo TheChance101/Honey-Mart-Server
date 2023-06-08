@@ -24,16 +24,19 @@ class HoneyMartRepositoryImp(
     override suspend fun getCart(userId: Long): Cart =
         userDataSource.getCart(userId)
 
+    override suspend fun isProductInCart(userId: Long, productId: Long): Boolean =
+        userDataSource.isProductInCart(userId, productId)
+
 
     override suspend fun addToCart(userId: Long, productId: Long, quantity: Int): Boolean =
         userDataSource.addToCart(userId, productId, quantity)
 
 
-    override suspend fun removeFromCart(cartId: Long, productId: Long): Boolean =
-        userDataSource.removeFromCart(cartId, productId)
+    override suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean =
+        userDataSource.deleteProductInCart(cartId, productId)
 
-    override suspend fun updateQuantity(cartId: Long, productId: Long, quantity: Int): Boolean =
-        userDataSource.changeQuantity(cartId, productId, quantity)
+    override suspend fun updateProductCountInCart(cartId: Long, productId: Long, quantity: Int): Boolean =
+        userDataSource.updateCount(cartId, productId, quantity)
 
     //endregion
 

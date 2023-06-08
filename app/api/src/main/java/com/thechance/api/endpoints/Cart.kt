@@ -31,10 +31,14 @@ fun Route.cartRoutes(cartUseCasesContainer: CartUseCasesContainer) {
             }
         }
 
-        put { }
-
         delete {
-
+            handleException(call) {
+                val params = call.receiveParameters()
+                val userId = params["userId"]?.trim()?.toLongOrNull()
+                val productId = params["productId"]?.trim()?.toLongOrNull()
+                cartUseCasesContainer.deleteProductInCartUseCase(userId = userId, productId = productId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
+            }
         }
     }
 }
