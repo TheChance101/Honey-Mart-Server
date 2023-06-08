@@ -7,8 +7,16 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.config.*
+import java.util.concurrent.TimeUnit
 
-fun Application.configureSecurity(config: TokenConfig) {
+fun Application.configureSecurity() {
+
+    val config = TokenConfig(
+        issuer = ApplicationConfig("jwt.issuer").toString(),
+        audience = ApplicationConfig("jwt.audience").toString(),
+        expiresIn = TimeUnit.HOURS.toMillis(1),
+        secret = System.getenv("HONEY_JWT_SECRET")
+    )
 
     authentication {
         jwt {
