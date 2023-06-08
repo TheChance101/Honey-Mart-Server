@@ -1,5 +1,6 @@
 package com.the_chance.di
 
+import com.thechance.api.security.*
 import com.thechance.core.data.database.CoreDataBase
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.repository.HoneyMartRepository
@@ -57,6 +58,11 @@ val ownerUseCaseModule = module {
     singleOf(::CreateOwnerUseCase) { bind<CreateOwnerUseCase>() }
 }
 
+val security = module {
+    single<HashingService> { SHA256HashingService() }
+    single<TokenService> { JwtTokenService() }
+}
+
 val appModules = module {
     single { CoreDataBase() }
     singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
@@ -66,7 +72,9 @@ val appModules = module {
         marketUseCaseModule,
         productUseCaseModule,
         userUseCaseModule,
-        ownerUseCaseModule
+        ownerUseCaseModule,
+        security
     )
 }
+
 

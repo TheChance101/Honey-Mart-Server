@@ -8,3 +8,9 @@ data class User(
     val userName: String,
     val password: String,
 )
+
+
+@Serializable
+data class AuthResponse(
+    val token: String
+)
