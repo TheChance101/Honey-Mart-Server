@@ -5,7 +5,7 @@ import com.thechance.core.data.database.tables.CartTable
 import com.thechance.core.data.database.tables.ProductTable
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.model.User
-import com.thechance.core.data.database.tables.UserTable
+import com.thechance.core.data.database.tables.NormalUserTable
 import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.model.Cart
 import com.thechance.core.data.model.ProductInCart
@@ -20,10 +20,10 @@ import org.koin.core.component.KoinComponent
 class UserDataSourceImp : UserDataSource, KoinComponent {
     override suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean {
         return dbQuery {
-            UserTable.insert {
-                it[UserTable.userName] = userName
-                it[UserTable.password] = saltedHash.hash
-                it[UserTable.salt] = saltedHash.salt
+            NormalUserTable.insert {
+                it[NormalUserTable.userName] = userName
+                it[NormalUserTable.password] = saltedHash.hash
+                it[NormalUserTable.salt] = saltedHash.salt
             }
             true
         }
@@ -31,20 +31,20 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
 
     override suspend fun isUserNameExists(userName: String): Boolean {
         return dbQuery {
-            UserTable.select {
-                UserTable.userName eq userName
+            NormalUserTable.select {
+                NormalUserTable.userName eq userName
             }.count() > 0
         }
     }
 
     override suspend fun getUserByName(userName: String): User {
         return dbQuery {
-            UserTable.select(UserTable.userName eq userName).map {
+            NormalUserTable.select(NormalUserTable.userName eq userName).map {
                 User(
-                    userId = it[UserTable.id].value,
-                    userName = it[UserTable.userName],
-                    password = it[UserTable.password],
-                    salt = it[UserTable.salt]
+                    userId = it[NormalUserTable.id].value,
+                    userName = it[NormalUserTable.userName],
+                    password = it[NormalUserTable.password],
+                    salt = it[NormalUserTable.salt]
                 )
             }.single()
 
