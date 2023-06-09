@@ -6,6 +6,7 @@ import com.thechance.core.data.usecase.cart.CartUseCasesContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -13,11 +14,12 @@ import io.ktor.server.routing.*
 fun Route.cartRoutes(cartUseCasesContainer: CartUseCasesContainer) {
 
     authenticate {
-
         route("/cart") {
-            get("/{userId}") {
-                val userId = call.parameters["userId"]?.trim()?.toLongOrNull()
+            get {
                 handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = principal?.getClaim("userId", Long::class)
+
                     val products = cartUseCasesContainer.getCartUseCase(userId)
                     call.respond(ServerResponse.success(products))
                 }
@@ -25,8 +27,10 @@ fun Route.cartRoutes(cartUseCasesContainer: CartUseCasesContainer) {
 
             post("/addProduct") {
                 handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = principal?.getClaim("userId", Long::class)
+
                     val params = call.receiveParameters()
-                    val userId = params["userId"]?.trim()?.toLongOrNull()
                     val productId = params["productId"]?.trim()?.toLongOrNull()
                     val count = params["count"]?.trim()?.toIntOrNull()
                     cartUseCasesContainer.addProductToCartUseCase(userId = userId, productId = productId, count)
@@ -36,8 +40,10 @@ fun Route.cartRoutes(cartUseCasesContainer: CartUseCasesContainer) {
 
             delete {
                 handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = principal?.getClaim("userId", Long::class)
+
                     val params = call.receiveParameters()
-                    val userId = params["userId"]?.trim()?.toLongOrNull()
                     val productId = params["productId"]?.trim()?.toLongOrNull()
                     cartUseCasesContainer.deleteProductInCartUseCase(userId = userId, productId = productId)
                     call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))

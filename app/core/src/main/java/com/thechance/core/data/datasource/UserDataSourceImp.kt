@@ -37,6 +37,13 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
+    override suspend fun isUserExist(userId: Long): Boolean {
+        return dbQuery {
+            val user = NormalUserTable.select { NormalUserTable.id eq userId }.singleOrNull()
+            user != null
+        }
+    }
+
     override suspend fun getUserByName(userName: String): User {
         return dbQuery {
             NormalUserTable.select(NormalUserTable.userName eq userName).map {

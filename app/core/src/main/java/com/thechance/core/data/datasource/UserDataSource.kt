@@ -12,7 +12,9 @@ interface UserDataSource {
     suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean
     suspend fun isUserNameExists(userName: String): Boolean
 
-    suspend fun getUserByName(userName:String):User
+    suspend fun isUserExist(userId: Long): Boolean
+
+    suspend fun getUserByName(userName: String): User
 
     //region cart
 

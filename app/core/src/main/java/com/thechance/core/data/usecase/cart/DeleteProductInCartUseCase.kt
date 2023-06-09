@@ -19,9 +19,12 @@ class DeleteProductInCartUseCase(private val repository: HoneyMartRepository) : 
             } else if (isProductDeleted) {
                 throw ProductDeletedException()
             } else {
-                repository.deleteProductInCart(userId!!, productId)
+                repository.deleteProductInCart(getCartId(userId!!), productId)
             }
         }
     }
 
+    private suspend fun getCartId(userId: Long): Long {
+        return repository.getCartId(userId) ?: repository.createCart(userId)
+    }
 }
