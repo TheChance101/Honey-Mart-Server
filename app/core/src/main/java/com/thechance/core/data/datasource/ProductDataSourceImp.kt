@@ -6,9 +6,7 @@ import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.database.tables.CategoriesTable
 import com.thechance.core.data.database.tables.CategoryProductTable
-import com.thechance.core.data.database.tables.MarketTable
 import com.thechance.core.data.database.tables.ProductTable
-import com.thechance.core.data.utils.ItemNotAvailableException
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq

@@ -1,11 +1,12 @@
 package com.the_chance.di
 
-import com.thechance.core.data.database.CoreDataBase
+import com.thechance.core.data.database.*
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.repository.HoneyMartRepositoryImp
 import com.thechance.core.data.usecase.cart.AddProductToCartUseCase
 import com.thechance.core.data.usecase.cart.CartUseCasesContainer
+import com.thechance.core.data.usecase.cart.DeleteProductInCartUseCase
 import com.thechance.core.data.usecase.cart.GetCartUseCase
 import com.thechance.core.data.usecase.category.*
 import com.thechance.core.data.usecase.market.*
@@ -63,7 +64,7 @@ val ownerUseCaseModule = module {
 val cartUseCase = module {
     singleOf(::GetCartUseCase) { bind<GetCartUseCase>() }
     singleOf(::AddProductToCartUseCase) { bind<AddProductToCartUseCase>() }
-    singleOf(::DeleteCategoryUseCase) { bind<DeleteCategoryUseCase>() }
+    singleOf(::DeleteProductInCartUseCase) { bind<DeleteProductInCartUseCase>() }
     singleOf(::CartUseCasesContainer) { bind<CartUseCasesContainer>() }
 }
 

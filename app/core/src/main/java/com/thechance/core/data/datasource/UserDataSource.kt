@@ -13,15 +13,18 @@ interface UserDataSource {
 
     //region cart
 
-    suspend fun getCart(userId: Long): Cart
+    suspend fun getCartId(userId: Long): Long?
 
-    suspend fun addToCart(userId: Long, productId: Long, quantity: Int): Boolean
+    suspend fun getCart(cartId: Long): Cart
 
-    suspend fun isProductInCart(userId: Long, productId: Long): Boolean
+    suspend fun addToCart(cartId: Long, marketId: Long, productId: Long, count: Int): Boolean
 
-    suspend fun deleteProductInCart(userId: Long, productId: Long): Boolean
+    suspend fun isProductInCart(cartId: Long, productId: Long): Boolean
 
-    suspend fun updateCount(userId: Long, productId: Long, quantity: Int): Boolean
+    suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean
 
+    suspend fun updateCount(cartId: Long, productId: Long, count: Int): Boolean
+
+    suspend fun createCart(userId: Long): Long
     //endregion
 }

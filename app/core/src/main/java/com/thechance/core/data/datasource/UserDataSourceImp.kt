@@ -1,5 +1,6 @@
 package com.thechance.core.data.datasource
 
+import com.thechance.core.data.database.tables.CartProductTable
 import com.thechance.core.data.database.tables.CartTable
 import com.thechance.core.data.database.tables.ProductTable
 import com.thechance.core.data.model.Product
@@ -43,38 +44,57 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
 
     //region cart
 
-    override suspend fun addToCart(userId: Long, productId: Long, quantity: Int): Boolean {
+    override suspend fun createCart(userId: Long): Long {
         return dbQuery {
-            CartTable.insert {
+            val newCart = CartTable.insert {
                 it[CartTable.userId] = userId
-                it[CartTable.productId] = productId
-                it[CartTable.quantity] = quantity
+            }
+            newCart[CartTable.id].value
+        }
+    }
+
+    override suspend fun getCartId(userId: Long): Long? {
+        return dbQuery {
+            CartTable.select { CartTable.userId eq userId }.map { it[CartTable.id].value }.singleOrNull()
+        }
+    }
+
+    override suspend fun addToCart(cartId: Long, marketId: Long, productId: Long, count: Int): Boolean {
+        return dbQuery {
+            CartProductTable.insert {
+                it[CartProductTable.cartId] = cartId
+                it[CartProductTable.productId] = productId
+                it[CartProductTable.marketId] = marketId
+                it[CartProductTable.count] = count
             }
             true
         }
     }
 
-    override suspend fun isProductInCart(userId: Long, productId: Long): Boolean {
+    override suspend fun isProductInCart(cartId: Long, productId: Long): Boolean {
         return dbQuery {
             val product =
-                CartTable.select { (CartTable.userId eq userId) and (CartTable.productId eq productId) }.singleOrNull()
+                CartProductTable.select { (CartProductTable.cartId eq cartId) and (CartProductTable.productId eq productId) }
+                    .singleOrNull()
             product != null
         }
     }
 
-    override suspend fun getCart(userId: Long): Cart {
+    override suspend fun getCart(cartId: Long): Cart {
         return dbQuery {
             var total = 0.0
-            val products = CartTable.select { CartTable.userId eq userId }
+            val products = CartProductTable.select { CartProductTable.cartId eq cartId }
                 .map { productRow ->
-                    val product = getProduct(productId = productRow[CartTable.productId].value)
-                    total += product.price
-                    ProductInCart(
+                    val product = getProduct(productId = productRow[CartProductTable.productId].value)
+                    val cartProduct = ProductInCart(
                         id = product.id,
                         name = product.name,
                         price = product.price,
-                        quantity = productRow[CartTable.quantity]
+                        count = productRow[CartProductTable.count]
                     )
+                    total += product.price * cartProduct.count
+
+                    cartProduct
                 }
             Cart(products = products, total = total)
         }
@@ -88,17 +108,17 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
-    override suspend fun deleteProductInCart(userId: Long, productId: Long): Boolean {
+    override suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean {
         return dbQuery {
-            CartTable.deleteWhere { (CartTable.userId eq userId) and (CartTable.productId eq productId) }
+            CartProductTable.deleteWhere { (CartProductTable.cartId eq cartId) and (CartProductTable.productId eq productId) }
             true
         }
     }
 
-    override suspend fun updateCount(userId: Long, productId: Long, quantity: Int): Boolean {
+    override suspend fun updateCount(cartId: Long, productId: Long, count: Int): Boolean {
         return dbQuery {
-            CartTable.update({ (CartTable.userId eq userId) and (CartTable.productId eq productId) }) {
-                it[CartTable.quantity] = quantity
+            CartProductTable.update({ (CartProductTable.cartId eq cartId) and (CartProductTable.productId eq productId) }) {
+                it[CartProductTable.count] = count
             }
             true
         }

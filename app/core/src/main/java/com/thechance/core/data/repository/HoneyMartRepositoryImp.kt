@@ -20,23 +20,27 @@ class HoneyMartRepositoryImp(
     override suspend fun isUserNameExists(userName: String): Boolean =
         userDataSource.isUserNameExists(userName)
 
+    override suspend fun getCartId(userId: Long): Long? = userDataSource.getCartId(userId)
+
 
     override suspend fun getCart(userId: Long): Cart =
         userDataSource.getCart(userId)
 
-    override suspend fun isProductInCart(userId: Long, productId: Long): Boolean =
-        userDataSource.isProductInCart(userId, productId)
+    override suspend fun isProductInCart(cartId: Long, productId: Long): Boolean =
+        userDataSource.isProductInCart(cartId, productId)
 
 
-    override suspend fun addToCart(userId: Long, productId: Long, quantity: Int): Boolean =
-        userDataSource.addToCart(userId, productId, quantity)
+    override suspend fun addToCart(cartId: Long, productId: Long, marketId: Long, count: Int): Boolean =
+        userDataSource.addToCart(cartId = cartId, productId = productId, marketId = marketId, count = count)
 
 
     override suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean =
         userDataSource.deleteProductInCart(cartId, productId)
 
-    override suspend fun updateProductCountInCart(cartId: Long, productId: Long, quantity: Int): Boolean =
-        userDataSource.updateCount(cartId, productId, quantity)
+    override suspend fun updateProductCountInCart(cartId: Long, productId: Long, count: Int): Boolean =
+        userDataSource.updateCount(cartId, productId, count)
+
+    override suspend fun createCart(userId: Long): Long = userDataSource.createCart(userId)
 
     //endregion
 
@@ -65,7 +69,9 @@ class HoneyMartRepositoryImp(
     override suspend fun isMarketDeleted(marketId: Long): Boolean? =
         marketDataSource.isDeleted(marketId)
 
-//endregion
+    override suspend fun getMarketId(productId: Long): Long? = marketDataSource.getMarketId(productId)
+
+    //endregion
 
     //region category
     override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Category =

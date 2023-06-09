@@ -24,9 +24,23 @@ class AddProductToCartUseCase(private val repository: HoneyMartRepository) : Koi
                 if (repository.isProductInCart(userId!!, productId)) {
                     repository.updateProductCountInCart(userId, productId, count)
                 } else {
-                    repository.addToCart(userId, productId, count)
+                    val marketId = repository.getMarketId(productId)
+                    if (marketId == null) {
+                        throw InvalidProductIdException()
+                    } else {
+                        repository.addToCart(
+                            cartId = getCartId(userId),
+                            marketId = marketId,
+                            productId = productId,
+                            count = count
+                        )
+                    }
                 }
             }
         }
+    }
+
+    private suspend fun getCartId(userId: Long): Long {
+        return repository.getCartId(userId) ?: repository.createCart(userId)
     }
 }

@@ -38,4 +38,7 @@ class InvalidPasswordException : Exception()
 
 class UserInvalidException : Exception()
 
+//region cart
 class CountInvalidInputException : Exception()
+
+//endregion
