@@ -1,6 +1,6 @@
 package com.the_chance.di
 
-import com.thechance.core.data.database.CoreDataBase
+import com.thechance.core.data.database.*
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.repository.HoneyMartRepositoryImp
@@ -9,6 +9,10 @@ import com.thechance.core.data.security.hashing.SHA256HashingService
 import com.thechance.core.data.security.token.JwtTokenService
 import com.thechance.core.data.security.token.TokenConfig
 import com.thechance.core.data.security.token.TokenService
+import com.thechance.core.data.usecase.cart.AddProductToCartUseCase
+import com.thechance.core.data.usecase.cart.CartUseCasesContainer
+import com.thechance.core.data.usecase.cart.DeleteProductInCartUseCase
+import com.thechance.core.data.usecase.cart.GetCartUseCase
 import com.thechance.core.data.usecase.category.*
 import com.thechance.core.data.usecase.market.*
 import com.thechance.core.data.usecase.order.CancelOrderUseCase
@@ -64,6 +68,13 @@ val orderUseCaseModule = module {
     singleOf(::CancelOrderUseCase) { bind<CancelOrderUseCase>() }
 }
 
+val cartUseCase = module {
+    singleOf(::GetCartUseCase) { bind<GetCartUseCase>() }
+    singleOf(::AddProductToCartUseCase) { bind<AddProductToCartUseCase>() }
+    singleOf(::DeleteProductInCartUseCase) { bind<DeleteProductInCartUseCase>() }
+    singleOf(::CartUseCasesContainer) { bind<CartUseCasesContainer>() }
+}
+
 val appModules = module {
     single { CoreDataBase() }
     single<TokenService> { JwtTokenService() }
@@ -73,14 +84,14 @@ val appModules = module {
         TokenConfig(
             issuer = ApplicationConfig("jwt.issuer").toString(),
             audience = ApplicationConfig("jwt.audience").toString(),
-            expiresIn = TimeUnit.HOURS.toMillis(1),
+            expiresIn = TimeUnit.HOURS.toMillis(3),
             secret = System.getenv("HONEY_JWT_SECRET")
         )
-
-
     }
+
     singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
     includes(
+        cartUseCase,
         dataSourceModules,
         categoryUseCaseModule,
         marketUseCaseModule,

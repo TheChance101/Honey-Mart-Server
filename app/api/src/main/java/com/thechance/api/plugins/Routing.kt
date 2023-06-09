@@ -6,6 +6,8 @@ import com.thechance.api.endpoints.marketsRoutes
 import com.thechance.api.endpoints.orderRoutes
 import com.thechance.api.endpoints.productsRoutes
 import com.thechance.api.endpoints.*
+import com.thechance.core.data.usecase.cart.CartUseCasesContainer
+import com.thechance.core.data.usecase.cart.GetCartUseCase
 import com.thechance.core.data.usecase.category.CategoryUseCasesContainer
 import com.thechance.core.data.usecase.market.MarketUseCaseContainer
 import com.thechance.core.data.usecase.order.OrderUseCasesContainer
@@ -27,6 +29,7 @@ fun Application.configureRouting() {
     val orderUseCasesContainer: OrderUseCasesContainer by inject()
     val userUseCasesContainer: UserUseCaseContainer by inject()
     val ownerUseCaseContainer: OwnerUseCaseContainer by inject()
+    val cartUseCasesContainer: CartUseCasesContainer by inject()
 
     routing {
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml") {
@@ -40,6 +43,7 @@ fun Application.configureRouting() {
         marketsRoutes(marketUseCasesContainer)
         userRoutes(userUseCasesContainer)
         ownerRoutes(ownerUseCaseContainer)
+        cartRoutes(cartUseCasesContainer)
 
         orderRoutes(orderUseCasesContainer)
     }

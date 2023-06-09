@@ -8,7 +8,18 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class CoreDataBase {
 
     private val tables by lazy {
-        listOf(MarketTable, CategoriesTable, ProductTable, CategoryProductTable, OrderTable, OrderProductTable,UserTable,OwnerTable)
+        listOf(
+            MarketTable,
+            CategoriesTable,
+            ProductTable,
+            CategoryProductTable,
+            NormalUserTable,
+            OwnerTable,
+            CartTable,
+            CartProductTable,
+            OrderTable,
+            OrderProductTable
+        )
     }
 
     init {

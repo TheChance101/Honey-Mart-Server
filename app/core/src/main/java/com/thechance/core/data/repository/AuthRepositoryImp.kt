@@ -26,7 +26,10 @@ class AuthRepositoryImp(
     override suspend fun isUserNameExists(userName: String): Boolean =
         userDataSource.isUserNameExists(userName)
 
-    override suspend fun getUserByName(userName:String):User{
+    override suspend fun isUserExist(userId: Long): Boolean = userDataSource.isUserExist(userId)
+
+
+    override suspend fun getUserByName(userName: String): User {
         return userDataSource.getUserByName(userName)
     }
 
