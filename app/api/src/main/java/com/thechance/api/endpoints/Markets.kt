@@ -38,10 +38,7 @@ fun Route.marketsRoutes(marketUseCaseContainer: MarketUseCaseContainer) {
             }
         }
 
-
-
         put("/{id}") {
-
             handleException(call) {
                 val marketId = call.parameters["id"]?.toLongOrNull()
                 val marketName = call.receiveParameters()["name"]?.trim()
@@ -63,5 +60,3 @@ fun Route.marketsRoutes(marketUseCaseContainer: MarketUseCaseContainer) {
         }
     }
 }
-
-

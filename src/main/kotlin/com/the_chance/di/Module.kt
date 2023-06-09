@@ -88,12 +88,11 @@ val appModules = module {
         TokenConfig(
             issuer = ApplicationConfig("jwt.issuer").toString(),
             audience = ApplicationConfig("jwt.audience").toString(),
-            expiresIn = TimeUnit.HOURS.toMillis(1),
+            expiresIn =  365L * 1000L * 60L * 60L * 24L,//TimeUnit.HOURS.toMillis(1),
             secret = System.getenv("HONEY_JWT_SECRET")
         )
-
-
     }
+
     singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
     singleOf(::AuthRepositoryImp) { bind<AuthRepository>() }
     includes(
