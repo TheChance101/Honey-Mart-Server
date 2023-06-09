@@ -2,34 +2,18 @@ package com.thechance.core.data.repository
 
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.model.*
+import com.thechance.core.data.security.hashing.HashingService
+import com.thechance.core.data.security.hashing.SaltedHash
+import com.thechance.core.data.security.token.TokenClaim
+import com.thechance.core.data.security.token.TokenConfig
+import com.thechance.core.data.security.token.TokenService
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
     private val marketDataSource: MarketDataSource,
     private val categoryDataSource: CategoryDataSource,
-    private val productDataSource: ProductDataSource,
-    private val userDataSource: UserDataSource,
-    private val ownerDataSource: OwnerDataSource
+    private val productDataSource: ProductDataSource
 ) : HoneyMartRepository, KoinComponent {
-
-
-    //region user
-    override suspend fun createUser(userName: String, password: String): User =
-        userDataSource.createUser(userName, password)
-
-    override suspend fun isUserNameExists(userName: String): Boolean =
-        userDataSource.isUserNameExists(userName)
-
-    //endregion
-
-    //region owner
-    override suspend fun createOwner(userName: String, password: String): Owner =
-        ownerDataSource.createOwner(userName, password)
-
-    override suspend fun isOwnerNameExists(ownerName: String): Boolean =
-        ownerDataSource.isOwnerNameExists(ownerName)
-
-    //endregion
 
     //region market
     override suspend fun createMarket(marketName: String): Market = marketDataSource.createMarket(marketName)
