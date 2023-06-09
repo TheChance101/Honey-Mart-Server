@@ -13,6 +13,7 @@ interface HoneyMartRepository {
     suspend fun isMarketDeleted(marketId: Long): Boolean?
     //endregion
 
+
     //region category
     suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Category
     suspend fun getCategoriesByMarketId(marketId: Long): List<Category>
@@ -22,7 +23,6 @@ interface HoneyMartRepository {
     suspend fun isCategoryDeleted(categoryId: Long): Boolean?
     suspend fun isCategoryNameUnique(categoryName: String): Boolean
     //endregion
-
 
     //region product
     suspend fun createProduct(

@@ -30,7 +30,7 @@ class HoneyMartRepositoryImp(
     override suspend fun isMarketDeleted(marketId: Long): Boolean? =
         marketDataSource.isDeleted(marketId)
 
-    //endregion
+//endregion
 
     //region category
     override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Category =
@@ -60,7 +60,7 @@ class HoneyMartRepositoryImp(
     override suspend fun isCategoryNameUnique(categoryName: String): Boolean =
         categoryDataSource.isCategoryNameUnique(categoryName)
 
-    //endregion
+//endregion
 
     //region product
     override suspend fun createProduct(
@@ -114,5 +114,6 @@ class HoneyMartRepositoryImp(
         orderDataSource.cancelOrder(orderId)
     }
     //end region
+//endregion
 
 }

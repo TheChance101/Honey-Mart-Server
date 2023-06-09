@@ -1,24 +1,23 @@
 openapi: "3.0.3"
 info:
-  title: "HoneyMart API"
-  description: "Json API to deal with HoneyMart APP"
+  title: "com_the_chance_honey_mart API"
+  description: "com_the_chance_honey_mart API"
   version: "1.0.0"
 servers:
-- url: "https://honey-mart-server-oe345.ondigitalocean.app/"
-
-tags:
-  - name: Categories
-    description: Operations about categories
-  - name: Markets
-    description: Operations about markets
-  - name: Products
-    description: Operations about products
-
+- url: "https://com_the_chance_honey_mart"
 paths:
+  /json/kotlinx-serialization:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
   /category:
     post:
-      tags:
-        - Categories
       description: ""
       parameters:
       - name: "name"
@@ -37,50 +36,6 @@ paths:
         schema:
           type: "integer"
       responses:
-        "201":
-          description: "Created"
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/Category"
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-    put:
-      tags:
-        - Categories
-      description: ""
-      parameters:
-      - name: "id"
-        in: "query"
-        required: false
-        schema:
-          type: "number"
-      - name: "name"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
-      - name: "marketId"
-        in: "query"
-        required: false
-        schema:
-          type: "number"
-      - name: "imageId"
-        in: "query"
-        required: false
-        schema:
-          type: "integer"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "boolean"
         "400":
           description: "Bad Request"
           content:
@@ -89,78 +44,6 @@ paths:
                 type: "string"
         "404":
           description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-  /category/{id}:
-    delete:
-      tags:
-        - Categories
-      description: ""
-      parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "boolean"
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-  /category/{categoryId}:
-    get:
-      tags:
-        - Categories
-      description: "get all products in category"
-      parameters:
-      - name: "categoryId"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/Product"
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-  /deleteAllTables:
-    delete:
-      description: ""
-      responses:
-        "200":
-          description: "OK"
           content:
             '*/*':
               schema:
@@ -171,10 +54,132 @@ paths:
             '*/*':
               schema:
                 type: "string"
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Category"
+    put:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "query"
+        required: false
+        schema:
+          type: "number"
+      - name: "name"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "marketId"
+        in: "query"
+        required: false
+        schema:
+          type: "number"
+      - name: "imageId"
+        in: "query"
+        required: false
+        schema:
+          type: "integer"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /category/{id}:
+    delete:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "boolean"
+  /category/{categoryId}:
+    get:
+      description: "get all products in category"
+      parameters:
+      - name: "categoryId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Product"
   /markets:
     get:
-      tags:
-        - Markets
       description: ""
       responses:
         "200":
@@ -186,8 +191,6 @@ paths:
                 items:
                   $ref: "#/components/schemas/Market"
     post:
-      tags:
-        - Markets
       description: ""
       parameters:
       - name: "name"
@@ -196,22 +199,32 @@ paths:
         schema:
           type: "string"
       responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
         "201":
           description: "Created"
           content:
             '*/*':
               schema:
                 $ref: "#/components/schemas/Market"
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
   /markets/{id}:
     delete:
-      tags:
-        - Markets
       description: ""
       parameters:
       - name: "id"
@@ -226,21 +239,25 @@ paths:
             '*/*':
               schema:
                 type: "string"
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "404":
           description: "Not Found"
           content:
             '*/*':
               schema:
                 type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
     put:
-      tags:
-        - Markets
       description: ""
       parameters:
       - name: "id"
@@ -254,28 +271,32 @@ paths:
         schema:
           type: "string"
       responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/Market"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "400":
           description: "Bad Request"
           content:
             '*/*':
               schema:
                 type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Market"
   /markets/{id}/categories:
     get:
-      tags:
-        - Markets
       description: ""
       parameters:
       - name: "id"
@@ -284,6 +305,24 @@ paths:
         schema:
           type: "number"
       responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
         "200":
           description: "OK"
           content:
@@ -292,22 +331,8 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/Category"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
   /product:
     post:
-      tags:
-        - Products
       description: ""
       parameters:
       - name: "name"
@@ -331,36 +356,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "201":
-          description: "Created"
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/Product"
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-  /product/{id}:
-    delete:
-      tags:
-        - Products
-      description: ""
-      parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "boolean"
         "400":
           description: "Bad Request"
           content:
@@ -373,9 +368,53 @@ paths:
             '*/*':
               schema:
                 type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Product"
+  /product/{id}:
+    delete:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "boolean"
     put:
-      tags:
-        - Products
       description: ""
       parameters:
       - name: "id"
@@ -399,12 +438,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "boolean"
         "400":
           description: "Bad Request"
           content:
@@ -417,10 +450,20 @@ paths:
             '*/*':
               schema:
                 type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
   /product/{productId}:
     get:
-      tags:
-        - Products
       description: ""
       parameters:
       - name: "productId"
@@ -429,14 +472,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/Category"
         "400":
           description: "Bad Request"
           content:
@@ -449,10 +484,22 @@ paths:
             '*/*':
               schema:
                 type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Category"
   /product/{id}/updateCategories:
     put:
-      tags:
-        - Products
       description: ""
       parameters:
       - name: "id"
@@ -466,12 +513,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "boolean"
         "400":
           description: "Bad Request"
           content:
@@ -484,10 +525,12 @@ paths:
             '*/*':
               schema:
                 type: "string"
-  /json/kotlinx-serialization:
-    get:
-      description: ""
-      responses:
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
         "200":
           description: "OK"
           content:

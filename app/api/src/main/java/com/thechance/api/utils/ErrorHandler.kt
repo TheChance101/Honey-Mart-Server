@@ -91,6 +91,18 @@ suspend fun handleException(
             is CategoryNameNotUniqueException -> {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("this category name already exist."))
             }
+            is UserAlreadyExistException -> {
+                call.respond(HttpStatusCode.Conflict, ServerResponse.error("user is already exist"))
+            }
+            is InvalidUserIdException -> {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("invalid user id"))
+            }
+            is UnKnownUserException -> {
+                call.respond(HttpStatusCode.Conflict, ServerResponse.error("Unknown user, please try again"))
+            }
+            is InvalidUserNameOrPasswordException->{
+                call.respond(HttpStatusCode.Conflict, ServerResponse.error("Invalid username or password, please try again"))
+            }
 
             else -> {
                 call.respond(HttpStatusCode.InternalServerError, ServerResponse.error(e.message.toString()))

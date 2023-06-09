@@ -5,11 +5,15 @@ import com.thechance.api.endpoints.categoryRoutes
 import com.thechance.api.endpoints.marketsRoutes
 import com.thechance.api.endpoints.orderRoutes
 import com.thechance.api.endpoints.productsRoutes
+import com.thechance.api.endpoints.*
 import com.thechance.core.data.usecase.category.CategoryUseCasesContainer
 import com.thechance.core.data.usecase.market.MarketUseCaseContainer
 import com.thechance.core.data.usecase.order.OrderUseCasesContainer
+import com.thechance.core.data.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.data.usecase.product.ProductUseCasesContainer
+import com.thechance.core.data.usecase.user.UserUseCaseContainer
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.openapi.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
@@ -21,6 +25,8 @@ fun Application.configureRouting() {
     val marketUseCasesContainer: MarketUseCaseContainer by inject()
     val productUseCasesContainer: ProductUseCasesContainer by inject()
     val orderUseCasesContainer: OrderUseCasesContainer by inject()
+    val userUseCasesContainer: UserUseCaseContainer by inject()
+    val ownerUseCaseContainer: OwnerUseCaseContainer by inject()
 
     routing {
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml") {
@@ -32,6 +38,9 @@ fun Application.configureRouting() {
         productsRoutes(productUseCasesContainer)
         categoryRoutes(categoryUseCasesContainer)
         marketsRoutes(marketUseCasesContainer)
+        userRoutes(userUseCasesContainer)
+        ownerRoutes(ownerUseCaseContainer)
+
         orderRoutes(orderUseCasesContainer)
     }
 }
