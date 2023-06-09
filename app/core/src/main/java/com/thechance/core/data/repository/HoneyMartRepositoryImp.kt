@@ -1,18 +1,35 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.data.datasource.CategoryDataSource
-import com.thechance.core.data.datasource.MarketDataSource
-import com.thechance.core.data.datasource.ProductDataSource
-import com.thechance.core.data.model.Category
-import com.thechance.core.data.model.Market
-import com.thechance.core.data.model.Product
+import com.thechance.core.data.datasource.*
+import com.thechance.core.data.model.*
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
     private val marketDataSource: MarketDataSource,
     private val categoryDataSource: CategoryDataSource,
-    private val productDataSource: ProductDataSource
+    private val productDataSource: ProductDataSource,
+    private val userDataSource: UserDataSource,
+    private val ownerDataSource: OwnerDataSource
 ) : HoneyMartRepository, KoinComponent {
+
+
+    //region user
+    override suspend fun createUser(userName: String, password: String): User =
+        userDataSource.createUser(userName, password)
+
+    override suspend fun isUserNameExists(userName: String): Boolean =
+        userDataSource.isUserNameExists(userName)
+
+    //endregion
+
+    //region owner
+    override suspend fun createOwner(userName: String, password: String): Owner =
+        ownerDataSource.createOwner(userName, password)
+
+    override suspend fun isOwnerNameExists(ownerName: String): Boolean =
+        ownerDataSource.isOwnerNameExists(ownerName)
+
+    //endregion
 
     //region market
     override suspend fun createMarket(marketName: String): Market = marketDataSource.createMarket(marketName)
@@ -30,7 +47,7 @@ class HoneyMartRepositoryImp(
     override suspend fun isMarketDeleted(marketId: Long): Boolean? =
         marketDataSource.isDeleted(marketId)
 
-    //endregion
+//endregion
 
     //region category
     override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Category =
@@ -60,7 +77,7 @@ class HoneyMartRepositoryImp(
     override suspend fun isCategoryNameUnique(categoryName: String): Boolean =
         categoryDataSource.isCategoryNameUnique(categoryName)
 
-    //endregion
+//endregion
 
     //region product
     override suspend fun createProduct(
@@ -95,6 +112,6 @@ class HoneyMartRepositoryImp(
     override suspend fun isProductDeleted(id: Long): Boolean? =
         productDataSource.isDeleted(id)
 
-    //endregion
+//endregion
 
 }

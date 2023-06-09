@@ -1,10 +1,22 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.data.model.Category
-import com.thechance.core.data.model.Market
-import com.thechance.core.data.model.Product
+import com.thechance.core.data.model.*
 
 interface HoneyMartRepository {
+
+    //region user
+    suspend fun createUser(userName: String, password: String): User
+    suspend fun isUserNameExists(userName: String): Boolean
+
+    //endregion
+
+
+    //region owner
+    suspend fun createOwner(userName: String, password: String): Owner
+    suspend fun isOwnerNameExists(ownerName: String): Boolean
+
+    //endregion
+
 
     //region market
     suspend fun createMarket(marketName: String): Market
@@ -15,6 +27,7 @@ interface HoneyMartRepository {
     suspend fun isMarketDeleted(marketId: Long): Boolean?
     //endregion
 
+
     //region category
     suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Category
     suspend fun getCategoriesByMarketId(marketId: Long): List<Category>
@@ -24,7 +37,6 @@ interface HoneyMartRepository {
     suspend fun isCategoryDeleted(categoryId: Long): Boolean?
     suspend fun isCategoryNameUnique(categoryName: String): Boolean
     //endregion
-
 
     //region product
     suspend fun createProduct(

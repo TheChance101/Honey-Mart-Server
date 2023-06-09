@@ -29,3 +29,12 @@ class ProductDeletedException : Exception()
 class NotValidCategoryList : Exception()
 
 class CategoryNameNotUniqueException : Exception()
+
+class InvalidUserNameException : Exception()
+
+class InvalidUserIdException : Exception()
+
+class InvalidPasswordException : Exception()
+
+class UserInvalidException : Exception()
+

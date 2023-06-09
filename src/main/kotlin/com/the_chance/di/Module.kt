@@ -6,7 +6,11 @@ import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.repository.HoneyMartRepositoryImp
 import com.thechance.core.data.usecase.category.*
 import com.thechance.core.data.usecase.market.*
+import com.thechance.core.data.usecase.owner.CreateOwnerUseCase
+import com.thechance.core.data.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.data.usecase.product.*
+import com.thechance.core.data.usecase.user.CreateUserUseCase
+import com.thechance.core.data.usecase.user.UserUseCaseContainer
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -15,6 +19,8 @@ val dataSourceModules = module {
     single<CategoryDataSource> { CategoryDataSourceImp() }
     single<MarketDataSource> { MarketDataSourceImp() }
     single<ProductDataSource> { ProductDataSourceImp() }
+    single<UserDataSource> { UserDataSourceImp() }
+    single<OwnerDataSource> { OwnerDataSourceImp() }
 }
 
 val productUseCaseModule = module {
@@ -42,6 +48,14 @@ val categoryUseCaseModule = module {
     singleOf(::GetAllCategoriesUseCase) { bind<GetAllCategoriesUseCase>() }
     singleOf(::UpdateCategoryUseCase) { bind<UpdateCategoryUseCase>() }
 }
+val userUseCaseModule = module {
+    singleOf(::UserUseCaseContainer) { bind<UserUseCaseContainer>() }
+    singleOf(::CreateUserUseCase) { bind<CreateUserUseCase>() }
+}
+val ownerUseCaseModule = module {
+    singleOf(::OwnerUseCaseContainer) { bind<OwnerUseCaseContainer>() }
+    singleOf(::CreateOwnerUseCase) { bind<CreateOwnerUseCase>() }
+}
 
 val appModules = module {
     single { CoreDataBase() }
@@ -50,7 +64,9 @@ val appModules = module {
         dataSourceModules,
         categoryUseCaseModule,
         marketUseCaseModule,
-        productUseCaseModule
+        productUseCaseModule,
+        userUseCaseModule,
+        ownerUseCaseModule
     )
 }
 
