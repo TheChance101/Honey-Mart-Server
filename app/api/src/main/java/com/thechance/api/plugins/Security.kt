@@ -8,7 +8,6 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.config.*
 import org.koin.ktor.ext.inject
-import java.util.concurrent.TimeUnit
 
 fun Application.configureSecurity() {
 
