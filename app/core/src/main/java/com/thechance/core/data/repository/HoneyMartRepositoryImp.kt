@@ -12,8 +12,10 @@ import org.koin.core.component.KoinComponent
 class HoneyMartRepositoryImp(
     private val marketDataSource: MarketDataSource,
     private val categoryDataSource: CategoryDataSource,
-    private val productDataSource: ProductDataSource
-) : HoneyMartRepository, KoinComponent {
+    private val productDataSource: ProductDataSource,
+    private val wishLisDataSource: WishListDataSource,
+
+    ) : HoneyMartRepository, KoinComponent {
 
     //region market
     override suspend fun createMarket(marketName: String): Market = marketDataSource.createMarket(marketName)
@@ -95,7 +97,16 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isProductDeleted(id: Long): Boolean? =
         productDataSource.isDeleted(id)
+    //endregion
 
-//endregion
+    //region WishList
+    override suspend fun createWishList(productId: Long, userId: Long): WishList =
+        wishLisDataSource.createWishList(productId, userId)
+
+    override suspend fun isProductInWishList(productId: Long): Boolean =
+        wishLisDataSource.isProductInWishList(productId)
+
+
+    //endregion
 
 }

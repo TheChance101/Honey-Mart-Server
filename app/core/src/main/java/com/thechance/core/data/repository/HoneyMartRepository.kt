@@ -4,6 +4,7 @@ import com.thechance.core.data.model.*
 
 interface HoneyMartRepository {
 
+
     //region market
     suspend fun createMarket(marketName: String): Market
     suspend fun getAllMarkets(): List<Market>
@@ -40,5 +41,10 @@ interface HoneyMartRepository {
     suspend fun checkCategoriesInDb(categoryIds: List<Long>): Boolean
 
     suspend fun isProductDeleted(id: Long): Boolean?
+    //endregion
+
+    //region WishList
+    suspend fun createWishList(productId: Long, userId: Long): WishList
+    suspend fun isProductInWishList(productId: Long): Boolean
     //endregion
 }
