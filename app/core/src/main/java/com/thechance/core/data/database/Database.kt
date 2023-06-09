@@ -13,7 +13,7 @@ class CoreDataBase {
             CategoriesTable,
             ProductTable,
             CategoryProductTable,
-            NormalUserTable,
+            UserTable,
             OwnerTable,
             CartTable,
             CartProductTable

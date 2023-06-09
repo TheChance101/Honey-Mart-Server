@@ -12,19 +12,12 @@ import org.koin.core.component.KoinComponent
 class HoneyMartRepositoryImp(
     private val marketDataSource: MarketDataSource,
     private val categoryDataSource: CategoryDataSource,
-    private val productDataSource: ProductDataSource
+    private val productDataSource: ProductDataSource,
+    private val userDataSource: UserDataSource
 ) : HoneyMartRepository, KoinComponent {
 
-
-    //region user
-    override suspend fun createUser(userName: String, password: String): User =
-        userDataSource.createUser(userName, password)
-
-    override suspend fun isUserNameExists(userName: String): Boolean =
-        userDataSource.isUserNameExists(userName)
-
+    //region cart
     override suspend fun getCartId(userId: Long): Long? = userDataSource.getCartId(userId)
-
 
     override suspend fun getCart(userId: Long): Cart =
         userDataSource.getCart(userId)
@@ -44,15 +37,6 @@ class HoneyMartRepositoryImp(
         userDataSource.updateCount(cartId, productId, count)
 
     override suspend fun createCart(userId: Long): Long = userDataSource.createCart(userId)
-
-    //endregion
-
-    //region owner
-    override suspend fun createOwner(userName: String, password: String): Owner =
-        ownerDataSource.createOwner(userName, password)
-
-    override suspend fun isOwnerNameExists(ownerName: String): Boolean =
-        ownerDataSource.isOwnerNameExists(ownerName)
 
     //endregion
 

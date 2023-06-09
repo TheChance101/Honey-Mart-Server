@@ -4,7 +4,7 @@ import org.jetbrains.exposed.sql.Table
 
 
 object CartProductTable : Table() {
-    val cartId = reference("cartId", NormalUserTable)
+    val cartId = reference("cartId", UserTable)
     val productId = reference("productId", ProductTable)
     val marketId = reference("marketId", MarketTable)
     val count = integer("count")

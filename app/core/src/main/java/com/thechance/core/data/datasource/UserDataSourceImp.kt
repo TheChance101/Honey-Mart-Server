@@ -5,15 +5,13 @@ import com.thechance.core.data.database.tables.CartTable
 import com.thechance.core.data.database.tables.ProductTable
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.model.User
-import com.thechance.core.data.database.tables.NormalUserTable
+import com.thechance.core.data.database.tables.UserTable
 import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.model.Cart
 import com.thechance.core.data.model.ProductInCart
 import com.thechance.core.data.security.hashing.SaltedHash
-import com.thechance.core.data.tables.UserTable
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
