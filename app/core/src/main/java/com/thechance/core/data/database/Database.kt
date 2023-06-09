@@ -1,5 +1,6 @@
 package com.thechance.core.data.database
 
+import com.thechance.core.data.database.tables.*
 import com.thechance.core.data.tables.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils

@@ -8,7 +8,7 @@ class HoneyMartRepositoryImp(
     private val marketDataSource: MarketDataSource,
     private val categoryDataSource: CategoryDataSource,
     private val productDataSource: ProductDataSource,
-    private val orderDataSource: OrderDataSource
+    private val orderDataSource: OrderDataSource,
     private val userDataSource: UserDataSource
 ) : HoneyMartRepository, KoinComponent {
 

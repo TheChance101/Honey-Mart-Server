@@ -19,7 +19,12 @@ import com.thechance.core.data.usecase.order.CancelOrderUseCase
 import com.thechance.core.data.usecase.order.CreateOrderUseCase
 import com.thechance.core.data.usecase.order.GetOrdersForMarketUseCase
 import com.thechance.core.data.usecase.order.OrderUseCasesContainer
+import com.thechance.core.data.usecase.owner.CreateOwnerUseCase
+import com.thechance.core.data.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.data.usecase.product.*
+import com.thechance.core.data.usecase.user.CreateUserUseCase
+import com.thechance.core.data.usecase.user.UserUseCaseContainer
+import com.thechance.core.data.usecase.user.VerifyUserUseCase
 import io.ktor.server.config.*
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -68,6 +73,17 @@ val orderUseCaseModule = module {
     singleOf(::CancelOrderUseCase) { bind<CancelOrderUseCase>() }
 }
 
+val userUseCaseModule = module {
+    singleOf(::UserUseCaseContainer) { bind<UserUseCaseContainer>() }
+    singleOf(::CreateUserUseCase) { bind<CreateUserUseCase>() }
+    singleOf(::VerifyUserUseCase) { bind<VerifyUserUseCase>() }
+}
+
+val ownerUseCaseModule = module {
+    singleOf(::OwnerUseCaseContainer) { bind<OwnerUseCaseContainer>() }
+    singleOf(::CreateOwnerUseCase) { bind<CreateOwnerUseCase>() }
+}
+
 val cartUseCase = module {
     singleOf(::GetCartUseCase) { bind<GetCartUseCase>() }
     singleOf(::AddProductToCartUseCase) { bind<AddProductToCartUseCase>() }
@@ -96,7 +112,7 @@ val appModules = module {
         categoryUseCaseModule,
         marketUseCaseModule,
         productUseCaseModule,
-        orderUseCaseModule
+        orderUseCaseModule,
         userUseCaseModule,
         ownerUseCaseModule
     )
