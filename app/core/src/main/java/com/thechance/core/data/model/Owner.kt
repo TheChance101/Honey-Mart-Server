@@ -6,5 +6,4 @@ import kotlinx.serialization.Serializable
 data class Owner(
     val ownerId: Long,
     val userName: String,
-    val password: String,
 )

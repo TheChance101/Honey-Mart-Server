@@ -19,7 +19,6 @@ class OwnerDataSourceImp : OwnerDataSource, KoinComponent {
             Owner(
                 ownerId = newOwner[OwnerTable.id].value,
                 userName = newOwner[OwnerTable.ownerName],
-                password = newOwner[OwnerTable.password],
             )
         }
     }
