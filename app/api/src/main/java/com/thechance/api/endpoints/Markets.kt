@@ -27,19 +27,18 @@ fun Route.marketsRoutes(marketUseCaseContainer: MarketUseCaseContainer) {
             }
         }
 
-        authenticate {
 
-            post {
-                val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-                handleException(call) {
-                    val newMarket = marketUseCaseContainer.createMarketUseCase(marketName)
-                    call.respond(
-                        HttpStatusCode.Created,
-                        ServerResponse.success(newMarket, "Market created successfully")
-                    )
-                }
+        post {
+            val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
+            handleException(call) {
+                val newMarket = marketUseCaseContainer.createMarketUseCase(marketName)
+                call.respond(
+                    HttpStatusCode.Created,
+                    ServerResponse.success(newMarket, "Market created successfully")
+                )
             }
         }
+
 
         put("/{id}") {
             handleException(call) {

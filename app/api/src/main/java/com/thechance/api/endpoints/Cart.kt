@@ -13,24 +13,16 @@ import io.ktor.server.routing.*
 fun Route.cartRoutes(cartUseCasesContainer: CartUseCasesContainer) {
 
     authenticate {
-        get("/cart/{userId}") {
-            val userId = call.parameters["userId"]?.trim()?.toLongOrNull()
-            handleException(call) {
-                val products = cartUseCasesContainer.getCartUseCase(userId)
-                call.respond(ServerResponse.success(products))
+
+        route("/cart") {
+            get("/{userId}") {
+                val userId = call.parameters["userId"]?.trim()?.toLongOrNull()
+                handleException(call) {
+                    val products = cartUseCasesContainer.getCartUseCase(userId)
+                    call.respond(ServerResponse.success(products))
+                }
             }
-        }
-    }
-    route("/cart") {
-//        authenticate {
-//            get("/{userId}") {
-//                val userId = call.parameters["userId"]?.trim()?.toLongOrNull()
-//                handleException(call) {
-//                    val products = cartUseCasesContainer.getCartUseCase(userId)
-//                    call.respond(ServerResponse.success(products))
-//                }
-//            }
-//        }
+
             post("/addProduct") {
                 handleException(call) {
                     val params = call.receiveParameters()
@@ -51,6 +43,6 @@ fun Route.cartRoutes(cartUseCasesContainer: CartUseCasesContainer) {
                     call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
                 }
             }
-//        }
+        }
     }
 }
