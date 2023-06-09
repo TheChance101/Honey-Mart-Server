@@ -7,16 +7,15 @@ interface HoneyMartRepository {
     //region user
     suspend fun createUser(userName: String, password: String): User
     suspend fun isUserNameExists(userName: String): Boolean
+    //endregion
 
+    //region cart
     suspend fun getCartId(userId: Long): Long?
     suspend fun getCart(cartId: Long): Cart
     suspend fun isProductInCart(cartId: Long, productId: Long): Boolean
     suspend fun addToCart(cartId: Long, productId: Long, marketId: Long, count: Int): Boolean
-
     suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean
-
     suspend fun updateProductCountInCart(cartId: Long, productId: Long, count: Int): Boolean
-
     suspend fun createCart(userId: Long): Long
     //endregion
 
@@ -24,7 +23,6 @@ interface HoneyMartRepository {
     //region owner
     suspend fun createOwner(userName: String, password: String): Owner
     suspend fun isOwnerNameExists(ownerName: String): Boolean
-
     //endregion
 
 
@@ -63,7 +61,6 @@ interface HoneyMartRepository {
     suspend fun updateProductCategory(productId: Long, categoryIds: List<Long>): Boolean
     suspend fun deleteProduct(productId: Long): Boolean
     suspend fun checkCategoriesInDb(categoryIds: List<Long>): Boolean
-
     suspend fun isProductDeleted(id: Long): Boolean?
     //endregion
 }

@@ -48,12 +48,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "500":
           description: "Internal Server Error"
           content:
@@ -102,12 +96,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "500":
           description: "Internal Server Error"
           content:
@@ -142,12 +130,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "500":
           description: "Internal Server Error"
           content:
@@ -178,12 +160,6 @@ paths:
                 type: "string"
         "404":
           description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
           content:
             '*/*':
               schema:
@@ -235,12 +211,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "500":
           description: "Internal Server Error"
           content:
@@ -271,12 +241,6 @@ paths:
                 type: "string"
         "404":
           description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
           content:
             '*/*':
               schema:
@@ -319,12 +283,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "500":
           description: "Internal Server Error"
           content:
@@ -359,12 +317,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "500":
           description: "Internal Server Error"
           content:
@@ -379,51 +331,6 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/Category"
-  /owner:
-    post:
-      description: ""
-      parameters:
-      - name: "name"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
-      - name: "password"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
-      responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "201":
-          description: "Created"
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/Owner"
   /product:
     post:
       description: ""
@@ -461,12 +368,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "500":
           description: "Internal Server Error"
           content:
@@ -497,12 +398,6 @@ paths:
                 type: "string"
         "404":
           description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
           content:
             '*/*':
               schema:
@@ -555,12 +450,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "500":
           description: "Internal Server Error"
           content:
@@ -591,12 +480,6 @@ paths:
                 type: "string"
         "404":
           description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
           content:
             '*/*':
               schema:
@@ -642,12 +525,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "500":
           description: "Internal Server Error"
           content:
@@ -660,51 +537,6 @@ paths:
             '*/*':
               schema:
                 type: "string"
-  /user:
-    post:
-      description: ""
-      parameters:
-      - name: "name"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
-      - name: "password"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
-      responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "201":
-          description: "Created"
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/User"
 components:
   schemas:
     Category:
@@ -738,24 +570,4 @@ components:
           type: "integer"
           format: "int64"
         marketName:
-          type: "string"
-    Owner:
-      type: "object"
-      properties:
-        ownerId:
-          type: "integer"
-          format: "int64"
-        userName:
-          type: "string"
-        password:
-          type: "string"
-    User:
-      type: "object"
-      properties:
-        userId:
-          type: "integer"
-          format: "int64"
-        userName:
-          type: "string"
-        password:
           type: "string"

@@ -5,11 +5,14 @@ import com.thechance.core.data.model.Product
 import com.thechance.core.data.model.ProductInCart
 import com.thechance.core.data.model.User
 import com.thechance.core.data.utils.InvalidProductQuantityException
+import com.thechance.core.data.security.hashing.SaltedHash
 
 interface UserDataSource {
 
-    suspend fun createUser(userName: String, password: String): User
+    suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean
     suspend fun isUserNameExists(userName: String): Boolean
+
+    suspend fun getUserByName(userName:String):User
 
     //region cart
 

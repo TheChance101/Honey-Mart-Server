@@ -10,6 +10,7 @@ import com.thechance.core.data.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.data.usecase.product.ProductUseCasesContainer
 import com.thechance.core.data.usecase.user.UserUseCaseContainer
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.openapi.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
@@ -37,5 +38,6 @@ fun Application.configureRouting() {
         userRoutes(userUseCasesContainer)
         ownerRoutes(ownerUseCaseContainer)
         cartRoutes(cartUseCasesContainer)
+
     }
 }

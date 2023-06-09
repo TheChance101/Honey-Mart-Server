@@ -9,37 +9,49 @@ import com.thechance.core.data.database.tables.NormalUserTable
 import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.model.Cart
 import com.thechance.core.data.model.ProductInCart
+import com.thechance.core.data.security.hashing.SaltedHash
+import com.thechance.core.data.tables.UserTable
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
 
 class UserDataSourceImp : UserDataSource, KoinComponent {
-
-    //region user
-    override suspend fun createUser(userName: String, password: String): User {
+    override suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean {
         return dbQuery {
-            val newUser = NormalUserTable.insert {
-                it[NormalUserTable.userName] = userName
-                it[NormalUserTable.password] = password
-                it[NormalUserTable.isDeleted] = false
+            UserTable.insert {
+                it[UserTable.userName] = userName
+                it[UserTable.password] = saltedHash.hash
+                it[UserTable.salt] = saltedHash.salt
             }
-            User(
-                userId = newUser[NormalUserTable.id].value,
-                userName = newUser[NormalUserTable.userName],
-                password = newUser[NormalUserTable.password],
-            )
+            true
         }
     }
 
     override suspend fun isUserNameExists(userName: String): Boolean {
         return dbQuery {
-            NormalUserTable.select {
-                NormalUserTable.userName eq userName
+            UserTable.select {
+                UserTable.userName eq userName
             }.count() > 0
         }
     }
 
+    override suspend fun getUserByName(userName: String): User {
+        return dbQuery {
+            UserTable.select(UserTable.userName eq userName).map {
+                User(
+                    userId = it[UserTable.id].value,
+                    userName = it[UserTable.userName],
+                    password = it[UserTable.password],
+                    salt = it[UserTable.salt]
+                )
+            }.single()
+
+        }
+    }
     //endregion
 
     //region cart
