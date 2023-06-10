@@ -1,10 +1,13 @@
-package com.thechance.core.data.tables
+package com.thechance.core.data.database.tables.order
 
+import com.thechance.core.data.database.tables.MarketTable
 import com.thechance.core.data.database.tables.ProductTable
 import org.jetbrains.exposed.sql.Table
 
 object OrderProductTable : Table() {
     val orderId = reference("orderId", OrderTable)
     val productId = reference("productId", ProductTable)
-    val quantity = integer("quantity")
+    val count = integer("count")
+    val state = text("state").default("")
+    val marketId = reference("marketId", MarketTable)
 }

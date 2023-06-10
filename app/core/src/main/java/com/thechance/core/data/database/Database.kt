@@ -1,7 +1,13 @@
 package com.thechance.core.data.database
 
 import com.thechance.core.data.database.tables.*
-import com.thechance.core.data.tables.*
+import com.thechance.core.data.database.tables.cart.CartProductTable
+import com.thechance.core.data.database.tables.cart.CartTable
+import com.thechance.core.data.database.tables.category.CategoriesTable
+import com.thechance.core.data.database.tables.category.CategoryProductTable
+import com.thechance.core.data.database.tables.order.OrderMarketTable
+import com.thechance.core.data.database.tables.order.OrderProductTable
+import com.thechance.core.data.database.tables.order.OrderTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -19,7 +25,8 @@ class CoreDataBase {
             CartTable,
             CartProductTable,
             OrderTable,
-            OrderProductTable
+            OrderProductTable,
+            OrderMarketTable
         )
     }
 

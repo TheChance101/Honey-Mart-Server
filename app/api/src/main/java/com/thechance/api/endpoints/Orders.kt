@@ -1,14 +1,12 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.model.CreateOrderRequest
 import com.thechance.api.utils.handleException
-import com.thechance.api.utils.orZero
-import com.thechance.api.utils.toOrderItems
 import com.thechance.core.data.usecase.order.OrderUseCasesContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.request.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
@@ -28,18 +26,16 @@ fun Route.orderRoutes(orderUseCasesContainer: OrderUseCasesContainer) {
         /**
          * create new order
          **/
-        post {
-            handleException(call) {
-                val request = call.receive<CreateOrderRequest>()
-                val marketId = request.marketId?.trim()?.toLongOrNull()
-                val orderDate = request.orderDate?.trim().orEmpty()
-                val totalPrice = request.totalPrice?.trim()?.toDoubleOrNull().orZero()
-                val isPaid = request.isPaid?.trim().toBoolean()
-                val orderItems = request.products?.toOrderItems()
-                val newAddedOrder = orderUseCasesContainer.createOrderUseCase(
-                    marketId, orderDate, totalPrice, isPaid, orderItems
-                )
-                call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedOrder))
+        authenticate {
+            post {
+                handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = principal?.getClaim("userId", Long::class)
+                    val newAddedOrder = orderUseCasesContainer.createOrderUseCase(
+                        userId
+                    )
+                    call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedOrder))
+                }
             }
         }
         /**

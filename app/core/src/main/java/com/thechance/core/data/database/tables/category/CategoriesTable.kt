@@ -1,5 +1,6 @@
-package com.thechance.core.data.database.tables
+package com.thechance.core.data.database.tables.category
 
+import com.thechance.core.data.database.tables.MarketTable
 import org.jetbrains.exposed.dao.id.LongIdTable
 
 object CategoriesTable : LongIdTable() {

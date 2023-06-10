@@ -1,49 +1,102 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.datasource.mapper.toOrder
-import com.thechance.core.data.model.Order
+import com.thechance.core.data.database.tables.ProductTable
+import com.thechance.core.data.database.tables.order.OrderMarketTable
 import com.thechance.core.data.model.OrderItem
-import com.thechance.core.data.tables.OrderProductTable
-import com.thechance.core.data.tables.OrderTable
+import com.thechance.core.data.database.tables.order.OrderProductTable
+import com.thechance.core.data.database.tables.order.OrderTable
 import com.thechance.core.data.utils.dbQuery
-import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
+import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.*
 
 class OrderDataSourceImp : OrderDataSource {
-    override suspend fun createOrder(
+    /*override suspend fun createOrder(
         marketId: Long,
-        orderDate: String,
         totalPrice: Double,
-        isPaid: Boolean,
+        userId: Long,
         products: List<OrderItem>
-    ): Order = dbQuery {
+    ): Boolean = dbQuery {
         val newOrder = OrderTable.insert {
-            it[this.marketId] = marketId
-            it[this.orderDate] = orderDate
             it[this.totalPrice] = totalPrice
-            it[this.isPaid] = isPaid
+            it[this.userId] = userId
         }
         OrderProductTable.batchInsert(products) { orderItem ->
             this[OrderProductTable.orderId] = newOrder[OrderTable.id]
             this[OrderProductTable.productId] = orderItem.productId
-            this[OrderProductTable.quantity] = orderItem.quantity
+            this[OrderProductTable.count] = orderItem.count
         }
-        Order(
-            id = newOrder[OrderTable.id].value,
-            marketId = newOrder[OrderTable.marketId],
-            orderDate = newOrder[OrderTable.orderDate],
-            totalPrice = newOrder[OrderTable.totalPrice],
-            isPaid = newOrder[OrderTable.isPaid]
-        )
+        OrderMarketTable.batchInsert(products) { orderItem ->
+            this[OrderMarketTable.orderId] = newOrder[OrderTable.id]
+            this[OrderMarketTable.marketId] = orderItem.marketId
+        }
+        true
+    }*/
+
+    override suspend fun createOrder(
+        totalPrice: Double,
+        products: List<OrderItem>,
+        userId:Long
+    ): Boolean = dbQuery {
+        val newOrder = OrderTable.insert {
+            it[this.totalPrice] = totalPrice
+            it[this.userId] = userId
+        }
+        OrderProductTable.batchInsert(products) { orderItem ->
+            this[OrderProductTable.orderId] = newOrder[OrderTable.id]
+            this[OrderProductTable.productId] = orderItem.productId
+            this[OrderProductTable.count] = orderItem.count
+            this[OrderProductTable.marketId] = orderItem.marketId
+        }
+        OrderMarketTable.batchInsert(products) { orderItem ->
+            this[OrderMarketTable.orderId] = newOrder[OrderTable.id]
+            this[OrderMarketTable.marketId] = orderItem.marketId
+        }
+        true
     }
+
+    data class OrderProducts(
+        val orderId: Long,
+        val products: List<OrderProduct>
+    )
+
+    data class OrderProduct(
+        val productId: Long,
+        val count: Int
+    )
+
+    @Serializable
+    data class OrderWithPrice(
+        val orderId: Long,
+        val totalPrice: Double
+    )
 
     override suspend fun getAllOrdersForMarket(
         marketId: Long
-    ): List<Order> = dbQuery {
-        OrderTable.select { OrderTable.marketId eq marketId }
-            .map { it.toOrder() }
+    ): List<OrderWithPrice> {
+        val marketOrders = mutableListOf<OrderWithPrice>()
+        dbQuery {
+            val orderIds = OrderMarketTable.select { OrderMarketTable.marketId eq marketId }
+                .map { it[OrderMarketTable.orderId].value }
+            val marketOrderProducts = mutableListOf<OrderProducts>()
+            orderIds.forEach { orderId ->
+                marketOrderProducts.add(
+                    OrderProducts(
+                        orderId,
+                        OrderProductTable
+                            .select { (OrderProductTable.orderId eq orderId) and (OrderProductTable.marketId eq marketId) }
+                            .map { OrderProduct(it[OrderProductTable.productId].value, it[OrderProductTable.count]) })
+                )
+            }
+            marketOrderProducts.forEach { order ->
+                var totalPrice = 0.0
+                order.products.forEach { product ->
+                    totalPrice += ProductTable.select { ProductTable.id eq product.productId }
+                        .map { it[ProductTable.price] * product.count }.single()
+                }
+                marketOrders.add(OrderWithPrice(order.orderId, totalPrice))
+            }
+        }
+        return marketOrders
     }
 
     override suspend fun cancelOrder(orderId: Long) {

@@ -123,15 +123,23 @@ class HoneyMartRepositoryImp(
 
     //region order
     override suspend fun createOrder(
-        marketId: Long,
-        orderDate: String,
-        totalPrice: Double,
-        isPaid: Boolean,
-        products: List<OrderItem>
-    ): Order =
-        orderDataSource.createOrder(marketId, orderDate, totalPrice, isPaid, products)
+        cartId: Long,
+        userId: Long
+    ): Boolean {
+        val cart = getCart(cartId)
+        return orderDataSource.createOrder(
+            cart.total, cart.products.map {
+                OrderItem(
+                    productId = it.id,
+                    count = it.count,
+                    marketId = getMarketId(it.id)!!
+                )
+            },
+            userId
+        )
+    }
 
-    override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> =
+    override suspend fun getAllOrdersForMarket(marketId: Long): List<OrderDataSourceImp.OrderWithPrice> =
         orderDataSource.getAllOrdersForMarket(marketId)
 
     override suspend fun cancelOrder(orderId: Long) {

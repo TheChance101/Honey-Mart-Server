@@ -1,12 +1,11 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.database.tables.CartProductTable
 import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toMarket
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Market
-import com.thechance.core.data.database.tables.CategoriesTable
-import com.thechance.core.data.database.tables.CategoryProductTable
+import com.thechance.core.data.database.tables.category.CategoriesTable
+import com.thechance.core.data.database.tables.category.CategoryProductTable
 import com.thechance.core.data.database.tables.MarketTable
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.and

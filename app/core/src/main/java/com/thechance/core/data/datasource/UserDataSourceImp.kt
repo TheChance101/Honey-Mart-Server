@@ -1,7 +1,7 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.database.tables.CartProductTable
-import com.thechance.core.data.database.tables.CartTable
+import com.thechance.core.data.database.tables.cart.CartProductTable
+import com.thechance.core.data.database.tables.cart.CartTable
 import com.thechance.core.data.database.tables.ProductTable
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.model.User

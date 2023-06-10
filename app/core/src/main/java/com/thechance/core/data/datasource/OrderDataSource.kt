@@ -5,16 +5,14 @@ import com.thechance.core.data.model.OrderItem
 
 interface OrderDataSource {
     suspend fun createOrder(
-        marketId:Long,
-        orderDate:String,
         totalPrice: Double,
-        isPaid: Boolean,
-        products: List<OrderItem>
-    ): Order
+        products: List<OrderItem>,
+        userId:Long
+    ): Boolean
 
     suspend fun getAllOrdersForMarket(
-        marketId:Long
-    ):List<Order>
+        marketId: Long
+    ): List<OrderDataSourceImp.OrderWithPrice>
 
     suspend fun cancelOrder(
         orderId:Long

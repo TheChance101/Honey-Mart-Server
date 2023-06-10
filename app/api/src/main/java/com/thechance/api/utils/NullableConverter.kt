@@ -8,6 +8,7 @@ fun Double?.orZero() = this ?: 0.0
 
 fun String?.toLongIds() = this?.split(",")?.map { it.toLongOrNull() ?: 0L } ?: emptyList()
 
+/*
 internal fun List<CreateOrderRequest.OrderItemRequest>?.toOrderItems(): List<OrderItem> {
     return this?.map {
         OrderItem(
@@ -15,4 +16,4 @@ internal fun List<CreateOrderRequest.OrderItemRequest>?.toOrderItems(): List<Ord
             it.quantity.toInt()
         )
     } ?: emptyList()
-}
+}*/
