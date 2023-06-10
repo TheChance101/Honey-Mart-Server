@@ -29,14 +29,20 @@ class ProductDeletedException : Exception()
 class NotValidCategoryList : Exception()
 
 class CategoryNameNotUniqueException : Exception()
+
+//region user
 class InvalidUserIdException : Exception()
-class UserAlreadyExistException : Exception()
+class UsernameAlreadyExistException : Exception()
 class UnKnownUserException : Exception()
 class InvalidUserNameOrPasswordException:Exception()
+class InvalidEmailException : Exception()
+class InvalidNameException : Exception()
+class EmailAlreadyExistException : Exception()
 
-class InvalidPasswordException : Exception()
+class InvalidPasswordInputException:Exception()
+class InvalidUserNameInputException:Exception()
 
-class UserInvalidException : Exception()
+//endregion
 
 //region cart
 class CountInvalidInputException : Exception()

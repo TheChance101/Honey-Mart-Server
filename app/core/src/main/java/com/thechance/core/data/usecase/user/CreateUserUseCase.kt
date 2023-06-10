@@ -8,11 +8,15 @@ class CreateUserUseCase(
     private val repository: AuthRepository,
 ) : KoinComponent {
 
-    suspend operator fun invoke(userName: String?, password: String?): Boolean {
-        isValidInput(userName, password)?.let { throw it }
+    suspend operator fun invoke(userName: String?, password: String?, fullName: String?, email: String?): Boolean {
+
+        isValidInput(userName, password, fullName, email)?.let { throw it }
+
         return if (repository.isUserNameExists(userName!!)) {
-            throw UserAlreadyExistException()
-        } else if (!repository.createUser(userName, password!!)) {
+            throw UsernameAlreadyExistException()
+        } else if (repository.isEmailExists(email!!)) {
+            throw EmailAlreadyExistException()
+        } else if (!repository.createUser(userName, password!!, fullName!!, email)) {
             throw UnKnownUserException()
         } else {
             true
@@ -20,14 +24,22 @@ class CreateUserUseCase(
     }
 
 
-    private fun isValidInput(userName: String?, password: String?): Exception? {
+    private fun isValidInput(userName: String?, password: String?, fullName: String?, email: String?): Exception? {
         return when {
-            checkName(userName) -> {
-                InvalidUserNameOrPasswordException()
+            !isValidUsername(userName) -> {
+                InvalidUserNameInputException()
             }
 
-            checkPassword(password) -> {
-                InvalidUserNameOrPasswordException()
+            !isValidPassword(password) -> {
+                InvalidPasswordInputException()
+            }
+
+            !isValidEmail(email) -> {
+                InvalidEmailException()
+            }
+
+            !isValidFullName(fullName) -> {
+                InvalidNameException()
             }
 
             else -> {
@@ -35,6 +47,5 @@ class CreateUserUseCase(
             }
         }
     }
-
 
 }

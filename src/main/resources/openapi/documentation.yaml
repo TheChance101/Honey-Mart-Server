@@ -827,12 +827,22 @@ paths:
     post:
       description: ""
       parameters:
-      - name: "name"
+      - name: "username"
         in: "query"
         required: false
         schema:
           type: "string"
       - name: "password"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "fullName"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "email"
         in: "query"
         required: false
         schema:

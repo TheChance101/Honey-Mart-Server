@@ -7,11 +7,11 @@ data class ServerResponse<T>(
     val isSuccess: Boolean = true
 ) {
 
-    companion object{
+    companion object {
 
-        fun error(errorMessage: String): ServerResponse<String> {
+        fun error(errorMessage: String, errorType: String? = null): ServerResponse<String> {
             return ServerResponse(
-                value = null,
+                value = errorType,
                 isSuccess = false,
                 message = errorMessage,
             )
