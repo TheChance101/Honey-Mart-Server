@@ -11,7 +11,11 @@ class CreateOrderUseCase(private val repository: HoneyMartRepository) : KoinComp
     suspend operator fun invoke(
         userId: Long?
     ): Boolean {
-        return repository.createOrder(repository.getCartId(userId!!)!!, userId)
+        val isCreated = repository.createOrder(repository.getCartId(userId!!)!!, userId)
+        if (isCreated) {
+            repository.deleteAllProductsInCart(repository.getCartId(userId)!!)
+        }
+        return isCreated
     }
 
     private fun isValidInput(

@@ -132,6 +132,13 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
+    override suspend fun deleteAllProductsInCart(cartId: Long):Boolean {
+        return dbQuery {
+            CartProductTable.deleteWhere { CartProductTable.cartId eq cartId }
+            true
+        }
+    }
+
     override suspend fun updateCount(cartId: Long, productId: Long, count: Int): Boolean {
         return dbQuery {
             CartProductTable.update({ (CartProductTable.cartId eq cartId) and (CartProductTable.productId eq productId) }) {

@@ -32,4 +32,5 @@ interface UserDataSource {
 
     suspend fun createCart(userId: Long): Long
     //endregion
+    suspend fun deleteAllProductsInCart(cartId: Long): Boolean
 }
