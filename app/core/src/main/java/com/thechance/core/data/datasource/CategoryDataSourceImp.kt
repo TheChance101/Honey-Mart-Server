@@ -4,8 +4,8 @@ import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product
-import com.thechance.core.data.database.tables.CategoriesTable
-import com.thechance.core.data.database.tables.CategoryProductTable
+import com.thechance.core.data.database.tables.category.CategoriesTable
+import com.thechance.core.data.database.tables.category.CategoryProductTable
 import com.thechance.core.data.database.tables.ProductTable
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.*

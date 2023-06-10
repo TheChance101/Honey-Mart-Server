@@ -6,10 +6,7 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 
-suspend fun handleException(
-    call: ApplicationCall,
-    block: suspend () -> Unit,
-) {
+suspend fun handleException(call: ApplicationCall, block: suspend () -> Unit) {
     try {
         block()
     } catch (e: Exception) {
@@ -85,23 +82,30 @@ suspend fun handleException(
             }
 
             is NotValidCategoryList -> {
-                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("wrong categories ids  "))
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("wrong categories ids"))
             }
 
             is CategoryNameNotUniqueException -> {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("this category name already exist."))
             }
+
             is UserAlreadyExistException -> {
                 call.respond(HttpStatusCode.Conflict, ServerResponse.error("user is already exist"))
             }
+
             is InvalidUserIdException -> {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("invalid user id"))
             }
+
             is UnKnownUserException -> {
                 call.respond(HttpStatusCode.Conflict, ServerResponse.error("Unknown user, please try again"))
             }
-            is InvalidUserNameOrPasswordException->{
-                call.respond(HttpStatusCode.Conflict, ServerResponse.error("Invalid username or password, please try again"))
+
+            is InvalidUserNameOrPasswordException -> {
+                call.respond(
+                    HttpStatusCode.Conflict,
+                    ServerResponse.error("Invalid username or password, please try again")
+                )
             }
 
             else -> {
