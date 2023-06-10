@@ -1,9 +1,10 @@
-package com.thechance.api.endpoints
+package com.thechance.api.endpoints.user
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCart
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.cart.CartUseCasesContainer
+import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -23,8 +24,9 @@ fun Route.cartRoutes() {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
+                    val role = principal?.payload?.getClaim(ROLE_TYPE).toString()
 
-                    val products = cartUseCasesContainer.getCartUseCase(userId).toApiCart()
+                    val products = cartUseCasesContainer.getCartUseCase(userId, role = role).toApiCart()
                     call.respond(ServerResponse.success(products))
                 }
             }
@@ -33,11 +35,12 @@ fun Route.cartRoutes() {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
+                    val role = principal?.payload?.getClaim(ROLE_TYPE).toString()
 
                     val params = call.receiveParameters()
                     val productId = params["productId"]?.trim()?.toLongOrNull()
                     val count = params["count"]?.trim()?.toIntOrNull()
-                    cartUseCasesContainer.addProductToCartUseCase(userId = userId, productId = productId, count)
+                    cartUseCasesContainer.addProductToCartUseCase(userId = userId, productId = productId, count, role)
                     call.respond(HttpStatusCode.Created, ServerResponse.success("Added successfully"))
                 }
             }
@@ -46,10 +49,11 @@ fun Route.cartRoutes() {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
+                    val role = principal?.payload?.getClaim(ROLE_TYPE).toString()
 
                     val params = call.receiveParameters()
                     val productId = params["productId"]?.trim()?.toLongOrNull()
-                    cartUseCasesContainer.deleteProductInCartUseCase(userId = userId, productId = productId)
+                    cartUseCasesContainer.deleteProductInCartUseCase(userId = userId, productId = productId, role)
                     call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
                 }
             }

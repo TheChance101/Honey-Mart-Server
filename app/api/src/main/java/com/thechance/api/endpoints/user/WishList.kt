@@ -1,4 +1,4 @@
-package com.thechance.api.endpoints
+package com.thechance.api.endpoints.user
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiProductInWishListModel

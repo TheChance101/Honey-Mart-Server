@@ -12,6 +12,7 @@ import com.thechance.core.domain.usecase.order.GetOrdersForMarketUseCase
 import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
 import com.thechance.core.domain.usecase.owner.CreateOwnerUseCase
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
+import com.thechance.core.domain.usecase.owner.LoginMarketOwnerUseCase
 import com.thechance.core.domain.usecase.product.*
 import com.thechance.core.domain.usecase.user.CreateUserUseCase
 import com.thechance.core.domain.usecase.user.UserUseCaseContainer
@@ -55,8 +56,6 @@ val wishListUseCaseModule = module {
     singleOf(::AddProductToWishListUseCase) { bind<AddProductToWishListUseCase>() }
     singleOf(::GetWishListUseCase) { bind<GetWishListUseCase>() }
     singleOf(::DeleteProductFromWishListUseCase) { bind<DeleteProductFromWishListUseCase>() }
-
-
 }
 
 val orderUseCaseModule = module {
@@ -74,6 +73,7 @@ val userUseCaseModule = module {
 val ownerUseCaseModule = module {
     singleOf(::OwnerUseCaseContainer) { bind<OwnerUseCaseContainer>() }
     singleOf(::CreateOwnerUseCase) { bind<CreateOwnerUseCase>() }
+    singleOf(::LoginMarketOwnerUseCase) { bind<LoginMarketOwnerUseCase>() }
 }
 
 val cartUseCase = module {

@@ -17,16 +17,26 @@ fun Route.ownerRoutes() {
 
     route("/owner") {
 
-        post {
+        post("/signup") {
             handleException(call) {
                 val params = call.receiveParameters()
                 val name = params["name"]?.trim()
                 val password = params["password"]?.trim()
 
-                val newUser = ownerUseCaseContainer.createOwnerUseCase(name, password).toApiOwnerModel()
-                call.respond(HttpStatusCode.Created, ServerResponse.success(newUser, "user created successfully"))
+                ownerUseCaseContainer.createOwnerUseCase(name, password)
+                call.respond(HttpStatusCode.Created, ServerResponse.success("user created successfully"))
             }
         }
 
+        post("/login") {
+            handleException(call) {
+                val params = call.receiveParameters()
+                val name = params["username"]?.trim().toString()
+                val password = params["password"]?.trim().toString()
+
+                val token = ownerUseCaseContainer.verifyMarketOwnerUseCase(name, password)
+                call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
+            }
+        }
     }
 }

@@ -61,3 +61,11 @@ internal fun isValidFullName(fullName: String?): Boolean {
         fullNameRegex.matches(fullName)
     }
 }
+
+internal fun isValidRole(role: String, inputRole: String?): Boolean {
+    return if (inputRole == null) {
+        false
+    } else {
+        inputRole == role
+    }
+}
