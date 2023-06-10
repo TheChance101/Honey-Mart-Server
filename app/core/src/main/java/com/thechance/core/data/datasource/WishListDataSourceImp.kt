@@ -1,14 +1,8 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.model.Category
-import com.thechance.core.data.model.Product
 import com.thechance.core.data.model.WishList
-import com.thechance.core.data.model.WishListItem
-import com.thechance.core.data.tables.CategoriesTable
-import com.thechance.core.data.tables.UserTable
 import com.thechance.core.data.tables.WishListTable
 import com.thechance.core.data.utils.dbQuery
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent

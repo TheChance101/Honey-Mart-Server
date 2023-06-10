@@ -1,7 +1,6 @@
 package com.thechance.core.data.datasource
 
 import com.thechance.core.data.model.WishList
-import com.thechance.core.data.model.WishListItem
 
 interface WishListDataSource {
     suspend fun createWishList(productId: Long, userId: Long): WishList
