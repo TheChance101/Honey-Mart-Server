@@ -1,6 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.mapper.toApiOwnerModel
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
 import io.ktor.http.*
@@ -22,7 +23,7 @@ fun Route.ownerRoutes() {
                 val name = params["name"]?.trim()
                 val password = params["password"]?.trim()
 
-                val newUser = ownerUseCaseContainer.createOwnerUseCase(name, password)
+                val newUser = ownerUseCaseContainer.createOwnerUseCase(name, password).toApiOwnerModel()
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newUser, "user created successfully"))
             }
         }

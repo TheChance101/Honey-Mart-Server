@@ -24,5 +24,4 @@ class VerifyUserUseCase(private val repository: AuthRepository) : KoinComponent 
         }
     }
 
-
 }

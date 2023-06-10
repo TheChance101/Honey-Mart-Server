@@ -1,6 +1,6 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.model.Owner
+import com.thechance.core.entity.Owner
 import com.thechance.core.data.datasource.database.tables.OwnerTable
 import com.thechance.core.data.repository.dataSource.OwnerDataSource
 import com.thechance.core.utils.dbQuery

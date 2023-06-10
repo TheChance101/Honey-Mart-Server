@@ -1,8 +1,6 @@
 package com.thechance.core.data.repository.dataSource
 
-import com.thechance.core.data.model.Cart
-import com.thechance.core.data.model.ProductInWishList
-import com.thechance.core.data.model.User
+import com.thechance.core.entity.*
 import com.thechance.core.data.security.hashing.SaltedHash
 
 interface UserDataSource {

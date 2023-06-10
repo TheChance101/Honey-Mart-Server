@@ -10,7 +10,7 @@ import org.koin.ktor.ext.inject
 
 fun Route.deleteAllTables() {
 
-    val deleteAllTablesUseCase: com.thechance.core.domain.usecase.DeleteAllTablesUseCase by inject()
+    val deleteAllTablesUseCase: DeleteAllTablesUseCase by inject()
 
     delete("/deleteAllTables") {
         try {

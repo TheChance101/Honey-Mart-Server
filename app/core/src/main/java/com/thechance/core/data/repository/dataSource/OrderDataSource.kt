@@ -1,7 +1,6 @@
 package com.thechance.core.data.repository.dataSource
 
-import com.thechance.core.data.model.OrderItem
-import com.thechance.core.data.model.Order
+import com.thechance.core.entity.*
 
 interface OrderDataSource {
     suspend fun createOrder(

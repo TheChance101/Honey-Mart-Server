@@ -2,8 +2,7 @@ package com.thechance.core.data.datasource
 
 import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toProduct
-import com.thechance.core.data.model.Category
-import com.thechance.core.data.model.Product
+import com.thechance.core.entity.*
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
 import com.thechance.core.data.datasource.database.tables.ProductTable

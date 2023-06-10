@@ -1,8 +1,6 @@
 package com.thechance.core.data.repository.dataSource
 
-import com.thechance.core.data.model.Category
-import com.thechance.core.data.model.Market
-import com.thechance.core.data.model.Product
+import com.thechance.core.entity.*
 
 interface MarketDataSource {
 

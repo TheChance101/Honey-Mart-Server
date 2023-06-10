@@ -4,18 +4,14 @@ import com.thechance.core.data.datasource.database.tables.ProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderMarketTable
 import com.thechance.core.data.datasource.database.tables.order.OrderProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderTable
-import com.thechance.core.data.model.OrderItem
-import com.thechance.core.data.model.Order
 import com.thechance.core.data.repository.dataSource.OrderDataSource
+import com.thechance.core.entity.Order
+import com.thechance.core.entity.OrderItem
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 
 class OrderDataSourceImp : OrderDataSource {
-    override suspend fun createOrder(
-        totalPrice: Double,
-        products: List<OrderItem>,
-        userId: Long
-    ): Boolean = dbQuery {
+    override suspend fun createOrder(totalPrice: Double, products: List<OrderItem>, userId: Long): Boolean = dbQuery {
         val newOrder = OrderTable.insert {
             it[this.totalPrice] = totalPrice
             it[this.userId] = userId

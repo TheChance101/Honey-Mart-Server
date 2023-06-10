@@ -1,7 +1,6 @@
 package com.thechance.core.domain.repository
 
-import com.thechance.core.data.model.Owner
-import com.thechance.core.data.model.User
+import com.thechance.core.entity.*
 
 interface AuthRepository {
 

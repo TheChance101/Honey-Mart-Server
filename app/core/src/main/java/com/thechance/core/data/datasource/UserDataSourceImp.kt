@@ -7,7 +7,7 @@ import com.thechance.core.data.datasource.database.tables.cart.CartTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListProductTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListTable
 import com.thechance.core.data.datasource.mapper.toProduct
-import com.thechance.core.data.model.*
+import com.thechance.core.entity.*
 import com.thechance.core.data.repository.dataSource.UserDataSource
 import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.utils.dbQuery

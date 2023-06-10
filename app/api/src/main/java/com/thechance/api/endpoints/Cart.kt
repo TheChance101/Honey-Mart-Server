@@ -1,6 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.mapper.toApiCart
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.cart.CartUseCasesContainer
 import io.ktor.http.*
@@ -23,7 +24,7 @@ fun Route.cartRoutes() {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.getClaim("userId", Long::class)
 
-                    val products = cartUseCasesContainer.getCartUseCase(userId)
+                    val products = cartUseCasesContainer.getCartUseCase(userId).toApiCart()
                     call.respond(ServerResponse.success(products))
                 }
             }

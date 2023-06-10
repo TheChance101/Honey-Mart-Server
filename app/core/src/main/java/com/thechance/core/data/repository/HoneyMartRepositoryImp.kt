@@ -1,6 +1,6 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.data.model.*
+import com.thechance.core.entity.*
 import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.domain.repository.HoneyMartRepository
 import org.koin.core.component.KoinComponent
@@ -165,7 +165,7 @@ class HoneyMartRepositoryImp(
     override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> =
         orderDataSource.getAllOrdersForMarket(marketId)
 
-    override suspend fun cancelOrder(orderId: Long):Boolean =
+    override suspend fun cancelOrder(orderId: Long): Boolean =
         orderDataSource.cancelOrder(orderId)
 
     override suspend fun isOrderExist(orderId: Long): Boolean =

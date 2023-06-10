@@ -2,12 +2,12 @@ package com.thechance.core.data.datasource
 
 import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toMarket
-import com.thechance.core.data.model.Category
-import com.thechance.core.data.model.Market
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
 import com.thechance.core.data.datasource.database.tables.MarketTable
 import com.thechance.core.data.repository.dataSource.MarketDataSource
+import com.thechance.core.entity.Category
+import com.thechance.core.entity.Market
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert

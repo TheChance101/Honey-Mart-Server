@@ -24,9 +24,8 @@ fun Route.userRoutes() {
                 val fullName = params["fullName"]?.trim()
                 val email = params["email"]?.trim()
 
-                val newUser =
-                    userUseCasesContainer.createUserUseCase(name, password, fullName = fullName, email = email)
-                call.respond(HttpStatusCode.Created, ServerResponse.success(newUser, "user created successfully"))
+                userUseCasesContainer.createUserUseCase(name, password, fullName = fullName, email = email)
+                call.respond(HttpStatusCode.Created, ServerResponse.success("user created successfully"))
             }
         }
 

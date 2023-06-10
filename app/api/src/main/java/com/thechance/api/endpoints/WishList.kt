@@ -1,6 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.mapper.toApiProductInWishListModel
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.wishlist.WishListUseCaseContainer
 import io.ktor.http.*
@@ -27,10 +28,8 @@ fun Route.wishListRoutes() {
                     val params = call.receiveParameters()
                     val productId = params["productId"]?.trim()?.toLongOrNull()
 
-                    wishListUseCaseContainer.addProductToWishListUseCase(
-                        userId = userId,
-                        productId = productId
-                    )
+                    wishListUseCaseContainer.addProductToWishListUseCase(userId = userId, productId = productId)
+
                     call.respond(
                         HttpStatusCode.Created,
                         ServerResponse.success("Added To WishList successfully \uD83E\uDD73")
@@ -42,11 +41,10 @@ fun Route.wishListRoutes() {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.getClaim("userId", Long::class)
 
-                    val wishList = wishListUseCaseContainer.getWishListUseCase(userId)
-                    call.respond(
-                        HttpStatusCode.OK,
-                        ServerResponse.success(wishList)
-                    )
+                    val wishList =
+                        wishListUseCaseContainer.getWishListUseCase(userId).map { it.toApiProductInWishListModel() }
+
+                    call.respond(HttpStatusCode.OK, ServerResponse.success(wishList))
                 }
             }
 

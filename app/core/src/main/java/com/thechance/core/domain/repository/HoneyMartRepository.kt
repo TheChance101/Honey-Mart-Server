@@ -1,6 +1,6 @@
 package com.thechance.core.domain.repository
 
-import com.thechance.core.data.model.*
+import com.thechance.core.entity.*
 
 interface HoneyMartRepository {
 

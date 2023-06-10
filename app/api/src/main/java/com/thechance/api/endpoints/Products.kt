@@ -1,6 +1,8 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.mapper.toApiCategoryModel
+import com.thechance.api.mapper.toApiProductModel
 import com.thechance.api.utils.handleException
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
@@ -22,6 +24,7 @@ fun Route.productsRoutes() {
             val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
             handleException(call) {
                 val categories = productUseCasesContainer.getCategoriesForProductUseCase(productId = productId)
+                    .map { it.toApiCategoryModel() }
                 call.respond(ServerResponse.success(categories))
             }
         }
@@ -36,7 +39,7 @@ fun Route.productsRoutes() {
 
                 val newAddedProduct = productUseCasesContainer.createProductUseCase(
                     productName, productPrice, productQuantity, categoriesId
-                )
+                ).toApiProductModel()
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
             }
         }

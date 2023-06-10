@@ -1,6 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.mapper.toApiOrderModel
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
 import io.ktor.http.*
@@ -23,7 +24,7 @@ fun Route.orderRoutes() {
             handleException(call) {
                 val params = call.request.queryParameters
                 val marketId = params["marketId"]?.trim()?.toLongOrNull()
-                val orders = orderUseCasesContainer.getOrdersForMarketUseCase(marketId)
+                val orders = orderUseCasesContainer.getOrdersForMarketUseCase(marketId).map { it.toApiOrderModel() }
                 call.respond(ServerResponse.success(orders))
             }
         }
@@ -35,9 +36,7 @@ fun Route.orderRoutes() {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.getClaim("userId", Long::class)
-                    val isAdded = orderUseCasesContainer.createOrderUseCase(
-                        userId
-                    )
+                    val isAdded = orderUseCasesContainer.createOrderUseCase(userId)
                     call.respond(HttpStatusCode.Created, ServerResponse.success(isAdded))
                 }
             }

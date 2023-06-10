@@ -1,6 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.mapper.toApiProductModel
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.category.CategoryUseCasesContainer
 import io.ktor.http.*
@@ -22,6 +23,7 @@ fun Route.categoryRoutes() {
             val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
             handleException(call) {
                 val products = categoryUseCasesContainer.getAllCategoriesUseCase(categoryId = categoryId)
+                    .map { it.toApiProductModel() }
                 call.respond(ServerResponse.success(products))
             }
         }

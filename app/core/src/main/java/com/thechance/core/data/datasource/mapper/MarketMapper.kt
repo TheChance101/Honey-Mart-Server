@@ -1,6 +1,6 @@
 package com.thechance.core.data.datasource.mapper
 
-import com.thechance.core.data.model.Market
+import com.thechance.core.entity.Market
 import com.thechance.core.data.datasource.database.tables.MarketTable
 import org.jetbrains.exposed.sql.ResultRow
 

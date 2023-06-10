@@ -1,7 +1,6 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.data.model.Owner
-import com.thechance.core.data.model.User
+import com.thechance.core.entity.*
 import com.thechance.core.data.repository.dataSource.OwnerDataSource
 import com.thechance.core.data.repository.dataSource.UserDataSource
 import com.thechance.core.data.security.hashing.HashingService

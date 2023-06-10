@@ -1,6 +1,6 @@
 package com.thechance.core.data.repository.dataSource
 
-import com.thechance.core.data.model.Owner
+import com.thechance.core.entity.*
 
 interface OwnerDataSource {
 
