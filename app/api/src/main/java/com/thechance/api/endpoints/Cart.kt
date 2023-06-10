@@ -1,7 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.mapper.toApiCart
+import com.thechance.api.model.mapper.toApiCart
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.cart.CartUseCasesContainer
 import io.ktor.http.*
@@ -22,7 +22,7 @@ fun Route.cartRoutes() {
             get {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.getClaim("userId", Long::class)
+                    val userId = principal?.payload?.subject?.toLongOrNull()
 
                     val products = cartUseCasesContainer.getCartUseCase(userId).toApiCart()
                     call.respond(ServerResponse.success(products))
@@ -32,7 +32,7 @@ fun Route.cartRoutes() {
             post("/addProduct") {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.getClaim("userId", Long::class)
+                    val userId = principal?.payload?.subject?.toLongOrNull()
 
                     val params = call.receiveParameters()
                     val productId = params["productId"]?.trim()?.toLongOrNull()
@@ -45,7 +45,7 @@ fun Route.cartRoutes() {
             delete {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.getClaim("userId", Long::class)
+                    val userId = principal?.payload?.subject?.toLongOrNull()
 
                     val params = call.receiveParameters()
                     val productId = params["productId"]?.trim()?.toLongOrNull()

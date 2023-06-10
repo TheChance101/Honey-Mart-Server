@@ -1,7 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.mapper.toApiOwnerModel
+import com.thechance.api.model.mapper.toApiOwnerModel
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
 import io.ktor.http.*
