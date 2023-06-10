@@ -4,9 +4,7 @@ import com.thechance.core.data.repository.AuthRepository
 import com.thechance.core.data.utils.InvalidUserNameOrPasswordException
 import org.koin.core.component.KoinComponent
 
-class VerifyUserUseCase(
-    private val repository: AuthRepository,
-) : KoinComponent {
+class VerifyUserUseCase(private val repository: AuthRepository) : KoinComponent {
 
     suspend operator fun invoke(userName: String, password: String): String {
         return if (repository.isUserNameExists(userName)) {

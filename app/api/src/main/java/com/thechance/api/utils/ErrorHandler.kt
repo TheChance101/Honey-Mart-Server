@@ -89,8 +89,11 @@ suspend fun handleException(call: ApplicationCall, block: suspend () -> Unit) {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("this category name already exist."))
             }
 
-            is UserAlreadyExistException -> {
-                call.respond(HttpStatusCode.Conflict, ServerResponse.error("user is already exist"))
+            is UsernameAlreadyExistException -> {
+                call.respond(
+                    HttpStatusCode.Conflict,
+                    ServerResponse.error("user is already exist", "UsernameAlreadyExistException")
+                )
             }
 
             is InvalidUserIdException -> {
@@ -111,6 +114,47 @@ suspend fun handleException(call: ApplicationCall, block: suspend () -> Unit) {
                 call.respond(
                     HttpStatusCode.Conflict,
                     ServerResponse.error("This product is  already in wish list")
+                )
+            }
+
+            is InvalidEmailException -> {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error("Email is not valid", "InvalidEmailException")
+                )
+            }
+
+            is InvalidNameException -> {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error("Name is not valid", "InvalidNameException")
+                )
+            }
+
+            is EmailAlreadyExistException -> {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error("This Email already exist", "EmailAlreadyExistException")
+                )
+            }
+
+            is InvalidPasswordInputException -> {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error(
+                        "Password should be at least has one letter, one special character, one number, and a total length between 8 to 14 characters",
+                        "InvalidPasswordInputException"
+                    )
+                )
+            }
+
+            is InvalidUserNameInputException -> {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error(
+                        "The username must be 8 to 14 characters in length and should only include the dot (.) and underscore (_) characters.",
+                        "InvalidUserNameInputException"
+                    )
                 )
             }
 

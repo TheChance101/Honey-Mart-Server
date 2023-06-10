@@ -15,14 +15,17 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.component.KoinComponent
 
 class UserDataSourceImp : UserDataSource, KoinComponent {
-
     //region user
-    override suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean {
+    override suspend fun createUser(
+        userName: String, saltedHash: SaltedHash, fullName: String, email: String
+    ): Boolean {
         return dbQuery {
             NormalUserTable.insert {
                 it[NormalUserTable.userName] = userName
                 it[NormalUserTable.password] = saltedHash.hash
                 it[NormalUserTable.salt] = saltedHash.salt
+                it[NormalUserTable.fullName] = fullName
+                it[NormalUserTable.email] = email
             }
             true
         }
@@ -53,7 +56,12 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
                     salt = it[NormalUserTable.salt]
                 )
             }.single()
+        }
+    }
 
+    override suspend fun isEmailExists(email: String): Boolean {
+        return dbQuery {
+            NormalUserTable.select { NormalUserTable.email eq email }.singleOrNull() != null
         }
     }
     //endregion
