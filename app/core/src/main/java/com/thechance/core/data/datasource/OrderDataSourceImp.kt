@@ -5,7 +5,7 @@ import com.thechance.core.data.database.tables.order.OrderMarketTable
 import com.thechance.core.data.database.tables.order.OrderProductTable
 import com.thechance.core.data.database.tables.order.OrderTable
 import com.thechance.core.data.model.OrderItem
-import com.thechance.core.data.model.OrderWithPrice
+import com.thechance.core.data.model.Order
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 
@@ -32,7 +32,7 @@ class OrderDataSourceImp : OrderDataSource {
         true
     }
 
-    override suspend fun getAllOrdersForMarket(marketId: Long): List<OrderWithPrice> = dbQuery {
+    override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> = dbQuery {
         OrderMarketTable
             .join(OrderProductTable, JoinType.INNER, additionalConstraint = {
                 OrderMarketTable.orderId eq OrderProductTable.orderId and (OrderMarketTable.marketId eq marketId)
@@ -49,7 +49,7 @@ class OrderDataSourceImp : OrderDataSource {
                         .singleOrNull()?.get(ProductTable.price) ?: 0.0
                     price * count
                 }
-                OrderWithPrice(orderId, totalPrice)
+                Order(orderId, totalPrice)
             }
     }
 
