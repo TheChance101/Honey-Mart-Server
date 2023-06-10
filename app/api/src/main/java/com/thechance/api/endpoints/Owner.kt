@@ -20,7 +20,7 @@ fun Route.ownerRoutes() {
         post("/signup") {
             handleException(call) {
                 val params = call.receiveParameters()
-                val name = params["name"]?.trim()
+                val name = params["username"]?.trim()
                 val password = params["password"]?.trim()
 
                 ownerUseCaseContainer.createOwnerUseCase(name, password)

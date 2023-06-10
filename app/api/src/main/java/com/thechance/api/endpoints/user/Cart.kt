@@ -24,7 +24,7 @@ fun Route.cartRoutes() {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
-                    val role = principal?.payload?.getClaim(ROLE_TYPE).toString()
+                    val role = principal?.getClaim(ROLE_TYPE,String::class)
 
                     val products = cartUseCasesContainer.getCartUseCase(userId, role = role).toApiCart()
                     call.respond(ServerResponse.success(products))
@@ -35,7 +35,7 @@ fun Route.cartRoutes() {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
-                    val role = principal?.payload?.getClaim(ROLE_TYPE).toString()
+                    val role = principal?.getClaim(ROLE_TYPE,String::class)
 
                     val params = call.receiveParameters()
                     val productId = params["productId"]?.trim()?.toLongOrNull()
@@ -49,7 +49,7 @@ fun Route.cartRoutes() {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
-                    val role = principal?.payload?.getClaim(ROLE_TYPE).toString()
+                    val role = principal?.getClaim(ROLE_TYPE,String::class)
 
                     val params = call.receiveParameters()
                     val productId = params["productId"]?.trim()?.toLongOrNull()

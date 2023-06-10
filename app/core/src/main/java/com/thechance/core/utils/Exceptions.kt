@@ -54,3 +54,8 @@ class ProductAlreadyInWishListException : Exception()
 class CountInvalidInputException : Exception()
 
 //endregion
+
+//region owner
+class InvalidOwnerIdException : Exception()
+
+//endregion

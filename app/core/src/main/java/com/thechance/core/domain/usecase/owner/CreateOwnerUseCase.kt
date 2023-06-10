@@ -22,11 +22,11 @@ class CreateOwnerUseCase(private val repository: AuthRepository) : KoinComponent
 
     private fun isValidInput(ownerName: String?, password: String?): Exception? {
         return when {
-            isValidUsername(ownerName) -> {
+            !isValidUsername(ownerName) -> {
                 InvalidUserNameOrPasswordException()
             }
 
-            isValidPassword(password) -> {
+            !isValidPassword(password) -> {
                 InvalidUserNameOrPasswordException()
             }
 
