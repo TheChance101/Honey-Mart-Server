@@ -17,7 +17,7 @@ class AuthRepositoryImp(
     private val hashingService: HashingService,
     private val tokenService: TokenService,
     private val tokenConfig: TokenConfig
-) : AuthRepository,KoinComponent {
+) : AuthRepository, KoinComponent {
     //region user
     override suspend fun createUser(userName: String, password: String): Boolean {
         val saltedHash = hashingService.generateSaltedHash(password)

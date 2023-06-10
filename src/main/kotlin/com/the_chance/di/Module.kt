@@ -3,9 +3,9 @@ package com.the_chance.di
 import com.thechance.core.data.database.*
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.repository.AuthRepository
+import com.thechance.core.data.repository.AuthRepositoryImp
 import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.repository.HoneyMartRepositoryImp
-import com.thechance.core.data.repository.AuthRepositoryImp
 import com.thechance.core.data.security.hashing.HashingService
 import com.thechance.core.data.security.hashing.SHA256HashingService
 import com.thechance.core.data.security.token.JwtTokenService
@@ -39,7 +39,6 @@ val dataSourceModules = module {
     single<ProductDataSource> { ProductDataSourceImp() }
     single<UserDataSource> { UserDataSourceImp() }
     single<OwnerDataSource> { OwnerDataSourceImp() }
-    single<OrderDataSource> { OrderDataSourceImp() }
 }
 
 val productUseCaseModule = module {
@@ -106,6 +105,10 @@ val appModules = module {
             secret = System.getenv("HONEY_JWT_SECRET")
         )
     }
+
+    singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
+    singleOf(::AuthRepositoryImp) { bind<AuthRepository>() }
+
     includes(
         cartUseCase,
         dataSourceModules,
@@ -116,7 +119,5 @@ val appModules = module {
         userUseCaseModule,
         ownerUseCaseModule
     )
-    singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
-    singleOf(::AuthRepositoryImp) { bind<AuthRepository>() }
 }
 

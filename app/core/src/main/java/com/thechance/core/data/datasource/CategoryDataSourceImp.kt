@@ -38,7 +38,7 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
     }
 
     override suspend fun deleteCategory(categoryId: Long): Boolean = dbQuery {
-        CategoriesTable.update({ CategoriesTable.isDeleted eq false }) {
+        CategoriesTable.update({ (CategoriesTable.id eq categoryId) and (CategoriesTable.isDeleted eq false) }) {
             it[isDeleted] = true
         }
         true
@@ -79,11 +79,5 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
                     CategoriesTable.isDeleted.eq(false)
         }.singleOrNull()
     } == null
-
-
-    /**
-     * TODO: need check per Market.
-     * */
-
 
 }
