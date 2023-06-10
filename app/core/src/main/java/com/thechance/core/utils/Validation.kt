@@ -61,4 +61,3 @@ internal fun isValidFullName(fullName: String?): Boolean {
         fullNameRegex.matches(fullName)
     }
 }
-

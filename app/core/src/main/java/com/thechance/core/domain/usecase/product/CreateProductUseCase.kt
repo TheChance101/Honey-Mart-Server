@@ -22,15 +22,34 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
     ): Exception? {
         return when {
-            isValidUsername(productName) -> { InvalidProductNameException() }
+            !isValidProductName(productName) -> {
+                InvalidProductNameException()
+            }
 
-            checkProductQuantity(productQuantity) -> { InvalidProductQuantityException() }
+            checkProductQuantity(productQuantity) -> {
+                InvalidProductQuantityException()
+            }
 
-            isInvalidPrice(productPrice) -> { InvalidProductPriceException() }
+            isInvalidPrice(productPrice) -> {
+                InvalidProductPriceException()
+            }
 
-            isValidIds(categoriesId) -> { InvalidCategoryIdException() }
+            isValidIds(categoriesId) -> {
+                InvalidCategoryIdException()
+            }
 
-            else -> { null }
+            else -> {
+                null
+            }
+        }
+    }
+
+    private fun isValidProductName(productName: String?): Boolean {
+        return if (productName == null) {
+            false
+        } else {
+            val fullNameRegex = Regex("^[a-zA-Z0-9 ]{4,20}$")
+            fullNameRegex.matches(productName)
         }
     }
 
