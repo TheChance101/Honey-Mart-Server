@@ -28,25 +28,18 @@ class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
     private fun isValidInput(
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
     ): Exception? {
-        return when {
-            isInvalidId(productId) -> {
-                InvalidProductIdException()
-            }
-            productName == null && productPrice == null && productQuantity.isNullOrEmpty() -> {
-                InvalidInputException()
-            }
-            productName != null && !isValidNameLength(productName) -> {
-                InvalidProductNameException()
-            }
-            productQuantity != null && !isValidNameLength(productQuantity) -> {
-                InvalidProductQuantityException()
-            }
-            productPrice != null && invalidPrice(productPrice) -> {
-                InvalidProductPriceException()
-            }
-            else -> {
-                null
-            }
+        return if (isInvalidId(productId)) {
+            InvalidProductIdException()
+        } else if (productName == null && productPrice == null && productQuantity.isNullOrEmpty()) {
+            InvalidInputException()
+        } else if (productName != null && !isValidNameLength(productName)) {
+            InvalidProductNameException()
+        } else if (productQuantity != null && !isValidNameLength(productQuantity)) {
+            InvalidProductQuantityException()
+        } else if (productPrice != null && isInvalidPrice(productPrice)) {
+            InvalidProductPriceException()
+        } else {
+            null
         }
     }
 }

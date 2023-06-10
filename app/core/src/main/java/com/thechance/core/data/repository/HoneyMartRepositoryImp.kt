@@ -37,6 +37,24 @@ class HoneyMartRepositoryImp(
     override suspend fun deleteAllProductsInCart(cartId: Long): Boolean =
         userDataSource.deleteAllProductsInCart(cartId)
 
+
+    //endregion
+
+    //region WishList
+    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> =
+        userDataSource.getWishList(wishListId)
+
+    override suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.deleteProductFromWishList(wishListId, productId)
+
+    override suspend fun getWishListId(userId: Long): Long? = userDataSource.getWishListId(userId)
+    override suspend fun addToWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.addProductToWishList(wishListId, productId)
+
+    override suspend fun createWishList(userId: Long): Long = userDataSource.createWishList(userId)
+    override suspend fun isProductInWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.isProductInWishList(wishListId, productId)
+
     //endregion
 
     //region market
@@ -121,6 +139,7 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isProductDeleted(id: Long): Boolean? =
         productDataSource.isDeleted(id)
+    //endregion
 
     //endregion
 
@@ -152,5 +171,6 @@ class HoneyMartRepositoryImp(
         orderDataSource.isOrderExist(orderId)
     //end region
 //endregion
+
 
 }

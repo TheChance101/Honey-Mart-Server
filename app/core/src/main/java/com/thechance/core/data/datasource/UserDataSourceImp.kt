@@ -1,29 +1,31 @@
 package com.thechance.core.data.datasource
 
+import com.thechance.core.data.database.tables.NormalUserTable
+import com.thechance.core.data.database.tables.ProductTable
 import com.thechance.core.data.database.tables.cart.CartProductTable
 import com.thechance.core.data.database.tables.cart.CartTable
-import com.thechance.core.data.database.tables.ProductTable
-import com.thechance.core.data.model.Product
-import com.thechance.core.data.model.User
-import com.thechance.core.data.database.tables.NormalUserTable
+import com.thechance.core.data.database.tables.wishlist.WishListProductTable
+import com.thechance.core.data.database.tables.wishlist.WishListTable
 import com.thechance.core.data.datasource.mapper.toProduct
-import com.thechance.core.data.model.Cart
-import com.thechance.core.data.model.ProductInCart
+import com.thechance.core.data.model.*
 import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
 
 class UserDataSourceImp : UserDataSource, KoinComponent {
-    override suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean {
+    //region user
+    override suspend fun createUser(
+        userName: String, saltedHash: SaltedHash, fullName: String, email: String
+    ): Boolean {
         return dbQuery {
             NormalUserTable.insert {
                 it[NormalUserTable.userName] = userName
                 it[NormalUserTable.password] = saltedHash.hash
                 it[NormalUserTable.salt] = saltedHash.salt
+                it[NormalUserTable.fullName] = fullName
+                it[NormalUserTable.email] = email
             }
             true
         }
@@ -54,7 +56,12 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
                     salt = it[NormalUserTable.salt]
                 )
             }.single()
+        }
+    }
 
+    override suspend fun isEmailExists(email: String): Boolean {
+        return dbQuery {
+            NormalUserTable.select { NormalUserTable.email eq email }.singleOrNull() != null
         }
     }
     //endregion
@@ -69,6 +76,7 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
             newCart[CartTable.id].value
         }
     }
+
 
     override suspend fun getCartId(userId: Long): Long? {
         return dbQuery {
@@ -146,6 +154,62 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
             }
             true
         }
+    }
+
+    //endregion
+
+    //region wishList
+    override suspend fun getWishListId(userId: Long): Long? = dbQuery {
+        WishListTable.select { WishListTable.userId eq userId }.map { it[WishListTable.id].value }.singleOrNull()
+    }
+
+    override suspend fun addProductToWishList(wishListId: Long, productId: Long): Boolean {
+        return dbQuery {
+            WishListProductTable.insert {
+                it[WishListProductTable.wishListId] = wishListId
+                it[WishListProductTable.productId] = productId
+            }
+            true
+        }
+    }
+
+    override suspend fun isProductInWishList(wishListId: Long, productId: Long): Boolean {
+        return dbQuery {
+            val product =
+                WishListProductTable.select { (WishListProductTable.wishListId eq wishListId) and (WishListProductTable.productId eq productId) }
+                    .singleOrNull()
+            product != null
+        }
+    }
+
+    override suspend fun createWishList(userId: Long): Long {
+        return dbQuery {
+            val newWishList = WishListTable.insert {
+                it[WishListTable.userId] = userId
+            }
+            newWishList[WishListTable.id].value
+        }
+    }
+
+    override suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean {
+        return dbQuery {
+            WishListProductTable.deleteWhere { (WishListProductTable.wishListId eq wishListId) and
+                    (WishListProductTable.productId eq productId) }
+            true
+        }
+    }
+
+    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> = dbQuery {
+        WishListProductTable.select { (WishListProductTable.wishListId eq wishListId) and
+                (WishListProductTable.isDeleted eq false)}
+            .map { productRow ->
+                val product = getProduct(productId = productRow[WishListProductTable.productId].value)
+                ProductInWishList(
+                    productId = product.id,
+                    name = product.name,
+                    price = product.price,
+                )
+            }
     }
 
     //endregion

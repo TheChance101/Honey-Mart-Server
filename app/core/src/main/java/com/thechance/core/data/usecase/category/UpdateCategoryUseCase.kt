@@ -29,7 +29,7 @@ class UpdateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
 
     private fun isValidInput(categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?): Exception? {
         return when {
-            checkName(categoryName) -> {
+            isValidUsername(categoryName) -> {
                 InvalidCategoryNameException()
             }
 
