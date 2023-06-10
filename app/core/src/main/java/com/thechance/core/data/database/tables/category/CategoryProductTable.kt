@@ -1,5 +1,6 @@
-package com.thechance.core.data.tables
+package com.thechance.core.data.database.tables.category
 
+import com.thechance.core.data.database.tables.ProductTable
 import org.jetbrains.exposed.sql.Table
 
 object CategoryProductTable : Table() {

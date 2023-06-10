@@ -4,8 +4,9 @@ import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toMarket
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Market
-import com.thechance.core.data.tables.CategoriesTable
-import com.thechance.core.data.tables.MarketTable
+import com.thechance.core.data.database.tables.category.CategoriesTable
+import com.thechance.core.data.database.tables.category.CategoryProductTable
+import com.thechance.core.data.database.tables.MarketTable
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
@@ -52,6 +53,23 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         val market = MarketTable.select { MarketTable.id eq marketId }.singleOrNull()
         market?.let {
             it[MarketTable.isDeleted]
+        }
+    }
+
+    override suspend fun getMarketId(productId: Long): Long? {
+        return dbQuery {
+            val categoryId = CategoryProductTable.select { CategoryProductTable.productId eq productId }
+                .map {
+                    it[CategoryProductTable.categoryId].value
+                }.firstOrNull()
+
+            categoryId?.let {
+                val marketId = CategoriesTable.select { CategoriesTable.id eq categoryId }
+                    .map { category ->
+                        category[CategoriesTable.marketId].value
+                    }.singleOrNull()
+                marketId
+            }
         }
     }
 

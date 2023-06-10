@@ -4,6 +4,15 @@ import com.thechance.core.data.model.*
 
 interface HoneyMartRepository {
 
+    //region cart
+    suspend fun getCartId(userId: Long): Long?
+    suspend fun getCart(cartId: Long): Cart
+    suspend fun isProductInCart(cartId: Long, productId: Long): Boolean
+    suspend fun addToCart(cartId: Long, productId: Long, marketId: Long, count: Int): Boolean
+    suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean
+    suspend fun updateProductCountInCart(cartId: Long, productId: Long, count: Int): Boolean
+    suspend fun createCart(userId: Long): Long
+    //endregion
 
     //region market
     suspend fun createMarket(marketName: String): Market
@@ -12,6 +21,7 @@ interface HoneyMartRepository {
     suspend fun deleteMarket(marketId: Long): Boolean
     suspend fun updateMarket(marketId: Long, marketName: String): Market
     suspend fun isMarketDeleted(marketId: Long): Boolean?
+    suspend fun getMarketId(productId: Long): Long?
     //endregion
 
 
@@ -39,7 +49,6 @@ interface HoneyMartRepository {
     suspend fun updateProductCategory(productId: Long, categoryIds: List<Long>): Boolean
     suspend fun deleteProduct(productId: Long): Boolean
     suspend fun checkCategoriesInDb(categoryIds: List<Long>): Boolean
-
     suspend fun isProductDeleted(id: Long): Boolean?
     //endregion
 

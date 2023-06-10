@@ -4,10 +4,9 @@ import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Product
-import com.thechance.core.data.tables.CategoriesTable
-import com.thechance.core.data.tables.CategoryProductTable
-import com.thechance.core.data.tables.MarketTable
-import com.thechance.core.data.tables.ProductTable
+import com.thechance.core.data.database.tables.category.CategoriesTable
+import com.thechance.core.data.database.tables.category.CategoryProductTable
+import com.thechance.core.data.database.tables.ProductTable
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.koin.core.component.KoinComponent
@@ -39,7 +38,7 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
     }
 
     override suspend fun deleteCategory(categoryId: Long): Boolean = dbQuery {
-        CategoriesTable.update({ CategoriesTable.isDeleted eq false }) {
+        CategoriesTable.update({ (CategoriesTable.id eq categoryId) and (CategoriesTable.isDeleted eq false) }) {
             it[isDeleted] = true
         }
         true
@@ -80,11 +79,5 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
                     CategoriesTable.isDeleted.eq(false)
         }.singleOrNull()
     } == null
-
-
-    /**
-     * TODO: need check per Market.
-     * */
-
 
 }
