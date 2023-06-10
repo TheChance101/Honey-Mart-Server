@@ -60,7 +60,9 @@ interface HoneyMartRepository {
     ): Boolean
 
     suspend fun getAllOrdersForMarket(marketId: Long): List<Order>
-    suspend fun cancelOrder(orderId:Long)
+    suspend fun cancelOrder(orderId:Long): Boolean
+
     //end region
     suspend fun deleteAllProductsInCart(cartId: Long): Boolean
+    suspend fun isOrderExist(orderId: Long):Boolean
 }

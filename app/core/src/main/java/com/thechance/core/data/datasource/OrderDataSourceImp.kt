@@ -57,15 +57,19 @@ class OrderDataSourceImp : OrderDataSource {
     }
 
 
-    override suspend fun cancelOrder(orderId: Long) {
-        dbQuery {
-            OrderTable.update({ OrderTable.id eq orderId }) { tableRow ->
-                tableRow[isCanceled] = true
-            }
-
-            OrderMarketTable.update({ OrderMarketTable.orderId eq orderId }) { tableRow ->
-                tableRow[isCanceled] = true
-            }
+    override suspend fun cancelOrder(orderId: Long): Boolean = dbQuery {
+        OrderTable.update({ OrderTable.id eq orderId }) { tableRow ->
+            tableRow[isCanceled] = true
         }
+
+        OrderMarketTable.update({ OrderMarketTable.orderId eq orderId }) { tableRow ->
+            tableRow[isCanceled] = true
+        }
+        true
     }
+
+    override suspend fun isOrderExist(orderId: Long): Boolean =
+        dbQuery {
+            OrderTable.select { OrderTable.id eq orderId }.singleOrNull() != null
+        }
 }

@@ -16,6 +16,8 @@ interface OrderDataSource {
 
     suspend fun cancelOrder(
         orderId:Long
-    )
+    ): Boolean
+
     //end region
+    suspend fun isOrderExist(orderId: Long): Boolean
 }

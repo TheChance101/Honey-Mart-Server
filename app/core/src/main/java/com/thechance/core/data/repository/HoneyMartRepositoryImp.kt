@@ -34,7 +34,7 @@ class HoneyMartRepositoryImp(
 
     override suspend fun createCart(userId: Long): Long = userDataSource.createCart(userId)
 
-    override suspend fun deleteAllProductsInCart(cartId:Long):Boolean =
+    override suspend fun deleteAllProductsInCart(cartId: Long): Boolean =
         userDataSource.deleteAllProductsInCart(cartId)
 
     //endregion
@@ -145,9 +145,11 @@ class HoneyMartRepositoryImp(
     override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> =
         orderDataSource.getAllOrdersForMarket(marketId)
 
-    override suspend fun cancelOrder(orderId: Long) {
+    override suspend fun cancelOrder(orderId: Long):Boolean =
         orderDataSource.cancelOrder(orderId)
-    }
+
+    override suspend fun isOrderExist(orderId: Long): Boolean =
+        orderDataSource.isOrderExist(orderId)
     //end region
 //endregion
 

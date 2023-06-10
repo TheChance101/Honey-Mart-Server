@@ -33,11 +33,13 @@ class CategoryNameNotUniqueException : Exception()
 class InvalidUserIdException : Exception()
 class UserAlreadyExistException : Exception()
 class UnKnownUserException : Exception()
-class InvalidUserNameOrPasswordException:Exception()
+class InvalidUserNameOrPasswordException : Exception()
 
 class InvalidPasswordException : Exception()
 
 class UserInvalidException : Exception()
+
+class InvalidOrderIdException : Exception()
 
 //region cart
 class CountInvalidInputException : Exception()
