@@ -6,7 +6,7 @@ This is a project for an online shopping server. It is built using the Ktor fram
 TODO
 
 ## ERD
-![HoneyMart ERD](https://github.com/TheChance101/Honey-Mart-Server/assets/34461597/9de70c3d-3544-46ef-a167-9c1bd456973f)
+![untitled-sql](https://github.com/TheChance101/Honey-Mart-Server/assets/34461597/09696796-f1ab-40fe-976d-b15594488bf9)
 
 ## Features
 - [x] Authentication
@@ -15,9 +15,9 @@ TODO
 - [x] Market
 - [x] Category
 - [x] product
-- [ ] Cart
+- [x] Cart
 - [ ] Order
-- [ ] Wishlist
+- [x] Wishlist
 - [ ] Notification
 - [ ] Pagination
 - [ ] Upload image
