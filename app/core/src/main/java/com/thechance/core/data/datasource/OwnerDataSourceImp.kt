@@ -1,7 +1,8 @@
 package com.thechance.core.data.datasource
 
 import com.thechance.core.data.model.Owner
-import com.thechance.core.data.tables.OwnerTable
+import com.thechance.core.data.database.tables.OwnerTable
+import com.thechance.core.data.datasource.OwnerDataSource
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select

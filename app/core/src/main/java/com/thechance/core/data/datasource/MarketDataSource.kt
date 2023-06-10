@@ -2,6 +2,7 @@ package com.thechance.core.data.datasource
 
 import com.thechance.core.data.model.Category
 import com.thechance.core.data.model.Market
+import com.thechance.core.data.model.Product
 
 interface MarketDataSource {
 
@@ -11,4 +12,5 @@ interface MarketDataSource {
     suspend fun deleteMarket(marketId: Long): Boolean
     suspend fun updateMarket(marketId: Long, marketName: String): Market
     suspend fun isDeleted(marketId: Long): Boolean?
+    suspend fun getMarketId(productId: Long): Long?
 }

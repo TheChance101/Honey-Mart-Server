@@ -17,7 +17,6 @@ class CreateUserUseCase(
         } else {
             true
         }
-
     }
 
 

@@ -9,6 +9,7 @@ import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.data.security.token.TokenClaim
 import com.thechance.core.data.security.token.TokenConfig
 import com.thechance.core.data.security.token.TokenService
+import org.koin.core.component.KoinComponent
 
 class AuthRepositoryImp(
     private val userDataSource: UserDataSource,
@@ -16,7 +17,7 @@ class AuthRepositoryImp(
     private val hashingService: HashingService,
     private val tokenService: TokenService,
     private val tokenConfig: TokenConfig
-) : AuthRepository {
+) : AuthRepository, KoinComponent {
     //region user
     override suspend fun createUser(userName: String, password: String): Boolean {
         val saltedHash = hashingService.generateSaltedHash(password)
@@ -26,7 +27,10 @@ class AuthRepositoryImp(
     override suspend fun isUserNameExists(userName: String): Boolean =
         userDataSource.isUserNameExists(userName)
 
-    override suspend fun getUserByName(userName:String):User{
+    override suspend fun isUserExist(userId: Long): Boolean = userDataSource.isUserExist(userId)
+
+
+    override suspend fun getUserByName(userName: String): User {
         return userDataSource.getUserByName(userName)
     }
 

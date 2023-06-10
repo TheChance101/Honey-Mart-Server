@@ -13,6 +13,8 @@ interface AuthRepository {
     // Login user
     //suspend fun validateUser(userName:String, password: String):String
 
+    suspend fun isUserExist(userId: Long): Boolean
+
     //endregion
 
 
@@ -23,5 +25,6 @@ interface AuthRepository {
     //endregion
     suspend fun getUserByName(userName: String): User
     fun isValidPassword(user: User, password: String): Boolean
+
     fun getToken(user: User): String
 }
