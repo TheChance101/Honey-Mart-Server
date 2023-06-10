@@ -24,5 +24,5 @@ interface AuthRepository {
     suspend fun getUserByName(userName: String): User
     fun isValidPassword(user: User, password: String): Boolean
 
-    fun getToken(user: User): String
+    fun getToken(id: Long, role: String): String
 }

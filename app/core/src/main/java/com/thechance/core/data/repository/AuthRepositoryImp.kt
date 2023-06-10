@@ -3,11 +3,11 @@ package com.thechance.core.data.repository
 import com.thechance.core.entity.*
 import com.thechance.core.data.repository.dataSource.OwnerDataSource
 import com.thechance.core.data.repository.dataSource.UserDataSource
-import com.thechance.core.data.security.hashing.HashingService
+import com.thechance.core.data.repository.security.HashingService
 import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.data.security.token.TokenClaim
 import com.thechance.core.data.security.token.TokenConfig
-import com.thechance.core.data.security.token.TokenService
+import com.thechance.core.data.repository.security.TokenService
 import com.thechance.core.domain.repository.AuthRepository
 import org.koin.core.component.KoinComponent
 
@@ -37,22 +37,17 @@ class AuthRepositoryImp(
         return userDataSource.getUserByName(userName)
     }
 
-    override fun getToken(user: User): String {
+    override fun getToken(id: Long, role: String): String {
         return tokenService.generate(
             config = tokenConfig,
-            TokenClaim(
-                name = "userId",
-                value = user.userId.toString()
-            )
+            subject = id.toString(),
+            TokenClaim(name = "role", value = role)
         )
     }
 
     override fun isValidPassword(user: User, password: String) = hashingService.verify(
         value = password,
-        saltedHash = SaltedHash(
-            hash = user.password,
-            salt = user.salt
-        )
+        saltedHash = SaltedHash(hash = user.password, salt = user.salt)
     )
 
 
