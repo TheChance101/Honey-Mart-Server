@@ -5,6 +5,8 @@ import com.thechance.core.data.database.tables.cart.CartProductTable
 import com.thechance.core.data.database.tables.cart.CartTable
 import com.thechance.core.data.database.tables.category.CategoriesTable
 import com.thechance.core.data.database.tables.category.CategoryProductTable
+import com.thechance.core.data.database.tables.wishlist.WishListProductTable
+import com.thechance.core.data.database.tables.wishlist.WishListTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -15,12 +17,15 @@ class CoreDataBase {
         listOf(
             MarketTable,
             CategoriesTable,
+
             ProductTable,
             CategoryProductTable,
             NormalUserTable,
             OwnerTable,
             CartTable,
-            CartProductTable
+            CartProductTable,
+            WishListTable,
+            WishListProductTable
         )
     }
 

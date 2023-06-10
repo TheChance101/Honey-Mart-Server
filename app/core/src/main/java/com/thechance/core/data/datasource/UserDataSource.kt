@@ -1,10 +1,6 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.model.Cart
-import com.thechance.core.data.model.Product
-import com.thechance.core.data.model.ProductInCart
-import com.thechance.core.data.model.User
-import com.thechance.core.data.utils.InvalidProductQuantityException
+import com.thechance.core.data.model.*
 import com.thechance.core.data.security.hashing.SaltedHash
 
 interface UserDataSource {
@@ -31,5 +27,16 @@ interface UserDataSource {
     suspend fun updateCount(cartId: Long, productId: Long, count: Int): Boolean
 
     suspend fun createCart(userId: Long): Long
+    //endregion
+
+    //region wishList
+    suspend fun getWishListId(userId: Long): Long?
+    suspend fun addProductToWishList(wishListId: Long, productId: Long): Boolean
+    suspend fun isProductInWishList(wishListId:Long,productId: Long): Boolean
+    suspend fun createWishList(userId: Long): Long
+
+    //  suspend fun getAllWishList(userId: Long): List<WishList>
+    // suspend fun deleteFromWishList(productId: Long): Boolean
+
     //endregion
 }

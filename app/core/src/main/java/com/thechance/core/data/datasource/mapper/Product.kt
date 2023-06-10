@@ -1,8 +1,7 @@
 package com.thechance.core.data.datasource.mapper
 
-import com.thechance.core.data.model.Product
 import com.thechance.core.data.database.tables.ProductTable
-import com.thechance.core.data.tables.ProductTable
+import com.thechance.core.data.model.Product
 import org.jetbrains.exposed.sql.ResultRow
 
 internal fun ResultRow.toProduct(): Product {

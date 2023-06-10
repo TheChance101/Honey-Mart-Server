@@ -23,7 +23,7 @@ import com.thechance.core.data.usecase.product.*
 import com.thechance.core.data.usecase.user.CreateUserUseCase
 import com.thechance.core.data.usecase.user.UserUseCaseContainer
 import com.thechance.core.data.usecase.user.VerifyUserUseCase
-import com.thechance.core.data.usecase.wishlist.CreateWishListUseCase
+import com.thechance.core.data.usecase.wishlist.AddProductToWishListUseCase
 import com.thechance.core.data.usecase.wishlist.WishListUseCaseContainer
 import io.ktor.server.config.*
 import org.koin.core.module.dsl.bind
@@ -37,7 +37,6 @@ val dataSourceModules = module {
     single<ProductDataSource> { ProductDataSourceImp() }
     single<UserDataSource> { UserDataSourceImp() }
     single<OwnerDataSource> { OwnerDataSourceImp() }
-    single<WishListDataSource> { WishListDataSourceImp() }
 }
 
 val productUseCaseModule = module {
@@ -67,7 +66,7 @@ val categoryUseCaseModule = module {
 }
 val wishListUseCaseModule = module {
     singleOf(::WishListUseCaseContainer) { bind<WishListUseCaseContainer>() }
-    singleOf(::CreateWishListUseCase) { bind<CreateWishListUseCase>() }
+    singleOf(::AddProductToWishListUseCase) { bind<AddProductToWishListUseCase>() }
 
 }
 val userUseCaseModule = module {

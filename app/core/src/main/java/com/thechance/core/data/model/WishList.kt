@@ -4,7 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WishList(
-    val id: Long,
-    val userId:Long,
-    //val products: List<ProductInWishList>,
+    val products: List<ProductInWishList>
 )

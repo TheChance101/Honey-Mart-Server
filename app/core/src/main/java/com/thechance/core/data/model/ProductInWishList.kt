@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProductInWishList(
     val productId: Long,
-//    val name: String,
-//    val price: Double,
-//    val isFav:Boolean
+    val name: String,
+    val price: Double
 )

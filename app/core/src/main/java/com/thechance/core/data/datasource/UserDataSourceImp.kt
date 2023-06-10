@@ -6,6 +6,8 @@ import com.thechance.core.data.database.tables.ProductTable
 import com.thechance.core.data.model.Product
 import com.thechance.core.data.model.User
 import com.thechance.core.data.database.tables.NormalUserTable
+import com.thechance.core.data.database.tables.wishlist.WishListProductTable
+import com.thechance.core.data.database.tables.wishlist.WishListTable
 import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.model.Cart
 import com.thechance.core.data.model.ProductInCart
@@ -69,6 +71,7 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
             newCart[CartTable.id].value
         }
     }
+
 
     override suspend fun getCartId(userId: Long): Long? {
         return dbQuery {
@@ -141,6 +144,40 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
+    //endregion
+
+    //region wishList
+    override suspend fun getWishListId(userId: Long): Long? = dbQuery {
+        WishListTable.select { WishListTable.userId eq userId }.map { it[WishListTable.id].value }.singleOrNull()
+    }
+
+    override suspend fun addProductToWishList(wishListId: Long, productId: Long): Boolean {
+        return dbQuery {
+            WishListProductTable.insert {
+                it[WishListProductTable.wishListId] = wishListId
+                it[WishListProductTable.productId] = productId
+            }
+            true
+        }
+    }
+
+    override suspend fun isProductInWishList(wishListId: Long, productId: Long): Boolean {
+        return dbQuery {
+            val product =
+                WishListProductTable.select { (WishListProductTable.wishListId eq wishListId) and (WishListProductTable.productId eq productId) }
+                    .singleOrNull()
+            product != null
+        }
+    }
+
+    override suspend fun createWishList(userId: Long): Long {
+        return dbQuery {
+            val newWishList = WishListTable.insert {
+                it[WishListTable.userId] = userId
+            }
+            newWishList[WishListTable.id].value
+        }
+    }
     //endregion
 
 }

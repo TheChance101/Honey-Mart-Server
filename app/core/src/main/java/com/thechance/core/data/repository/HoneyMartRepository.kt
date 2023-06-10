@@ -13,7 +13,12 @@ interface HoneyMartRepository {
     suspend fun updateProductCountInCart(cartId: Long, productId: Long, count: Int): Boolean
     suspend fun createCart(userId: Long): Long
     //endregion
-
+    //region WishList
+    suspend fun getWishListId(userId: Long): Long?
+    suspend fun addToWishList(wishListId: Long, productId: Long): Boolean
+    suspend fun createWishList(userId: Long): Long
+    suspend fun isProductInWishList(wishListId: Long,productId: Long): Boolean
+    //endregion
     //region market
     suspend fun createMarket(marketName: String): Market
     suspend fun getAllMarkets(): List<Market>
@@ -52,8 +57,5 @@ interface HoneyMartRepository {
     suspend fun isProductDeleted(id: Long): Boolean?
     //endregion
 
-    //region WishList
-    suspend fun createWishList(productId: Long, userId: Long): WishList
-    suspend fun isProductInWishList(productId: Long): Boolean
-    //endregion
+
 }

@@ -2,11 +2,6 @@ package com.thechance.core.data.repository
 
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.model.*
-import com.thechance.core.data.security.hashing.HashingService
-import com.thechance.core.data.security.hashing.SaltedHash
-import com.thechance.core.data.security.token.TokenClaim
-import com.thechance.core.data.security.token.TokenConfig
-import com.thechance.core.data.security.token.TokenService
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
@@ -14,7 +9,6 @@ class HoneyMartRepositoryImp(
     private val categoryDataSource: CategoryDataSource,
     private val productDataSource: ProductDataSource,
     private val userDataSource: UserDataSource
-    private val wishLisDataSource: WishListDataSource,
 ) : HoneyMartRepository, KoinComponent {
 
     //region cart
@@ -39,8 +33,17 @@ class HoneyMartRepositoryImp(
 
     override suspend fun createCart(userId: Long): Long = userDataSource.createCart(userId)
 
-    //endregion
 
+    //endregion
+    //region WishList
+    override suspend fun getWishListId(userId: Long): Long? = userDataSource.getWishListId(userId)
+    override suspend fun addToWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.addProductToWishList(wishListId, productId)
+
+    override suspend fun createWishList(userId: Long): Long = userDataSource.createWishList(userId)
+    override suspend fun isProductInWishList(wishListId: Long,productId: Long): Boolean = userDataSource.isProductInWishList(wishListId, productId)
+
+    //endregion
     //region market
     override suspend fun createMarket(marketName: String): Market = marketDataSource.createMarket(marketName)
     override suspend fun getAllMarkets(): List<Market> = marketDataSource.getAllMarkets()
@@ -125,14 +128,5 @@ class HoneyMartRepositoryImp(
         productDataSource.isDeleted(id)
     //endregion
 
-    //region WishList
-    override suspend fun createWishList(productId: Long, userId: Long): WishList =
-        wishLisDataSource.createWishList(productId, userId)
-
-    override suspend fun isProductInWishList(productId: Long): Boolean =
-        wishLisDataSource.isProductInWishList(productId)
-
-
-    //endregion
 
 }
