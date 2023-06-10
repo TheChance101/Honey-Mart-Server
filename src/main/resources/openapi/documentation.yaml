@@ -88,7 +88,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Cart"
+                $ref: "#/components/schemas/CartModel"
   /cart/addProduct:
     post:
       description: ""
@@ -319,7 +319,23 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/Product"
+                  $ref: "#/components/schemas/ProductModel"
+  /deleteAllTables:
+    delete:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
   /markets:
     get:
       description: ""
@@ -331,7 +347,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/Market"
+                  $ref: "#/components/schemas/MarketModel"
     post:
       description: ""
       parameters:
@@ -370,7 +386,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Market"
+                $ref: "#/components/schemas/MarketModel"
   /markets/{id}:
     delete:
       description: ""
@@ -454,7 +470,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Market"
+                $ref: "#/components/schemas/MarketModel"
   /markets/{id}/categories:
     get:
       description: ""
@@ -496,7 +512,122 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/Category"
+                  $ref: "#/components/schemas/CategoryModel"
+  /order:
+    get:
+      description: "get Orders by market"
+      parameters:
+      - name: "marketId"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "409":
+          description: "Conflict"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/OrderModel"
+    post:
+      description: ""
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "409":
+          description: "Conflict"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "boolean"
+  /order/cancel/{orderId}:
+    put:
+      description: "cancel order"
+      parameters:
+      - name: "orderId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "409":
+          description: "Conflict"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
   /owner:
     post:
       description: ""
@@ -541,7 +672,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Owner"
+                $ref: "#/components/schemas/OwnerModel"
   /product:
     post:
       description: ""
@@ -596,7 +727,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Product"
+                $ref: "#/components/schemas/ProductModel"
   /product/{id}:
     delete:
       description: ""
@@ -732,7 +863,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/Category"
+                  $ref: "#/components/schemas/CategoryModel"
   /product/{id}/updateCategories:
     put:
       description: ""
@@ -877,7 +1008,7 @@ paths:
           content:
             '*/*':
               schema:
-                type: "boolean"
+                type: "string"
   /wishList:
     delete:
       description: ""
@@ -952,7 +1083,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/ProductInWishList"
+                  $ref: "#/components/schemas/ProductInWishListModel"
     post:
       description: ""
       parameters:
@@ -994,7 +1125,7 @@ paths:
                 type: "string"
 components:
   schemas:
-    ProductInCart:
+    ProductInCartModel:
       type: "object"
       properties:
         id:
@@ -1008,13 +1139,13 @@ components:
         price:
           type: "number"
           format: "double"
-    Cart:
+    CartModel:
       type: "object"
       properties:
         products:
           type: "array"
           items:
-            $ref: "#/components/schemas/ProductInCart"
+            $ref: "#/components/schemas/ProductInCartModel"
         total:
           type: "number"
           format: "double"
@@ -1029,7 +1160,7 @@ components:
         imageId:
           type: "integer"
           format: "int32"
-    Product:
+    ProductModel:
       type: "object"
       properties:
         id:
@@ -1042,7 +1173,7 @@ components:
         price:
           type: "number"
           format: "double"
-    Market:
+    MarketModel:
       type: "object"
       properties:
         marketId:
@@ -1050,7 +1181,27 @@ components:
           format: "int64"
         marketName:
           type: "string"
-    Owner:
+    CategoryModel:
+      type: "object"
+      properties:
+        categoryId:
+          type: "integer"
+          format: "int64"
+        categoryName:
+          type: "string"
+        imageId:
+          type: "integer"
+          format: "int32"
+    OrderModel:
+      type: "object"
+      properties:
+        orderId:
+          type: "integer"
+          format: "int64"
+        totalPrice:
+          type: "number"
+          format: "double"
+    OwnerModel:
       type: "object"
       properties:
         ownerId:
@@ -1058,7 +1209,7 @@ components:
           format: "int64"
         userName:
           type: "string"
-    ProductInWishList:
+    ProductInWishListModel:
       type: "object"
       properties:
         productId:
