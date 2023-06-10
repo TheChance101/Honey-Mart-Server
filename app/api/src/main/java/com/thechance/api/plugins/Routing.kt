@@ -1,6 +1,10 @@
 package com.thechance.api.plugins
 
 
+import com.thechance.api.endpoints.categoryRoutes
+import com.thechance.api.endpoints.marketsRoutes
+import com.thechance.api.endpoints.orderRoutes
+import com.thechance.api.endpoints.productsRoutes
 import com.thechance.api.endpoints.*
 import com.thechance.core.data.database.CoreDataBase
 import com.thechance.core.data.usecase.DeleteAllTablesUseCase
@@ -8,6 +12,7 @@ import com.thechance.core.data.usecase.cart.CartUseCasesContainer
 import com.thechance.core.data.usecase.cart.GetCartUseCase
 import com.thechance.core.data.usecase.category.CategoryUseCasesContainer
 import com.thechance.core.data.usecase.market.MarketUseCaseContainer
+import com.thechance.core.data.usecase.order.OrderUseCasesContainer
 import com.thechance.core.data.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.data.usecase.product.ProductUseCasesContainer
 import com.thechance.core.data.usecase.user.UserUseCaseContainer
@@ -24,6 +29,7 @@ fun Application.configureRouting() {
     val categoryUseCasesContainer: CategoryUseCasesContainer by inject()
     val marketUseCasesContainer: MarketUseCaseContainer by inject()
     val productUseCasesContainer: ProductUseCasesContainer by inject()
+    val orderUseCasesContainer: OrderUseCasesContainer by inject()
     val userUseCasesContainer: UserUseCaseContainer by inject()
     val ownerUseCaseContainer: OwnerUseCaseContainer by inject()
     val cartUseCasesContainer: CartUseCasesContainer by inject()
@@ -43,6 +49,8 @@ fun Application.configureRouting() {
         userRoutes(userUseCasesContainer)
         ownerRoutes(ownerUseCaseContainer)
         cartRoutes(cartUseCasesContainer)
+
+        orderRoutes(orderUseCasesContainer)
         wishListRoutes(wishListUseCaseContainer)
         deleteAllTables(deleteAllTablesUseCase)
     }

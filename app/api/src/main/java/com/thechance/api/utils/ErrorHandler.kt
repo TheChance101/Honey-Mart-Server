@@ -158,6 +158,16 @@ suspend fun handleException(call: ApplicationCall, block: suspend () -> Unit) {
                 )
             }
 
+            is EmptyCartException -> {
+                call.respond(
+                    HttpStatusCode.NotFound,
+                    ServerResponse.error("The Cart is Empty, please try again with some products")
+                )
+            }
+            is InvalidOrderIdException ->{
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid orderId"))
+            }
+
             else -> {
                 call.respond(HttpStatusCode.InternalServerError, ServerResponse.error(e.message.toString()))
             }

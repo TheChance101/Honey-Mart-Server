@@ -7,6 +7,7 @@ class InvalidMarketNameException : Exception()
 class InvalidProductNameException : Exception()
 class InvalidProductQuantityException : Exception()
 class InvalidProductPriceException : Exception()
+class InvalidOrderTotalPriceException : Exception()
 
 class InvalidCategoryNameLettersException : Exception()
 class InvalidMarketIdException : Exception()
@@ -34,17 +35,21 @@ class CategoryNameNotUniqueException : Exception()
 class InvalidUserIdException : Exception()
 class UsernameAlreadyExistException : Exception()
 class UnKnownUserException : Exception()
-class InvalidUserNameOrPasswordException:Exception()
+class InvalidUserNameOrPasswordException : Exception()
 class InvalidEmailException : Exception()
 class InvalidNameException : Exception()
 class EmailAlreadyExistException : Exception()
 
-class InvalidPasswordInputException:Exception()
-class InvalidUserNameInputException:Exception()
+class InvalidPasswordInputException : Exception()
+class InvalidUserNameInputException : Exception()
 
 //endregion
 
+class InvalidOrderIdException : Exception()
+class EmptyCartException : Exception()
+
 class ProductAlreadyInWishListException : Exception()
+
 //region cart
 class CountInvalidInputException : Exception()
 

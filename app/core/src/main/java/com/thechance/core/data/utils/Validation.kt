@@ -1,5 +1,6 @@
 package com.thechance.core.data.utils
 
+import org.mindrot.jbcrypt.BCrypt
 import java.util.regex.Pattern
 
 internal fun isValidUsername(username: String?): Boolean {

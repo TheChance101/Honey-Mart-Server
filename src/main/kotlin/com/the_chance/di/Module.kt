@@ -18,6 +18,10 @@ import com.thechance.core.data.usecase.cart.DeleteProductInCartUseCase
 import com.thechance.core.data.usecase.cart.GetCartUseCase
 import com.thechance.core.data.usecase.category.*
 import com.thechance.core.data.usecase.market.*
+import com.thechance.core.data.usecase.order.CancelOrderUseCase
+import com.thechance.core.data.usecase.order.CreateOrderUseCase
+import com.thechance.core.data.usecase.order.GetOrdersForMarketUseCase
+import com.thechance.core.data.usecase.order.OrderUseCasesContainer
 import com.thechance.core.data.usecase.owner.CreateOwnerUseCase
 import com.thechance.core.data.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.data.usecase.product.*
@@ -40,6 +44,7 @@ val dataSourceModules = module {
     single<ProductDataSource> { ProductDataSourceImp() }
     single<UserDataSource> { UserDataSourceImp() }
     single<OwnerDataSource> { OwnerDataSourceImp() }
+    single<OrderDataSource> { OrderDataSourceImp() }
 }
 
 val productUseCaseModule = module {
@@ -75,6 +80,14 @@ val wishListUseCaseModule = module {
 
 
 }
+
+val orderUseCaseModule = module {
+    singleOf(::OrderUseCasesContainer) { bind<OrderUseCasesContainer>() }
+    singleOf(::CreateOrderUseCase) { bind<CreateOrderUseCase>() }
+    singleOf(::GetOrdersForMarketUseCase) { bind<GetOrdersForMarketUseCase>() }
+    singleOf(::CancelOrderUseCase) { bind<CancelOrderUseCase>() }
+}
+
 val userUseCaseModule = module {
     singleOf(::UserUseCaseContainer) { bind<UserUseCaseContainer>() }
     singleOf(::CreateUserUseCase) { bind<CreateUserUseCase>() }
@@ -117,6 +130,7 @@ val appModules = module {
         marketUseCaseModule,
         productUseCaseModule,
         wishListUseCaseModule,
+        orderUseCaseModule,
         userUseCaseModule,
         ownerUseCaseModule
     )
