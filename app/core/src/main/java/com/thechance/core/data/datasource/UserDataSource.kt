@@ -9,12 +9,14 @@ import com.thechance.core.data.security.hashing.SaltedHash
 
 interface UserDataSource {
 
-    suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean
+    suspend fun createUser(userName: String, saltedHash: SaltedHash, fullName: String, email: String): Boolean
     suspend fun isUserNameExists(userName: String): Boolean
 
     suspend fun isUserExist(userId: Long): Boolean
 
     suspend fun getUserByName(userName: String): User
+
+    suspend fun isEmailExists(email: String): Boolean
 
     //region cart
 

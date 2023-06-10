@@ -18,14 +18,17 @@ class AuthRepositoryImp(
     private val tokenService: TokenService,
     private val tokenConfig: TokenConfig
 ) : AuthRepository, KoinComponent {
+
     //region user
-    override suspend fun createUser(userName: String, password: String): Boolean {
+    override suspend fun createUser(userName: String, password: String, fullName: String, email: String): Boolean {
         val saltedHash = hashingService.generateSaltedHash(password)
-        return userDataSource.createUser(userName, saltedHash)
+        return userDataSource.createUser(userName, saltedHash, fullName, email)
     }
 
     override suspend fun isUserNameExists(userName: String): Boolean =
         userDataSource.isUserNameExists(userName)
+
+    override suspend fun isEmailExists(email: String): Boolean = userDataSource.isEmailExists(email)
 
     override suspend fun isUserExist(userId: Long): Boolean = userDataSource.isUserExist(userId)
 

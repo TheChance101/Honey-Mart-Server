@@ -4,14 +4,13 @@ import com.thechance.core.data.model.Owner
 import com.thechance.core.data.model.User
 
 interface AuthRepository {
+
     //region user
 
-    // Create User
-    suspend fun createUser(userName: String, password: String): Boolean
+    suspend fun createUser(userName: String, password: String, fullName: String, email: String): Boolean
     suspend fun isUserNameExists(userName: String): Boolean
 
-    // Login user
-    //suspend fun validateUser(userName:String, password: String):String
+    suspend fun isEmailExists(email: String): Boolean
 
     suspend fun isUserExist(userId: Long): Boolean
 

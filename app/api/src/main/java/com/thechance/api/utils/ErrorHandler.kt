@@ -108,6 +108,32 @@ suspend fun handleException(call: ApplicationCall, block: suspend () -> Unit) {
                 )
             }
 
+            is InvalidEmailException -> {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Email is not valid"))
+            }
+
+            is InvalidNameException -> {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Name is not valid"))
+            }
+
+            is EmailAlreadyExistException -> {
+                call.respond(HttpStatusCode.BadRequest, ServerResponse.error("This Email already exist"))
+            }
+
+            is InvalidPasswordInputException -> {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error("Password should be at least has one letter, one special character, one number, and a total length between 8 to 14 characters")
+                )
+            }
+
+            is InvalidUserNameInputException -> {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error("The username must be 8 to 14 characters in length and should only include the dot (.) and underscore (_) characters.")
+                )
+            }
+
             else -> {
                 call.respond(HttpStatusCode.InternalServerError, ServerResponse.error(e.message.toString()))
             }

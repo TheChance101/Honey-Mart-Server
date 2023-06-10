@@ -22,11 +22,11 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
     ): Exception? {
         return when {
-            checkName(productName) -> { InvalidProductNameException() }
+            isValidUsername(productName) -> { InvalidProductNameException() }
 
             checkProductQuantity(productQuantity) -> { InvalidProductQuantityException() }
 
-            InvalidPrice(productPrice) -> { InvalidProductPriceException() }
+            isInvalidPrice(productPrice) -> { InvalidProductPriceException() }
 
             isValidIds(categoriesId) -> { InvalidCategoryIdException() }
 
