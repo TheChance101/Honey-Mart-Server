@@ -15,8 +15,8 @@ class HoneyMartRepositoryImp(
     //region cart
     override suspend fun getCartId(userId: Long): Long? = userDataSource.getCartId(userId)
 
-    override suspend fun getCart(userId: Long): Cart =
-        userDataSource.getCart(userId)
+    override suspend fun getCart(cartId: Long): Cart =
+        userDataSource.getCart(cartId)
 
     override suspend fun isProductInCart(cartId: Long, productId: Long): Boolean =
         userDataSource.isProductInCart(cartId, productId)

@@ -28,6 +28,7 @@ class OrderDataSourceImp : OrderDataSource {
         OrderMarketTable.batchInsert(products) { orderItem ->
             this[OrderMarketTable.orderId] = newOrder[OrderTable.id]
             this[OrderMarketTable.marketId] = orderItem.marketId
+            this[OrderMarketTable.isCanceled] = newOrder[OrderTable.isCanceled]
         }
         true
     }
@@ -35,9 +36,11 @@ class OrderDataSourceImp : OrderDataSource {
     override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> = dbQuery {
         OrderMarketTable
             .join(OrderProductTable, JoinType.INNER, additionalConstraint = {
-                OrderMarketTable.orderId eq OrderProductTable.orderId and (OrderMarketTable.marketId eq marketId)
+                OrderMarketTable.orderId eq
+                        OrderProductTable.orderId and (OrderMarketTable.marketId eq
+                        marketId)
             })
-            .selectAll()
+            .select { OrderMarketTable.isCanceled eq false }
             .groupBy { it[OrderMarketTable.orderId].value }
             .map { (_, orderRows) ->
                 val orderId = orderRows.first()[OrderMarketTable.orderId].value
@@ -53,9 +56,14 @@ class OrderDataSourceImp : OrderDataSource {
             }
     }
 
+
     override suspend fun cancelOrder(orderId: Long) {
         dbQuery {
             OrderTable.update({ OrderTable.id eq orderId }) { tableRow ->
+                tableRow[isCanceled] = true
+            }
+
+            OrderMarketTable.update({ OrderMarketTable.orderId eq orderId }) { tableRow ->
                 tableRow[isCanceled] = true
             }
         }
