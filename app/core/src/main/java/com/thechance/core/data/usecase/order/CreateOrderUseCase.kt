@@ -1,6 +1,5 @@
 package com.thechance.core.data.usecase.order
 
-import com.thechance.core.data.model.OrderItem
 import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.utils.InvalidMarketIdException
 import com.thechance.core.data.utils.InvalidOrderTotalPriceException
@@ -17,9 +16,7 @@ class CreateOrderUseCase(private val repository: HoneyMartRepository) : KoinComp
 
     private fun isValidInput(
         marketId: Long,
-        orderDate: String,
         totalPrice: Double,
-        products: List<OrderItem>
     ): Exception? {
         return when {
             isInvalidId(marketId) -> {
