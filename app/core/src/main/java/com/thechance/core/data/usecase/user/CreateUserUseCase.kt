@@ -13,7 +13,7 @@ class CreateUserUseCase(
         isValidInput(userName, password, fullName, email)?.let { throw it }
 
         return if (repository.isUserNameExists(userName!!)) {
-            throw UserAlreadyExistException()
+            throw UsernameAlreadyExistException()
         } else if (repository.isEmailExists(email!!)) {
             throw EmailAlreadyExistException()
         } else if (!repository.createUser(userName, password!!, fullName!!, email)) {
