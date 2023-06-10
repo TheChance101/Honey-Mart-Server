@@ -95,6 +95,7 @@ val appModules = module {
 
     singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
     singleOf(::AuthRepositoryImp) { bind<AuthRepository>() }
+
     includes(
         cartUseCase,
         dataSourceModules,
