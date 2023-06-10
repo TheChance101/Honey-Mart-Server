@@ -30,7 +30,7 @@ fun Route.userRoutes(userUseCasesContainer: UserUseCaseContainer) {
         post("/login") {
             handleException(call) {
                 val params = call.receiveParameters()
-                val name = params["name"]?.trim().toString()
+                val name = params["username"]?.trim().toString()
                 val password = params["password"]?.trim().toString()
 
                 val token = userUseCasesContainer.verifyUserUseCase(name, password)
