@@ -1,7 +1,7 @@
 package com.thechance.api.utils
 
 import com.thechance.api.ServerResponse
-import com.thechance.core.data.utils.*
+import com.thechance.core.utils.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*

@@ -6,8 +6,8 @@ import com.thechance.api.endpoints.marketsRoutes
 import com.thechance.api.endpoints.orderRoutes
 import com.thechance.api.endpoints.productsRoutes
 import com.thechance.api.endpoints.*
-import com.thechance.core.data.database.CoreDataBase
-import com.thechance.core.data.usecase.DeleteAllTablesUseCase
+import com.thechance.core.data.datasource.database.CoreDataBase
+import com.thechance.core.domain.usecase.DeleteAllTablesUseCase
 import com.thechance.core.data.usecase.cart.CartUseCasesContainer
 import com.thechance.core.data.usecase.cart.GetCartUseCase
 import com.thechance.core.data.usecase.category.CategoryUseCasesContainer
@@ -26,16 +26,6 @@ import io.swagger.codegen.v3.generators.html.StaticHtmlCodegen
 import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
-    val categoryUseCasesContainer: CategoryUseCasesContainer by inject()
-    val marketUseCasesContainer: MarketUseCaseContainer by inject()
-    val productUseCasesContainer: ProductUseCasesContainer by inject()
-    val orderUseCasesContainer: OrderUseCasesContainer by inject()
-    val userUseCasesContainer: UserUseCaseContainer by inject()
-    val ownerUseCaseContainer: OwnerUseCaseContainer by inject()
-    val cartUseCasesContainer: CartUseCasesContainer by inject()
-    val wishListUseCaseContainer: WishListUseCaseContainer by inject()
-    val deleteAllTablesUseCase: DeleteAllTablesUseCase by inject()
-
     routing {
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml") {
             version = "4.15.5"
@@ -43,15 +33,14 @@ fun Application.configureRouting() {
         openAPI(path = "openapi", swaggerFile = "openapi/documentation.yaml") {
             codegen = StaticHtmlCodegen()
         }
-        productsRoutes(productUseCasesContainer)
-        categoryRoutes(categoryUseCasesContainer)
-        marketsRoutes(marketUseCasesContainer)
-        userRoutes(userUseCasesContainer)
-        ownerRoutes(ownerUseCaseContainer)
-        cartRoutes(cartUseCasesContainer)
-
-        orderRoutes(orderUseCasesContainer)
-        wishListRoutes(wishListUseCaseContainer)
-        deleteAllTables(deleteAllTablesUseCase)
+        productsRoutes()
+        categoryRoutes()
+        marketsRoutes()
+        userRoutes()
+        ownerRoutes()
+        cartRoutes()
+        orderRoutes()
+        wishListRoutes()
+        deleteAllTables()
     }
 }

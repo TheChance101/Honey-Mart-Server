@@ -1,12 +1,13 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.database.tables.ProductTable
-import com.thechance.core.data.database.tables.order.OrderMarketTable
-import com.thechance.core.data.database.tables.order.OrderProductTable
-import com.thechance.core.data.database.tables.order.OrderTable
+import com.thechance.core.data.datasource.database.tables.ProductTable
+import com.thechance.core.data.datasource.database.tables.order.OrderMarketTable
+import com.thechance.core.data.datasource.database.tables.order.OrderProductTable
+import com.thechance.core.data.datasource.database.tables.order.OrderTable
 import com.thechance.core.data.model.OrderItem
 import com.thechance.core.data.model.Order
-import com.thechance.core.data.utils.dbQuery
+import com.thechance.core.data.repository.dataSource.OrderDataSource
+import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 
 class OrderDataSourceImp : OrderDataSource {

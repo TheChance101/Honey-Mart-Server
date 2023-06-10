@@ -10,8 +10,12 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 
-fun Route.wishListRoutes(wishListUseCaseContainer: WishListUseCaseContainer) {
+fun Route.wishListRoutes() {
+
+    val wishListUseCaseContainer: WishListUseCaseContainer by inject()
+
     authenticate {
         route("/wishList") {
 

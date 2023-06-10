@@ -9,8 +9,12 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 
-fun Route.orderRoutes(orderUseCasesContainer: OrderUseCasesContainer) {
+fun Route.orderRoutes() {
+
+    val orderUseCasesContainer: OrderUseCasesContainer by inject()
+
     route("/order") {
         /**
          * get Orders by market

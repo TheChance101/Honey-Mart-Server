@@ -10,8 +10,11 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 
-fun Route.productsRoutes(productUseCasesContainer: ProductUseCasesContainer) {
+fun Route.productsRoutes() {
+
+    val productUseCasesContainer: ProductUseCasesContainer by inject()
 
     route("/product") {
 
@@ -46,8 +49,11 @@ fun Route.productsRoutes(productUseCasesContainer: ProductUseCasesContainer) {
                 val productPrice = params["price"]?.trim()?.toDoubleOrNull()
                 val productQuantity = params["quantity"]?.trim()
 
-                 productUseCasesContainer.updateProductUseCase(
-                    productId = productId, productName = productName, productPrice = productPrice, productQuantity = productQuantity
+                productUseCasesContainer.updateProductUseCase(
+                    productId = productId,
+                    productName = productName,
+                    productPrice = productPrice,
+                    productQuantity = productQuantity
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
             }

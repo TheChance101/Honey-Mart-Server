@@ -10,8 +10,11 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 
-fun Route.cartRoutes(cartUseCasesContainer: CartUseCasesContainer) {
+fun Route.cartRoutes() {
+
+    val cartUseCasesContainer: CartUseCasesContainer by inject()
 
     authenticate {
         route("/cart") {

@@ -1,7 +1,7 @@
 package com.thechance.core.data.datasource.mapper
 
 import com.thechance.core.data.model.Category
-import com.thechance.core.data.database.tables.category.CategoriesTable
+import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import org.jetbrains.exposed.sql.ResultRow
 
 

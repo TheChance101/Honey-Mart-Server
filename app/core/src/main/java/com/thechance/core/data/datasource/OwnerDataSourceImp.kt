@@ -1,9 +1,9 @@
 package com.thechance.core.data.datasource
 
 import com.thechance.core.data.model.Owner
-import com.thechance.core.data.database.tables.OwnerTable
-import com.thechance.core.data.datasource.OwnerDataSource
-import com.thechance.core.data.utils.dbQuery
+import com.thechance.core.data.datasource.database.tables.OwnerTable
+import com.thechance.core.data.repository.dataSource.OwnerDataSource
+import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
@@ -15,7 +15,7 @@ class OwnerDataSourceImp : OwnerDataSource, KoinComponent {
             val newOwner = OwnerTable.insert {
                 it[OwnerTable.ownerName] = ownerName
                 it[OwnerTable.password] = password
-                it[OwnerTable.isDeleted] = false
+                it[isDeleted] = false
             }
             Owner(
                 ownerId = newOwner[OwnerTable.id].value,

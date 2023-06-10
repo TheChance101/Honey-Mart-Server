@@ -1,15 +1,16 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.database.tables.NormalUserTable
-import com.thechance.core.data.database.tables.ProductTable
-import com.thechance.core.data.database.tables.cart.CartProductTable
-import com.thechance.core.data.database.tables.cart.CartTable
-import com.thechance.core.data.database.tables.wishlist.WishListProductTable
-import com.thechance.core.data.database.tables.wishlist.WishListTable
+import com.thechance.core.data.datasource.database.tables.NormalUserTable
+import com.thechance.core.data.datasource.database.tables.ProductTable
+import com.thechance.core.data.datasource.database.tables.cart.CartProductTable
+import com.thechance.core.data.datasource.database.tables.cart.CartTable
+import com.thechance.core.data.datasource.database.tables.wishlist.WishListProductTable
+import com.thechance.core.data.datasource.database.tables.wishlist.WishListTable
 import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.model.*
+import com.thechance.core.data.repository.dataSource.UserDataSource
 import com.thechance.core.data.security.hashing.SaltedHash
-import com.thechance.core.data.utils.dbQuery
+import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.component.KoinComponent
@@ -22,8 +23,8 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         return dbQuery {
             NormalUserTable.insert {
                 it[NormalUserTable.userName] = userName
-                it[NormalUserTable.password] = saltedHash.hash
-                it[NormalUserTable.salt] = saltedHash.salt
+                it[password] = saltedHash.hash
+                it[salt] = saltedHash.salt
                 it[NormalUserTable.fullName] = fullName
                 it[NormalUserTable.email] = email
             }
