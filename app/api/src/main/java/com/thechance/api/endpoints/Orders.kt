@@ -31,10 +31,10 @@ fun Route.orderRoutes(orderUseCasesContainer: OrderUseCasesContainer) {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.getClaim("userId", Long::class)
-                    val newAddedOrder = orderUseCasesContainer.createOrderUseCase(
+                    val isAdded = orderUseCasesContainer.createOrderUseCase(
                         userId
                     )
-                    call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedOrder))
+                    call.respond(HttpStatusCode.Created, ServerResponse.success(isAdded))
                 }
             }
         }

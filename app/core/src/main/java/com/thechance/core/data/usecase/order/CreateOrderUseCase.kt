@@ -1,9 +1,7 @@
 package com.thechance.core.data.usecase.order
 
 import com.thechance.core.data.repository.HoneyMartRepository
-import com.thechance.core.data.utils.InvalidMarketIdException
-import com.thechance.core.data.utils.InvalidOrderTotalPriceException
-import com.thechance.core.data.utils.invalidPrice
+import com.thechance.core.data.utils.*
 import com.thechance.core.data.utils.isInvalidId
 import org.koin.core.component.KoinComponent
 
@@ -11,27 +9,24 @@ class CreateOrderUseCase(private val repository: HoneyMartRepository) : KoinComp
     suspend operator fun invoke(
         userId: Long?
     ): Boolean {
-        val isCreated = repository.createOrder(repository.getCartId(userId!!)!!, userId)
-        if (isCreated) {
-            repository.deleteAllProductsInCart(repository.getCartId(userId)!!)
+        return if (isInvalidId(userId)) {
+            throw InvalidUserIdException()
+        } else if (!isEmptyCart(getCartId(userId!!))) {
+            val isCreated = repository.createOrder(getCartId(userId), userId)
+            if (isCreated) {
+                repository.deleteAllProductsInCart(getCartId(userId))
+            }
+            isCreated
+        } else {
+            throw EmptyCartException()
         }
-        return isCreated
     }
 
-    private fun isValidInput(
-        marketId: Long,
-        totalPrice: Double,
-    ): Exception? {
-        return when {
-            isInvalidId(marketId) -> {
-                InvalidMarketIdException()
-            }
+    private suspend fun getCartId(userId: Long): Long {
+        return repository.getCartId(userId) ?: repository.createCart(userId)
+    }
 
-            invalidPrice(totalPrice) -> {
-                InvalidOrderTotalPriceException()
-            }
-
-            else -> null
-        }
+    private suspend fun isEmptyCart(cartId: Long): Boolean {
+        return repository.getCart(cartId).products.isEmpty()
     }
 }

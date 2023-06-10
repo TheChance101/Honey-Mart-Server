@@ -40,6 +40,7 @@ class InvalidPasswordException : Exception()
 class UserInvalidException : Exception()
 
 class InvalidOrderIdException : Exception()
+class EmptyCartException : Exception()
 
 //region cart
 class CountInvalidInputException : Exception()
