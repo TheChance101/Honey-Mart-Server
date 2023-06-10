@@ -1,12 +1,10 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.data.datasource.*
+import com.thechance.core.data.datasource.CategoryDataSource
+import com.thechance.core.data.datasource.MarketDataSource
+import com.thechance.core.data.datasource.ProductDataSource
+import com.thechance.core.data.datasource.UserDataSource
 import com.thechance.core.data.model.*
-import com.thechance.core.data.security.hashing.HashingService
-import com.thechance.core.data.security.hashing.SaltedHash
-import com.thechance.core.data.security.token.TokenClaim
-import com.thechance.core.data.security.token.TokenConfig
-import com.thechance.core.data.security.token.TokenService
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
@@ -37,6 +35,24 @@ class HoneyMartRepositoryImp(
         userDataSource.updateCount(cartId, productId, count)
 
     override suspend fun createCart(userId: Long): Long = userDataSource.createCart(userId)
+
+
+    //endregion
+
+    //region WishList
+    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> =
+        userDataSource.getWishList(wishListId)
+
+    override suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.deleteProductFromWishList(wishListId, productId)
+
+    override suspend fun getWishListId(userId: Long): Long? = userDataSource.getWishListId(userId)
+    override suspend fun addToWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.addProductToWishList(wishListId, productId)
+
+    override suspend fun createWishList(userId: Long): Long = userDataSource.createWishList(userId)
+    override suspend fun isProductInWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.isProductInWishList(wishListId, productId)
 
     //endregion
 
@@ -122,7 +138,7 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isProductDeleted(id: Long): Boolean? =
         productDataSource.isDeleted(id)
+    //endregion
 
-//endregion
 
 }

@@ -44,6 +44,7 @@ class InvalidUserNameInputException:Exception()
 
 //endregion
 
+class ProductAlreadyInWishListException : Exception()
 //region cart
 class CountInvalidInputException : Exception()
 
