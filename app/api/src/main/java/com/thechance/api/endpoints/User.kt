@@ -2,7 +2,7 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.utils.handleException
-import com.thechance.core.data.usecase.user.UserUseCaseContainer
+import com.thechance.core.domain.usecase.user.UserUseCaseContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

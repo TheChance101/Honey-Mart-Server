@@ -4,7 +4,7 @@ import com.thechance.api.ServerResponse
 import com.thechance.api.utils.handleException
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
-import com.thechance.core.data.usecase.product.ProductUseCasesContainer
+import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

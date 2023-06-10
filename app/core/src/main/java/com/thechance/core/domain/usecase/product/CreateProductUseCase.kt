@@ -1,12 +1,8 @@
 package com.thechance.core.domain.usecase.product
 
 import com.thechance.core.data.model.Product
-import com.thechance.core.data.usecase.repository.HoneyMartRepository
-import com.thechance.core.data.utils.*
+import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.utils.*
-import com.thechance.core.utils.isInvalidPrice
-import com.thechance.core.utils.isValidIds
-import com.thechance.core.utils.isValidUsername
 import org.koin.core.component.KoinComponent
 
 class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinComponent {

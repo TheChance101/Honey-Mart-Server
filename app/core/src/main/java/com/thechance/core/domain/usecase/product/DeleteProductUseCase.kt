@@ -1,6 +1,6 @@
 package com.thechance.core.domain.usecase.product
 
-import com.thechance.core.data.usecase.repository.HoneyMartRepository
+import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.utils.IdNotFoundException
 import com.thechance.core.utils.InvalidProductIdException
 import com.thechance.core.utils.ProductDeletedException

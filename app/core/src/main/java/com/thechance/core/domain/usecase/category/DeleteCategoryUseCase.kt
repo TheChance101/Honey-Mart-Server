@@ -1,6 +1,6 @@
 package com.thechance.core.domain.usecase.category
 
-import com.thechance.core.data.usecase.repository.HoneyMartRepository
+import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.utils.CategoryDeletedException
 import com.thechance.core.utils.IdNotFoundException
 import com.thechance.core.utils.InvalidCategoryIdException

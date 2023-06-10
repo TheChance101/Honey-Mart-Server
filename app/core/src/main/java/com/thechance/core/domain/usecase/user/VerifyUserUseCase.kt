@@ -1,6 +1,6 @@
 package com.thechance.core.domain.usecase.user
 
-import com.thechance.core.data.usecase.repository.AuthRepository
+import com.thechance.core.domain.repository.AuthRepository
 import com.thechance.core.utils.InvalidUserNameOrPasswordException
 import org.koin.core.component.KoinComponent
 

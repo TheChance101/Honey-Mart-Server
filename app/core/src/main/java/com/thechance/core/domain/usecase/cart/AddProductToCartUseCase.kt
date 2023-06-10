@@ -1,9 +1,7 @@
 package com.thechance.core.domain.usecase.cart
 
-import com.thechance.core.data.usecase.repository.HoneyMartRepository
-import com.thechance.core.data.utils.*
+import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.utils.*
-import com.thechance.core.utils.isInvalidId
 import org.koin.core.component.KoinComponent
 
 class AddProductToCartUseCase(private val repository: HoneyMartRepository) : KoinComponent {

@@ -1,11 +1,8 @@
 package com.thechance.core.domain.usecase.category
 
 import com.thechance.core.data.model.Category
-import com.thechance.core.data.usecase.repository.HoneyMartRepository
-import com.thechance.core.data.utils.*
+import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.utils.*
-import com.thechance.core.utils.isInvalidId
-import com.thechance.core.utils.isValidUsername
 import org.koin.core.component.KoinComponent
 import java.util.regex.Pattern
 

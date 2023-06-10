@@ -1,6 +1,6 @@
 package com.thechance.core.domain.usecase.order
 
-import com.thechance.core.data.usecase.repository.HoneyMartRepository
+import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.utils.InvalidOrderIdException
 import com.thechance.core.utils.isInvalidId
 import org.koin.core.component.KoinComponent

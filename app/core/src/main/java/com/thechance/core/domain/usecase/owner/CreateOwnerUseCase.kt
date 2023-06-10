@@ -1,8 +1,7 @@
 package com.thechance.core.domain.usecase.owner
 
 import com.thechance.core.data.model.Owner
-import com.thechance.core.data.usecase.repository.AuthRepository
-import com.thechance.core.data.utils.*
+import com.thechance.core.domain.repository.AuthRepository
 import com.thechance.core.utils.InvalidUserNameOrPasswordException
 import com.thechance.core.utils.UsernameAlreadyExistException
 import com.thechance.core.utils.isValidPassword

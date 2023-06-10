@@ -2,7 +2,7 @@ package com.thechance.core.data.repository
 
 import com.thechance.core.data.model.*
 import com.thechance.core.data.repository.dataSource.*
-import com.thechance.core.data.usecase.repository.HoneyMartRepository
+import com.thechance.core.domain.repository.HoneyMartRepository
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(

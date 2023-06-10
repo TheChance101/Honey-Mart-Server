@@ -1,17 +1,10 @@
 package com.thechance.core.domain.usecase.user
 
-import com.thechance.core.data.usecase.repository.AuthRepository
-import com.thechance.core.data.utils.*
+import com.thechance.core.domain.repository.AuthRepository
 import com.thechance.core.utils.*
-import com.thechance.core.utils.isValidEmail
-import com.thechance.core.utils.isValidFullName
-import com.thechance.core.utils.isValidPassword
-import com.thechance.core.utils.isValidUsername
 import org.koin.core.component.KoinComponent
 
-class CreateUserUseCase(
-    private val repository: AuthRepository,
-) : KoinComponent {
+class CreateUserUseCase(private val repository: AuthRepository) : KoinComponent {
 
     suspend operator fun invoke(userName: String?, password: String?, fullName: String?, email: String?): Boolean {
 

@@ -2,10 +2,9 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.utils.handleException
-import com.thechance.core.data.usecase.market.MarketUseCaseContainer
+import com.thechance.core.domain.usecase.market.MarketUseCaseContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
