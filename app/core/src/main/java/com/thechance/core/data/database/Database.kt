@@ -53,4 +53,23 @@ class CoreDataBase {
             password = databasePassword
         )
     }
+
+    fun deleteAllTables() {
+        transaction(getDatabaseInstance()) {
+            SchemaUtils.drop(
+                *arrayOf(
+                    MarketTable,
+                    CategoriesTable,
+                    ProductTable,
+                    CategoryProductTable,
+                    NormalUserTable,
+                    OwnerTable,
+                    CartTable,
+                    CartProductTable,
+                    WishListTable,
+                    WishListProductTable
+                )
+            )
+        }
+    }
 }

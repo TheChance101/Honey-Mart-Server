@@ -11,6 +11,7 @@ import com.thechance.core.data.security.hashing.SHA256HashingService
 import com.thechance.core.data.security.token.JwtTokenService
 import com.thechance.core.data.security.token.TokenConfig
 import com.thechance.core.data.security.token.TokenService
+import com.thechance.core.data.usecase.DeleteAllTablesUseCase
 import com.thechance.core.data.usecase.cart.AddProductToCartUseCase
 import com.thechance.core.data.usecase.cart.CartUseCasesContainer
 import com.thechance.core.data.usecase.cart.DeleteProductInCartUseCase
@@ -107,6 +108,7 @@ val appModules = module {
 
     singleOf(::HoneyMartRepositoryImp) { bind<HoneyMartRepository>() }
     singleOf(::AuthRepositoryImp) { bind<AuthRepository>() }
+    singleOf(::DeleteAllTablesUseCase) { bind<DeleteAllTablesUseCase>() }
 
     includes(
         cartUseCase,

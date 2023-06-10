@@ -2,6 +2,8 @@ package com.thechance.api.plugins
 
 
 import com.thechance.api.endpoints.*
+import com.thechance.core.data.database.CoreDataBase
+import com.thechance.core.data.usecase.DeleteAllTablesUseCase
 import com.thechance.core.data.usecase.cart.CartUseCasesContainer
 import com.thechance.core.data.usecase.cart.GetCartUseCase
 import com.thechance.core.data.usecase.category.CategoryUseCasesContainer
@@ -26,6 +28,7 @@ fun Application.configureRouting() {
     val ownerUseCaseContainer: OwnerUseCaseContainer by inject()
     val cartUseCasesContainer: CartUseCasesContainer by inject()
     val wishListUseCaseContainer: WishListUseCaseContainer by inject()
+    val deleteAllTablesUseCase: DeleteAllTablesUseCase by inject()
 
     routing {
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml") {
@@ -41,5 +44,6 @@ fun Application.configureRouting() {
         ownerRoutes(ownerUseCaseContainer)
         cartRoutes(cartUseCasesContainer)
         wishListRoutes(wishListUseCaseContainer)
+        deleteAllTables(deleteAllTablesUseCase)
     }
 }
