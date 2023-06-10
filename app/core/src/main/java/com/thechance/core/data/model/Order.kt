@@ -2,12 +2,17 @@ package com.thechance.core.data.model
 
 import kotlinx.serialization.Serializable
 
-@Serializable
 data class Order(
-    val id: Long,
-    val marketId: Long,
-    val orderDate: String,
-    val totalPrice: Double,
-    val isPaid: Boolean = false,
-    val isCanceled: Boolean = false
+    val orderId: Long,
+    val products: List<OrderProduct>
+)
+data class OrderProduct(
+    val productId: Long,
+    val count: Int
+)
+
+@Serializable
+data class OrderWithPrice(
+    val orderId: Long,
+    val totalPrice: Double
 )

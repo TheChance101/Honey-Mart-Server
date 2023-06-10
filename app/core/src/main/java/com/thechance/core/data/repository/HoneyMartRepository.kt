@@ -1,6 +1,5 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.data.datasource.OrderDataSourceImp
 import com.thechance.core.data.model.*
 
 interface HoneyMartRepository {
@@ -60,7 +59,7 @@ interface HoneyMartRepository {
         userId: Long
     ): Boolean
 
-    suspend fun getAllOrdersForMarket(marketId: Long): List<OrderDataSourceImp.OrderWithPrice>
+    suspend fun getAllOrdersForMarket(marketId: Long): List<OrderWithPrice>
     suspend fun cancelOrder(orderId:Long)
     //end region
 }

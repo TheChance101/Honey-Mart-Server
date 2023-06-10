@@ -39,6 +39,7 @@ val dataSourceModules = module {
     single<ProductDataSource> { ProductDataSourceImp() }
     single<UserDataSource> { UserDataSourceImp() }
     single<OwnerDataSource> { OwnerDataSourceImp() }
+    single<OrderDataSource> { OrderDataSourceImp() }
 }
 
 val productUseCaseModule = module {

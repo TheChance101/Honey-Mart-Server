@@ -1,7 +1,7 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.model.Order
 import com.thechance.core.data.model.OrderItem
+import com.thechance.core.data.model.OrderWithPrice
 
 interface OrderDataSource {
     suspend fun createOrder(
@@ -12,7 +12,7 @@ interface OrderDataSource {
 
     suspend fun getAllOrdersForMarket(
         marketId: Long
-    ): List<OrderDataSourceImp.OrderWithPrice>
+    ): List<OrderWithPrice>
 
     suspend fun cancelOrder(
         orderId:Long
