@@ -34,10 +34,7 @@ class UserAlreadyExistException : Exception()
 class UnKnownUserException : Exception()
 class InvalidUserNameOrPasswordException:Exception()
 
-class InvalidPasswordException : Exception()
-
-class UserInvalidException : Exception()
-
+class ProductAlreadyInWishListException : Exception()
 //region cart
 class CountInvalidInputException : Exception()
 

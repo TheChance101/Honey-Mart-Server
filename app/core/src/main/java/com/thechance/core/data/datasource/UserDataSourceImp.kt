@@ -1,25 +1,22 @@
 package com.thechance.core.data.datasource
 
+import com.thechance.core.data.database.tables.NormalUserTable
+import com.thechance.core.data.database.tables.ProductTable
 import com.thechance.core.data.database.tables.cart.CartProductTable
 import com.thechance.core.data.database.tables.cart.CartTable
-import com.thechance.core.data.database.tables.ProductTable
-import com.thechance.core.data.model.Product
-import com.thechance.core.data.model.User
-import com.thechance.core.data.database.tables.NormalUserTable
 import com.thechance.core.data.database.tables.wishlist.WishListProductTable
 import com.thechance.core.data.database.tables.wishlist.WishListTable
 import com.thechance.core.data.datasource.mapper.toProduct
-import com.thechance.core.data.model.Cart
-import com.thechance.core.data.model.ProductInCart
+import com.thechance.core.data.model.*
 import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.data.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
 
 class UserDataSourceImp : UserDataSource, KoinComponent {
+
+    //region user
     override suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean {
         return dbQuery {
             NormalUserTable.insert {
@@ -178,6 +175,28 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
             newWishList[WishListTable.id].value
         }
     }
+
+    override suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean {
+        return dbQuery {
+            WishListProductTable.deleteWhere { (WishListProductTable.wishListId eq wishListId) and
+                    (WishListProductTable.productId eq productId) }
+            true
+        }
+    }
+
+    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> = dbQuery {
+        WishListProductTable.select { (WishListProductTable.wishListId eq wishListId) and
+                (WishListProductTable.isDeleted eq false)}
+            .map { productRow ->
+                val product = getProduct(productId = productRow[WishListProductTable.productId].value)
+                ProductInWishList(
+                    productId = product.id,
+                    name = product.name,
+                    price = product.price,
+                )
+            }
+    }
+
     //endregion
 
 }

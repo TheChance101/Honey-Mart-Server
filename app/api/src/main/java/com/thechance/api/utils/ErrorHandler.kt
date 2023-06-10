@@ -107,6 +107,12 @@ suspend fun handleException(call: ApplicationCall, block: suspend () -> Unit) {
                     ServerResponse.error("Invalid username or password, please try again")
                 )
             }
+            is ProductAlreadyInWishListException -> {
+                call.respond(
+                    HttpStatusCode.Conflict,
+                    ServerResponse.error("This product is  already in wish list")
+                )
+            }
 
             else -> {
                 call.respond(HttpStatusCode.InternalServerError, ServerResponse.error(e.message.toString()))

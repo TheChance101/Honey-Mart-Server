@@ -4,7 +4,7 @@ import com.thechance.core.data.repository.HoneyMartRepository
 import com.thechance.core.data.utils.*
 import org.koin.core.component.KoinComponent
 
-class AddProductToWishListUseCase(private val repository: HoneyMartRepository) : KoinComponent {
+class DeleteProductFromWishListUseCase(private val repository: HoneyMartRepository) : KoinComponent {
 
     suspend operator fun invoke(userId: Long?, productId: Long?): Boolean {
         return if (isInvalidId(userId)) {
@@ -15,14 +15,10 @@ class AddProductToWishListUseCase(private val repository: HoneyMartRepository) :
             val isProductDeleted = repository.isProductDeleted(productId!!)
             if (isProductDeleted == null) {
                 throw IdNotFoundException()
-            } else if (isProductDeleted) {
+            } else if ((isProductDeleted) || (!repository.isProductInWishList(getWishListId(userId!!), productId))) {
                 throw ProductDeletedException()
             } else {
-                if (repository.isProductInWishList(userId!!, productId)) {
-                    throw ProductAlreadyInWishListException()
-                } else {
-                    repository.addToWishList(getWishListId(userId), productId)
-                }
+                repository.deleteProductFromWishList(getWishListId(userId), productId)
             }
         }
     }

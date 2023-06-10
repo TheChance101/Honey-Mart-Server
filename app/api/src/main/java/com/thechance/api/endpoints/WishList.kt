@@ -2,8 +2,6 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.utils.handleException
-import com.thechance.api.utils.orZero
-import com.thechance.api.utils.toLongIds
 import com.thechance.core.data.usecase.wishlist.WishListUseCaseContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -32,6 +30,34 @@ fun Route.wishListRoutes(wishListUseCaseContainer: WishListUseCaseContainer) {
                     call.respond(
                         HttpStatusCode.Created,
                         ServerResponse.success("Added To WishList successfully \uD83E\uDD73")
+                    )
+                }
+            }
+            get {
+                handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = principal?.getClaim("userId", Long::class)
+
+                    val wishList = wishListUseCaseContainer.getWishListUseCase(userId)
+                    call.respond(
+                        HttpStatusCode.OK,
+                        ServerResponse.success(wishList)
+                    )
+                }
+            }
+
+            delete {
+                handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = principal?.getClaim("userId", Long::class)
+
+                    val params = call.receiveParameters()
+                    val productId = params["productId"]?.trim()?.toLongOrNull()
+
+                    wishListUseCaseContainer.deleteProductFromWishListUseCase(userId, productId)
+                    call.respond(
+                        HttpStatusCode.OK,
+                        ServerResponse.success("Deleted From WishList successfully \uD83D\uDE25\u200F ")
                     )
                 }
             }

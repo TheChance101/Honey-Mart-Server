@@ -1,16 +1,19 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.model.*
+import com.thechance.core.data.model.Cart
+import com.thechance.core.data.model.ProductInWishList
+import com.thechance.core.data.model.User
 import com.thechance.core.data.security.hashing.SaltedHash
 
 interface UserDataSource {
-
+    //region user
     suspend fun createUser(userName: String, saltedHash: SaltedHash): Boolean
     suspend fun isUserNameExists(userName: String): Boolean
 
     suspend fun isUserExist(userId: Long): Boolean
 
     suspend fun getUserByName(userName: String): User
+    //endregion
 
     //region cart
 
@@ -30,13 +33,13 @@ interface UserDataSource {
     //endregion
 
     //region wishList
+    suspend fun getWishList(wishListId:Long): List<ProductInWishList>
+    suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean
     suspend fun getWishListId(userId: Long): Long?
     suspend fun addProductToWishList(wishListId: Long, productId: Long): Boolean
     suspend fun isProductInWishList(wishListId:Long,productId: Long): Boolean
     suspend fun createWishList(userId: Long): Long
 
-    //  suspend fun getAllWishList(userId: Long): List<WishList>
-    // suspend fun deleteFromWishList(productId: Long): Boolean
 
     //endregion
 }

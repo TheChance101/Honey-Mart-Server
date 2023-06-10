@@ -1,6 +1,9 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.data.datasource.*
+import com.thechance.core.data.datasource.CategoryDataSource
+import com.thechance.core.data.datasource.MarketDataSource
+import com.thechance.core.data.datasource.ProductDataSource
+import com.thechance.core.data.datasource.UserDataSource
 import com.thechance.core.data.model.*
 import org.koin.core.component.KoinComponent
 
@@ -35,15 +38,24 @@ class HoneyMartRepositoryImp(
 
 
     //endregion
+
     //region WishList
+    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> =
+        userDataSource.getWishList(wishListId)
+
+    override suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.deleteProductFromWishList(wishListId, productId)
+
     override suspend fun getWishListId(userId: Long): Long? = userDataSource.getWishListId(userId)
     override suspend fun addToWishList(wishListId: Long, productId: Long): Boolean =
         userDataSource.addProductToWishList(wishListId, productId)
 
     override suspend fun createWishList(userId: Long): Long = userDataSource.createWishList(userId)
-    override suspend fun isProductInWishList(wishListId: Long,productId: Long): Boolean = userDataSource.isProductInWishList(wishListId, productId)
+    override suspend fun isProductInWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.isProductInWishList(wishListId, productId)
 
     //endregion
+
     //region market
     override suspend fun createMarket(marketName: String): Market = marketDataSource.createMarket(marketName)
     override suspend fun getAllMarkets(): List<Market> = marketDataSource.getAllMarkets()

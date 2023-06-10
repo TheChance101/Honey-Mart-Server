@@ -14,11 +14,14 @@ interface HoneyMartRepository {
     suspend fun createCart(userId: Long): Long
     //endregion
     //region WishList
+    suspend fun getWishList(wishListId:Long): List<ProductInWishList>
+    suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean
     suspend fun getWishListId(userId: Long): Long?
     suspend fun addToWishList(wishListId: Long, productId: Long): Boolean
     suspend fun createWishList(userId: Long): Long
     suspend fun isProductInWishList(wishListId: Long,productId: Long): Boolean
     //endregion
+
     //region market
     suspend fun createMarket(marketName: String): Market
     suspend fun getAllMarkets(): List<Market>
