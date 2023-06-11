@@ -22,22 +22,18 @@ class AuthRepositoryImp(
 ) : AuthRepository, KoinComponent {
 
     //region user
-    override suspend fun createUser(userName: String, password: String, fullName: String, email: String): Boolean {
+    override suspend fun createUser(password: String, fullName: String, email: String): Boolean {
         val saltedHash = hashingService.generateSaltedHash(password)
-        return userDataSource.createUser(userName, saltedHash, fullName, email)
+        return userDataSource.createUser(saltedHash, fullName, email)
     }
-
-    override suspend fun isUserNameExists(userName: String): Boolean =
-        userDataSource.isUserNameExists(userName)
 
     override suspend fun isEmailExists(email: String): Boolean = userDataSource.isEmailExists(email)
 
     override suspend fun isUserExist(userId: Long): Boolean = userDataSource.isUserExist(userId)
 
 
-    override suspend fun getUserByName(userName: String): User {
-        return userDataSource.getUserByName(userName)
-    }
+    override suspend fun getUserByEmail(email: String): User = userDataSource.getUserByEmail(email)
+
 
     override fun isUserValidPassword(user: User, password: String) = hashingService.verify(
         value = password,
@@ -48,29 +44,24 @@ class AuthRepositoryImp(
     //endregion
 
     //region owner
-    override suspend fun createOwner(userName: String, password: String): Boolean {
+    override suspend fun createOwner(fullName: String, email: String, password: String): Boolean {
         val saltedHash = hashingService.generateSaltedHash(password)
-        return ownerDataSource.createOwner(userName, password, saltedHash)
+        return ownerDataSource.createOwner(fullName = fullName, email = email, password = password, saltedHash)
     }
 
-    override suspend fun isOwnerNameExists(ownerName: String): Boolean =
-        ownerDataSource.isOwnerNameExists(ownerName)
+    override suspend fun isOwnerEmailExists(email: String): Boolean = ownerDataSource.isOwnerEmailExists(email)
 
-    override suspend fun getMarketOwnerByUsername(userName: String): Owner =
-        ownerDataSource.getOwnerByUserName(userName)
+    override suspend fun getMarketOwnerByUsername(userName: String): Owner = ownerDataSource.getOwnerByEmail(userName)
 
 
     override fun isOwnerValidPassword(owner: Owner, password: String) = hashingService.verify(
-        value = password,
-        saltedHash = SaltedHash(hash = owner.password, salt = owner.salt)
+        value = password, saltedHash = SaltedHash(hash = owner.password, salt = owner.salt)
     )
     //endregion
 
     override fun getToken(id: Long, role: String): String {
         return tokenService.generate(
-            config = tokenConfig,
-            subject = id.toString(),
-            TokenClaim(name = ROLE_TYPE, value = role)
+            config = tokenConfig, subject = id.toString(), TokenClaim(name = ROLE_TYPE, value = role)
         )
     }
 }

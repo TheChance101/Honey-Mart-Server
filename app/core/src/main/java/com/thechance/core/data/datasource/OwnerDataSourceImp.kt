@@ -12,10 +12,13 @@ import org.koin.core.component.KoinComponent
 
 class OwnerDataSourceImp : OwnerDataSource, KoinComponent {
 
-    override suspend fun createOwner(ownerName: String, password: String, saltedHash: SaltedHash): Boolean {
+    override suspend fun createOwner(
+        fullName: String, email: String, password: String, saltedHash: SaltedHash
+    ): Boolean {
         return dbQuery {
             OwnerTable.insert {
-                it[OwnerTable.ownerName] = ownerName
+                it[OwnerTable.fullName] = fullName
+                it[OwnerTable.email] = email
                 it[NormalUserTable.password] = saltedHash.hash
                 it[NormalUserTable.salt] = saltedHash.salt
                 it[isDeleted] = false
@@ -24,20 +27,17 @@ class OwnerDataSourceImp : OwnerDataSource, KoinComponent {
         }
     }
 
-    override suspend fun isOwnerNameExists(ownerName: String): Boolean {
-        return dbQuery {
-            OwnerTable.select {
-                OwnerTable.ownerName eq ownerName
-            }.count() > 0
-        }
+    override suspend fun isOwnerEmailExists(email: String): Boolean {
+        return dbQuery { OwnerTable.select { OwnerTable.email eq email }.count() > 0 }
     }
 
-    override suspend fun getOwnerByUserName(userName: String): Owner {
+    override suspend fun getOwnerByEmail(email: String): Owner {
         return dbQuery {
-            OwnerTable.select { OwnerTable.ownerName eq userName }.map {
+            OwnerTable.select { OwnerTable.email eq email }.map {
                 Owner(
                     ownerId = it[OwnerTable.id].value,
-                    userName = it[OwnerTable.ownerName],
+                    email = it[OwnerTable.email],
+                    fullName = it[OwnerTable.fullName],
                     password = it[OwnerTable.password],
                     salt = it[OwnerTable.salt]
                 )

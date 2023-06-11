@@ -6,15 +6,13 @@ import org.koin.core.component.KoinComponent
 
 class CreateUserUseCase(private val repository: AuthRepository) : KoinComponent {
 
-    suspend operator fun invoke(userName: String?, password: String?, fullName: String?, email: String?): Boolean {
+    suspend operator fun invoke(email: String?, password: String?, fullName: String?): Boolean {
 
-        isValidInput(userName, password, fullName, email)?.let { throw it }
+        isValidInput(password, fullName, email)?.let { throw it }
 
-        return if (repository.isUserNameExists(userName!!)) {
-            throw UsernameAlreadyExistException()
-        } else if (repository.isEmailExists(email!!)) {
+        return if (repository.isEmailExists(email!!)) {
             throw EmailAlreadyExistException()
-        } else if (!repository.createUser(userName, password!!, fullName!!, email)) {
+        } else if (!repository.createUser(password = password!!, fullName = fullName!!, email = email)) {
             throw UnKnownUserException()
         } else {
             true
@@ -22,11 +20,8 @@ class CreateUserUseCase(private val repository: AuthRepository) : KoinComponent 
     }
 
 
-    private fun isValidInput(userName: String?, password: String?, fullName: String?, email: String?): Exception? {
+    private fun isValidInput(password: String?, fullName: String?, email: String?): Exception? {
         return when {
-            !isValidUsername(userName) -> {
-                InvalidUserNameInputException()
-            }
 
             !isValidPassword(password) -> {
                 InvalidPasswordInputException()
