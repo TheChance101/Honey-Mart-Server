@@ -1,8 +1,10 @@
 package com.thechance.core.data.datasource
 
+import com.thechance.core.data.datasource.database.tables.NormalUserTable
 import com.thechance.core.entity.Owner
 import com.thechance.core.data.datasource.database.tables.OwnerTable
 import com.thechance.core.data.repository.dataSource.OwnerDataSource
+import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -10,17 +12,15 @@ import org.koin.core.component.KoinComponent
 
 class OwnerDataSourceImp : OwnerDataSource, KoinComponent {
 
-    override suspend fun createOwner(ownerName: String, password: String): Owner {
+    override suspend fun createOwner(ownerName: String, password: String, saltedHash: SaltedHash): Boolean {
         return dbQuery {
-            val newOwner = OwnerTable.insert {
+            OwnerTable.insert {
                 it[OwnerTable.ownerName] = ownerName
-                it[OwnerTable.password] = password
+                it[NormalUserTable.password] = saltedHash.hash
+                it[NormalUserTable.salt] = saltedHash.salt
                 it[isDeleted] = false
             }
-            Owner(
-                ownerId = newOwner[OwnerTable.id].value,
-                userName = newOwner[OwnerTable.ownerName],
-            )
+            true
         }
     }
 
@@ -32,5 +32,17 @@ class OwnerDataSourceImp : OwnerDataSource, KoinComponent {
         }
     }
 
+    override suspend fun getOwnerByUserName(userName: String): Owner {
+        return dbQuery {
+            OwnerTable.select { OwnerTable.ownerName eq userName }.map {
+                Owner(
+                    ownerId = it[OwnerTable.id].value,
+                    userName = it[OwnerTable.ownerName],
+                    password = it[OwnerTable.password],
+                    salt = it[OwnerTable.salt]
+                )
+            }.single()
+        }
+    }
 
 }

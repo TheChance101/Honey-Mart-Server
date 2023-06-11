@@ -1,4 +1,4 @@
-package com.thechance.api.mapper
+package com.thechance.api.model.mapper
 
 import com.thechance.api.model.OrderItemModel
 import com.thechance.core.entity.OrderItem

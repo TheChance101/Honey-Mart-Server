@@ -1,7 +1,7 @@
-package com.thechance.api.endpoints
+package com.thechance.api.endpoints.user
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.mapper.toApiProductInWishListModel
+import com.thechance.api.model.mapper.toApiProductInWishListModel
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.wishlist.WishListUseCaseContainer
 import io.ktor.http.*
@@ -23,7 +23,7 @@ fun Route.wishListRoutes() {
             post {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.getClaim("userId", Long::class)
+                    val userId = principal?.payload?.subject?.toLongOrNull()
 
                     val params = call.receiveParameters()
                     val productId = params["productId"]?.trim()?.toLongOrNull()
@@ -39,7 +39,7 @@ fun Route.wishListRoutes() {
             get {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.getClaim("userId", Long::class)
+                    val userId = principal?.payload?.subject?.toLongOrNull()
 
                     val wishList =
                         wishListUseCaseContainer.getWishListUseCase(userId).map { it.toApiProductInWishListModel() }
@@ -51,7 +51,7 @@ fun Route.wishListRoutes() {
             delete {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.getClaim("userId", Long::class)
+                    val userId = principal?.payload?.subject?.toLongOrNull()
 
                     val params = call.receiveParameters()
                     val productId = params["productId"]?.trim()?.toLongOrNull()

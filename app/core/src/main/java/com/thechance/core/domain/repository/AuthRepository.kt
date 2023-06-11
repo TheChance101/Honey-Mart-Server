@@ -1,5 +1,6 @@
 package com.thechance.core.domain.repository
 
+import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.entity.*
 
 interface AuthRepository {
@@ -13,16 +14,23 @@ interface AuthRepository {
 
     suspend fun isUserExist(userId: Long): Boolean
 
+    suspend fun getUserByName(userName: String): User
+
+    fun isUserValidPassword(user: User, password: String): Boolean
+
     //endregion
 
 
     //region owner
-    suspend fun createOwner(userName: String, password: String): Owner
+    suspend fun createOwner(userName: String, password: String): Boolean
     suspend fun isOwnerNameExists(ownerName: String): Boolean
 
-    //endregion
-    suspend fun getUserByName(userName: String): User
-    fun isValidPassword(user: User, password: String): Boolean
+    suspend fun getMarketOwnerByUsername(userName: String): Owner
 
-    fun getToken(user: User): String
+    fun isOwnerValidPassword(owner: Owner, password: String): Boolean
+
+    //endregion
+
+
+    fun getToken(id: Long, role: String): String
 }

@@ -1,14 +1,17 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.mapper.toApiCategoryModel
-import com.thechance.api.mapper.toApiProductModel
+import com.thechance.api.model.mapper.toApiCategoryModel
+import com.thechance.api.model.mapper.toApiProductModel
 import com.thechance.api.utils.handleException
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
 import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
+import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -29,59 +32,85 @@ fun Route.productsRoutes() {
             }
         }
 
-        post {
-            handleException(call) {
-                val params = call.receiveParameters()
-                val productName = params["name"]?.trim().orEmpty()
-                val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
-                val productQuantity = params["quantity"]?.trim()
-                val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
+        authenticate {
 
-                val newAddedProduct = productUseCasesContainer.createProductUseCase(
-                    productName, productPrice, productQuantity, categoriesId
-                ).toApiProductModel()
-                call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
+            post {
+                handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                    val role = principal?.getClaim(ROLE_TYPE,String::class)
+
+                    val params = call.receiveParameters()
+                    val productName = params["name"]?.trim().orEmpty()
+                    val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
+                    val productQuantity = params["quantity"]?.trim()
+                    val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
+
+                    val newAddedProduct = productUseCasesContainer.createProductUseCase(
+                        productName, productPrice, productQuantity, categoriesId, marketOwnerId, role
+                    ).toApiProductModel()
+                    call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
+                }
             }
-        }
 
-        put("{id}") {
-            handleException(call) {
-                val productId = call.parameters["id"]?.trim()?.toLongOrNull()
-                val params = call.receiveParameters()
-                val productName = params["name"]?.trim()
-                val productPrice = params["price"]?.trim()?.toDoubleOrNull()
-                val productQuantity = params["quantity"]?.trim()
+            put("{id}") {
+                handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                    val role = principal?.getClaim(ROLE_TYPE,String::class)
 
-                productUseCasesContainer.updateProductUseCase(
-                    productId = productId,
-                    productName = productName,
-                    productPrice = productPrice,
-                    productQuantity = productQuantity
-                )
-                call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
+                    val productId = call.parameters["id"]?.trim()?.toLongOrNull()
+                    val params = call.receiveParameters()
+                    val productName = params["name"]?.trim()
+                    val productPrice = params["price"]?.trim()?.toDoubleOrNull()
+                    val productQuantity = params["quantity"]?.trim()
+
+                    productUseCasesContainer.updateProductUseCase(
+                        productId = productId,
+                        productName = productName,
+                        productPrice = productPrice,
+                        productQuantity = productQuantity,
+                        marketOwnerId, role
+                    )
+                    call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
+                }
             }
-        }
 
-        put("{id}/updateCategories") {
-            val productId = call.parameters["id"]?.trim()?.toLongOrNull()
-            val params = call.receiveParameters()
-            val categoriesId = params["categoriesId"]?.trim().toLongIds()
+            put("{id}/updateCategories") {
+                handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                    val role = principal?.getClaim(ROLE_TYPE,String::class)
 
-            handleException(call) {
-                productUseCasesContainer.updateProductCategoryUseCase(productId = productId, categoryIds = categoriesId)
-                call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
+                    val productId = call.parameters["id"]?.trim()?.toLongOrNull()
+                    val params = call.receiveParameters()
+                    val categoriesId = params["categoriesId"]?.trim().toLongIds()
+
+                    productUseCasesContainer.updateProductCategoryUseCase(
+                        productId = productId,
+                        categoryIds = categoriesId,
+                        marketOwnerId, role
+                    )
+                    call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
+                }
             }
-        }
 
-        delete("{id}") {
-            val productId = call.parameters["id"]?.trim()?.toLongOrNull()
-            handleException(call) {
-                val result = productUseCasesContainer.deleteProductUseCase(productId = productId)
-                call.respond(
-                    HttpStatusCode.OK,
-                    ServerResponse.success(result = result, successMessage = "Product Deleted successfully.")
-                )
+            delete("{id}") {
+                handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                    val role = principal?.getClaim(ROLE_TYPE,String::class)
 
+                    val productId = call.parameters["id"]?.trim()?.toLongOrNull()
+
+                    val result =
+                        productUseCasesContainer.deleteProductUseCase(productId = productId, marketOwnerId, role)
+                    call.respond(
+                        HttpStatusCode.OK,
+                        ServerResponse.success(result = result, successMessage = "Product Deleted successfully.")
+                    )
+
+                }
             }
         }
     }

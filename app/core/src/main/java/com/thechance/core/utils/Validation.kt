@@ -62,3 +62,10 @@ internal fun isValidFullName(fullName: String?): Boolean {
     }
 }
 
+internal fun isValidRole(role: String, inputRole: String?): Boolean {
+    return if (inputRole == null) {
+        false
+    } else {
+        inputRole == role
+    }
+}

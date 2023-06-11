@@ -11,14 +11,13 @@ import org.koin.ktor.ext.inject
 
 fun Application.configureSecurity() {
 
-    val config :TokenConfig by inject ()
+    val config: TokenConfig by inject()
 
     authentication {
         jwt {
             realm = this@configureSecurity.environment.config.tryGetString("jwt.realm").toString()
             verifier(
-                JWT
-                    .require(Algorithm.HMAC256(config.secret))
+                JWT.require(Algorithm.HMAC256(config.secret))
                     .withAudience(config.audience)
                     .withIssuer(config.issuer)
                     .build()

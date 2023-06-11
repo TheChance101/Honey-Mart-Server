@@ -10,7 +10,7 @@ import org.koin.core.component.KoinComponent
 
 class CreateOwnerUseCase(private val repository: AuthRepository) : KoinComponent {
 
-    suspend operator fun invoke(ownerName: String?, password: String?): Owner {
+    suspend operator fun invoke(ownerName: String?, password: String?): Boolean {
         isValidInput(ownerName, password)?.let { throw it }
         return if (repository.isOwnerNameExists(ownerName!!)) {
             throw UsernameAlreadyExistException()
@@ -22,11 +22,11 @@ class CreateOwnerUseCase(private val repository: AuthRepository) : KoinComponent
 
     private fun isValidInput(ownerName: String?, password: String?): Exception? {
         return when {
-            isValidUsername(ownerName) -> {
+            !isValidUsername(ownerName) -> {
                 InvalidUserNameOrPasswordException()
             }
 
-            isValidPassword(password) -> {
+            !isValidPassword(password) -> {
                 InvalidUserNameOrPasswordException()
             }
 

@@ -1,7 +1,8 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.mapper.toApiProductModel
+import com.thechance.api.model.mapper.toApiCategoryModel
+import com.thechance.api.model.mapper.toApiProductModel
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.category.CategoryUseCasesContainer
 import io.ktor.http.*
@@ -35,7 +36,7 @@ fun Route.categoryRoutes() {
                 val marketId = params["marketId"]?.toLongOrNull()
                 val imageId = params["imageId"]?.toIntOrNull()
                 val newCategory =
-                    categoryUseCasesContainer.createCategoryUseCase(categoryName, marketId, imageId)
+                    categoryUseCasesContainer.createCategoryUseCase(categoryName, marketId, imageId).toApiCategoryModel()
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newCategory, "Category added successfully"))
             }
         }

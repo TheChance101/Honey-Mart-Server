@@ -27,12 +27,8 @@ class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
 
     private fun isValidInput(categoryName: String?, marketId: Long?, imageId: Int?): Exception? {
         return when {
-            isValidUsername(categoryName) -> {
+            !isValidCategoryName(categoryName) -> {
                 InvalidCategoryNameException()
-            }
-
-            checkLetter(categoryName) -> {
-                InvalidCategoryNameLettersException()
             }
 
             isInvalidId(marketId) -> {
@@ -49,15 +45,12 @@ class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
         }
     }
 
-    private fun checkLetter(categoryName: String?): Boolean {
-        return categoryName?.let {
-            return !isValidStringInput(it)
-        } ?: true
-    }
-
-    private fun isValidStringInput(name: String): Boolean {
-        val pattern = Pattern.compile("^[a-zA-Z\\s]+$")
-        val matcher = pattern.matcher(name)
-        return matcher.matches()
+    private fun isValidCategoryName(categoryName: String?): Boolean {
+        return if (categoryName == null) {
+            return false
+        } else {
+            val categoryNameRegex = Regex("^[a-zA-Z_]\\w{3,9}$")
+            categoryNameRegex.matches(categoryName)
+        }
     }
 }

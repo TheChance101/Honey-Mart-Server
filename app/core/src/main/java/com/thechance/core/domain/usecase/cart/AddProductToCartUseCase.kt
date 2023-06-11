@@ -6,8 +6,10 @@ import org.koin.core.component.KoinComponent
 
 class AddProductToCartUseCase(private val repository: HoneyMartRepository) : KoinComponent {
 
-    suspend operator fun invoke(userId: Long?, productId: Long?, count: Int?): Boolean {
-        return if (isInvalidId(userId)) {
+    suspend operator fun invoke(userId: Long?, productId: Long?, count: Int?, role: String?): Boolean {
+        return if (!isValidRole(NORMAL_USER_ROLE, role)) {
+            throw InvalidUserIdException()
+        } else if (isInvalidId(userId)) {
             throw InvalidUserIdException()
         } else if (isInvalidId(productId)) {
             throw InvalidProductIdException()

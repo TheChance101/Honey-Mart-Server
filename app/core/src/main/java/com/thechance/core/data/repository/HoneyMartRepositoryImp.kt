@@ -16,8 +16,7 @@ class HoneyMartRepositoryImp(
     //region cart
     override suspend fun getCartId(userId: Long): Long? = userDataSource.getCartId(userId)
 
-    override suspend fun getCart(cartId: Long): Cart =
-        userDataSource.getCart(cartId)
+    override suspend fun getCart(cartId: Long): Cart = userDataSource.getCart(cartId)
 
     override suspend fun isProductInCart(cartId: Long, productId: Long): Boolean =
         userDataSource.isProductInCart(cartId, productId)
@@ -42,8 +41,7 @@ class HoneyMartRepositoryImp(
     //endregion
 
     //region WishList
-    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> =
-        userDataSource.getWishList(wishListId)
+    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> = userDataSource.getWishList(wishListId)
 
     override suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean =
         userDataSource.deleteProductFromWishList(wishListId, productId)
