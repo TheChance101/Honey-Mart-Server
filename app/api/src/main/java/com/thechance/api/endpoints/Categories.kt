@@ -20,7 +20,7 @@ fun Route.categoryRoutes() {
         /**
          * get all products in category
          * */
-        get("/{categoryId}") {
+        get("/allProduct/{categoryId}") {
             val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
             handleException(call) {
                 val products = categoryUseCasesContainer.getAllCategoriesUseCase(categoryId = categoryId)
@@ -54,7 +54,7 @@ fun Route.categoryRoutes() {
             }
         }
 
-        delete("/{id}") {
+        delete("/{categoryId}") {
             val categoryId = call.parameters["id"]?.trim()?.toLongOrNull()
             handleException(call) {
                 val isCategoryDeleted = categoryUseCasesContainer.deleteCategoryUseCase.invoke(categoryId)
