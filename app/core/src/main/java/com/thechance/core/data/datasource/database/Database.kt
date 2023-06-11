@@ -73,6 +73,10 @@ class CoreDataBase {
                     OwnerTable,
                     CartTable,
                     CartProductTable,
+                    OrderTable,
+                    OrderProductTable,
+                    OrderMarketTable,
+                    CartProductTable,
                     WishListTable,
                     WishListProductTable
                 )
