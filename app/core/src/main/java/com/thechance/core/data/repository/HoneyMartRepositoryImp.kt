@@ -1,18 +1,60 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.data.datasource.CategoryDataSource
-import com.thechance.core.data.datasource.MarketDataSource
-import com.thechance.core.data.datasource.ProductDataSource
-import com.thechance.core.data.model.Category
-import com.thechance.core.data.model.Market
-import com.thechance.core.data.model.Product
+import com.thechance.core.entity.*
+import com.thechance.core.data.repository.dataSource.*
+import com.thechance.core.domain.repository.HoneyMartRepository
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
     private val marketDataSource: MarketDataSource,
     private val categoryDataSource: CategoryDataSource,
-    private val productDataSource: ProductDataSource
+    private val productDataSource: ProductDataSource,
+    private val orderDataSource: OrderDataSource,
+    private val userDataSource: UserDataSource
 ) : HoneyMartRepository, KoinComponent {
+
+    //region cart
+    override suspend fun getCartId(userId: Long): Long? = userDataSource.getCartId(userId)
+
+    override suspend fun getCart(cartId: Long): Cart = userDataSource.getCart(cartId)
+
+    override suspend fun isProductInCart(cartId: Long, productId: Long): Boolean =
+        userDataSource.isProductInCart(cartId, productId)
+
+
+    override suspend fun addToCart(cartId: Long, productId: Long, marketId: Long, count: Int): Boolean =
+        userDataSource.addToCart(cartId = cartId, productId = productId, marketId = marketId, count = count)
+
+
+    override suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean =
+        userDataSource.deleteProductInCart(cartId, productId)
+
+    override suspend fun updateProductCountInCart(cartId: Long, productId: Long, count: Int): Boolean =
+        userDataSource.updateCount(cartId, productId, count)
+
+    override suspend fun createCart(userId: Long): Long = userDataSource.createCart(userId)
+
+    override suspend fun deleteAllProductsInCart(cartId: Long): Boolean =
+        userDataSource.deleteAllProductsInCart(cartId)
+
+
+    //endregion
+
+    //region WishList
+    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> = userDataSource.getWishList(wishListId)
+
+    override suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.deleteProductFromWishList(wishListId, productId)
+
+    override suspend fun getWishListId(userId: Long): Long? = userDataSource.getWishListId(userId)
+    override suspend fun addToWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.addProductToWishList(wishListId, productId)
+
+    override suspend fun createWishList(userId: Long): Long = userDataSource.createWishList(userId)
+    override suspend fun isProductInWishList(wishListId: Long, productId: Long): Boolean =
+        userDataSource.isProductInWishList(wishListId, productId)
+
+    //endregion
 
     //region market
     override suspend fun createMarket(marketName: String): Market = marketDataSource.createMarket(marketName)
@@ -29,6 +71,8 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isMarketDeleted(marketId: Long): Boolean? =
         marketDataSource.isDeleted(marketId)
+
+    override suspend fun getMarketId(productId: Long): Long? = marketDataSource.getMarketId(productId)
 
     //endregion
 
@@ -60,7 +104,7 @@ class HoneyMartRepositoryImp(
     override suspend fun isCategoryNameUnique(categoryName: String): Boolean =
         categoryDataSource.isCategoryNameUnique(categoryName)
 
-    //endregion
+//endregion
 
     //region product
     override suspend fun createProduct(
@@ -94,7 +138,38 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isProductDeleted(id: Long): Boolean? =
         productDataSource.isDeleted(id)
+    //endregion
 
     //endregion
+
+    //region order
+    override suspend fun createOrder(
+        cartId: Long,
+        userId: Long
+    ): Boolean {
+        val cart = getCart(cartId)
+        return orderDataSource.createOrder(
+            cart.total, cart.products.map {
+                OrderItem(
+                    productId = it.id,
+                    count = it.count,
+                    marketId = getMarketId(it.id)!!
+                )
+            },
+            userId
+        )
+    }
+
+    override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> =
+        orderDataSource.getAllOrdersForMarket(marketId)
+
+    override suspend fun cancelOrder(orderId: Long): Boolean =
+        orderDataSource.cancelOrder(orderId)
+
+    override suspend fun isOrderExist(orderId: Long): Boolean =
+        orderDataSource.isOrderExist(orderId)
+    //end region
+//endregion
+
 
 }

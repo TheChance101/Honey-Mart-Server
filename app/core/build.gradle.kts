@@ -4,7 +4,6 @@ val ktor_version: String by project
 
 plugins {
     kotlin("jvm") version "1.8.10"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
 }
 
 repositories {
@@ -23,6 +22,10 @@ dependencies {
 
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
 
-
+    implementation("org.mindrot:jbcrypt:0.4")
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
+    implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
+    implementation("commons-codec:commons-codec:1.15")
+
 }

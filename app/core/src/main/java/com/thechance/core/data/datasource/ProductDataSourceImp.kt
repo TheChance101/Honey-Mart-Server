@@ -2,14 +2,12 @@ package com.thechance.core.data.datasource
 
 import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toProduct
-import com.thechance.core.data.model.Category
-import com.thechance.core.data.model.Product
-import com.thechance.core.data.tables.CategoriesTable
-import com.thechance.core.data.tables.CategoryProductTable
-import com.thechance.core.data.tables.MarketTable
-import com.thechance.core.data.tables.ProductTable
-import com.thechance.core.data.utils.ItemNotAvailableException
-import com.thechance.core.data.utils.dbQuery
+import com.thechance.core.entity.*
+import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
+import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
+import com.thechance.core.data.datasource.database.tables.ProductTable
+import com.thechance.core.data.repository.dataSource.ProductDataSource
+import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.component.KoinComponent
