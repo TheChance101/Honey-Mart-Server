@@ -283,7 +283,7 @@ paths:
             '*/*':
               schema:
                 type: "boolean"
-  /category/allProduct/{categoryId}:
+  /category/{categoryId}/allProduct:
     get:
       description: "get all products in category"
       parameters:

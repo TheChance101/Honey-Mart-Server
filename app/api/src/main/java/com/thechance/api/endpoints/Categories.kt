@@ -20,7 +20,7 @@ fun Route.categoryRoutes() {
         /**
          * get all products in category
          * */
-        get("/allProduct/{categoryId}") {
+        get("/{categoryId}/allProduct") {
             val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
             handleException(call) {
                 val products = categoryUseCasesContainer.getAllCategoriesUseCase(categoryId = categoryId)
