@@ -6,6 +6,7 @@ import com.thechance.core.entity.*
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
 import com.thechance.core.data.datasource.database.tables.ProductTable
+import com.thechance.core.data.datasource.database.tables.cart.CartTable
 import com.thechance.core.data.repository.dataSource.ProductDataSource
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
@@ -90,4 +91,13 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
     }
 
 
+    override suspend fun getProductMarketId(productId: Long): Long {
+        return dbQuery {
+            val categoryId = CategoryProductTable.select { CategoryProductTable.productId eq productId }
+                .map { it[CategoryProductTable.categoryId].value }.single()
+
+            CategoriesTable.select { CategoriesTable.id eq categoryId }.map { it[CategoriesTable.marketId].value }
+                .single()
+        }
+    }
 }

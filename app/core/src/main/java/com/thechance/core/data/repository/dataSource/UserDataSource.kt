@@ -29,6 +29,8 @@ interface UserDataSource {
     suspend fun updateCount(cartId: Long, productId: Long, count: Int): Boolean
 
     suspend fun createCart(userId: Long): Long
+
+    suspend fun getCartMarketId(cartId: Long): Long?
     //endregion
 
     //region wishList
