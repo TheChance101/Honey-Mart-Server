@@ -20,7 +20,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class CoreDataBase {
 
     private val tables by lazy {
-        listOf(
+        arrayOf(
             MarketTable,
             CategoriesTable,
             ProductTable,
@@ -39,11 +39,7 @@ class CoreDataBase {
     }
 
     init {
-        transaction(getDatabaseInstance()) {
-            tables.forEach {
-                SchemaUtils.create(it)
-            }
-        }
+        createTables()
     }
 
     private fun getDatabaseInstance(): Database {
@@ -61,26 +57,18 @@ class CoreDataBase {
         )
     }
 
+    private fun createTables() {
+        transaction(getDatabaseInstance()) {
+            tables.forEach {
+                SchemaUtils.create(it)
+            }
+        }
+    }
+
     fun deleteAllTables() {
         transaction(getDatabaseInstance()) {
-            SchemaUtils.drop(
-                *arrayOf(
-                    MarketTable,
-                    CategoriesTable,
-                    ProductTable,
-                    CategoryProductTable,
-                    NormalUserTable,
-                    OwnerTable,
-                    CartTable,
-                    CartProductTable,
-                    OrderTable,
-                    OrderProductTable,
-                    OrderMarketTable,
-                    CartProductTable,
-                    WishListTable,
-                    WishListProductTable
-                )
-            )
+            SchemaUtils.drop(*tables)
         }
+        createTables()
     }
 }
