@@ -19,12 +19,11 @@ fun Route.userRoutes() {
         post("/signup") {
             handleException(call) {
                 val params = call.receiveParameters()
-                val name = params["username"]?.trim()
                 val password = params["password"]?.trim()
                 val fullName = params["fullName"]?.trim()
                 val email = params["email"]?.trim()
 
-                userUseCasesContainer.createUserUseCase(name, password, fullName = fullName, email = email)
+                userUseCasesContainer.createUserUseCase(password = password, fullName = fullName, email = email)
                 call.respond(HttpStatusCode.Created, ServerResponse.success("user created successfully"))
             }
         }
@@ -32,10 +31,10 @@ fun Route.userRoutes() {
         post("/login") {
             handleException(call) {
                 val params = call.receiveParameters()
-                val name = params["username"]?.trim().toString()
+                val email = params["email"]?.trim().toString()
                 val password = params["password"]?.trim().toString()
 
-                val token = userUseCasesContainer.verifyUserUseCase(name, password)
+                val token = userUseCasesContainer.verifyUserUseCase(email, password)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
             }
         }

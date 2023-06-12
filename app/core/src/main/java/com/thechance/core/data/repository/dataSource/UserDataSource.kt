@@ -5,12 +5,11 @@ import com.thechance.core.data.security.hashing.SaltedHash
 
 interface UserDataSource {
     //region user
-    suspend fun createUser(userName: String, saltedHash: SaltedHash, fullName: String, email: String):Boolean
-    suspend fun isUserNameExists(userName: String): Boolean
+    suspend fun createUser(saltedHash: SaltedHash, fullName: String, email: String): Boolean
 
     suspend fun isUserExist(userId: Long): Boolean
 
-    suspend fun getUserByName(userName: String): User
+    suspend fun getUserByEmail(email: String): User
 
     suspend fun isEmailExists(email: String): Boolean
     //endregion
@@ -33,11 +32,11 @@ interface UserDataSource {
     //endregion
 
     //region wishList
-    suspend fun getWishList(wishListId:Long): List<ProductInWishList>
+    suspend fun getWishList(wishListId: Long): List<ProductInWishList>
     suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean
     suspend fun getWishListId(userId: Long): Long?
     suspend fun addProductToWishList(wishListId: Long, productId: Long): Boolean
-    suspend fun isProductInWishList(wishListId:Long,productId: Long): Boolean
+    suspend fun isProductInWishList(wishListId: Long, productId: Long): Boolean
     suspend fun createWishList(userId: Long): Long
 
 

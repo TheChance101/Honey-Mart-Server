@@ -6,6 +6,7 @@ import com.thechance.core.entity.Owner
 internal fun Owner.toApiOwnerModel(): OwnerModel {
     return OwnerModel(
         ownerId = ownerId,
-        userName = userName
+        fullName = fullName,
+        email = email
     )
 }
