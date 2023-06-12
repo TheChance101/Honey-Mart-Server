@@ -24,7 +24,7 @@ fun Route.cartRoutes() {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
-                    val role = principal?.getClaim(ROLE_TYPE,String::class)
+                    val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                     val products = cartUseCasesContainer.getCartUseCase(userId, role = role).toApiCart()
                     call.respond(ServerResponse.success(products))
@@ -35,7 +35,7 @@ fun Route.cartRoutes() {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
-                    val role = principal?.getClaim(ROLE_TYPE,String::class)
+                    val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                     val params = call.receiveParameters()
                     val productId = params["productId"]?.trim()?.toLongOrNull()
@@ -49,11 +49,22 @@ fun Route.cartRoutes() {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
-                    val role = principal?.getClaim(ROLE_TYPE,String::class)
+                    val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                     val params = call.receiveParameters()
                     val productId = params["productId"]?.trim()?.toLongOrNull()
                     cartUseCasesContainer.deleteProductInCartUseCase(userId = userId, productId = productId, role)
+                    call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
+                }
+            }
+
+            delete("deleteAll") {
+                handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = principal?.payload?.subject?.toLongOrNull()
+                    val role = principal?.getClaim(ROLE_TYPE, String::class)
+
+                    cartUseCasesContainer.deleteCartUseCase(userId = userId, role)
                     call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
                 }
             }

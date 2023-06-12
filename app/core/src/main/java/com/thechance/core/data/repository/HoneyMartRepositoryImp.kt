@@ -34,6 +34,9 @@ class HoneyMartRepositoryImp(
 
     override suspend fun createCart(userId: Long): Long = userDataSource.createCart(userId)
 
+    override suspend fun getCartMarketId(cartId: Long): Long? = userDataSource.getCartMarketId(cartId)
+    override suspend fun deleteCart(cartId: Long): Boolean = userDataSource.deleteCart(cartId)
+
     override suspend fun deleteAllProductsInCart(cartId: Long): Boolean =
         userDataSource.deleteAllProductsInCart(cartId)
 
@@ -138,25 +141,20 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isProductDeleted(id: Long): Boolean? =
         productDataSource.isDeleted(id)
+
+    override suspend fun getProductMarketId(productId: Long): Long = productDataSource.getProductMarketId(productId)
+
     //endregion
 
     //endregion
 
     //region order
-    override suspend fun createOrder(
-        cartId: Long,
-        userId: Long
-    ): Boolean {
+    override suspend fun createOrder(cartId: Long, userId: Long): Boolean {
         val cart = getCart(cartId)
         return orderDataSource.createOrder(
             cart.total, cart.products.map {
-                OrderItem(
-                    productId = it.id,
-                    count = it.count,
-                    marketId = getMarketId(it.id)!!
-                )
-            },
-            userId
+                OrderItem(productId = it.id, count = it.count, marketId = getMarketId(it.id)!!)
+            }, userId
         )
     }
 
@@ -170,6 +168,5 @@ class HoneyMartRepositoryImp(
         orderDataSource.isOrderExist(orderId)
     //end region
 //endregion
-
 
 }

@@ -110,6 +110,7 @@ suspend fun handleException(call: ApplicationCall, block: suspend () -> Unit) {
                     ServerResponse.error("Invalid username or password, please try again")
                 )
             }
+
             is ProductAlreadyInWishListException -> {
                 call.respond(
                     HttpStatusCode.Conflict,
@@ -164,8 +165,16 @@ suspend fun handleException(call: ApplicationCall, block: suspend () -> Unit) {
                     ServerResponse.error("The Cart is Empty, please try again with some products")
                 )
             }
-            is InvalidOrderIdException ->{
+
+            is InvalidOrderIdException -> {
                 call.respond(HttpStatusCode.BadRequest, ServerResponse.error("Invalid orderId"))
+            }
+
+            is ProductNotInSameCartMarketException -> {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error("this product not in same market, you should delete cart")
+                )
             }
 
             else -> {

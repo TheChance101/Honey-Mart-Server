@@ -1,9 +1,6 @@
 package com.the_chance.di
 
-import com.thechance.core.domain.usecase.cart.AddProductToCartUseCase
-import com.thechance.core.domain.usecase.cart.CartUseCasesContainer
-import com.thechance.core.domain.usecase.cart.DeleteProductInCartUseCase
-import com.thechance.core.domain.usecase.cart.GetCartUseCase
+import com.thechance.core.domain.usecase.cart.*
 import com.thechance.core.domain.usecase.category.*
 import com.thechance.core.domain.usecase.market.*
 import com.thechance.core.domain.usecase.order.CancelOrderUseCase
@@ -81,4 +78,5 @@ val cartUseCase = module {
     singleOf(::AddProductToCartUseCase) { bind<AddProductToCartUseCase>() }
     singleOf(::DeleteProductInCartUseCase) { bind<DeleteProductInCartUseCase>() }
     singleOf(::CartUseCasesContainer) { bind<CartUseCasesContainer>() }
+    singleOf(::DeleteCartUseCase) { bind<DeleteCartUseCase>() }
 }
