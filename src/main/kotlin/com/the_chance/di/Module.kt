@@ -28,7 +28,7 @@ val appModules = module {
         )
     }
 
-    singleOf(::DeleteAllTablesUseCase) { bind<com.thechance.core.domain.usecase.DeleteAllTablesUseCase>() }
+    singleOf(::DeleteAllTablesUseCase) { bind<DeleteAllTablesUseCase>() }
 
     includes(
         cartUseCase,

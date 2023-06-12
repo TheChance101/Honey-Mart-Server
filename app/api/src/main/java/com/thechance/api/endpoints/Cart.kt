@@ -2,7 +2,6 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.mapper.toApiCart
-import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.cart.CartUseCasesContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -20,38 +19,36 @@ fun Route.cartRoutes() {
     authenticate {
         route("/cart") {
             get {
-                handleException(call) {
-                    val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.getClaim("userId", Long::class)
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.getClaim("userId", Long::class)
 
-                    val products = cartUseCasesContainer.getCartUseCase(userId).toApiCart()
-                    call.respond(ServerResponse.success(products))
-                }
+                val products = cartUseCasesContainer.getCartUseCase(userId).toApiCart()
+                call.respond(ServerResponse.success(products))
+
             }
 
             post("/addProduct") {
-                handleException(call) {
-                    val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.getClaim("userId", Long::class)
 
-                    val params = call.receiveParameters()
-                    val productId = params["productId"]?.trim()?.toLongOrNull()
-                    val count = params["count"]?.trim()?.toIntOrNull()
-                    cartUseCasesContainer.addProductToCartUseCase(userId = userId, productId = productId, count)
-                    call.respond(HttpStatusCode.Created, ServerResponse.success("Added successfully"))
-                }
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.getClaim("userId", Long::class)
+
+                val params = call.receiveParameters()
+                val productId = params["productId"]?.trim()?.toLongOrNull()
+                val count = params["count"]?.trim()?.toIntOrNull()
+                cartUseCasesContainer.addProductToCartUseCase(userId = userId, productId = productId, count)
+                call.respond(HttpStatusCode.Created, ServerResponse.success("Added successfully"))
+
             }
 
             delete {
-                handleException(call) {
-                    val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.getClaim("userId", Long::class)
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.getClaim("userId", Long::class)
 
-                    val params = call.receiveParameters()
-                    val productId = params["productId"]?.trim()?.toLongOrNull()
-                    cartUseCasesContainer.deleteProductInCartUseCase(userId = userId, productId = productId)
-                    call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
-                }
+                val params = call.receiveParameters()
+                val productId = params["productId"]?.trim()?.toLongOrNull()
+                cartUseCasesContainer.deleteProductInCartUseCase(userId = userId, productId = productId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
+
             }
         }
     }

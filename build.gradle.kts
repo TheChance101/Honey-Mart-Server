@@ -50,6 +50,7 @@ dependencies {
     implementation ("io.insert-koin:koin-logger-slf4j:$koin_version")
 
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
+    implementation("io.ktor:ktor-server-status-pages:$ktor_version")
 
 }
 

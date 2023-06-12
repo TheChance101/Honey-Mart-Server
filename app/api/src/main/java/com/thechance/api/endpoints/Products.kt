@@ -3,7 +3,6 @@ package com.thechance.api.endpoints
 import com.thechance.api.ServerResponse
 import com.thechance.api.mapper.toApiCategoryModel
 import com.thechance.api.mapper.toApiProductModel
-import com.thechance.api.utils.handleException
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
 import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
@@ -22,44 +21,44 @@ fun Route.productsRoutes() {
 
         get("/{productId}") {
             val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
-            handleException(call) {
-                val categories = productUseCasesContainer.getCategoriesForProductUseCase(productId = productId)
-                    .map { it.toApiCategoryModel() }
-                call.respond(ServerResponse.success(categories))
-            }
+
+            val categories = productUseCasesContainer.getCategoriesForProductUseCase(productId = productId)
+                .map { it.toApiCategoryModel() }
+            call.respond(ServerResponse.success(categories))
+
         }
 
         post {
-            handleException(call) {
-                val params = call.receiveParameters()
-                val productName = params["name"]?.trim().orEmpty()
-                val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
-                val productQuantity = params["quantity"]?.trim()
-                val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
 
-                val newAddedProduct = productUseCasesContainer.createProductUseCase(
-                    productName, productPrice, productQuantity, categoriesId
-                ).toApiProductModel()
-                call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
-            }
+            val params = call.receiveParameters()
+            val productName = params["name"]?.trim().orEmpty()
+            val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
+            val productQuantity = params["quantity"]?.trim()
+            val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
+
+            val newAddedProduct = productUseCasesContainer.createProductUseCase(
+                productName, productPrice, productQuantity, categoriesId
+            ).toApiProductModel()
+            call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
+
         }
 
         put("{id}") {
-            handleException(call) {
-                val productId = call.parameters["id"]?.trim()?.toLongOrNull()
-                val params = call.receiveParameters()
-                val productName = params["name"]?.trim()
-                val productPrice = params["price"]?.trim()?.toDoubleOrNull()
-                val productQuantity = params["quantity"]?.trim()
 
-                productUseCasesContainer.updateProductUseCase(
-                    productId = productId,
-                    productName = productName,
-                    productPrice = productPrice,
-                    productQuantity = productQuantity
-                )
-                call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
-            }
+            val productId = call.parameters["id"]?.trim()?.toLongOrNull()
+            val params = call.receiveParameters()
+            val productName = params["name"]?.trim()
+            val productPrice = params["price"]?.trim()?.toDoubleOrNull()
+            val productQuantity = params["quantity"]?.trim()
+
+            productUseCasesContainer.updateProductUseCase(
+                productId = productId,
+                productName = productName,
+                productPrice = productPrice,
+                productQuantity = productQuantity
+            )
+            call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
+
         }
 
         put("{id}/updateCategories") {
@@ -67,22 +66,21 @@ fun Route.productsRoutes() {
             val params = call.receiveParameters()
             val categoriesId = params["categoriesId"]?.trim().toLongIds()
 
-            handleException(call) {
-                productUseCasesContainer.updateProductCategoryUseCase(productId = productId, categoryIds = categoriesId)
-                call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
-            }
+
+            productUseCasesContainer.updateProductCategoryUseCase(productId = productId, categoryIds = categoriesId)
+            call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
+
         }
 
         delete("{id}") {
             val productId = call.parameters["id"]?.trim()?.toLongOrNull()
-            handleException(call) {
-                val result = productUseCasesContainer.deleteProductUseCase(productId = productId)
-                call.respond(
-                    HttpStatusCode.OK,
-                    ServerResponse.success(result = result, successMessage = "Product Deleted successfully.")
-                )
 
-            }
+            val result = productUseCasesContainer.deleteProductUseCase(productId = productId)
+            call.respond(
+                HttpStatusCode.OK,
+                ServerResponse.success(result = result, successMessage = "Product Deleted successfully.")
+            )
+
         }
     }
 }

@@ -3,7 +3,6 @@ package com.thechance.api.endpoints
 import com.thechance.api.ServerResponse
 import com.thechance.api.mapper.toApiCategoryModel
 import com.thechance.api.mapper.toApiMarketModel
-import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.market.MarketUseCaseContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -24,29 +23,26 @@ fun Route.marketsRoutes() {
         }
 
         get("/{id}/categories") {
-            handleException(call) {
                 val marketId = call.parameters["id"]?.toLongOrNull()
                 val categories =
                     marketUseCaseContainer.getCategoriesByMarketIdUseCase(marketId).map { it.toApiCategoryModel() }
                 call.respond(HttpStatusCode.OK, ServerResponse.success(categories))
             }
-        }
+
 
 
         post {
             val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-            handleException(call) {
                 val newMarket = marketUseCaseContainer.createMarketUseCase(marketName).toApiMarketModel()
                 call.respond(
                     HttpStatusCode.Created,
                     ServerResponse.success(newMarket, "Market created successfully")
                 )
-            }
+
         }
 
 
         put("/{id}") {
-            handleException(call) {
                 val marketId = call.parameters["id"]?.toLongOrNull()
                 val marketName = call.receiveParameters()["name"]?.trim()
                 val updatedMarket = marketUseCaseContainer.updateMarketUseCase(marketId, marketName).toApiMarketModel()
@@ -55,15 +51,14 @@ fun Route.marketsRoutes() {
                     HttpStatusCode.OK,
                     ServerResponse.success(updatedMarket, "Market updated successfully")
                 )
-            }
+
         }
 
         delete("/{id}") {
             val marketId = call.parameters["id"]?.toLongOrNull()
-            handleException(call) {
                 marketUseCaseContainer.deleteMarketUseCase(marketId)
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Market Deleted Successfully"))
-            }
+
         }
     }
 }
