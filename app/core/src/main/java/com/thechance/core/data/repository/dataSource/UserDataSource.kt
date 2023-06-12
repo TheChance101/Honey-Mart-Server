@@ -31,6 +31,8 @@ interface UserDataSource {
     suspend fun createCart(userId: Long): Long
 
     suspend fun getCartMarketId(cartId: Long): Long?
+
+    suspend fun deleteCart(cartId: Long): Boolean
     //endregion
 
     //region wishList

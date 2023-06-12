@@ -35,6 +35,7 @@ class HoneyMartRepositoryImp(
     override suspend fun createCart(userId: Long): Long = userDataSource.createCart(userId)
 
     override suspend fun getCartMarketId(cartId: Long): Long? = userDataSource.getCartMarketId(cartId)
+    override suspend fun deleteCart(cartId: Long): Boolean = userDataSource.deleteCart(cartId)
 
     override suspend fun deleteAllProductsInCart(cartId: Long): Boolean =
         userDataSource.deleteAllProductsInCart(cartId)
