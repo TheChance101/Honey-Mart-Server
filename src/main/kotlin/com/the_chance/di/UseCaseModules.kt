@@ -3,13 +3,12 @@ package com.the_chance.di
 import com.thechance.core.domain.usecase.cart.*
 import com.thechance.core.domain.usecase.category.*
 import com.thechance.core.domain.usecase.market.*
-import com.thechance.core.domain.usecase.order.CancelOrderUseCase
 import com.thechance.core.domain.usecase.order.CreateOrderUseCase
 import com.thechance.core.domain.usecase.order.GetOrdersForMarketUseCase
 import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
 import com.thechance.core.domain.usecase.owner.CreateOwnerUseCase
-import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.domain.usecase.owner.LoginMarketOwnerUseCase
+import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.domain.usecase.product.*
 import com.thechance.core.domain.usecase.user.CreateUserUseCase
 import com.thechance.core.domain.usecase.user.UserUseCaseContainer
@@ -18,10 +17,9 @@ import com.thechance.core.domain.usecase.wishlist.AddProductToWishListUseCase
 import com.thechance.core.domain.usecase.wishlist.DeleteProductFromWishListUseCase
 import com.thechance.core.domain.usecase.wishlist.GetWishListUseCase
 import com.thechance.core.domain.usecase.wishlist.WishListUseCaseContainer
-import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import org.koin.core.module.dsl.bind
 
 val productUseCaseModule = module {
     singleOf(::ProductUseCasesContainer) { bind<ProductUseCasesContainer>() }
@@ -59,7 +57,6 @@ val orderUseCaseModule = module {
     singleOf(::OrderUseCasesContainer) { bind<OrderUseCasesContainer>() }
     singleOf(::CreateOrderUseCase) { bind<CreateOrderUseCase>() }
     singleOf(::GetOrdersForMarketUseCase) { bind<GetOrdersForMarketUseCase>() }
-    singleOf(::CancelOrderUseCase) { bind<CancelOrderUseCase>() }
 }
 
 val userUseCaseModule = module {
