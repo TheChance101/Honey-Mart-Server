@@ -3,9 +3,7 @@ package com.the_chance.di
 import com.thechance.core.domain.usecase.cart.*
 import com.thechance.core.domain.usecase.category.*
 import com.thechance.core.domain.usecase.market.*
-import com.thechance.core.domain.usecase.order.CreateOrderUseCase
-import com.thechance.core.domain.usecase.order.GetOrdersForMarketUseCase
-import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
+import com.thechance.core.domain.usecase.order.*
 import com.thechance.core.domain.usecase.owner.CreateOwnerUseCase
 import com.thechance.core.domain.usecase.owner.LoginMarketOwnerUseCase
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
@@ -57,6 +55,9 @@ val orderUseCaseModule = module {
     singleOf(::OrderUseCasesContainer) { bind<OrderUseCasesContainer>() }
     singleOf(::CreateOrderUseCase) { bind<CreateOrderUseCase>() }
     singleOf(::GetOrdersForMarketUseCase) { bind<GetOrdersForMarketUseCase>() }
+    singleOf(::GetOrdersForUserUseCase) { bind<GetOrdersForUserUseCase>() }
+    singleOf(::UpdateOrderStateUseCase) { bind<UpdateOrderStateUseCase>() }
+    singleOf(::GetOrderDetailsUseCase) { bind<GetOrderDetailsUseCase>() }
 }
 
 val userUseCaseModule = module {

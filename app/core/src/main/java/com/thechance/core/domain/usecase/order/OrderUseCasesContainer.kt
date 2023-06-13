@@ -7,4 +7,5 @@ data class OrderUseCasesContainer(
     val getOrdersForMarketUseCase: GetOrdersForMarketUseCase,
     val getOrdersForUserUseCase: GetOrdersForUserUseCase,
     val updateOrderStateUseCase: UpdateOrderStateUseCase,
+    val getOrderDetailsUseCase: GetOrderDetailsUseCase
 ) : KoinComponent
