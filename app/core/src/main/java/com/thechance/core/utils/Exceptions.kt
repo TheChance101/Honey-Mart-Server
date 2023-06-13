@@ -53,4 +53,10 @@ class ProductAlreadyInWishListException : Exception()
 //region cart
 class CountInvalidInputException : Exception()
 
+class ProductNotInSameCartMarketException : Exception()
+//endregion
+
+//region owner
+class InvalidOwnerIdException : Exception()
+
 //endregion

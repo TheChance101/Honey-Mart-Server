@@ -1,38 +1,35 @@
 package com.thechance.core.domain.usecase.owner
 
 import com.thechance.core.domain.repository.AuthRepository
-import com.thechance.core.entity.Owner
-import com.thechance.core.utils.InvalidUserNameOrPasswordException
-import com.thechance.core.utils.UsernameAlreadyExistException
+import com.thechance.core.utils.*
+import com.thechance.core.utils.isValidEmail
 import com.thechance.core.utils.isValidPassword
-import com.thechance.core.utils.isValidUsername
 import org.koin.core.component.KoinComponent
+import javax.naming.InvalidNameException
 
 class CreateOwnerUseCase(private val repository: AuthRepository) : KoinComponent {
 
-    suspend operator fun invoke(ownerName: String?, password: String?): Owner {
-        isValidInput(ownerName, password)?.let { throw it }
-        return if (repository.isOwnerNameExists(ownerName!!)) {
+    suspend operator fun invoke(fullName: String?, email: String?, password: String?): Boolean {
+        isValidInput(fullName, email, password)?.let { throw it }
+
+        return if (repository.isOwnerEmailExists(email!!)) {
             throw UsernameAlreadyExistException()
         } else {
-            repository.createOwner(ownerName, password!!)
+            repository.createOwner(fullName = fullName!!, email = email, password = password!!)
         }
     }
 
 
-    private fun isValidInput(ownerName: String?, password: String?): Exception? {
+    private fun isValidInput(fullName: String?, email: String?, password: String?): Exception? {
         return when {
-            isValidUsername(ownerName) -> {
-                InvalidUserNameOrPasswordException()
-            }
 
-            isValidPassword(password) -> {
-                InvalidUserNameOrPasswordException()
-            }
+            !isValidFullName(fullName) -> { InvalidNameException() }
 
-            else -> {
-                null
-            }
+            !isValidEmail(email) -> { InvalidEmailException() }
+
+            !isValidPassword(password) -> { InvalidUserNameOrPasswordException() }
+
+            else -> { null }
         }
     }
 

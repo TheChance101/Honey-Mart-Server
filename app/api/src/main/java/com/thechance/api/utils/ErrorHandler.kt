@@ -138,7 +138,7 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is InvalidUserIdException -> {
             call.respond(
                 HttpStatusCode.BadRequest,
-                ServerResponse.error("user id is not valid", HttpStatusCode.BadRequest.value)
+                ServerResponse.error("invalid user id", HttpStatusCode.BadRequest.value)
             )
         }
 
@@ -221,11 +221,18 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             )
         }
 
-        else ->
+        is ProductNotInSameCartMarketException -> {
+            call.respond(
+                HttpStatusCode.BadRequest,
+                ServerResponse.error("this product not in same market, you should delete cart")
+            )
+        }
+
+        else -> {
             call.respond(
                 HttpStatusCode.InternalServerError,
                 ServerResponse.error(cause.message.toString(), HttpStatusCode.InternalServerError.value)
             )
+        }
     }
-
 }

@@ -7,9 +7,10 @@ import org.koin.core.component.KoinComponent
 class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinComponent {
 
     suspend operator fun invoke(
-        productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
+        productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?, marketOwnerId: Long?,
+        role: String?
     ): Boolean {
-        isValidInput(productId, productName, productPrice, productQuantity)?.let { throw it }
+        isValidInput(productId, productName, productPrice, productQuantity, marketOwnerId, role)?.let { throw it }
 
         val isProductDeleted = repository.isProductDeleted(productId!!)
 
@@ -25,7 +26,8 @@ class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
 
 
     private fun isValidInput(
-        productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?
+        productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?, marketOwnerId: Long?,
+        role: String?
     ): Exception? {
         return if (isInvalidId(productId)) {
             InvalidProductIdException()
@@ -37,6 +39,8 @@ class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
             InvalidProductQuantityException()
         } else if (productPrice != null && isInvalidPrice(productPrice)) {
             InvalidProductPriceException()
+        } else if (isInvalidId(marketOwnerId) || !isValidRole(MARKET_OWNER_ROLE, role)) {
+            InvalidOwnerIdException()
         } else {
             null
         }

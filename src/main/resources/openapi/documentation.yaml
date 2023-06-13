@@ -183,7 +183,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Category"
+                $ref: "#/components/schemas/CategoryModel"
     put:
       description: ""
       parameters:
@@ -238,11 +238,16 @@ paths:
             '*/*':
               schema:
                 type: "string"
-  /category/{id}:
+  /category/{categoryId}:
     delete:
       description: ""
       parameters:
       - name: "id"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "categoryId"
         in: "path"
         required: true
         schema:
@@ -278,7 +283,7 @@ paths:
             '*/*':
               schema:
                 type: "boolean"
-  /category/{categoryId}:
+  /category/{categoryId}/allProduct:
     get:
       description: "get all products in category"
       parameters:
@@ -628,11 +633,11 @@ paths:
             '*/*':
               schema:
                 type: "string"
-  /owner:
+  /owner/login:
     post:
       description: ""
       parameters:
-      - name: "name"
+      - name: "username"
         in: "query"
         required: false
         schema:
@@ -672,7 +677,52 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/OwnerModel"
+                type: "string"
+  /owner/signup:
+    post:
+      description: ""
+      parameters:
+      - name: "username"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "password"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "409":
+          description: "Conflict"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "string"
   /product:
     post:
       description: ""
@@ -1149,7 +1199,7 @@ components:
         total:
           type: "number"
           format: "double"
-    Category:
+    CategoryModel:
       type: "object"
       properties:
         categoryId:
@@ -1181,17 +1231,6 @@ components:
           format: "int64"
         marketName:
           type: "string"
-    CategoryModel:
-      type: "object"
-      properties:
-        categoryId:
-          type: "integer"
-          format: "int64"
-        categoryName:
-          type: "string"
-        imageId:
-          type: "integer"
-          format: "int32"
     OrderModel:
       type: "object"
       properties:
@@ -1201,14 +1240,6 @@ components:
         totalPrice:
           type: "number"
           format: "double"
-    OwnerModel:
-      type: "object"
-      properties:
-        ownerId:
-          type: "integer"
-          format: "int64"
-        userName:
-          type: "string"
     ProductInWishListModel:
       type: "object"
       properties:

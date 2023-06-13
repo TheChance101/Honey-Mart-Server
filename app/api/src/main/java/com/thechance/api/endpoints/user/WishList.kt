@@ -1,6 +1,8 @@
-package com.thechance.api.endpoints
+package com.thechance.api.endpoints.user
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.model.mapper.toApiProductInWishListModel
+import com.thechance.api.utils.handleException
 import com.thechance.api.mapper.toApiProductInWishListModel
 import com.thechance.core.domain.usecase.wishlist.WishListUseCaseContainer
 import io.ktor.http.*
@@ -20,9 +22,8 @@ fun Route.wishListRoutes() {
         route("/wishList") {
 
             post {
-
                 val principal = call.principal<JWTPrincipal>()
-                val userId = principal?.getClaim("userId", Long::class)
+                val userId = principal?.payload?.subject?.toLongOrNull()
 
                 val params = call.receiveParameters()
                 val productId = params["productId"]?.trim()?.toLongOrNull()
@@ -36,21 +37,18 @@ fun Route.wishListRoutes() {
 
             }
             get {
-
                 val principal = call.principal<JWTPrincipal>()
-                val userId = principal?.getClaim("userId", Long::class)
+                val userId = principal?.payload?.subject?.toLongOrNull()
 
                 val wishList =
                     wishListUseCaseContainer.getWishListUseCase(userId).map { it.toApiProductInWishListModel() }
 
                 call.respond(HttpStatusCode.OK, ServerResponse.success(wishList))
-
             }
 
             delete {
-
                 val principal = call.principal<JWTPrincipal>()
-                val userId = principal?.getClaim("userId", Long::class)
+                val userId = principal?.payload?.subject?.toLongOrNull()
 
                 val params = call.receiveParameters()
                 val productId = params["productId"]?.trim()?.toLongOrNull()
@@ -60,7 +58,6 @@ fun Route.wishListRoutes() {
                     HttpStatusCode.OK,
                     ServerResponse.success("Deleted From WishList successfully \uD83D\uDE25\u200F ")
                 )
-
             }
         }
     }

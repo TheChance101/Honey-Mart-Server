@@ -7,4 +7,5 @@ data class CartUseCasesContainer(
     val addProductToCartUseCase: AddProductToCartUseCase,
     val getCartUseCase: GetCartUseCase,
     val deleteProductInCartUseCase: DeleteProductInCartUseCase,
+    val deleteCartUseCase: DeleteCartUseCase
 ) : KoinComponent

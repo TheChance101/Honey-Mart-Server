@@ -1,11 +1,11 @@
 package com.the_chance.di
 
 import com.thechance.core.data.datasource.database.CoreDataBase
-import com.thechance.core.data.security.hashing.HashingService
+import com.thechance.core.data.repository.security.HashingService
 import com.thechance.core.data.security.hashing.SHA256HashingService
-import com.thechance.core.data.security.token.JwtTokenService
+import com.thechance.core.data.security.token.TokenServiceImp
 import com.thechance.core.data.security.token.TokenConfig
-import com.thechance.core.data.security.token.TokenService
+import com.thechance.core.data.repository.security.TokenService
 import com.thechance.core.domain.usecase.DeleteAllTablesUseCase
 import io.ktor.server.config.*
 import org.koin.core.module.dsl.bind
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 
 val appModules = module {
     single { CoreDataBase() }
-    single<TokenService> { JwtTokenService() }
+    single<TokenService> { TokenServiceImp() }
     single<HashingService> { SHA256HashingService() }
 
     single<TokenConfig> {

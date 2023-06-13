@@ -1,4 +1,4 @@
-package com.thechance.api.endpoints
+package com.thechance.api.endpoints.user
 
 import com.thechance.api.ServerResponse
 import com.thechance.core.domain.usecase.user.UserUseCaseContainer
@@ -16,27 +16,22 @@ fun Route.userRoutes() {
     route("/user") {
 
         post("/signup") {
-
             val params = call.receiveParameters()
-            val name = params["username"]?.trim()
             val password = params["password"]?.trim()
             val fullName = params["fullName"]?.trim()
             val email = params["email"]?.trim()
 
-            userUseCasesContainer.createUserUseCase(name, password, fullName = fullName, email = email)
+            userUseCasesContainer.createUserUseCase(password = password, fullName = fullName, email = email)
             call.respond(HttpStatusCode.Created, ServerResponse.success("user created successfully"))
-
         }
 
         post("/login") {
-
             val params = call.receiveParameters()
-            val name = params["username"]?.trim().toString()
+            val email = params["email"]?.trim().toString()
             val password = params["password"]?.trim().toString()
 
-            val token = userUseCasesContainer.verifyUserUseCase(name, password)
+            val token = userUseCasesContainer.verifyUserUseCase(email, password)
             call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
-
         }
     }
 }

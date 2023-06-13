@@ -1,6 +1,8 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.model.mapper.toApiOwnerModel
+import com.thechance.api.utils.handleException
 import com.thechance.api.mapper.toApiOwnerModel
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
 import io.ktor.http.*
@@ -16,16 +18,26 @@ fun Route.ownerRoutes() {
 
     route("/owner") {
 
-        post {
+        post("/signup") {
+                val params = call.receiveParameters()
+                val name = params["fullName"]?.trim()
+                val email = params["email"]?.trim()
+                val password = params["password"]?.trim()
 
-            val params = call.receiveParameters()
-            val name = params["name"]?.trim()
-            val password = params["password"]?.trim()
-
-            val newUser = ownerUseCaseContainer.createOwnerUseCase(name, password).toApiOwnerModel()
-            call.respond(HttpStatusCode.Created, ServerResponse.success(newUser, "user created successfully"))
+                ownerUseCaseContainer.createOwnerUseCase(fullName = name, password = password, email = email)
+                call.respond(HttpStatusCode.Created, ServerResponse.success("user created successfully"))
 
         }
 
+        post("/login") {
+            handleException(call) {
+                val params = call.receiveParameters()
+                val email = params["email"]?.trim().toString()
+                val password = params["password"]?.trim().toString()
+
+                val token = ownerUseCaseContainer.verifyMarketOwnerUseCase(email, password)
+                call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
+            }
+        }
     }
 }

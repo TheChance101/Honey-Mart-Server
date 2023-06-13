@@ -1,6 +1,9 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.model.mapper.toApiCategoryModel
+import com.thechance.api.model.mapper.toApiProductModel
+import com.thechance.api.utils.handleException
 import com.thechance.api.mapper.toApiProductModel
 import com.thechance.core.domain.usecase.category.CategoryUseCasesContainer
 import io.ktor.http.*
@@ -18,7 +21,7 @@ fun Route.categoryRoutes() {
         /**
          * get all products in category
          * */
-        get("/{categoryId}") {
+        get("/{categoryId}/allProduct") {
             val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
             val products = categoryUseCasesContainer.getAllCategoriesUseCase(categoryId = categoryId)
                 .map { it.toApiProductModel() }
@@ -27,16 +30,14 @@ fun Route.categoryRoutes() {
         }
 
         post {
-            val params = call.receiveParameters()
-            val categoryName = params["name"]?.trim().orEmpty()
-            val marketId = params["marketId"]?.toLongOrNull()
-            val imageId = params["imageId"]?.toIntOrNull()
-            val newCategory =
-                categoryUseCasesContainer.createCategoryUseCase(categoryName, marketId, imageId)
-            call.respond(
-                HttpStatusCode.Created,
-                ServerResponse.success(newCategory, "Category added successfully")
-            )
+
+                val params = call.receiveParameters()
+                val categoryName = params["name"]?.trim().orEmpty()
+                val marketId = params["marketId"]?.toLongOrNull()
+                val imageId = params["imageId"]?.toIntOrNull()
+                val newCategory =
+                    categoryUseCasesContainer.createCategoryUseCase(categoryName, marketId, imageId).toApiCategoryModel()
+                call.respond(HttpStatusCode.Created, ServerResponse.success(newCategory, "Category added successfully"))
 
         }
 
@@ -52,7 +53,7 @@ fun Route.categoryRoutes() {
 
         }
 
-        delete("/{id}") {
+        delete("/{categoryId}") {
             val categoryId = call.parameters["id"]?.trim()?.toLongOrNull()
             val isCategoryDeleted = categoryUseCasesContainer.deleteCategoryUseCase.invoke(categoryId)
             call.respond(HttpStatusCode.OK, ServerResponse.success(result = isCategoryDeleted))

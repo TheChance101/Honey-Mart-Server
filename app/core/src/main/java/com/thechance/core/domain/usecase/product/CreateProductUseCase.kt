@@ -7,9 +7,14 @@ import org.koin.core.component.KoinComponent
 
 class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(
-        productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
+        productName: String,
+        productPrice: Double,
+        productQuantity: String?,
+        categoriesId: List<Long>?,
+        marketOwnerId: Long?,
+        role: String?
     ): Product {
-        isValidInput(productName, productPrice, productQuantity, categoriesId)?.let { throw it }
+        isValidInput(productName, productPrice, productQuantity, categoriesId, marketOwnerId, role)?.let { throw it }
 
         return if (repository.checkCategoriesInDb(categoriesId!!)) {
             repository.createProduct(productName, productPrice, productQuantity!!, categoriesId!!)
@@ -19,18 +24,50 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
     }
 
     private fun isValidInput(
-        productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?
+        productName: String,
+        productPrice: Double,
+        productQuantity: String?,
+        categoriesId: List<Long>?,
+        marketOwnerId: Long?,
+        role: String?
     ): Exception? {
         return when {
-            isValidUsername(productName) -> { InvalidProductNameException() }
+            !isValidProductName(productName) -> {
+                InvalidProductNameException()
+            }
 
-            checkProductQuantity(productQuantity) -> { InvalidProductQuantityException() }
+            checkProductQuantity(productQuantity) -> {
+                InvalidProductQuantityException()
+            }
 
-            isInvalidPrice(productPrice) -> { InvalidProductPriceException() }
+            isInvalidPrice(productPrice) -> {
+                InvalidProductPriceException()
+            }
 
-            isValidIds(categoriesId) -> { InvalidCategoryIdException() }
+            isValidIds(categoriesId) -> {
+                InvalidCategoryIdException()
+            }
 
-            else -> { null }
+            isInvalidId(marketOwnerId) -> {
+                InvalidOwnerIdException()
+            }
+
+            !isValidRole(MARKET_OWNER_ROLE, role) -> {
+                InvalidOwnerIdException()
+            }
+
+            else -> {
+                null
+            }
+        }
+    }
+
+    private fun isValidProductName(productName: String?): Boolean {
+        return if (productName == null) {
+            false
+        } else {
+            val fullNameRegex = Regex("^[a-zA-Z0-9 ]{4,20}$")
+            fullNameRegex.matches(productName)
         }
     }
 
