@@ -2,7 +2,6 @@ package com.thechance.api.endpoints.user
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiProductInWishListModel
-import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.wishlist.WishListUseCaseContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -21,47 +20,42 @@ fun Route.wishListRoutes() {
         route("/wishList") {
 
             post {
-                handleException(call) {
-                    val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.payload?.subject?.toLongOrNull()
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.payload?.subject?.toLongOrNull()
 
-                    val params = call.receiveParameters()
-                    val productId = params["productId"]?.trim()?.toLongOrNull()
+                val params = call.receiveParameters()
+                val productId = params["productId"]?.trim()?.toLongOrNull()
 
-                    wishListUseCaseContainer.addProductToWishListUseCase(userId = userId, productId = productId)
+                wishListUseCaseContainer.addProductToWishListUseCase(userId = userId, productId = productId)
 
-                    call.respond(
-                        HttpStatusCode.Created,
-                        ServerResponse.success("Added To WishList successfully \uD83E\uDD73")
-                    )
-                }
+                call.respond(
+                    HttpStatusCode.Created,
+                    ServerResponse.success("Added To WishList successfully \uD83E\uDD73")
+                )
+
             }
             get {
-                handleException(call) {
-                    val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.payload?.subject?.toLongOrNull()
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.payload?.subject?.toLongOrNull()
 
-                    val wishList =
-                        wishListUseCaseContainer.getWishListUseCase(userId).map { it.toApiProductInWishListModel() }
+                val wishList =
+                    wishListUseCaseContainer.getWishListUseCase(userId).map { it.toApiProductInWishListModel() }
 
-                    call.respond(HttpStatusCode.OK, ServerResponse.success(wishList))
-                }
+                call.respond(HttpStatusCode.OK, ServerResponse.success(wishList))
             }
 
             delete {
-                handleException(call) {
-                    val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.payload?.subject?.toLongOrNull()
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.payload?.subject?.toLongOrNull()
 
-                    val params = call.receiveParameters()
-                    val productId = params["productId"]?.trim()?.toLongOrNull()
+                val params = call.receiveParameters()
+                val productId = params["productId"]?.trim()?.toLongOrNull()
 
-                    wishListUseCaseContainer.deleteProductFromWishListUseCase(userId, productId)
-                    call.respond(
-                        HttpStatusCode.OK,
-                        ServerResponse.success("Deleted From WishList successfully \uD83D\uDE25\u200F ")
-                    )
-                }
+                wishListUseCaseContainer.deleteProductFromWishListUseCase(userId, productId)
+                call.respond(
+                    HttpStatusCode.OK,
+                    ServerResponse.success("Deleted From WishList successfully \uD83D\uDE25\u200F ")
+                )
             }
         }
     }

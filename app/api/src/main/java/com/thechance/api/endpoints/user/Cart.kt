@@ -2,7 +2,6 @@ package com.thechance.api.endpoints.user
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCart
-import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.cart.CartUseCasesContainer
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
@@ -21,18 +20,18 @@ fun Route.cartRoutes() {
     authenticate {
         route("/cart") {
             get {
-                handleException(call) {
+
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
                     val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                     val products = cartUseCasesContainer.getCartUseCase(userId, role = role).toApiCart()
                     call.respond(ServerResponse.success(products))
-                }
+
             }
 
             post("/addProduct") {
-                handleException(call) {
+
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
                     val role = principal?.getClaim(ROLE_TYPE, String::class)
@@ -42,11 +41,11 @@ fun Route.cartRoutes() {
                     val count = params["count"]?.trim()?.toIntOrNull()
                     cartUseCasesContainer.addProductToCartUseCase(userId = userId, productId = productId, count, role)
                     call.respond(HttpStatusCode.Created, ServerResponse.success("Added successfully"))
-                }
+
             }
 
             delete {
-                handleException(call) {
+
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
                     val role = principal?.getClaim(ROLE_TYPE, String::class)
@@ -55,18 +54,17 @@ fun Route.cartRoutes() {
                     val productId = params["productId"]?.trim()?.toLongOrNull()
                     cartUseCasesContainer.deleteProductInCartUseCase(userId = userId, productId = productId, role)
                     call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
-                }
+
             }
 
             delete("deleteAll") {
-                handleException(call) {
+
                     val principal = call.principal<JWTPrincipal>()
                     val userId = principal?.payload?.subject?.toLongOrNull()
                     val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                     cartUseCasesContainer.deleteCartUseCase(userId = userId, role)
                     call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
-                }
             }
         }
     }
