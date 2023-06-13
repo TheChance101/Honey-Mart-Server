@@ -175,6 +175,11 @@ suspend fun handleException(call: ApplicationCall, block: suspend () -> Unit) {
                     HttpStatusCode.BadRequest,
                     ServerResponse.error("this product not in same market, you should delete cart")
                 )
+            }   is InvalidStateOrderException -> {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    ServerResponse.error("State must be 0 or 1")
+                )
             }
 
             else -> {
