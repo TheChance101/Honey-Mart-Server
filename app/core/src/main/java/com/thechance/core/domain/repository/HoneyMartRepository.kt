@@ -72,8 +72,6 @@ interface HoneyMartRepository {
 
     suspend fun getAllOrdersForMarket(marketId: Long): List<Order>
 
-    suspend fun cancelOrder(orderId: Long): Boolean
-
     suspend fun isOrderExist(orderId: Long): Boolean
 
     //endregion
