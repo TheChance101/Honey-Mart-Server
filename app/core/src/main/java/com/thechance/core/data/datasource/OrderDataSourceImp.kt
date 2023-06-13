@@ -1,67 +1,92 @@
 package com.thechance.core.data.datasource
 
 import com.thechance.core.data.datasource.database.tables.ProductTable
-import com.thechance.core.data.datasource.database.tables.order.OrderMarketTable
 import com.thechance.core.data.datasource.database.tables.order.OrderProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderTable
+import com.thechance.core.data.datasource.mapper.toProductInOrder
 import com.thechance.core.data.repository.dataSource.OrderDataSource
-import com.thechance.core.entity.Order
-import com.thechance.core.entity.OrderItem
+import com.thechance.core.entity.*
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.javatime.date
 
 class OrderDataSourceImp : OrderDataSource {
-    override suspend fun createOrder(totalPrice: Double, products: List<OrderItem>, userId: Long): Boolean = dbQuery {
+    override suspend fun createOrder(
+        userId: Long,
+        marketId: Long,
+        products: List<OrderItem>,
+        totalPrice: Double
+    ): Boolean = dbQuery {
         val newOrder = OrderTable.insert {
-            it[this.totalPrice] = totalPrice
             it[this.userId] = userId
+            it[this.marketId] = marketId
+            it[this.totalPrice] = totalPrice
         }
         OrderProductTable.batchInsert(products) { orderItem ->
             this[OrderProductTable.orderId] = newOrder[OrderTable.id]
             this[OrderProductTable.productId] = orderItem.productId
             this[OrderProductTable.count] = orderItem.count
-            this[OrderProductTable.marketId] = orderItem.marketId
-        }
-        OrderMarketTable.batchInsert(products) { orderItem ->
-            this[OrderMarketTable.orderId] = newOrder[OrderTable.id]
-            this[OrderMarketTable.marketId] = orderItem.marketId
-            this[OrderMarketTable.isCanceled] = newOrder[OrderTable.isCanceled]
         }
         true
     }
 
-    override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> = dbQuery {
-        OrderMarketTable
-            .join(OrderProductTable, JoinType.INNER, additionalConstraint = {
-                OrderMarketTable.orderId eq
-                        OrderProductTable.orderId and (OrderMarketTable.marketId eq
-                        marketId)
-            })
-            .select { OrderMarketTable.isCanceled eq false }
-            .groupBy { it[OrderMarketTable.orderId].value }
-            .map { (_, orderRows) ->
-                val orderId = orderRows.first()[OrderMarketTable.orderId].value
-                val totalPrice = orderRows.sumOf {
-                    val productId = it[OrderProductTable.productId].value
-                    val count = it[OrderProductTable.count]
-                    val price = ProductTable
-                        .select { ProductTable.id eq productId }
-                        .singleOrNull()?.get(ProductTable.price) ?: 0.0
-                    price * count
-                }
-                Order(orderId, totalPrice)
+    override suspend fun getAllOrdersForMarket(
+        marketId: Long
+    ): List<Order> = dbQuery {
+        OrderTable.select { OrderTable.marketId eq marketId }
+            .map {
+                Order(
+                    it[OrderTable.id].value,
+                    it[OrderTable.userId].value,
+                    it[OrderTable.marketId].value,
+                    it[OrderTable.totalPrice],
+                    it[OrderTable.orderDate],
+                    it[OrderTable.state]
+                )
             }
     }
 
+    override suspend fun getAllOrdersForUser(
+        userId: Long
+    ): List<Order> = dbQuery {
+        OrderTable.select { OrderTable.userId eq userId }
+            .map {
+                Order(
+                    it[OrderTable.id].value,
+                    it[OrderTable.userId].value,
+                    it[OrderTable.marketId].value,
+                    it[OrderTable.totalPrice],
+                    it[OrderTable.orderDate],
+                    it[OrderTable.state]
+                )
+            }
+    }
 
-    override suspend fun cancelOrder(orderId: Long): Boolean = dbQuery {
-        OrderTable.update({ OrderTable.id eq orderId }) { tableRow ->
-            tableRow[isCanceled] = true
-        }
+    override suspend fun getOrderById(
+        orderId: Long
+    ): OrderDetails = dbQuery {
+        val order = OrderTable.select { OrderTable.id eq orderId }.single()
+        val products = OrderProductTable.innerJoin(ProductTable)
+            .select {
+                (OrderProductTable.orderId eq orderId) and
+                        (OrderProductTable.productId eq ProductTable.id)
+            }.map(ResultRow::toProductInOrder)
+        OrderDetails(
+            orderId = orderId,
+            userId = order[OrderTable.userId].value,
+            marketId = order[OrderTable.marketId].value,
+            products = products,
+            totalPrice = order[OrderTable.totalPrice],
+            date = order[OrderTable.orderDate]
+        )
+    }
 
-        OrderMarketTable.update({ OrderMarketTable.orderId eq orderId }) { tableRow ->
-            tableRow[isCanceled] = true
-        }
+    override suspend fun updateOrderState(
+        orderId: Long,
+        newState: Int
+    ): Boolean = dbQuery {
+        OrderTable.update({ OrderTable.id eq orderId }) { it[state] = newState }
         true
     }
 
