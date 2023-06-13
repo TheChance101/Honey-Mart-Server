@@ -4,10 +4,11 @@ import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiOrderModel
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
-import io.ktor.http.*
+import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
@@ -16,40 +17,80 @@ fun Route.orderRoutes() {
 
     val orderUseCasesContainer: OrderUseCasesContainer by inject()
 
-    route("/order") {
-        /**
-         * get Orders by market
-         * */
-        get {
-            handleException(call) {
-                val params = call.request.queryParameters
-                val marketId = params["marketId"]?.trim()?.toLongOrNull()
-                val orders = orderUseCasesContainer.getOrdersForMarketUseCase(marketId).map { it.toApiOrderModel() }
-                call.respond(ServerResponse.success(orders))
-            }
-        }
-        /**
-         * create new order
-         **/
-        authenticate {
-            post {
+    authenticate {
+        route("/order") {
+            /**
+             * get Orders by market
+             * */
+            get("/marketorders") {
                 handleException(call) {
+                    val params = call.request.queryParameters
+                    val marketId = params["id"]?.trim()?.toLongOrNull()
                     val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.getClaim("userId", Long::class)
-                    val isAdded = orderUseCasesContainer.createOrderUseCase(userId)
-                    call.respond(HttpStatusCode.Created, ServerResponse.success(isAdded))
+                    val role = principal?.getClaim(ROLE_TYPE, String::class)
+
+                    val orders =
+                        orderUseCasesContainer.getOrdersForMarketUseCase(marketId, role).map { it.toApiOrderModel() }
+                    call.respond(ServerResponse.success(orders))
                 }
             }
-        }
-        /**
-         * cancel order
-         */
-        put("/cancel/{orderId}") {
-            handleException(call) {
-                val orderId = call.parameters["orderId"]?.trim()?.toLongOrNull()
-                orderUseCasesContainer.cancelOrderUseCase(orderId)
-                call.respond(HttpStatusCode.OK, ServerResponse.success("Canceled Successfully"))
+
+            /**
+             * get Orders by user
+             * */
+            get("/userorders") {
+                handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = principal?.payload?.subject?.toLongOrNull()
+                    val role = principal?.getClaim(ROLE_TYPE, String::class)
+                    val orders =
+                        orderUseCasesContainer.getOrdersForUserUseCase(userId, role).map { it.toApiOrderModel() }
+                    call.respond(ServerResponse.success(orders))
+                }
             }
+
+            /**
+             * get Order Details
+             * */
+            get("{id}") {
+                handleException(call) {
+                    val orderId = call.parameters["id"]?.trim()?.toLongOrNull()
+                    val orders =
+                        orderUseCasesContainer.getOrderDetailsUseCase(orderId).toApiOrderModel()
+                    call.respond(ServerResponse.success(orders))
+                }
+            }
+
+            /**
+             * create order
+             * */
+            post("/createorder") {
+                handleException(call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = principal?.payload?.subject?.toLongOrNull()
+                    val role = principal?.getClaim(ROLE_TYPE, String::class)
+
+                    val isCreated = orderUseCasesContainer.createOrderUseCase(userId, role)
+                    call.respond(ServerResponse.success(isCreated))
+                }
+            }
+            /**
+             * update order
+             **/
+            put("/updateorder/{id}") {
+                handleException(call) {
+                    val params = call.receiveParameters()
+                    val orderId = call.parameters["id"]?.trim()?.toLongOrNull()
+                    val orderState = params["state"]?.toIntOrNull()
+
+                    val principal = call.principal<JWTPrincipal>()
+                    val role = principal?.getClaim(ROLE_TYPE, String::class)
+
+                    val updatedStatus = orderUseCasesContainer.updateOrderStateUseCase(orderId, orderState, role)
+                    call.respond(ServerResponse.success(updatedStatus))
+                }
+            }
+
         }
     }
 }

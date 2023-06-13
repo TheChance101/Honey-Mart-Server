@@ -152,17 +152,29 @@ class HoneyMartRepositoryImp(
     override suspend fun createOrder(cartId: Long, userId: Long): Boolean {
         val cart = getCart(cartId)
         return orderDataSource.createOrder(
-            cart.total, cart.products.map {
-                OrderItem(productId = it.id, count = it.count, marketId = getMarketId(it.id)!!)
-            }, userId
+            userId,
+            getMarketId(cart.products.first().id)!!,
+            cart.products.map {
+                OrderItem(productId = it.id, count = it.count)
+            },
+            cart.total
         )
     }
 
     override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> =
         orderDataSource.getAllOrdersForMarket(marketId)
 
-    override suspend fun cancelOrder(orderId: Long): Boolean =
-        orderDataSource.cancelOrder(orderId)
+    override suspend fun getAllOrdersForUser(userId: Long): List<Order> {
+        return orderDataSource.getAllOrdersForUser(userId)
+    }
+
+    override suspend fun getOrderById(orderId: Long): OrderDetails {
+        return orderDataSource.getOrderById(orderId)
+    }
+
+    override suspend fun updateOrderState(orderId: Long, newOrderState: Int): Boolean {
+        return orderDataSource.updateOrderState(orderId, newOrderState)
+    }
 
     override suspend fun isOrderExist(orderId: Long): Boolean =
         orderDataSource.isOrderExist(orderId)
