@@ -4,6 +4,7 @@ import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiOrderModel
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
+import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -35,20 +36,10 @@ fun Route.orderRoutes() {
             post {
                 handleException(call) {
                     val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.getClaim("userId", Long::class)
+                    val userId = principal?.payload?.subject?.toLongOrNull()
                     val isAdded = orderUseCasesContainer.createOrderUseCase(userId)
                     call.respond(HttpStatusCode.Created, ServerResponse.success(isAdded))
                 }
-            }
-        }
-        /**
-         * cancel order
-         */
-        put("/cancel/{orderId}") {
-            handleException(call) {
-                val orderId = call.parameters["orderId"]?.trim()?.toLongOrNull()
-                orderUseCasesContainer.cancelOrderUseCase(orderId)
-                call.respond(HttpStatusCode.OK, ServerResponse.success("Canceled Successfully"))
             }
         }
     }
