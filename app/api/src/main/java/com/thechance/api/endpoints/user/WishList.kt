@@ -2,8 +2,6 @@ package com.thechance.api.endpoints.user
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiProductInWishListModel
-import com.thechance.api.utils.handleException
-import com.thechance.api.mapper.toApiProductInWishListModel
 import com.thechance.core.domain.usecase.wishlist.WishListUseCaseContainer
 import io.ktor.http.*
 import io.ktor.server.application.*

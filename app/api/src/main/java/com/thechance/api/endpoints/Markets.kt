@@ -1,11 +1,8 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.mapper.toApiCategoryModel
-import com.thechance.api.mapper.toApiMarketModel
 import com.thechance.api.model.mapper.toApiCategoryModel
 import com.thechance.api.model.mapper.toApiMarketModel
-import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.market.MarketUseCaseContainer
 import io.ktor.http.*
 import io.ktor.server.application.*

@@ -1,9 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.mapper.toApiOrderModel
 import com.thechance.api.model.mapper.toApiOrderModel
-import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -46,7 +44,6 @@ fun Route.orderRoutes() {
          * cancel order
          */
         put("/cancel/{orderId}") {
-
             val orderId = call.parameters["orderId"]?.trim()?.toLongOrNull()
             orderUseCasesContainer.cancelOrderUseCase(orderId)
             call.respond(HttpStatusCode.OK, ServerResponse.success("Canceled Successfully"))

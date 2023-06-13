@@ -2,8 +2,6 @@ package com.thechance.api.endpoints.user
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCart
-import com.thechance.api.utils.handleException
-import com.thechance.api.mapper.toApiCart
 import com.thechance.core.domain.usecase.cart.CartUseCasesContainer
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*

@@ -224,7 +224,7 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is ProductNotInSameCartMarketException -> {
             call.respond(
                 HttpStatusCode.BadRequest,
-                ServerResponse.error("this product not in same market, you should delete cart")
+                ServerResponse.error("this product not in same market, you should delete cart", HttpStatusCode.BadRequest.value)
             )
         }
 
