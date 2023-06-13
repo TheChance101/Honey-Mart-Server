@@ -78,7 +78,8 @@ class OrderDataSourceImp : OrderDataSource {
             marketId = order[OrderTable.marketId].value,
             products = products,
             totalPrice = order[OrderTable.totalPrice],
-            date = order[OrderTable.orderDate]
+            date = order[OrderTable.orderDate],
+            state = order[OrderTable.state]
         )
     }
 

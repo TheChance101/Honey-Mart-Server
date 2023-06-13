@@ -9,5 +9,6 @@ data class OrderDetailsModel(
     val marketId: Long,
     val products: List<ProductInOrderModel>,
     val totalPrice: Double,
-    val date: String
+    val date: String,
+    val state: Int
 )

@@ -8,5 +8,6 @@ data class OrderDetails(
     val marketId: Long,
     val products: List<ProductInOrder>,
     val totalPrice: Double,
-    val date: LocalDate
+    val date: LocalDate,
+    val state: Int
 )

@@ -10,6 +10,7 @@ internal fun OrderDetails.toApiOrderModel(): OrderDetailsModel {
         marketId = marketId,
         products = products.map { it.toApiProductInOrder() },
         totalPrice = totalPrice,
-        date = date.toString()
+        date = date.toString(),
+        state = state
     )
 }
