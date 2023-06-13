@@ -4,7 +4,6 @@ import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiOrderModel
 import com.thechance.api.utils.handleException
 import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
-import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

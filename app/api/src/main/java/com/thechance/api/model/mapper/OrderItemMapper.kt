@@ -6,7 +6,6 @@ import com.thechance.core.entity.OrderItem
 internal fun OrderItem.toApiOrderItemModel(): OrderItemModel {
     return OrderItemModel(
         productId = productId,
-        count = count,
-        marketId = marketId
+        count = count
     )
 }
