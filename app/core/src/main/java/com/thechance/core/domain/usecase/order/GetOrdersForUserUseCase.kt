@@ -10,7 +10,7 @@ import org.koin.core.component.KoinComponent
 
 class GetOrdersForUserUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(userId: Long?, role: String?): List<Order> {
-        return if ((isInvalidId(userId) || !isValidRole(NORMAL_USER_ROLE, role))) {
+        return if (isInvalidId(userId) || !isValidRole(NORMAL_USER_ROLE, role)) {
             throw InvalidUserIdException()
         } else {
             repository.getAllOrdersForUser(userId!!)

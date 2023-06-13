@@ -1,16 +1,18 @@
 package com.thechance.core.domain.usecase.order
 
 import com.thechance.core.domain.repository.HoneyMartRepository
-import com.thechance.core.utils.EmptyCartException
-import com.thechance.core.utils.InvalidUserIdException
+import com.thechance.core.utils.*
+import com.thechance.core.utils.MARKET_OWNER_ROLE
 import com.thechance.core.utils.isInvalidId
+import com.thechance.core.utils.isValidRole
 import org.koin.core.component.KoinComponent
 
 class CreateOrderUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(
-        userId: Long?
+        userId: Long?,
+        role: String?
     ): Boolean {
-        return if (isInvalidId(userId)) {
+        return if (isInvalidId(userId) || !isValidRole(NORMAL_USER_ROLE, role)) {
             throw InvalidUserIdException()
         } else if (!isEmptyCart(getCartId(userId!!))) {
             val isCreated = repository.createOrder(getCartId(userId), userId)
