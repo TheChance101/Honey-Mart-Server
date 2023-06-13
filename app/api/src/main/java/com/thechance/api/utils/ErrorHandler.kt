@@ -234,7 +234,10 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is InvalidStateOrderException -> {
             call.respond(
                 HttpStatusCode.BadRequest,
-                ServerResponse.error("State must be 0 or 1")
+                ServerResponse.error(
+                    "State must be 0 or 1",
+                    HttpStatusCode.BadRequest.value
+                )
             )
         }
 
@@ -243,6 +246,6 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
                 HttpStatusCode.InternalServerError,
                 ServerResponse.error(cause.message.toString(), HttpStatusCode.InternalServerError.value)
             )
+        }
     }
-}
 }
