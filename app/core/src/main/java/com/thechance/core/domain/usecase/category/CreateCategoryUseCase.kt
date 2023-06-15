@@ -7,9 +7,11 @@ import org.koin.core.component.KoinComponent
 import java.util.regex.Pattern
 
 class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinComponent {
-    suspend operator fun invoke(categoryName: String?, marketId: Long?, imageId: Int?): Category {
+    suspend operator fun invoke(
+        categoryName: String?, marketId: Long?, imageId: Int?, marketOwnerId: Long?, role: String?
+    ): Category {
 
-        isValidInput(categoryName, marketId, imageId)?.let { throw it }
+        isValidInput(categoryName, marketId, imageId, marketOwnerId, role)?.let { throw it }
 
         val isMarketDeleted = repository.isMarketDeleted(marketId!!)
         return if (isMarketDeleted == null) {
@@ -25,7 +27,9 @@ class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
         }
     }
 
-    private fun isValidInput(categoryName: String?, marketId: Long?, imageId: Int?): Exception? {
+    private fun isValidInput(
+        categoryName: String?, marketId: Long?, imageId: Int?, marketOwnerId: Long?, role: String?
+    ): Exception? {
         return when {
             !isValidCategoryName(categoryName) -> {
                 InvalidCategoryNameException()
@@ -37,6 +41,14 @@ class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
 
             isInvalidId(imageId?.toLong()) -> {
                 InvalidImageIdException()
+            }
+
+            isInvalidId(marketOwnerId) -> {
+                InvalidImageIdException()
+            }
+
+            !isValidRole(MARKET_OWNER_ROLE, role) -> {
+                InvalidMarketIdException()
             }
 
             else -> {
