@@ -13,7 +13,7 @@ class CreateOwnerUseCase(private val repository: AuthRepository) : KoinComponent
         isValidInput(fullName, email, password)?.let { throw it }
 
         return if (repository.isOwnerEmailExists(email!!)) {
-            throw UsernameAlreadyExistException()
+            throw EmailAlreadyExistException()
         } else {
             repository.createOwner(fullName = fullName!!, email = email, password = password!!)
         }

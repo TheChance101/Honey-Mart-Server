@@ -29,9 +29,6 @@ data class ServerResponse<T>(
     }
 
     @kotlinx.serialization.Serializable
-    data class ResponseStatus(
-        val message: String?,
-        val code: Int?
-    )
+    data class ResponseStatus(val message: String?, val code: Int?)
 
 }
