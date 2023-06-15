@@ -2,10 +2,7 @@ package com.the_chance
 
 
 import com.the_chance.di.appModules
-import com.thechance.api.plugins.configureMonitoring
-import com.thechance.api.plugins.configureRouting
-import com.thechance.api.plugins.configureSecurity
-import com.thechance.api.plugins.configureSerialization
+import com.thechance.api.plugins.*
 import com.thechance.core.data.datasource.database.CoreDataBase
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -26,6 +23,7 @@ fun Application.module() {
 
     CoreDataBase()
     configureSerialization()
+    configureStatusExceptions()
     configureMonitoring()
     configureSecurity()
     configureRouting()

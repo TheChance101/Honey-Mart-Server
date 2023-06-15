@@ -5,5 +5,7 @@ import org.koin.core.component.KoinComponent
 data class OrderUseCasesContainer(
     val createOrderUseCase: CreateOrderUseCase,
     val getOrdersForMarketUseCase: GetOrdersForMarketUseCase,
-    val cancelOrderUseCase: CancelOrderUseCase
-):KoinComponent
+    val getOrdersForUserUseCase: GetOrdersForUserUseCase,
+    val updateOrderStateUseCase: UpdateOrderStateUseCase,
+    val getOrderDetailsUseCase: GetOrderDetailsUseCase
+) : KoinComponent

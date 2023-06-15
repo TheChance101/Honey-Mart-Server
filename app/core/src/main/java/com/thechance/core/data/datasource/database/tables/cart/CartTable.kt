@@ -5,4 +5,5 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 
 object CartTable : LongIdTable() {
     val userId = reference("userId", NormalUserTable)
+    val marketId = long("marketId").default(0L)
 }

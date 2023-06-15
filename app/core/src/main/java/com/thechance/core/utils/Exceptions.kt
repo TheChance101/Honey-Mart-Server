@@ -7,7 +7,6 @@ class InvalidMarketNameException : Exception()
 class InvalidProductNameException : Exception()
 class InvalidProductQuantityException : Exception()
 class InvalidProductPriceException : Exception()
-class InvalidOrderTotalPriceException : Exception()
 
 class InvalidCategoryNameLettersException : Exception()
 class InvalidMarketIdException : Exception()
@@ -53,9 +52,11 @@ class ProductAlreadyInWishListException : Exception()
 //region cart
 class CountInvalidInputException : Exception()
 
+class ProductNotInSameCartMarketException : Exception()
 //endregion
 
 //region owner
 class InvalidOwnerIdException : Exception()
+class InvalidStateOrderException : Exception()
 
 //endregion

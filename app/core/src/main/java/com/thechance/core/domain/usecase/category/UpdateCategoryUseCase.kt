@@ -29,12 +29,8 @@ class UpdateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
 
     private fun isValidInput(categoryId: Long?, categoryName: String?, marketId: Long?, imageId: Int?): Exception? {
         return when {
-            isValidUsername(categoryName) -> {
+            isValidCategoryName(categoryName) -> {
                 InvalidCategoryNameException()
-            }
-
-            checkLetter(categoryName) -> {
-                InvalidCategoryNameLettersException()
             }
 
             isInvalidId(marketId) -> {
@@ -55,9 +51,4 @@ class UpdateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
         }
     }
 
-    private fun checkLetter(categoryName: String?): Boolean {
-        return categoryName?.let {
-            return !isValidString(it)
-        } ?: true
-    }
 }

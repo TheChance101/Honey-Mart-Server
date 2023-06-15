@@ -45,12 +45,4 @@ class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
         }
     }
 
-    private fun isValidCategoryName(categoryName: String?): Boolean {
-        return if (categoryName == null) {
-            return false
-        } else {
-            val categoryNameRegex = Regex("^[a-zA-Z_]\\w{3,9}$")
-            categoryNameRegex.matches(categoryName)
-        }
-    }
 }

@@ -17,26 +17,15 @@ import org.koin.core.component.KoinComponent
 
 class UserDataSourceImp : UserDataSource, KoinComponent {
     //region user
-    override suspend fun createUser(
-        userName: String, saltedHash: SaltedHash, fullName: String, email: String
-    ): Boolean {
+    override suspend fun createUser(saltedHash: SaltedHash, fullName: String, email: String): Boolean {
         return dbQuery {
             NormalUserTable.insert {
-                it[NormalUserTable.userName] = userName
                 it[password] = saltedHash.hash
                 it[salt] = saltedHash.salt
                 it[NormalUserTable.fullName] = fullName
                 it[NormalUserTable.email] = email
             }
             true
-        }
-    }
-
-    override suspend fun isUserNameExists(userName: String): Boolean {
-        return dbQuery {
-            NormalUserTable.select {
-                NormalUserTable.userName eq userName
-            }.count() > 0
         }
     }
 
@@ -47,12 +36,13 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getUserByName(userName: String): User {
+    override suspend fun getUserByEmail(email: String): User {
         return dbQuery {
-            NormalUserTable.select(NormalUserTable.userName eq userName).map {
+            NormalUserTable.select(NormalUserTable.email eq email).map {
                 User(
                     userId = it[NormalUserTable.id].value,
-                    userName = it[NormalUserTable.userName],
+                    email = it[NormalUserTable.email],
+                    fullName = it[NormalUserTable.fullName],
                     password = it[NormalUserTable.password],
                     salt = it[NormalUserTable.salt]
                 )
@@ -78,15 +68,22 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
-
     override suspend fun getCartId(userId: Long): Long? {
         return dbQuery {
-            CartTable.select { CartTable.userId eq userId }.map { it[CartTable.id].value }.singleOrNull()
+            val marketId = CartTable.select { CartTable.userId eq userId }.map { it[CartTable.id].value }.singleOrNull()
+
+            if (marketId == null || marketId == 0L) {
+                null
+            } else {
+                marketId
+            }
         }
     }
 
     override suspend fun addToCart(cartId: Long, marketId: Long, productId: Long, count: Int): Boolean {
         return dbQuery {
+            updateMarketIdForCart(cartId, marketId)
+
             CartProductTable.insert {
                 it[CartProductTable.cartId] = cartId
                 it[CartProductTable.productId] = productId
@@ -126,6 +123,27 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
+    override suspend fun getCartMarketId(cartId: Long): Long? {
+        return dbQuery {
+            val marketId = CartTable.select { CartTable.id eq cartId }
+                .map { it[CartTable.marketId] }.singleOrNull()
+
+            if (marketId == null || marketId == 0L) {
+                null
+            } else {
+                marketId
+            }
+        }
+    }
+
+    override suspend fun deleteCart(cartId: Long): Boolean {
+        return dbQuery {
+            CartProductTable.deleteWhere { CartProductTable.cartId eq cartId }
+            updateMarketIdForCart(cartId, 0L)
+            true
+        }
+    }
+
     private suspend fun getProduct(productId: Long): Product {
         return dbQuery {
             ProductTable.select { ProductTable.id eq productId }.map { productRow ->
@@ -137,12 +155,18 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
     override suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean {
         return dbQuery {
             CartProductTable.deleteWhere { (CartProductTable.cartId eq cartId) and (CartProductTable.productId eq productId) }
+
+            val cartSize = CartProductTable.selectAll().count()
+            if (cartSize == 0L) {
+                updateMarketIdForCart(cartId, 0L)
+            }
             true
         }
     }
 
-    override suspend fun deleteAllProductsInCart(cartId: Long):Boolean {
+    override suspend fun deleteAllProductsInCart(cartId: Long): Boolean {
         return dbQuery {
+            updateMarketIdForCart(cartId, 0L)
             CartProductTable.deleteWhere { CartProductTable.cartId eq cartId }
             true
         }
@@ -155,6 +179,10 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
             }
             true
         }
+    }
+
+    private fun updateMarketIdForCart(cartId: Long, marketId: Long) {
+        CartTable.update({ (CartTable.id eq cartId) }) { it[CartTable.marketId] = marketId }
     }
 
     //endregion
@@ -194,15 +222,19 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
 
     override suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean {
         return dbQuery {
-            WishListProductTable.deleteWhere { (WishListProductTable.wishListId eq wishListId) and
-                    (WishListProductTable.productId eq productId) }
+            WishListProductTable.deleteWhere {
+                (WishListProductTable.wishListId eq wishListId) and
+                        (WishListProductTable.productId eq productId)
+            }
             true
         }
     }
 
     override suspend fun getWishList(wishListId: Long): List<ProductInWishList> = dbQuery {
-        WishListProductTable.select { (WishListProductTable.wishListId eq wishListId) and
-                (WishListProductTable.isDeleted eq false)}
+        WishListProductTable.select {
+            (WishListProductTable.wishListId eq wishListId) and
+                    (WishListProductTable.isDeleted eq false)
+        }
             .map { productRow ->
                 val product = getProduct(productId = productRow[WishListProductTable.productId].value)
                 ProductInWishList(

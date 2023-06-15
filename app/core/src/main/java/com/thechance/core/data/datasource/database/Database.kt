@@ -8,7 +8,6 @@ import com.thechance.core.data.datasource.database.tables.cart.CartProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartTable
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
-import com.thechance.core.data.datasource.database.tables.order.OrderMarketTable
 import com.thechance.core.data.datasource.database.tables.order.OrderProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListProductTable
@@ -20,7 +19,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class CoreDataBase {
 
     private val tables by lazy {
-        listOf(
+        arrayOf(
             MarketTable,
             CategoriesTable,
             ProductTable,
@@ -31,7 +30,6 @@ class CoreDataBase {
             CartProductTable,
             OrderTable,
             OrderProductTable,
-            OrderMarketTable,
             CartProductTable,
             WishListTable,
             WishListProductTable
@@ -39,11 +37,7 @@ class CoreDataBase {
     }
 
     init {
-        transaction(getDatabaseInstance()) {
-            tables.forEach {
-                SchemaUtils.create(it)
-            }
-        }
+        createTables()
     }
 
     private fun getDatabaseInstance(): Database {
@@ -61,26 +55,18 @@ class CoreDataBase {
         )
     }
 
+    private fun createTables() {
+        transaction(getDatabaseInstance()) {
+            tables.forEach {
+                SchemaUtils.create(it)
+            }
+        }
+    }
+
     fun deleteAllTables() {
         transaction(getDatabaseInstance()) {
-            SchemaUtils.drop(
-                *arrayOf(
-                    MarketTable,
-                    CategoriesTable,
-                    ProductTable,
-                    CategoryProductTable,
-                    NormalUserTable,
-                    OwnerTable,
-                    CartTable,
-                    CartProductTable,
-                    OrderTable,
-                    OrderProductTable,
-                    OrderMarketTable,
-                    CartProductTable,
-                    WishListTable,
-                    WishListProductTable
-                )
-            )
+            SchemaUtils.drop(*tables)
         }
+        createTables()
     }
 }

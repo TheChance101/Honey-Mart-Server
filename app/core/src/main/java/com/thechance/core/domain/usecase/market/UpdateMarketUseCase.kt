@@ -9,7 +9,7 @@ class UpdateMarketUseCase(private val repository: HoneyMartRepository) : KoinCom
     suspend operator fun invoke(marketId: Long?, marketName: String?): Market {
         return if (isInvalidId(marketId)) {
             throw InvalidMarketIdException()
-        } else if (isValidUsername(marketName)) {
+        } else if (isValidateMarketName(marketName)) {
             throw InvalidMarketNameException()
         } else {
             val isDeleted = repository.isMarketDeleted(marketId!!)

@@ -26,30 +26,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -59,30 +35,6 @@ paths:
     get:
       description: ""
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -104,32 +56,18 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "201":
           description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /cart/deleteAll:
+    delete:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
           content:
             '*/*':
               schema:
@@ -154,30 +92,6 @@ paths:
         schema:
           type: "integer"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "201":
           description: "Created"
           content:
@@ -208,30 +122,6 @@ paths:
         schema:
           type: "integer"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -253,30 +143,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -293,30 +159,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -362,30 +204,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "201":
           description: "Created"
           content:
@@ -402,30 +220,6 @@ paths:
         schema:
           type: "number"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -446,30 +240,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -486,30 +256,6 @@ paths:
         schema:
           type: "number"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -518,40 +264,42 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/CategoryModel"
-  /order:
+  /order/{id}:
+    get:
+      description: "get Order Details"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/OrderDetailsModel"
+  /order/createorder:
+    post:
+      description: "create order"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "boolean"
+  /order/marketorders:
     get:
       description: "get Orders by market"
       parameters:
-      - name: "marketId"
+      - name: "id"
         in: "query"
         required: false
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -560,84 +308,44 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/OrderModel"
-    post:
-      description: ""
-      responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "201":
-          description: "Created"
-          content:
-            '*/*':
-              schema:
-                type: "boolean"
-  /order/cancel/{orderId}:
+  /order/updateorder/{id}:
     put:
-      description: "cancel order"
+      description: "update order"
       parameters:
-      - name: "orderId"
+      - name: "id"
         in: "path"
         required: true
         schema:
           type: "string"
+      - name: "state"
+        in: "query"
+        required: false
+        schema:
+          type: "integer"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
             '*/*':
               schema:
-                type: "string"
+                type: "boolean"
+  /order/userorders:
+    get:
+      description: "get Orders by user"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/OrderModel"
   /owner/login:
     post:
       description: ""
       parameters:
-      - name: "username"
+      - name: "email"
         in: "query"
         required: false
         schema:
@@ -648,30 +356,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "201":
           description: "Created"
           content:
@@ -682,7 +366,12 @@ paths:
     post:
       description: ""
       parameters:
-      - name: "username"
+      - name: "fullName"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "email"
         in: "query"
         required: false
         schema:
@@ -693,30 +382,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "201":
           description: "Created"
           content:
@@ -748,30 +413,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "201":
           description: "Created"
           content:
@@ -788,30 +429,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -842,30 +459,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -882,30 +475,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -929,30 +498,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -963,7 +508,7 @@ paths:
     post:
       description: ""
       parameters:
-      - name: "username"
+      - name: "email"
         in: "query"
         required: false
         schema:
@@ -974,30 +519,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "201":
           description: "Created"
           content:
@@ -1008,11 +529,6 @@ paths:
     post:
       description: ""
       parameters:
-      - name: "username"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
       - name: "password"
         in: "query"
         required: false
@@ -1029,30 +545,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "201":
           description: "Created"
           content:
@@ -1069,30 +561,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -1102,30 +570,6 @@ paths:
     get:
       description: ""
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "200":
           description: "OK"
           content:
@@ -1143,30 +587,6 @@ paths:
         schema:
           type: "string"
       responses:
-        "400":
-          description: "Bad Request"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "404":
-          description: "Not Found"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "409":
-          description: "Conflict"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
-          content:
-            '*/*':
-              schema:
-                type: "string"
         "201":
           description: "Created"
           content:
@@ -1231,6 +651,44 @@ components:
           format: "int64"
         marketName:
           type: "string"
+    ProductInOrderModel:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        count:
+          type: "integer"
+          format: "int32"
+        price:
+          type: "number"
+          format: "double"
+    OrderDetailsModel:
+      type: "object"
+      properties:
+        orderId:
+          type: "integer"
+          format: "int64"
+        userId:
+          type: "integer"
+          format: "int64"
+        marketId:
+          type: "integer"
+          format: "int64"
+        products:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ProductInOrderModel"
+        totalPrice:
+          type: "number"
+          format: "double"
+        date:
+          type: "string"
+        state:
+          type: "integer"
+          format: "int32"
     OrderModel:
       type: "object"
       properties:
@@ -1240,6 +698,9 @@ components:
         totalPrice:
           type: "number"
           format: "double"
+        state:
+          type: "integer"
+          format: "int32"
     ProductInWishListModel:
       type: "object"
       properties:

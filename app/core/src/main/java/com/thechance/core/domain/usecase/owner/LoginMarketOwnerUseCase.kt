@@ -7,9 +7,9 @@ import org.koin.core.component.KoinComponent
 
 class LoginMarketOwnerUseCase(private val repository: AuthRepository) : KoinComponent {
 
-    suspend operator fun invoke(userName: String, password: String): String {
-        return if (repository.isOwnerNameExists(userName)) {
-            validateUser(userName, password)
+    suspend operator fun invoke(email: String, password: String): String {
+        return if (repository.isOwnerEmailExists(email)) {
+            validateUser(email, password)
         } else {
             throw InvalidUserNameOrPasswordException()
         }

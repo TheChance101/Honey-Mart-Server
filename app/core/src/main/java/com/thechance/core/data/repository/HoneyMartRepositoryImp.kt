@@ -34,6 +34,9 @@ class HoneyMartRepositoryImp(
 
     override suspend fun createCart(userId: Long): Long = userDataSource.createCart(userId)
 
+    override suspend fun getCartMarketId(cartId: Long): Long? = userDataSource.getCartMarketId(cartId)
+    override suspend fun deleteCart(cartId: Long): Boolean = userDataSource.deleteCart(cartId)
+
     override suspend fun deleteAllProductsInCart(cartId: Long): Boolean =
         userDataSource.deleteAllProductsInCart(cartId)
 
@@ -138,38 +141,44 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isProductDeleted(id: Long): Boolean? =
         productDataSource.isDeleted(id)
+
+    override suspend fun getProductMarketId(productId: Long): Long = productDataSource.getProductMarketId(productId)
+
     //endregion
 
     //endregion
 
     //region order
-    override suspend fun createOrder(
-        cartId: Long,
-        userId: Long
-    ): Boolean {
+    override suspend fun createOrder(cartId: Long, userId: Long): Boolean {
         val cart = getCart(cartId)
         return orderDataSource.createOrder(
-            cart.total, cart.products.map {
-                OrderItem(
-                    productId = it.id,
-                    count = it.count,
-                    marketId = getMarketId(it.id)!!
-                )
+            userId,
+            getMarketId(cart.products.first().id)!!,
+            cart.products.map {
+                OrderItem(productId = it.id, count = it.count)
             },
-            userId
+            cart.total
         )
     }
 
     override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> =
         orderDataSource.getAllOrdersForMarket(marketId)
 
-    override suspend fun cancelOrder(orderId: Long): Boolean =
-        orderDataSource.cancelOrder(orderId)
+    override suspend fun getAllOrdersForUser(userId: Long): List<Order> {
+        return orderDataSource.getAllOrdersForUser(userId)
+    }
+
+    override suspend fun getOrderById(orderId: Long): OrderDetails {
+        return orderDataSource.getOrderById(orderId)
+    }
+
+    override suspend fun updateOrderState(orderId: Long, newOrderState: Int): Boolean {
+        return orderDataSource.updateOrderState(orderId, newOrderState)
+    }
 
     override suspend fun isOrderExist(orderId: Long): Boolean =
         orderDataSource.isOrderExist(orderId)
     //end region
 //endregion
-
 
 }

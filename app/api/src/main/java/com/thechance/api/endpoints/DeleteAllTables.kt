@@ -17,7 +17,7 @@ fun Route.deleteAllTables() {
             deleteAllTablesUseCase()
             call.respond(HttpStatusCode.OK, ServerResponse.success("All Tables Deleted Successfully"))
         } catch (e: Exception) {
-            call.respond(HttpStatusCode.InternalServerError, ServerResponse.error("Error!!"))
+            call.respond(HttpStatusCode.InternalServerError, ServerResponse.error("Error!!",HttpStatusCode.InternalServerError.value))
         }
 
     }
