@@ -180,7 +180,7 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is EmailAlreadyExistException -> {
             call.respond(
                 HttpStatusCode.BadRequest,
-                ServerResponse.error("This Email already exist", HttpStatusCode.BadRequest.value)
+                ServerResponse.error("This Email already exist", 1001)
             )
         }
 
