@@ -36,6 +36,13 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
             }.map { resultRow -> resultRow.toCategory() }
     }
 
+    override suspend fun getMarketIdByCategoryId(categoryId: Long): Long? {
+        return dbQuery {
+            CategoriesTable.select { CategoriesTable.id eq categoryId }.map { it[CategoriesTable.marketId].value }
+                .singleOrNull()
+        }
+    }
+
     override suspend fun deleteCategory(categoryId: Long): Boolean = dbQuery {
         CategoriesTable.update({ (CategoriesTable.id eq categoryId) and (CategoriesTable.isDeleted eq false) }) {
             it[isDeleted] = true

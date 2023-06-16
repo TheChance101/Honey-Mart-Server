@@ -2,6 +2,7 @@ package com.thechance.core.utils
 
 class InvalidInputException : Exception()
 
+class UnauthorizedException : Exception()
 class InvalidCategoryNameException : Exception()
 class InvalidMarketNameException : Exception()
 class InvalidProductNameException : Exception()
