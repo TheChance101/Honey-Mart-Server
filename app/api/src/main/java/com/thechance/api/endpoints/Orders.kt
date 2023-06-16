@@ -2,6 +2,7 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiOrderModel
+import com.thechance.api.model.mapper.toApiOrders
 import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.server.application.*
@@ -18,10 +19,8 @@ fun Route.orderRoutes() {
 
     authenticate {
         route("/order") {
-            /**
-             * get Orders by market
-             * */
-            get("/marketorders") {
+
+            get("/marketOrders") {
                 val params = call.request.queryParameters
                 val marketId = params["id"]?.trim()?.toLongOrNull()
                 val principal = call.principal<JWTPrincipal>()
@@ -33,15 +32,12 @@ fun Route.orderRoutes() {
 
             }
 
-            /**
-             * get Orders by user
-             * */
-            get("/userorders") {
+            get("/userOrders") {
                 val principal = call.principal<JWTPrincipal>()
                 val userId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val orders =
-                    orderUseCasesContainer.getOrdersForUserUseCase(userId, role).map { it.toApiOrderModel() }
+                    orderUseCasesContainer.getOrdersForUserUseCase(userId, role).toApiOrders()
                 call.respond(ServerResponse.success(orders))
 
             }
@@ -49,7 +45,7 @@ fun Route.orderRoutes() {
             /**
              * get Order Details
              * */
-            get("{id}") {
+            get("/{id}") {
                 val orderId = call.parameters["id"]?.trim()?.toLongOrNull()
                 val orders =
                     orderUseCasesContainer.getOrderDetailsUseCase(orderId).toApiOrderModel()
@@ -57,10 +53,7 @@ fun Route.orderRoutes() {
 
             }
 
-            /**
-             * create order
-             * */
-            post("/createorder") {
+            post("/checkout") {
                 val principal = call.principal<JWTPrincipal>()
                 val userId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
@@ -69,10 +62,8 @@ fun Route.orderRoutes() {
                 call.respond(ServerResponse.success(isCreated))
 
             }
-            /**
-             * update order
-             **/
-            put("/updateorder/{id}") {
+
+            put("/{id}") {
                 val params = call.receiveParameters()
                 val orderId = call.parameters["id"]?.trim()?.toLongOrNull()
                 val orderState = params["state"]?.toIntOrNull()

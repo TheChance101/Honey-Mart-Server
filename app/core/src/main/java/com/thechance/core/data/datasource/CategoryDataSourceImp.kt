@@ -14,9 +14,7 @@ import org.koin.core.component.KoinComponent
 
 class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
 
-    override suspend fun createCategory(
-        categoryName: String, marketId: Long, imageId: Int
-    ): Category = dbQuery {
+    override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Category = dbQuery {
         val newCategory = CategoriesTable.insert {
             it[name] = categoryName
             it[isDeleted] = false

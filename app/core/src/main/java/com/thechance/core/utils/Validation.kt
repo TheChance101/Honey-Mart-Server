@@ -1,13 +1,20 @@
 package com.thechance.core.utils
 
-import java.util.regex.Pattern
-
-internal fun isValidUsername(username: String?): Boolean {
-    return if (username == null) {
+fun isValidateMarketName(name: String?): Boolean {
+    return if (name == null) {
         false
     } else {
-        val usernameRegex = Regex("^[a-zA-Z0-9_.]{6,20}$")
-        usernameRegex.matches(username)
+        val pattern = Regex("^[A-Za-z0-9\\s\\[\\]\\(\\)\\-.,&]{4,20}$")
+        pattern.matches(name)
+    }
+}
+
+fun isValidCategoryName(name: String?): Boolean {
+    return if (name == null) {
+        false
+    } else {
+        val pattern = Regex("^[a-zA-Z]{4,16}$")
+        pattern.matches(name)
     }
 }
 
@@ -18,12 +25,6 @@ internal fun isValidPassword(password: String?): Boolean {
         val passwordRegex = Regex("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,14}$")
         passwordRegex.matches(password)
     }
-}
-
-internal fun isValidString(name: String): Boolean {
-    val pattern = Pattern.compile("^[a-zA-Z0-9]+(\\s[a-zA-Z0-9]+)*$")
-    val matcher = pattern.matcher(name)
-    return matcher.matches()
 }
 
 internal fun isValidNameLength(name: String): Boolean {
