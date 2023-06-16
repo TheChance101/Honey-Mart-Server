@@ -1,5 +1,6 @@
 package com.thechance.core.data.datasource
 
+import com.thechance.core.data.datasource.database.tables.NormalUserProfileImageTable
 import com.thechance.core.data.datasource.database.tables.NormalUserTable
 import com.thechance.core.data.datasource.database.tables.ProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartProductTable
@@ -7,9 +8,9 @@ import com.thechance.core.data.datasource.database.tables.cart.CartTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListProductTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListTable
 import com.thechance.core.data.datasource.mapper.toProduct
-import com.thechance.core.entity.*
 import com.thechance.core.data.repository.dataSource.UserDataSource
 import com.thechance.core.data.security.hashing.SaltedHash
+import com.thechance.core.entity.*
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -44,7 +45,7 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
                     email = it[NormalUserTable.email],
                     fullName = it[NormalUserTable.fullName],
                     password = it[NormalUserTable.password],
-                    salt = it[NormalUserTable.salt]
+                    salt = it[NormalUserTable.salt],
                 )
             }.single()
         }
@@ -246,5 +247,28 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
     }
 
     //endregion
+
+    //region image
+    override suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean = dbQuery {
+        NormalUserProfileImageTable.deleteWhere {
+            (NormalUserProfileImageTable.userId eq userId)
+        }
+        NormalUserProfileImageTable.insert {
+            it[NormalUserProfileImageTable.imageUrl] = imageUrl
+            it[NormalUserProfileImageTable.userId] = userId
+        }
+        true
+    }
+
+    override suspend fun getUserProfileImage(userId: Long): String? = dbQuery {
+        val imageUrl = NormalUserProfileImageTable.select {
+            (NormalUserProfileImageTable.userId eq userId)
+        }.map {
+            it[NormalUserProfileImageTable.imageUrl]
+        }.singleOrNull()
+
+        imageUrl
+    }
+    //end region
 
 }
