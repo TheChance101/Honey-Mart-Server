@@ -51,7 +51,7 @@ fun Route.userRoutes() {
                 val userId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val image = userUseCasesContainer.getUserProfileImageUseCase(userId, role)
-                call.respond(HttpStatusCode.Created, ServerResponse.success("Get Image successfully", image))
+                call.respond(HttpStatusCode.Found, ServerResponse.success("Get Image successfully", image))
             }
         }
     }

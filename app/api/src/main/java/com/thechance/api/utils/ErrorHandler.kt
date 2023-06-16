@@ -241,6 +241,26 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             )
         }
 
+        is ImageNotFoundException -> {
+            call.respond(
+                HttpStatusCode.NotFound,
+                ServerResponse.error(
+                    "Image not found for userId",
+                    HttpStatusCode.BadRequest.value
+                )
+            )
+        }
+
+        is AddImageFailedException -> {
+            call.respond(
+                HttpStatusCode.NotFound,
+                ServerResponse.error(
+                    "Failed to Save Image",
+                    HttpStatusCode.BadRequest.value
+                )
+            )
+        }
+
         else -> {
             call.respond(
                 HttpStatusCode.InternalServerError,
