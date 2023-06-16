@@ -20,19 +20,18 @@ class CoreDataBase {
 
     private val tables by lazy {
         arrayOf(
-            MarketTable,
             CategoriesTable,
             ProductTable,
             CategoryProductTable,
             NormalUserTable,
             OwnerTable,
             CartTable,
-            CartProductTable,
-            OrderTable,
             OrderProductTable,
             CartProductTable,
+            WishListProductTable,
             WishListTable,
-            WishListProductTable
+            OrderTable,
+            MarketTable,
         )
     }
 

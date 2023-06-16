@@ -1,6 +1,6 @@
 package com.thechance.core.entity
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class OrderDetails(
     val orderId: Long,
@@ -8,6 +8,6 @@ data class OrderDetails(
     val marketId: Long,
     val products: List<ProductInOrder>,
     val totalPrice: Double,
-    val date: LocalDate,
+    val date: LocalDateTime,
     val state: Int
 )
