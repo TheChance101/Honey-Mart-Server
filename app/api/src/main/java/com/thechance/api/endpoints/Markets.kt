@@ -39,10 +39,9 @@ fun Route.marketsRoutes() {
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
-                val marketId = call.parameters["id"]?.toLongOrNull()
                 val marketName = call.receiveParameters()["name"]?.trim()
                 val updatedMarket =
-                    marketUseCaseContainer.updateMarketUseCase(marketId, marketName, marketOwnerId, role)
+                    marketUseCaseContainer.updateMarketUseCase(marketName, marketOwnerId, role)
                         .toApiMarketModel()
                 call.respond(
                     HttpStatusCode.OK,
