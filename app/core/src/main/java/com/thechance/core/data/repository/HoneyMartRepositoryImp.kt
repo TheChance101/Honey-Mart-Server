@@ -79,6 +79,7 @@ class HoneyMartRepositoryImp(
 
     override suspend fun getMarketId(productId: Long): Long? = marketDataSource.getMarketId(productId)
 
+    override suspend fun getOwnerIdByMarketId(marketId: Long): Long? = marketDataSource.getOwnerIdByMarketId(marketId)
     //endregion
 
     //region category
@@ -108,6 +109,9 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isCategoryNameUnique(categoryName: String): Boolean =
         categoryDataSource.isCategoryNameUnique(categoryName)
+
+    override suspend fun getMarketIdByCategoryId(categoryId: Long): Long =
+        categoryDataSource.getMarketIdByCategoryId(categoryId)
 
 //endregion
 

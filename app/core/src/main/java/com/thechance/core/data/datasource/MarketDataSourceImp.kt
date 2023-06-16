@@ -25,6 +25,15 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         }
     }
 
+
+    override suspend fun getOwnerIdByMarketId(marketId: Long): Long {
+        return dbQuery {
+            MarketTable.select { MarketTable.id eq marketId }.map {
+                it[MarketTable.ownerId].value
+            }.single()
+        }
+    }
+
     override suspend fun createMarket(marketName: String): Market =
         dbQuery {
             val newMarket = MarketTable.insert {
