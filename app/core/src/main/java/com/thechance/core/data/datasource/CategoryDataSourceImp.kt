@@ -36,10 +36,10 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
             }.map { resultRow -> resultRow.toCategory() }
     }
 
-    override suspend fun getMarketIdByCategoryId(categoryId: Long): Long? {
+    override suspend fun getMarketIdByCategoryId(categoryId: Long): Long {
         return dbQuery {
             CategoriesTable.select { CategoriesTable.id eq categoryId }.map { it[CategoriesTable.marketId].value }
-                .singleOrNull()
+                .single()
         }
     }
 
