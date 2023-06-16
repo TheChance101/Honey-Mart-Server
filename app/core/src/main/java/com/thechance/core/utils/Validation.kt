@@ -4,7 +4,7 @@ fun isValidateMarketName(name: String?): Boolean {
     return if (name == null) {
         false
     } else {
-        val pattern = Regex("^[a-zA-Z0-9]{4,20}$")
+        val pattern = Regex("^[A-Za-z0-9\\s\\[\\]\\(\\)\\-.,&]{4,20}$")
         pattern.matches(name)
     }
 }
