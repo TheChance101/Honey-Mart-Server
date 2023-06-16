@@ -26,6 +26,7 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         }
 
     override suspend fun getAllMarkets(): List<Market> = dbQuery {
+        println("Ahmed")
         MarketTable.select { MarketTable.isDeleted eq false }.map { it.toMarket() }
     }
 

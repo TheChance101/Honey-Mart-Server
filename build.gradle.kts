@@ -52,6 +52,9 @@ dependencies {
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
     implementation("io.ktor:ktor-server-status-pages:$ktor_version")
 
+    implementation("io.ktor:ktor-server-caching-headers:$ktor_version")
+
+
 }
 
 
