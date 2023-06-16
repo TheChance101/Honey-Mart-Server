@@ -16,6 +16,15 @@ import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 
 class MarketDataSourceImp : MarketDataSource, KoinComponent {
+
+    override suspend fun getMarketIdByOwnerId(ownerId: Long): Long? {
+        return dbQuery {
+            MarketTable.select { MarketTable.ownerId eq ownerId }.map {
+                it[MarketTable.id].value
+            }.singleOrNull()
+        }
+    }
+
     override suspend fun createMarket(marketName: String): Market =
         dbQuery {
             val newMarket = MarketTable.insert {

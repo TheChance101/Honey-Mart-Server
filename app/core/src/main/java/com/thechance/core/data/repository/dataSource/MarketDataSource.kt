@@ -3,7 +3,7 @@ package com.thechance.core.data.repository.dataSource
 import com.thechance.core.entity.*
 
 interface MarketDataSource {
-
+    suspend fun getMarketIdByOwnerId(ownerId: Long): Long?
     suspend fun createMarket(marketName: String): Market
     suspend fun getAllMarkets(): List<Market>
     suspend fun getCategoriesByMarket(marketId: Long): List<Category>
