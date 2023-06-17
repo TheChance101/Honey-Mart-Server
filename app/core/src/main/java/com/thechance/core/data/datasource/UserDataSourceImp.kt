@@ -7,9 +7,9 @@ import com.thechance.core.data.datasource.database.tables.cart.CartTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListProductTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListTable
 import com.thechance.core.data.datasource.mapper.toProduct
-import com.thechance.core.entity.*
 import com.thechance.core.data.repository.dataSource.UserDataSource
 import com.thechance.core.data.security.hashing.SaltedHash
+import com.thechance.core.entity.*
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -44,7 +44,7 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
                     email = it[NormalUserTable.email],
                     fullName = it[NormalUserTable.fullName],
                     password = it[NormalUserTable.password],
-                    salt = it[NormalUserTable.salt]
+                    salt = it[NormalUserTable.salt],
                 )
             }.single()
         }
@@ -246,5 +246,18 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
     }
 
     //endregion
+
+    //region image
+    override suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean = dbQuery {
+        NormalUserTable.update({ (NormalUserTable.id eq userId) }) { it[NormalUserTable.imageUrl] = imageUrl }
+        true
+    }
+
+    override suspend fun getUserProfileImage(userId: Long): String? = dbQuery {
+        NormalUserTable.select {
+            (NormalUserTable.id eq userId)
+        }.map { it[NormalUserTable.imageUrl] }.singleOrNull()
+    }
+    //end region
 
 }

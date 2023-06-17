@@ -179,6 +179,13 @@ class HoneyMartRepositoryImp(
     override suspend fun isOrderExist(orderId: Long): Boolean =
         orderDataSource.isOrderExist(orderId)
     //end region
-//endregion
+
+    //image region
+    override suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean =
+        userDataSource.saveUserProfileImage(imageUrl, userId)
+
+    override suspend fun getUserProfileImage(userId: Long): String? =
+        userDataSource.getUserProfileImage(userId)
+    //end region
 
 }

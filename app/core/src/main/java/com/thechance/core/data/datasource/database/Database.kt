@@ -1,9 +1,6 @@
 package com.thechance.core.data.datasource.database
 
-import com.thechance.core.data.datasource.database.tables.MarketTable
-import com.thechance.core.data.datasource.database.tables.NormalUserTable
-import com.thechance.core.data.datasource.database.tables.OwnerTable
-import com.thechance.core.data.datasource.database.tables.ProductTable
+import com.thechance.core.data.datasource.database.tables.*
 import com.thechance.core.data.datasource.database.tables.cart.CartProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartTable
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
