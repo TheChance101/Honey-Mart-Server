@@ -591,21 +591,6 @@ paths:
               schema:
                 type: "string"
   /wishList:
-    delete:
-      description: ""
-      parameters:
-      - name: "productId"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "string"
     get:
       description: ""
       responses:
@@ -628,6 +613,22 @@ paths:
       responses:
         "201":
           description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /wishList/{productId}:
+    delete:
+      description: ""
+      parameters:
+      - name: "productId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
           content:
             '*/*':
               schema:
