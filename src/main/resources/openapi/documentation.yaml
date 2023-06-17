@@ -178,6 +178,32 @@ paths:
             '*/*':
               schema:
                 type: "string"
+  /files/image_uploads/{image}:
+    get:
+      description: ""
+      parameters:
+      - name: "image"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK <br> A file response"
+          content:
+            application/*:
+              schema:
+                type: "object"
+                format: "binary"
+        "404":
+          description: "Not Found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "File not found"
   /markets:
     get:
       description: ""
@@ -512,6 +538,25 @@ paths:
         required: false
         schema:
           type: "string"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /user/profileImage:
+    get:
+      description: ""
+      responses:
+        "302":
+          description: "Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+    post:
+      description: ""
       responses:
         "201":
           description: "Created"
