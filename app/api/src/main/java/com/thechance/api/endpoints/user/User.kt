@@ -46,7 +46,7 @@ fun Route.userRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val imageParts = call.receiveMultipart().readAllParts()
                 val imageUrl = userUseCasesContainer.saveUserProfileImageUseCase(imageParts, userId, role)
-                call.respond(HttpStatusCode.Created, ServerResponse.success("Added successfully", imageUrl))
+                call.respond(HttpStatusCode.Created, ServerResponse.success(imageUrl, "Added successfully"))
             }
 
             get("/profileImage") {
@@ -54,7 +54,7 @@ fun Route.userRoutes() {
                 val userId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val image = userUseCasesContainer.getUserProfileImageUseCase(userId, role)
-                call.respond(HttpStatusCode.Found, ServerResponse.success("Get Image successfully", image))
+                call.respond(HttpStatusCode.Found, ServerResponse.success(image, "Get Image successfully"))
             }
         }
     }
