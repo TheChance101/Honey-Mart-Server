@@ -28,13 +28,17 @@ interface HoneyMartRepository {
     //endregion
 
     //region market
-    suspend fun createMarket(marketName: String): Market
+    suspend fun getMarketIdByOwnerId(ownerId: Long): Long?
+
+    suspend fun createMarket(marketName: String, ownerId: Long): Market
     suspend fun getAllMarkets(): List<Market>
     suspend fun getCategoriesByMarket(marketId: Long): List<Category>
     suspend fun deleteMarket(marketId: Long): Boolean
     suspend fun updateMarket(marketId: Long, marketName: String): Market
     suspend fun isMarketDeleted(marketId: Long): Boolean?
     suspend fun getMarketId(productId: Long): Long?
+
+    suspend fun getOwnerIdByMarketId(marketId: Long): Long?
     //endregion
 
 
@@ -46,6 +50,8 @@ interface HoneyMartRepository {
     suspend fun getAllProductsInCategory(categoryId: Long): List<Product>
     suspend fun isCategoryDeleted(categoryId: Long): Boolean?
     suspend fun isCategoryNameUnique(categoryName: String): Boolean
+
+    suspend fun getMarketIdByCategoryId(categoryId: Long): Long
     //endregion
 
     //region product

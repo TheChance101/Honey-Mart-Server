@@ -8,35 +8,38 @@ import java.util.regex.Pattern
 
 class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(
-        categoryName: String?, marketId: Long?, imageId: Int?, marketOwnerId: Long?, role: String?
+        categoryName: String?, imageId: Int?, marketOwnerId: Long?, role: String?
     ): Category {
 
-        isValidInput(categoryName, marketId, imageId, marketOwnerId, role)?.let { throw it }
+        isValidInput(categoryName, imageId, marketOwnerId, role)?.let { throw it }
 
-        val isMarketDeleted = repository.isMarketDeleted(marketId!!)
-        return if (isMarketDeleted == null) {
-            throw IdNotFoundException()
-        } else if (isMarketDeleted) {
-            throw MarketDeletedException()
+        val marketId = repository.getMarketIdByOwnerId(ownerId = marketOwnerId!!)
+
+        return if (marketId == null) {
+            throw InvalidMarketIdException()
         } else {
-            if (repository.isCategoryNameUnique(categoryName!!)) {
-                repository.createCategory(categoryName, marketId, imageId!!)
+            val isMarketDeleted = repository.isMarketDeleted(marketId)
+            if (isMarketDeleted == null) {
+                throw IdNotFoundException()
+            } else if (isMarketDeleted) {
+                throw MarketDeletedException()
             } else {
-                throw CategoryNameNotUniqueException()
+                if (repository.isCategoryNameUnique(categoryName!!)) {
+                    repository.createCategory(categoryName, marketId, imageId!!)
+                } else {
+                    throw CategoryNameNotUniqueException()
+                }
             }
         }
+
     }
 
     private fun isValidInput(
-        categoryName: String?, marketId: Long?, imageId: Int?, marketOwnerId: Long?, role: String?
+        categoryName: String?, imageId: Int?, marketOwnerId: Long?, role: String?
     ): Exception? {
         return when {
             !isValidCategoryName(categoryName) -> {
                 InvalidCategoryNameException()
-            }
-
-            isInvalidId(marketId) -> {
-                InvalidMarketIdException()
             }
 
             isInvalidId(imageId?.toLong()) -> {

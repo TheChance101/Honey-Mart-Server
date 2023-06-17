@@ -11,5 +11,6 @@ interface CategoryDataSource {
     suspend fun getAllProductsInCategory(categoryId: Long): List<Product>
     suspend fun isCategoryDeleted(categoryId: Long): Boolean?
     suspend fun isCategoryNameUnique(categoryName: String): Boolean
+    suspend fun getMarketIdByCategoryId(categoryId: Long): Long
 
 }
