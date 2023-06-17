@@ -7,6 +7,9 @@ import com.thechance.core.data.datasource.database.tables.category.CategoriesTab
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderTable
+import com.thechance.core.data.datasource.database.tables.product.GalleryTable
+import com.thechance.core.data.datasource.database.tables.product.ProductGalleryTable
+import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListProductTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListTable
 import org.jetbrains.exposed.sql.Database
@@ -29,6 +32,8 @@ class CoreDataBase {
             WishListTable,
             OrderTable,
             MarketTable,
+            GalleryTable,
+            ProductGalleryTable
         )
     }
 

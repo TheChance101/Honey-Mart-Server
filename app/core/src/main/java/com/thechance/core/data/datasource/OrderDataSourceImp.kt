@@ -1,8 +1,9 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.datasource.database.tables.ProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderTable
+import com.thechance.core.data.datasource.database.tables.product.ProductTable
+import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.datasource.mapper.toProductInOrder
 import com.thechance.core.data.repository.dataSource.OrderDataSource
 import com.thechance.core.entity.Order
@@ -10,9 +11,6 @@ import com.thechance.core.entity.OrderDetails
 import com.thechance.core.entity.OrderItem
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
-import java.sql.Timestamp
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 class OrderDataSourceImp : OrderDataSource {
     override suspend fun createOrder(
@@ -68,6 +66,7 @@ class OrderDataSourceImp : OrderDataSource {
                 (OrderProductTable.orderId eq orderId) and
                         (OrderProductTable.productId eq ProductTable.id)
             }.map(ResultRow::toProductInOrder)
+
         OrderDetails(
             orderId = orderId,
             userId = order[OrderTable.userId].value,

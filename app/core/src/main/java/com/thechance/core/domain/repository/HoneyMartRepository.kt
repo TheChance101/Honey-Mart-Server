@@ -19,7 +19,7 @@ interface HoneyMartRepository {
     //endregion
 
     //region WishList
-    suspend fun getWishList(wishListId: Long): List<ProductInWishList>
+    suspend fun getWishList(wishListId: Long): List<Product>
     suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean
     suspend fun getWishListId(userId: Long): Long?
     suspend fun addToWishList(wishListId: Long, productId: Long): Boolean
@@ -56,8 +56,8 @@ interface HoneyMartRepository {
 
     //region product
     suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
-    ): Product
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, images: List<Long>
+    ): Boolean
 
     suspend fun getAllProducts(): List<Product>
     suspend fun getAllCategoryForProduct(productId: Long): List<Category>
@@ -71,6 +71,8 @@ interface HoneyMartRepository {
     suspend fun isProductDeleted(id: Long): Boolean?
 
     suspend fun getProductMarketId(productId: Long): Long
+
+    suspend fun addImageProduct(imageUrl: String): Image
     //endregion
 
     //region order

@@ -2,12 +2,14 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCategoryModel
+import com.thechance.api.model.mapper.toApiProductImage
 import com.thechance.api.model.mapper.toApiProductModel
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
 import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -43,11 +45,12 @@ fun Route.productsRoutes() {
                 val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
                 val productQuantity = params["quantity"]?.trim()
                 val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
+                val images = params["images"]?.trim()?.toLongIds()
 
-                val newAddedProduct = productUseCasesContainer.createProductUseCase(
-                    productName, productPrice, productQuantity, categoriesId, marketOwnerId, role
-                ).toApiProductModel()
-                call.respond(HttpStatusCode.Created, ServerResponse.success(newAddedProduct))
+                productUseCasesContainer.createProductUseCase(
+                    productName, productPrice, productQuantity, categoriesId, marketOwnerId, role, images
+                )
+                call.respond(HttpStatusCode.Created, ServerResponse.success("Added successfully"))
             }
 
             put("{id}") {
@@ -102,6 +105,27 @@ fun Route.productsRoutes() {
                     HttpStatusCode.OK,
                     ServerResponse.success(result = result, successMessage = "Product Deleted successfully.")
                 )
+            }
+
+            post("uploadImage") {
+                val principal = call.principal<JWTPrincipal>()
+                val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val imageParts = call.receiveMultipart().readAllParts()
+
+                val image = productUseCasesContainer.addImageProductUseCase(
+                    marketOwnerId = marketOwnerId, role = role, image = imageParts
+                ).toApiProductImage()
+                call.respond(HttpStatusCode.Created, ServerResponse.success(image, "uploaded."))
+            }
+
+            delete("image/{id}") {
+                val principal = call.principal<JWTPrincipal>()
+                val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val imageId = call.parameters["id"]?.trim()?.toLongOrNull()
+
+
             }
         }
     }

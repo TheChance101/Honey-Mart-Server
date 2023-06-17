@@ -12,13 +12,14 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         productQuantity: String?,
         categoriesId: List<Long>?,
         marketOwnerId: Long?,
-        role: String?
-    ): Product {
+        role: String?,
+        images: List<Long>?
+    ): Boolean {
         isValidInput(productName, productPrice, productQuantity, categoriesId, marketOwnerId, role)?.let { throw it }
 
         return if (repository.checkCategoriesInDb(categoriesId!!)) {
             if (isMarketOwner(marketOwnerId!!, categoryId = categoriesId[0])) {
-                repository.createProduct(productName, productPrice, productQuantity!!, categoriesId)
+                repository.createProduct(productName, productPrice, productQuantity!!, categoriesId, images!!)
             } else {
                 throw UnauthorizedException()
             }

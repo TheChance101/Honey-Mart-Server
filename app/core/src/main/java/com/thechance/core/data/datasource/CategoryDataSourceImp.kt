@@ -4,7 +4,7 @@ import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
-import com.thechance.core.data.datasource.database.tables.ProductTable
+import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import com.thechance.core.data.repository.dataSource.CategoryDataSource
 import com.thechance.core.entity.Category
 import com.thechance.core.entity.Product
@@ -15,7 +15,7 @@ import org.koin.core.component.KoinComponent
 class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
 
     override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Boolean = dbQuery {
-        val newCategory = CategoriesTable.insert {
+        CategoriesTable.insert {
             it[name] = categoryName
             it[isDeleted] = false
             it[this.marketId] = marketId
@@ -58,14 +58,7 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
         true
     }
 
-    override suspend fun getAllProductsInCategory(categoryId: Long): List<Product> = dbQuery {
-        (ProductTable innerJoin CategoryProductTable)
-            .select { CategoryProductTable.categoryId eq categoryId }
-            .filterNot { it[ProductTable.isDeleted] }
-            .map { productRow ->
-                productRow.toProduct()
-            }
-    }
+
 
     override suspend fun isCategoryDeleted(categoryId: Long): Boolean? = dbQuery {
         val category = CategoriesTable.select { CategoriesTable.id eq categoryId }.singleOrNull()

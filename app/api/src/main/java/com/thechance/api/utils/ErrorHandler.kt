@@ -268,6 +268,15 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             )
         }
 
+        is InvalidOwnerIdException -> {
+            call.respond(
+                HttpStatusCode.NotFound,
+                ServerResponse.error(
+                    "InvalidOwnerId", HttpStatusCode.BadRequest.value
+                )
+            )
+        }
+
         else -> {
             call.respond(
                 HttpStatusCode.InternalServerError,

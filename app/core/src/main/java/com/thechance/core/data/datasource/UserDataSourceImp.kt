@@ -1,9 +1,11 @@
 package com.thechance.core.data.datasource
 
 import com.thechance.core.data.datasource.database.tables.NormalUserTable
-import com.thechance.core.data.datasource.database.tables.ProductTable
+import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartTable
+import com.thechance.core.data.datasource.database.tables.product.GalleryTable
+import com.thechance.core.data.datasource.database.tables.product.ProductGalleryTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListProductTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListTable
 import com.thechance.core.data.datasource.mapper.toProduct
@@ -147,9 +149,21 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
     private suspend fun getProduct(productId: Long): Product {
         return dbQuery {
             ProductTable.select { ProductTable.id eq productId }.map { productRow ->
-                productRow.toProduct()
+                val images = getProductImages(productRow[ProductTable.id].value)
+                productRow.toProduct(images)
             }.single()
         }
+    }
+
+    private fun getProductImages(productId: Long): List<Image> {
+        return (GalleryTable innerJoin ProductGalleryTable)
+            .select { ProductGalleryTable.productId eq productId }
+            .map { imageRow ->
+                Image(
+                    id = imageRow[GalleryTable.id].value,
+                    imageUrl = imageRow[GalleryTable.imageUrl],
+                )
+            }
     }
 
     override suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean {
@@ -230,19 +244,13 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> = dbQuery {
+    override suspend fun getWishList(wishListId: Long): List<Product> = dbQuery {
         WishListProductTable.select {
             (WishListProductTable.wishListId eq wishListId) and
                     (WishListProductTable.isDeleted eq false)
+        }.map { productRow ->
+            getProduct(productId = productRow[WishListProductTable.productId].value)
         }
-            .map { productRow ->
-                val product = getProduct(productId = productRow[WishListProductTable.productId].value)
-                ProductInWishList(
-                    productId = product.id,
-                    name = product.name,
-                    price = product.price,
-                )
-            }
     }
 
     //endregion

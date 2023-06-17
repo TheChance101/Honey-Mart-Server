@@ -44,7 +44,7 @@ class HoneyMartRepositoryImp(
     //endregion
 
     //region WishList
-    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> = userDataSource.getWishList(wishListId)
+    override suspend fun getWishList(wishListId: Long): List<Product> = userDataSource.getWishList(wishListId)
 
     override suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean =
         userDataSource.deleteProductFromWishList(wishListId, productId)
@@ -102,7 +102,7 @@ class HoneyMartRepositoryImp(
         )
 
     override suspend fun getAllProductsInCategory(categoryId: Long): List<Product> =
-        categoryDataSource.getAllProductsInCategory(categoryId)
+        productDataSource.getAllProductsInCategory(categoryId)
 
     override suspend fun isCategoryDeleted(categoryId: Long): Boolean? =
         categoryDataSource.isCategoryDeleted(categoryId)
@@ -117,11 +117,11 @@ class HoneyMartRepositoryImp(
 
     //region product
     override suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
-    ): Product =
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, images: List<Long>
+    ): Boolean =
         productDataSource.createProduct(
             productName = productName, productPrice = productPrice, productQuantity = productQuantity,
-            categoriesId = categoriesId
+            categoriesId = categoriesId, images = images
         )
 
     override suspend fun getAllProducts(): List<Product> = productDataSource.getAllProducts()
@@ -149,10 +149,10 @@ class HoneyMartRepositoryImp(
         productDataSource.isDeleted(id)
 
     override suspend fun getProductMarketId(productId: Long): Long = productDataSource.getProductMarketId(productId)
+    override suspend fun addImageProduct(imageUrl: String): Image = productDataSource.addImageToGallery(imageUrl)
 
     //endregion
 
-    //endregion
 
     //region order
     override suspend fun createOrder(cartId: Long, userId: Long): Boolean {
@@ -184,14 +184,15 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isOrderExist(orderId: Long): Boolean =
         orderDataSource.isOrderExist(orderId)
-    //end region
+    //endregion
 
-    //image region
+    //region image
     override suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean =
         userDataSource.saveUserProfileImage(imageUrl, userId)
 
     override suspend fun getUserProfileImage(userId: Long): String? =
         userDataSource.getUserProfileImage(userId)
-    //end region
+
+    //endregion
 
 }
