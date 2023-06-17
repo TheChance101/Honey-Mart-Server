@@ -85,10 +85,8 @@ class HoneyMartRepositoryImp(
     //endregion
 
     //region category
-    override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Category =
-        categoryDataSource.createCategory(
-            categoryName = categoryName, marketId = marketId, imageId = imageId
-        )
+    override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Boolean =
+        categoryDataSource.createCategory(categoryName = categoryName, marketId = marketId, imageId = imageId)
 
     override suspend fun getCategoriesByMarketId(marketId: Long): List<Category> =
         categoryDataSource.getCategoriesByMarketId(marketId)
@@ -109,8 +107,8 @@ class HoneyMartRepositoryImp(
     override suspend fun isCategoryDeleted(categoryId: Long): Boolean? =
         categoryDataSource.isCategoryDeleted(categoryId)
 
-    override suspend fun isCategoryNameUnique(categoryName: String): Boolean =
-        categoryDataSource.isCategoryNameUnique(categoryName)
+    override suspend fun isCategoryNameUnique(categoryName: String, marketId: Long): Boolean =
+        categoryDataSource.isCategoryNameUnique(categoryName, marketId)
 
     override suspend fun getMarketIdByCategoryId(categoryId: Long): Long =
         categoryDataSource.getMarketIdByCategoryId(categoryId)

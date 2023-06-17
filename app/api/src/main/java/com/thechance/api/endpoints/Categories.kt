@@ -38,11 +38,10 @@ fun Route.categoryRoutes() {
                 val params = call.receiveParameters()
                 val categoryName = params["name"]?.trim().orEmpty()
                 val imageId = params["imageId"]?.toIntOrNull()
-                val newCategory =
-                    categoryUseCasesContainer.createCategoryUseCase(categoryName, imageId, marketOwnerId, role)
-                        .toApiCategoryModel()
 
-                call.respond(HttpStatusCode.Created, ServerResponse.success(newCategory, "Category added successfully"))
+                categoryUseCasesContainer.createCategoryUseCase(categoryName, imageId, marketOwnerId, role)
+
+                call.respond(HttpStatusCode.Created, ServerResponse.success(true, "Category added successfully"))
             }
 
             put {

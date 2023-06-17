@@ -9,6 +9,7 @@ internal fun ResultRow.toCategory(): Category {
     return Category(
         categoryId = this[CategoriesTable.id].value,
         categoryName = this[CategoriesTable.name].toString(),
-        imageId = this[CategoriesTable.imageId]
+        imageId = this[CategoriesTable.imageId],
+        marketId = this[CategoriesTable.marketId].value
     )
 }

@@ -14,18 +14,14 @@ import org.koin.core.component.KoinComponent
 
 class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
 
-    override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Category = dbQuery {
+    override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Boolean = dbQuery {
         val newCategory = CategoriesTable.insert {
             it[name] = categoryName
             it[isDeleted] = false
             it[this.marketId] = marketId
             it[this.imageId] = imageId
         }
-        Category(
-            categoryId = newCategory[CategoriesTable.id].value,
-            categoryName = newCategory[CategoriesTable.name].toString(),
-            imageId = newCategory[CategoriesTable.imageId]
-        )
+        true
     }
 
     override suspend fun getCategoriesByMarketId(marketId: Long): List<Category> = dbQuery {
@@ -79,11 +75,15 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
     }
 
 
-    override suspend fun isCategoryNameUnique(categoryName: String): Boolean = dbQuery {
-        CategoriesTable.select {
+    override suspend fun isCategoryNameUnique(categoryName: String, marketId: Long): Boolean = dbQuery {
+        val category = CategoriesTable.select {
             CategoriesTable.name.lowerCase() eq categoryName.lowercase() and
                     CategoriesTable.isDeleted.eq(false)
+
         }.singleOrNull()
-    } == null
+        if (category == null) {
+            true
+        } else category.toCategory().marketId != marketId
+    }
 
 }
