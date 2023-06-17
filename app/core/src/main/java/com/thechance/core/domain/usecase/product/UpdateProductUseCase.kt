@@ -35,7 +35,7 @@ class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
             InvalidProductIdException()
         } else if (productName == null && productPrice == null && productQuantity.isNullOrEmpty()) {
             InvalidInputException()
-        } else if (productName != null && !isValidNameLength(productName)) {
+        } else if (productName != null && !isValidMarketProductName(productName)) {
             InvalidProductNameException()
         } else if (productQuantity != null && !isValidNameLength(productQuantity)) {
             InvalidProductQuantityException()

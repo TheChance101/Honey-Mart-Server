@@ -37,7 +37,7 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         role: String?
     ): Exception? {
         return when {
-            !isValidProductName(productName) -> {
+            !isValidMarketProductName(productName) -> {
                 InvalidProductNameException()
             }
 
@@ -64,15 +64,6 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
             else -> {
                 null
             }
-        }
-    }
-
-    private fun isValidProductName(productName: String?): Boolean {
-        return if (productName == null) {
-            false
-        } else {
-            val fullNameRegex = Regex("^[a-zA-Z0-9 ]{4,20}$")
-            fullNameRegex.matches(productName)
         }
     }
 
