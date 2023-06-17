@@ -42,6 +42,8 @@ class EmailAlreadyExistException : Exception()
 
 class InvalidPasswordInputException : Exception()
 class InvalidUserNameInputException : Exception()
+class AddImageFailedException : Exception()
+class ImageNotFoundException : Exception()
 
 //endregion
 

@@ -28,5 +28,6 @@ fun Application.configureRouting() {
         orderRoutes()
         wishListRoutes()
         deleteAllTables()
+        imageRouts()
     }
 }

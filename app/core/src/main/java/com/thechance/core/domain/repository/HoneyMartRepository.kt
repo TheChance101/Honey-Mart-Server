@@ -86,4 +86,6 @@ interface HoneyMartRepository {
     suspend fun deleteAllProductsInCart(cartId: Long): Boolean
 
 
+    suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean
+    suspend fun getUserProfileImage(userId: Long): String?
 }
