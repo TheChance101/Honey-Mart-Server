@@ -39,10 +39,9 @@ fun Route.marketsRoutes() {
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
-                val marketId = call.parameters["id"]?.toLongOrNull()
                 val marketName = call.receiveParameters()["name"]?.trim()
                 val updatedMarket =
-                    marketUseCaseContainer.updateMarketUseCase(marketId, marketName, marketOwnerId, role)
+                    marketUseCaseContainer.updateMarketUseCase(marketName, marketOwnerId, role)
                         .toApiMarketModel()
                 call.respond(
                     HttpStatusCode.OK,
@@ -54,8 +53,12 @@ fun Route.marketsRoutes() {
         //TODO: authenticate for Admin only.
 
         post {
-            val marketName = call.receiveParameters()["name"]?.trim().orEmpty()
-            val newMarket = marketUseCaseContainer.createMarketUseCase(marketName).toApiMarketModel()
+            val params = call.receiveParameters()
+
+            val marketName = params["name"]?.trim().orEmpty()
+            val ownerId = params["ownerId"]?.toLongOrNull()
+
+            val newMarket = marketUseCaseContainer.createMarketUseCase(marketName, ownerId).toApiMarketModel()
             call.respond(
                 HttpStatusCode.Created,
                 ServerResponse.success(newMarket, "Market created successfully")

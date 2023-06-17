@@ -241,6 +241,13 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             )
         }
 
+        is UnauthorizedException -> {
+            call.respond(
+                HttpStatusCode.Forbidden,
+                ServerResponse.error("Unauthorized", HttpStatusCode.Forbidden.value)
+            )
+        }
+
         is ImageNotFoundException -> {
             call.respond(
                 HttpStatusCode.NotFound,

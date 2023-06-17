@@ -17,7 +17,11 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         isValidInput(productName, productPrice, productQuantity, categoriesId, marketOwnerId, role)?.let { throw it }
 
         return if (repository.checkCategoriesInDb(categoriesId!!)) {
-            repository.createProduct(productName, productPrice, productQuantity!!, categoriesId!!)
+            if (isMarketOwner(marketOwnerId!!, categoryId = categoriesId[0])) {
+                repository.createProduct(productName, productPrice, productQuantity!!, categoriesId)
+            } else {
+                throw UnauthorizedException()
+            }
         } else {
             throw NotValidCategoryList()
         }
@@ -77,4 +81,8 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         } ?: true
     }
 
+    private suspend fun isMarketOwner(marketOwnerId: Long, categoryId: Long): Boolean {
+        val marketId = repository.getMarketIdByCategoryId(categoryId)
+        return repository.getOwnerIdByMarketId(marketId) == marketOwnerId
+    }
 }

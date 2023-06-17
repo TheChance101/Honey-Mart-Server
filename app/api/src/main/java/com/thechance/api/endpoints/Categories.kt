@@ -37,12 +37,10 @@ fun Route.categoryRoutes() {
 
                 val params = call.receiveParameters()
                 val categoryName = params["name"]?.trim().orEmpty()
-                val marketId = params["marketId"]?.toLongOrNull()
                 val imageId = params["imageId"]?.toIntOrNull()
                 val newCategory =
-                    categoryUseCasesContainer.createCategoryUseCase(
-                        categoryName, marketId, imageId, marketOwnerId, role
-                    ).toApiCategoryModel()
+                    categoryUseCasesContainer.createCategoryUseCase(categoryName, imageId, marketOwnerId, role)
+                        .toApiCategoryModel()
 
                 call.respond(HttpStatusCode.Created, ServerResponse.success(newCategory, "Category added successfully"))
             }
@@ -55,12 +53,9 @@ fun Route.categoryRoutes() {
                 val params = call.receiveParameters()
                 val categoryId = params["id"]?.toLongOrNull()
                 val categoryName = params["name"]?.trim()
-                val marketId = params["marketId"]?.toLongOrNull()
                 val imageId = params["imageId"]?.toIntOrNull()
 
-                categoryUseCasesContainer.updateCategoryUseCase(
-                    categoryId, categoryName, marketId, imageId, marketOwnerId, role
-                )
+                categoryUseCasesContainer.updateCategoryUseCase(categoryId, categoryName, imageId, marketOwnerId, role)
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
 
             }
@@ -71,8 +66,7 @@ fun Route.categoryRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
-                val isCategoryDeleted =
-                    categoryUseCasesContainer.deleteCategoryUseCase(categoryId, marketOwnerId, role)
+                val isCategoryDeleted = categoryUseCasesContainer.deleteCategoryUseCase(categoryId, marketOwnerId, role)
                 call.respond(HttpStatusCode.OK, ServerResponse.success(result = isCategoryDeleted))
             }
         }

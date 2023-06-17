@@ -15,14 +15,23 @@ class DeleteProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         } else if (isInvalidId(marketOwnerId) || !isValidRole(MARKET_OWNER_ROLE, role)) {
             throw InvalidOwnerIdException()
         } else {
-            val isProductDeleted = repository.isProductDeleted(productId!!)
-            if (isProductDeleted == null) {
-                throw IdNotFoundException()
-            } else if (isProductDeleted) {
-                throw ProductDeletedException()
+            if (isMarketOwner(marketOwnerId!!, productId!!)) {
+                val isProductDeleted = repository.isProductDeleted(productId)
+                if (isProductDeleted == null) {
+                    throw IdNotFoundException()
+                } else if (isProductDeleted) {
+                    throw ProductDeletedException()
+                } else {
+                    repository.deleteProduct(productId)
+                }
             } else {
-                repository.deleteProduct(productId)
+                throw UnauthorizedException()
             }
         }
+    }
+
+    private suspend fun isMarketOwner(marketOwnerId: Long, productId: Long): Boolean {
+        val marketId = repository.getProductMarketId(productId)
+        return repository.getOwnerIdByMarketId(marketId) == marketOwnerId
     }
 }
