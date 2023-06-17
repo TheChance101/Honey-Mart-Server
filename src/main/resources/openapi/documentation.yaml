@@ -81,11 +81,6 @@ paths:
         required: false
         schema:
           type: "string"
-      - name: "marketId"
-        in: "query"
-        required: false
-        schema:
-          type: "number"
       - name: "imageId"
         in: "query"
         required: false
@@ -111,11 +106,6 @@ paths:
         required: false
         schema:
           type: "string"
-      - name: "marketId"
-        in: "query"
-        required: false
-        schema:
-          type: "number"
       - name: "imageId"
         in: "query"
         required: false
@@ -224,6 +214,11 @@ paths:
         required: false
         schema:
           type: "string"
+      - name: "ownerId"
+        in: "query"
+        required: false
+        schema:
+          type: "number"
       responses:
         "201":
           description: "Created"
@@ -250,14 +245,14 @@ paths:
     put:
       description: ""
       parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "number"
       - name: "name"
         in: "query"
         required: false
+        schema:
+          type: "string"
+      - name: "id"
+        in: "path"
+        required: true
         schema:
           type: "string"
       responses:
@@ -334,12 +329,6 @@ paths:
   /order/marketOrders:
     get:
       description: ""
-      parameters:
-      - name: "id"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
       responses:
         "200":
           description: "OK"
