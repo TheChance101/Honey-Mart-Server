@@ -57,6 +57,9 @@ class AuthRepositoryImp(
     override fun isOwnerValidPassword(owner: Owner, password: String) = hashingService.verify(
         value = password, saltedHash = SaltedHash(hash = owner.password, salt = owner.salt)
     )
+
+    override suspend fun isValidOwner(ownerId: Long): Boolean = ownerDataSource.isValidOwner(ownerId)
+
     //endregion
 
     override fun getToken(id: Long, role: String): String {

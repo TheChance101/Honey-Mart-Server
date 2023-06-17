@@ -28,6 +28,7 @@ interface AuthRepository {
 
     fun isOwnerValidPassword(owner: Owner, password: String): Boolean
 
+    suspend fun isValidOwner(ownerId: Long): Boolean
     //endregion
 
 

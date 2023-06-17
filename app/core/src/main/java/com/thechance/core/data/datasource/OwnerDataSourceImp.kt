@@ -45,4 +45,10 @@ class OwnerDataSourceImp : OwnerDataSource, KoinComponent {
         }
     }
 
+    override suspend fun isValidOwner(ownerId: Long): Boolean {
+        return dbQuery {
+            val owner = OwnerTable.select { OwnerTable.id eq ownerId }.singleOrNull()
+            owner != null
+        }
+    }
 }
