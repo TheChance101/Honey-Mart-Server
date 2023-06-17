@@ -1,6 +1,5 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.datasource.database.tables.NormalUserProfileImageTable
 import com.thechance.core.data.datasource.database.tables.NormalUserTable
 import com.thechance.core.data.datasource.database.tables.ProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartProductTable
@@ -250,24 +249,14 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
 
     //region image
     override suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean = dbQuery {
-        NormalUserProfileImageTable.deleteWhere {
-            (NormalUserProfileImageTable.userId eq userId)
-        }
-        NormalUserProfileImageTable.insert {
-            it[NormalUserProfileImageTable.imageUrl] = imageUrl
-            it[NormalUserProfileImageTable.userId] = userId
-        }
+        NormalUserTable.update({ (NormalUserTable.id eq userId) }) { it[NormalUserTable.imageUrl] = imageUrl }
         true
     }
 
     override suspend fun getUserProfileImage(userId: Long): String? = dbQuery {
-        val imageUrl = NormalUserProfileImageTable.select {
-            (NormalUserProfileImageTable.userId eq userId)
-        }.map {
-            it[NormalUserProfileImageTable.imageUrl]
-        }.singleOrNull()
-
-        imageUrl
+        NormalUserTable.select {
+            (NormalUserTable.id eq userId)
+        }.map { it[NormalUserTable.imageUrl] }.singleOrNull()
     }
     //end region
 

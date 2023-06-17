@@ -37,7 +37,9 @@ fun Route.userRoutes() {
             val token = userUseCasesContainer.verifyUserUseCase(email, password)
             call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
         }
+
         authenticate {
+
             post("/profileImage") {
                 val principal = call.principal<JWTPrincipal>()
                 val userId = principal?.payload?.subject?.toLongOrNull()
@@ -46,6 +48,7 @@ fun Route.userRoutes() {
                 val imageUrl = userUseCasesContainer.saveUserProfileImageUseCase(imageParts, userId, role)
                 call.respond(HttpStatusCode.Created, ServerResponse.success("Added successfully", imageUrl))
             }
+
             get("/profileImage") {
                 val principal = call.principal<JWTPrincipal>()
                 val userId = principal?.payload?.subject?.toLongOrNull()

@@ -29,8 +29,6 @@ class CoreDataBase {
             WishListTable,
             OrderTable,
             MarketTable,
-            WishListProductTable,
-            NormalUserProfileImageTable
         )
     }
 

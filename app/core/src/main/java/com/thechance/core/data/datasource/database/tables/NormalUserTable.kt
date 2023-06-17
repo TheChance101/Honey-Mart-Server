@@ -7,4 +7,5 @@ object NormalUserTable : LongIdTable() {
     val fullName = text("fullName")
     val email = text("email")
     val salt = text("UserSalt")
+    val imageUrl = text("imageUrl").default("")
 }

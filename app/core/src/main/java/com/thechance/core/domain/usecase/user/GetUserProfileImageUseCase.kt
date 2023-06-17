@@ -17,28 +17,29 @@ class GetUserProfileImageUseCase(private val repository: HoneyMartRepository) : 
             throw ImageNotFoundException()
         }
     }
-}
 
-private fun getInternalImagePath(url: String): String {
-    return url.substringAfter("://").substringAfter("/")
-}
+    private fun getInternalImagePath(url: String): String {
+        return url.substringAfter("://").substringAfter("/")
+    }
 
-private fun isInvalidInput(imageUrl: String?, userId: Long?, role: String?): Exception? {
-    return when {
-        !isValidRole(NORMAL_USER_ROLE, role) -> {
-            throw InvalidUserIdException()
-        }
+    private fun isInvalidInput(imageUrl: String?, userId: Long?, role: String?): Exception? {
+        return when {
+            !isValidRole(NORMAL_USER_ROLE, role) -> {
+                throw InvalidUserIdException()
+            }
 
-        isInvalidId(userId) -> {
-            throw InvalidUserIdException()
-        }
+            isInvalidId(userId) -> {
+                throw InvalidUserIdException()
+            }
 
-        imageUrl.isNullOrEmpty() -> {
-            throw ImageNotFoundException()
-        }
+            imageUrl.isNullOrEmpty() -> {
+                throw ImageNotFoundException()
+            }
 
-        else -> {
-            null
+            else -> {
+                null
+            }
         }
     }
+
 }
