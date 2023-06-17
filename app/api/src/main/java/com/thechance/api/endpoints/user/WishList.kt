@@ -44,12 +44,10 @@ fun Route.wishListRoutes() {
                 call.respond(HttpStatusCode.OK, ServerResponse.success(wishList))
             }
 
-            delete {
+            delete("{productId}") {
                 val principal = call.principal<JWTPrincipal>()
                 val userId = principal?.payload?.subject?.toLongOrNull()
-
-                val params = call.receiveParameters()
-                val productId = params["productId"]?.trim()?.toLongOrNull()
+                val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
 
                 wishListUseCaseContainer.deleteProductFromWishListUseCase(userId, productId)
                 call.respond(
