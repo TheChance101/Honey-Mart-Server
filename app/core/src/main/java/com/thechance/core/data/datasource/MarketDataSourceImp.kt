@@ -34,11 +34,12 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         }
     }
 
-    override suspend fun createMarket(marketName: String): Market =
+    override suspend fun createMarket(marketName: String, ownerId: Long): Market =
         dbQuery {
             val newMarket = MarketTable.insert {
                 it[name] = marketName
                 it[isDeleted] = false
+                it[MarketTable.ownerId] = ownerId
             }
             Market(marketId = newMarket[MarketTable.id].value, marketName = newMarket[MarketTable.name])
         }
