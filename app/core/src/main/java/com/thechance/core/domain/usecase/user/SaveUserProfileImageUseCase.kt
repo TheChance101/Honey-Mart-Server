@@ -29,7 +29,7 @@ class SaveUserProfileImageUseCase(private val repository: HoneyMartRepository) :
 
     private fun isInvalidInput(imageUrl: String, role: String?): Exception? {
         return when {
-            !isValidRole(MARKET_OWNER_ROLE, role) -> {
+            !isValidRole(NORMAL_USER_ROLE, role) -> {
                 throw InvalidUserIdException()
             }
 
