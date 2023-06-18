@@ -5,5 +5,5 @@ import com.thechance.core.entity.Cart
 
 
 internal fun Cart.toApiCart(): CartModel {
-    return CartModel(products = products.map { it.toApiProductInCartModel() }, total = this.total)
+    return CartModel(products = products.map { it.toApiProductWithCount() }, total = this.total)
 }

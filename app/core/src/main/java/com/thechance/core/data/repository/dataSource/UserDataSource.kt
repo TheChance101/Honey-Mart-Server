@@ -12,6 +12,8 @@ interface UserDataSource {
     suspend fun getUserByEmail(email: String): User
 
     suspend fun isEmailExists(email: String): Boolean
+
+    suspend fun getProfile(userId: Long): User
     //endregion
 
     //region cart

@@ -16,6 +16,8 @@ interface AuthRepository {
 
     fun isUserValidPassword(user: User, password: String): Boolean
 
+    suspend fun getProfile(userId: Long): User
+
     //endregion
 
 

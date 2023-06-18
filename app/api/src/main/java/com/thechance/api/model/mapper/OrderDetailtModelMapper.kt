@@ -8,7 +8,7 @@ internal fun OrderDetails.toApiOrderModel(): OrderDetailsModel {
         orderId = orderId,
         userId = userId,
         marketId = marketId,
-        products = products.map { it.toApiProductInCartModel() },
+        products = products.map { it.toApiProductWithCount() },
         totalPrice = totalPrice,
         date = date.toString(),
         state = state

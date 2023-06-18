@@ -45,6 +45,7 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
                     userId = it[NormalUserTable.id].value,
                     email = it[NormalUserTable.email],
                     fullName = it[NormalUserTable.fullName],
+                    profileImage = it[NormalUserTable.imageUrl],
                     password = it[NormalUserTable.password],
                     salt = it[NormalUserTable.salt],
                 )
@@ -55,6 +56,21 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
     override suspend fun isEmailExists(email: String): Boolean {
         return dbQuery {
             NormalUserTable.select { NormalUserTable.email eq email }.singleOrNull() != null
+        }
+    }
+
+    override suspend fun getProfile(userId: Long): User {
+        return dbQuery {
+            NormalUserTable.select { NormalUserTable.id eq userId }.map {
+                User(
+                    userId = it[NormalUserTable.id].value,
+                    email = it[NormalUserTable.email],
+                    fullName = it[NormalUserTable.fullName],
+                    profileImage = it[NormalUserTable.imageUrl],
+                    password = "",
+                    salt = ""
+                )
+            }.single()
         }
     }
     //endregion
@@ -266,6 +282,6 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
             (NormalUserTable.id eq userId)
         }.map { it[NormalUserTable.imageUrl] }.singleOrNull()
     }
-    //end region
+    //endregion
 
 }

@@ -40,6 +40,7 @@ class AuthRepositoryImp(
         saltedHash = SaltedHash(hash = user.password, salt = user.salt)
     )
 
+    override suspend fun getProfile(userId: Long): User = userDataSource.getProfile(userId)
 
     //endregion
 

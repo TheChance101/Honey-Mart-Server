@@ -66,7 +66,10 @@ val userUseCaseModule = module {
     singleOf(::VerifyUserUseCase) { bind<VerifyUserUseCase>() }
     singleOf(::SaveUserProfileImageUseCase) { bind<SaveUserProfileImageUseCase>() }
     singleOf(::GetUserProfileImageUseCase) { bind<GetUserProfileImageUseCase>() }
+    singleOf(::GetUserProfileUseCase) { bind<GetUserProfileUseCase>() }
+
 }
+
 val ownerUseCaseModule = module {
     singleOf(::OwnerUseCaseContainer) { bind<OwnerUseCaseContainer>() }
     singleOf(::CreateOwnerUseCase) { bind<CreateOwnerUseCase>() }
