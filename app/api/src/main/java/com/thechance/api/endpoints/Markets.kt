@@ -19,13 +19,13 @@ fun Route.marketsRoutes() {
 
     route("/markets") {
 
-//        install(CachingHeaders) {
-//            options { call, content -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 1800)) }
-//        }
+        install(CachingHeaders) {
+            options { call, content -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 1800)) }
+        }
 
         get {
             val markets = marketUseCaseContainer.getMarketsUseCase().map { it.toApiMarketModel() }
-//            call.caching = CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 900))
+            call.caching = CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 900))
             call.respond( ServerResponse.success(markets))
         }
 

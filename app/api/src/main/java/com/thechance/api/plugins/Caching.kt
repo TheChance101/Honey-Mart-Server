@@ -3,16 +3,15 @@ package com.thechance.api.plugins
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.cachingheaders.*
 import io.ktor.server.routing.*
 
-fun Application.configureCaching() {
-    routing {
-        install(CachingHeaders) {
-            options { call, content -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 1800)) }
-        }
-    }
-}
+//fun Application.configureCaching() {
+//    routing {
+//        install(CachingHeaders) {
+//            options { call, content -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 1800)) }
+//        }
+//    }
+//}
 
 
 /////////////

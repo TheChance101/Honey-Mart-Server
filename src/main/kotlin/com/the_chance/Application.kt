@@ -35,5 +35,5 @@ fun Application.module() {
     configureMonitoring()
     configureSecurity()
     configureRouting()
-    configureCaching()
+//    configureCaching()
 }
