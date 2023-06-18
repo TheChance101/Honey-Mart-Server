@@ -24,6 +24,8 @@ val productUseCaseModule = module {
     singleOf(::UpdateProductUseCase) { bind<UpdateProductUseCase>() }
     singleOf(::UpdateProductCategoryUseCase) { bind<UpdateProductCategoryUseCase>() }
     singleOf(::GetCategoriesForProductUseCase) { bind<GetCategoriesForProductUseCase>() }
+    singleOf(::AddImageProductUseCase) { bind<AddImageProductUseCase>() }
+    singleOf(::DeleteImageFromProductUseCase) { bind<DeleteImageFromProductUseCase>() }
 }
 
 val marketUseCaseModule = module {
@@ -64,7 +66,10 @@ val userUseCaseModule = module {
     singleOf(::VerifyUserUseCase) { bind<VerifyUserUseCase>() }
     singleOf(::SaveUserProfileImageUseCase) { bind<SaveUserProfileImageUseCase>() }
     singleOf(::GetUserProfileImageUseCase) { bind<GetUserProfileImageUseCase>() }
+    singleOf(::GetUserProfileUseCase) { bind<GetUserProfileUseCase>() }
+
 }
+
 val ownerUseCaseModule = module {
     singleOf(::OwnerUseCaseContainer) { bind<OwnerUseCaseContainer>() }
     singleOf(::CreateOwnerUseCase) { bind<CreateOwnerUseCase>() }

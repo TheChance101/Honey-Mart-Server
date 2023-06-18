@@ -1,8 +1,6 @@
 package com.thechance.core.data.datasource.database.tables.wishlist
 
-import com.thechance.core.data.datasource.database.tables.ProductTable
-import com.thechance.core.data.datasource.database.tables.wishlist.WishListTable
-import org.jetbrains.exposed.dao.id.LongIdTable
+import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import org.jetbrains.exposed.sql.Table
 
 object WishListProductTable : Table() {

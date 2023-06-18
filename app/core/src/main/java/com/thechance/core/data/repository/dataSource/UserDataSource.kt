@@ -12,6 +12,8 @@ interface UserDataSource {
     suspend fun getUserByEmail(email: String): User
 
     suspend fun isEmailExists(email: String): Boolean
+
+    suspend fun getProfile(userId: Long): User
     //endregion
 
     //region cart
@@ -36,7 +38,7 @@ interface UserDataSource {
     //endregion
 
     //region wishList
-    suspend fun getWishList(wishListId: Long): List<ProductInWishList>
+    suspend fun getWishList(wishListId: Long): List<Product>
     suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean
     suspend fun getWishListId(userId: Long): Long?
     suspend fun addProductToWishList(wishListId: Long, productId: Long): Boolean

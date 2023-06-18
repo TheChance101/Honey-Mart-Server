@@ -12,13 +12,14 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         productQuantity: String?,
         categoriesId: List<Long>?,
         marketOwnerId: Long?,
-        role: String?
-    ): Product {
+        role: String?,
+        images: List<Long>?
+    ): Boolean {
         isValidInput(productName, productPrice, productQuantity, categoriesId, marketOwnerId, role)?.let { throw it }
 
         return if (repository.checkCategoriesInDb(categoriesId!!)) {
             if (isMarketOwner(marketOwnerId!!, categoryId = categoriesId[0])) {
-                repository.createProduct(productName, productPrice, productQuantity!!, categoriesId)
+                repository.createProduct(productName, productPrice, productQuantity!!, categoriesId, images!!)
             } else {
                 throw UnauthorizedException()
             }
@@ -36,7 +37,7 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         role: String?
     ): Exception? {
         return when {
-            !isValidProductName(productName) -> {
+            !isValidMarketProductName(productName) -> {
                 InvalidProductNameException()
             }
 
@@ -63,15 +64,6 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
             else -> {
                 null
             }
-        }
-    }
-
-    private fun isValidProductName(productName: String?): Boolean {
-        return if (productName == null) {
-            false
-        } else {
-            val fullNameRegex = Regex("^[a-zA-Z0-9 ]{4,20}$")
-            fullNameRegex.matches(productName)
         }
     }
 

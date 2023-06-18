@@ -1,7 +1,7 @@
 package com.thechance.api.endpoints.user
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.model.mapper.toApiProductInWishListModel
+import com.thechance.api.model.mapper.toApiProductModel
 import com.thechance.core.domain.usecase.wishlist.WishListUseCaseContainer
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -38,10 +38,10 @@ fun Route.wishListRoutes() {
                 val principal = call.principal<JWTPrincipal>()
                 val userId = principal?.payload?.subject?.toLongOrNull()
 
-                val wishList =
-                    wishListUseCaseContainer.getWishListUseCase(userId).map { it.toApiProductInWishListModel() }
+                val products =
+                    wishListUseCaseContainer.getWishListUseCase(userId).map { it.toApiProductModel() }
 
-                call.respond(HttpStatusCode.OK, ServerResponse.success(wishList))
+                call.respond(HttpStatusCode.OK, ServerResponse.success(products))
             }
 
             delete("{productId}") {

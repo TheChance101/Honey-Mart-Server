@@ -1,6 +1,6 @@
 package com.thechance.core.utils
 
-fun isValidateMarketName(name: String?): Boolean {
+fun isValidMarketProductName(name: String?): Boolean {
     return if (name == null) {
         false
     } else {

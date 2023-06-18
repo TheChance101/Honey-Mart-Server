@@ -5,5 +5,5 @@ import com.thechance.core.entity.User
 
 
 internal fun User.toApiUserModel(): UserModel {
-    return UserModel(userId = userId, email = email, fullName = fullName)
+    return UserModel(userId = userId, email = email, fullName = fullName, profileImage = profileImage)
 }

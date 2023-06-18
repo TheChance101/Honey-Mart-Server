@@ -44,7 +44,7 @@ class HoneyMartRepositoryImp(
     //endregion
 
     //region WishList
-    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> = userDataSource.getWishList(wishListId)
+    override suspend fun getWishList(wishListId: Long): List<Product> = userDataSource.getWishList(wishListId)
 
     override suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean =
         userDataSource.deleteProductFromWishList(wishListId, productId)
@@ -85,10 +85,8 @@ class HoneyMartRepositoryImp(
     //endregion
 
     //region category
-    override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Category =
-        categoryDataSource.createCategory(
-            categoryName = categoryName, marketId = marketId, imageId = imageId
-        )
+    override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Boolean =
+        categoryDataSource.createCategory(categoryName = categoryName, marketId = marketId, imageId = imageId)
 
     override suspend fun getCategoriesByMarketId(marketId: Long): List<Category> =
         categoryDataSource.getCategoriesByMarketId(marketId)
@@ -104,26 +102,26 @@ class HoneyMartRepositoryImp(
         )
 
     override suspend fun getAllProductsInCategory(categoryId: Long): List<Product> =
-        categoryDataSource.getAllProductsInCategory(categoryId)
+        productDataSource.getAllProductsInCategory(categoryId)
 
     override suspend fun isCategoryDeleted(categoryId: Long): Boolean? =
         categoryDataSource.isCategoryDeleted(categoryId)
 
-    override suspend fun isCategoryNameUnique(categoryName: String): Boolean =
-        categoryDataSource.isCategoryNameUnique(categoryName)
+    override suspend fun isCategoryNameUnique(categoryName: String, marketId: Long): Boolean =
+        categoryDataSource.isCategoryNameUnique(categoryName, marketId)
 
     override suspend fun getMarketIdByCategoryId(categoryId: Long): Long =
         categoryDataSource.getMarketIdByCategoryId(categoryId)
 
-//endregion
+    //endregion
 
     //region product
     override suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
-    ): Product =
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, images: List<Long>
+    ): Boolean =
         productDataSource.createProduct(
             productName = productName, productPrice = productPrice, productQuantity = productQuantity,
-            categoriesId = categoriesId
+            categoriesId = categoriesId, images = images
         )
 
     override suspend fun getAllProducts(): List<Product> = productDataSource.getAllProducts()
@@ -152,8 +150,10 @@ class HoneyMartRepositoryImp(
 
     override suspend fun getProductMarketId(productId: Long): Long = productDataSource.getProductMarketId(productId)
 
-    //endregion
+    override suspend fun addImageProduct(imageUrl: String): Image = productDataSource.addImageToGallery(imageUrl)
 
+    override suspend fun deleteImageFromProduct(productId: Long, imageId: Long): Boolean =
+        productDataSource.deleteImageFromProduct(productId, imageId)
     //endregion
 
     //region order
@@ -186,14 +186,15 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isOrderExist(orderId: Long): Boolean =
         orderDataSource.isOrderExist(orderId)
-    //end region
+    //endregion
 
-    //image region
+    //region image
     override suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean =
         userDataSource.saveUserProfileImage(imageUrl, userId)
 
     override suspend fun getUserProfileImage(userId: Long): String? =
         userDataSource.getUserProfileImage(userId)
-    //end region
+
+    //endregion
 
 }

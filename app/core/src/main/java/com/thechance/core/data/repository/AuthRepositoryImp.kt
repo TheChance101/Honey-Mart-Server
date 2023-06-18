@@ -40,6 +40,7 @@ class AuthRepositoryImp(
         saltedHash = SaltedHash(hash = user.password, salt = user.salt)
     )
 
+    override suspend fun getProfile(userId: Long): User = userDataSource.getProfile(userId)
 
     //endregion
 
@@ -57,6 +58,9 @@ class AuthRepositoryImp(
     override fun isOwnerValidPassword(owner: Owner, password: String) = hashingService.verify(
         value = password, saltedHash = SaltedHash(hash = owner.password, salt = owner.salt)
     )
+
+    override suspend fun isValidOwner(ownerId: Long): Boolean = ownerDataSource.isValidOwner(ownerId)
+
     //endregion
 
     override fun getToken(id: Long, role: String): String {

@@ -9,7 +9,7 @@ import java.util.regex.Pattern
 class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(
         categoryName: String?, imageId: Int?, marketOwnerId: Long?, role: String?
-    ): Category {
+    ): Boolean {
 
         isValidInput(categoryName, imageId, marketOwnerId, role)?.let { throw it }
 
@@ -24,7 +24,7 @@ class CreateCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
             } else if (isMarketDeleted) {
                 throw MarketDeletedException()
             } else {
-                if (repository.isCategoryNameUnique(categoryName!!)) {
+                if (repository.isCategoryNameUnique(categoryName!!, marketId)) {
                     repository.createCategory(categoryName, marketId, imageId!!)
                 } else {
                     throw CategoryNameNotUniqueException()

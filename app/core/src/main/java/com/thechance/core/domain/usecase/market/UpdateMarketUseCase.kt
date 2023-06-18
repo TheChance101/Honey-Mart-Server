@@ -31,7 +31,7 @@ class UpdateMarketUseCase(private val repository: HoneyMartRepository) : KoinCom
     private fun isValidInput(marketName: String?, marketOwnerId: Long?, role: String?): Exception? {
         return if (isInvalidId(marketOwnerId)) {
             InvalidMarketIdException()
-        } else if (!isValidateMarketName(marketName)) {
+        } else if (!isValidMarketProductName(marketName)) {
             InvalidMarketNameException()
         } else if (!isValidRole(MARKET_OWNER_ROLE, role)) {
             InvalidOwnerIdException()

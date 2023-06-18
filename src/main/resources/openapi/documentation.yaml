@@ -92,7 +92,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CategoryModel"
+                type: "boolean"
     put:
       description: ""
       parameters:
@@ -421,13 +421,18 @@ paths:
         required: false
         schema:
           type: "string"
+      - name: "images"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
       responses:
         "201":
           description: "Created"
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/ProductModel"
+                type: "string"
   /product/{id}:
     delete:
       description: ""
@@ -492,6 +497,27 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/CategoryModel"
+  /product/{productId}/image/{imageId}:
+    delete:
+      description: ""
+      parameters:
+      - name: "imageId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      - name: "productId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
   /product/{id}/updateCategories:
     put:
       description: ""
@@ -513,6 +539,16 @@ paths:
             '*/*':
               schema:
                 type: "string"
+  /product/uploadImage:
+    post:
+      description: ""
+      responses:
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ProductImage"
   /user/login:
     post:
       description: ""
@@ -534,6 +570,16 @@ paths:
             '*/*':
               schema:
                 type: "string"
+  /user/myProfile:
+    get:
+      description: ""
+      responses:
+        "302":
+          description: "Found"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserModel"
   /user/profileImage:
     get:
       description: ""
@@ -590,7 +636,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/ProductInWishListModel"
+                  $ref: "#/components/schemas/ProductModel"
     post:
       description: ""
       parameters:
@@ -624,7 +670,7 @@ paths:
                 type: "string"
 components:
   schemas:
-    ProductInCartModel:
+    ProductWithCount:
       type: "object"
       properties:
         id:
@@ -644,21 +690,10 @@ components:
         products:
           type: "array"
           items:
-            $ref: "#/components/schemas/ProductInCartModel"
+            $ref: "#/components/schemas/ProductWithCount"
         total:
           type: "number"
           format: "double"
-    CategoryModel:
-      type: "object"
-      properties:
-        categoryId:
-          type: "integer"
-          format: "int64"
-        categoryName:
-          type: "string"
-        imageId:
-          type: "integer"
-          format: "int32"
     ProductModel:
       type: "object"
       properties:
@@ -672,6 +707,10 @@ components:
         price:
           type: "number"
           format: "double"
+        images:
+          type: "array"
+          items:
+            type: "string"
     MarketModel:
       type: "object"
       properties:
@@ -680,20 +719,17 @@ components:
           format: "int64"
         marketName:
           type: "string"
-    ProductInOrderModel:
+    CategoryModel:
       type: "object"
       properties:
-        id:
+        categoryId:
           type: "integer"
           format: "int64"
-        name:
+        categoryName:
           type: "string"
-        count:
+        imageId:
           type: "integer"
           format: "int32"
-        price:
-          type: "number"
-          format: "double"
     OrderDetailsModel:
       type: "object"
       properties:
@@ -709,7 +745,7 @@ components:
         products:
           type: "array"
           items:
-            $ref: "#/components/schemas/ProductInOrderModel"
+            $ref: "#/components/schemas/ProductWithCount"
         totalPrice:
           type: "number"
           format: "double"
@@ -733,14 +769,23 @@ components:
         date:
           type: "integer"
           format: "int64"
-    ProductInWishListModel:
+    ProductImage:
       type: "object"
       properties:
-        productId:
+        id:
           type: "integer"
           format: "int64"
-        name:
+        imageUrl:
           type: "string"
-        price:
-          type: "number"
-          format: "double"
+    UserModel:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+          format: "int64"
+        fullName:
+          type: "string"
+        email:
+          type: "string"
+        profileImage:
+          type: "string"

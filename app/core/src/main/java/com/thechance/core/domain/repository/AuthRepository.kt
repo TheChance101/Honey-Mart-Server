@@ -16,6 +16,8 @@ interface AuthRepository {
 
     fun isUserValidPassword(user: User, password: String): Boolean
 
+    suspend fun getProfile(userId: Long): User
+
     //endregion
 
 
@@ -28,6 +30,7 @@ interface AuthRepository {
 
     fun isOwnerValidPassword(owner: Owner, password: String): Boolean
 
+    suspend fun isValidOwner(ownerId: Long): Boolean
     //endregion
 
 
