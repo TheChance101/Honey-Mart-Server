@@ -119,12 +119,17 @@ fun Route.productsRoutes() {
                 call.respond(HttpStatusCode.Created, ServerResponse.success(image, "uploaded."))
             }
 
-            delete("image/{id}") {
+            delete("{productId}/image/{imageId}") {
                 val principal = call.principal<JWTPrincipal>()
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
-                val imageId = call.parameters["id"]?.trim()?.toLongOrNull()
+                val imageId = call.parameters["imageId"]?.trim()?.toLongOrNull()
+                val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
 
+                productUseCasesContainer.deleteImageFromProductUseCase(
+                    productId = productId, imageId = imageId, role = role, marketOwnerId = marketOwnerId
+                )
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
 
             }
         }

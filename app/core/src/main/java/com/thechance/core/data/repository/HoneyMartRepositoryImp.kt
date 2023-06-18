@@ -113,7 +113,7 @@ class HoneyMartRepositoryImp(
     override suspend fun getMarketIdByCategoryId(categoryId: Long): Long =
         categoryDataSource.getMarketIdByCategoryId(categoryId)
 
-//endregion
+    //endregion
 
     //region product
     override suspend fun createProduct(
@@ -149,8 +149,11 @@ class HoneyMartRepositoryImp(
         productDataSource.isDeleted(id)
 
     override suspend fun getProductMarketId(productId: Long): Long = productDataSource.getProductMarketId(productId)
+
     override suspend fun addImageProduct(imageUrl: String): Image = productDataSource.addImageToGallery(imageUrl)
 
+    override suspend fun deleteImageFromProduct(productId: Long, imageId: Long): Boolean =
+        productDataSource.deleteImageFromProduct(productId, imageId)
     //endregion
 
 

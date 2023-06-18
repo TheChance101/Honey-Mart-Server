@@ -26,7 +26,6 @@ class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
 
     }
 
-
     private fun isValidInput(
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?, marketOwnerId: Long?,
         role: String?
