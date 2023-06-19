@@ -1,8 +1,5 @@
 package com.thechance.core.entity
 
-import org.jetbrains.exposed.sql.javatime.timestamp
-import java.sql.Timestamp
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class Order(

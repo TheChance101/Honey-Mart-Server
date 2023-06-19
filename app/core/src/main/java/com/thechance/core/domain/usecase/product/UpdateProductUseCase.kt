@@ -18,12 +18,13 @@ class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
             throw IdNotFoundException()
         } else if (isProductDeleted) {
             throw ProductDeletedException()
+        } else if (!isMarketOwner(marketOwnerId!!, productId)) {
+            throw UnauthorizedException()
         } else {
             repository.updateProduct(productId, productName, productPrice, productQuantity)
         }
 
     }
-
 
     private fun isValidInput(
         productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?, marketOwnerId: Long?,
@@ -33,7 +34,7 @@ class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
             InvalidProductIdException()
         } else if (productName == null && productPrice == null && productQuantity.isNullOrEmpty()) {
             InvalidInputException()
-        } else if (productName != null && !isValidNameLength(productName)) {
+        } else if (productName != null && !isValidMarketProductName(productName)) {
             InvalidProductNameException()
         } else if (productQuantity != null && !isValidNameLength(productQuantity)) {
             InvalidProductQuantityException()
@@ -45,4 +46,10 @@ class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
             null
         }
     }
+
+    private suspend fun isMarketOwner(marketOwnerId: Long, productId: Long): Boolean {
+        val marketId = repository.getProductMarketId(productId)
+        return repository.getOwnerIdByMarketId(marketId) == marketOwnerId
+    }
+
 }

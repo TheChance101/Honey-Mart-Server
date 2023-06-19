@@ -1,7 +1,7 @@
 package com.thechance.core.data.datasource.database.tables.cart
 
 import com.thechance.core.data.datasource.database.tables.MarketTable
-import com.thechance.core.data.datasource.database.tables.ProductTable
+import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import org.jetbrains.exposed.sql.Table
 
 

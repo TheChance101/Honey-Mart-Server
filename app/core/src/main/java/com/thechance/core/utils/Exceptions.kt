@@ -2,6 +2,7 @@ package com.thechance.core.utils
 
 class InvalidInputException : Exception()
 
+class UnauthorizedException : Exception()
 class InvalidCategoryNameException : Exception()
 class InvalidMarketNameException : Exception()
 class InvalidProductNameException : Exception()
@@ -41,6 +42,8 @@ class EmailAlreadyExistException : Exception()
 
 class InvalidPasswordInputException : Exception()
 class InvalidUserNameInputException : Exception()
+class AddImageFailedException : Exception()
+class ImageNotFoundException : Exception()
 
 //endregion
 

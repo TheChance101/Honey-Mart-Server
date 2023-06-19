@@ -8,9 +8,7 @@ import com.thechance.core.domain.usecase.owner.CreateOwnerUseCase
 import com.thechance.core.domain.usecase.owner.LoginMarketOwnerUseCase
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.domain.usecase.product.*
-import com.thechance.core.domain.usecase.user.CreateUserUseCase
-import com.thechance.core.domain.usecase.user.UserUseCaseContainer
-import com.thechance.core.domain.usecase.user.VerifyUserUseCase
+import com.thechance.core.domain.usecase.user.*
 import com.thechance.core.domain.usecase.wishlist.AddProductToWishListUseCase
 import com.thechance.core.domain.usecase.wishlist.DeleteProductFromWishListUseCase
 import com.thechance.core.domain.usecase.wishlist.GetWishListUseCase
@@ -26,6 +24,8 @@ val productUseCaseModule = module {
     singleOf(::UpdateProductUseCase) { bind<UpdateProductUseCase>() }
     singleOf(::UpdateProductCategoryUseCase) { bind<UpdateProductCategoryUseCase>() }
     singleOf(::GetCategoriesForProductUseCase) { bind<GetCategoriesForProductUseCase>() }
+    singleOf(::AddImageProductUseCase) { bind<AddImageProductUseCase>() }
+    singleOf(::DeleteImageFromProductUseCase) { bind<DeleteImageFromProductUseCase>() }
 }
 
 val marketUseCaseModule = module {
@@ -64,7 +64,12 @@ val userUseCaseModule = module {
     singleOf(::UserUseCaseContainer) { bind<UserUseCaseContainer>() }
     singleOf(::CreateUserUseCase) { bind<CreateUserUseCase>() }
     singleOf(::VerifyUserUseCase) { bind<VerifyUserUseCase>() }
+    singleOf(::SaveUserProfileImageUseCase) { bind<SaveUserProfileImageUseCase>() }
+    singleOf(::GetUserProfileImageUseCase) { bind<GetUserProfileImageUseCase>() }
+    singleOf(::GetUserProfileUseCase) { bind<GetUserProfileUseCase>() }
+
 }
+
 val ownerUseCaseModule = module {
     singleOf(::OwnerUseCaseContainer) { bind<OwnerUseCaseContainer>() }
     singleOf(::CreateOwnerUseCase) { bind<CreateOwnerUseCase>() }

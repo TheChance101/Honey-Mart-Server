@@ -11,13 +11,17 @@ class DeleteCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
 
         isValidInput(categoryId, marketOwnerId, role)?.let { throw it }
 
-        val isCategoryDeleted = repository.isCategoryDeleted(categoryId!!)
-        return if (isCategoryDeleted == null) {
-            throw IdNotFoundException()
-        } else if (isCategoryDeleted) {
-            throw CategoryDeletedException()
+        if (isMarketOwner(marketOwnerId!!, categoryId!!)) {
+            val isCategoryDeleted = repository.isCategoryDeleted(categoryId!!)
+            return if (isCategoryDeleted == null) {
+                throw IdNotFoundException()
+            } else if (isCategoryDeleted) {
+                throw CategoryDeletedException()
+            } else {
+                repository.deleteCategory(categoryId)
+            }
         } else {
-            repository.deleteCategory(categoryId)
+            throw UnauthorizedException()
         }
     }
 
@@ -31,4 +35,9 @@ class DeleteCategoryUseCase(private val repository: HoneyMartRepository) : KoinC
         }
     }
 
+
+    private suspend fun isMarketOwner(marketOwnerId: Long, categoryId: Long): Boolean {
+        val marketId = repository.getMarketIdByCategoryId(categoryId)
+        return repository.getOwnerIdByMarketId(marketId) == marketOwnerId
+    }
 }

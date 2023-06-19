@@ -21,13 +21,12 @@ fun Route.orderRoutes() {
         route("/order") {
 
             get("/marketOrders") {
-                val params = call.request.queryParameters
-                val marketId = params["id"]?.trim()?.toLongOrNull()
                 val principal = call.principal<JWTPrincipal>()
+                val ownerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val orders =
-                    orderUseCasesContainer.getOrdersForMarketUseCase(marketId, role).map { it.toApiOrderModel() }
+                    orderUseCasesContainer.getOrdersForMarketUseCase(ownerId, role).map { it.toApiOrderModel() }
                 call.respond(ServerResponse.success(orders))
 
             }

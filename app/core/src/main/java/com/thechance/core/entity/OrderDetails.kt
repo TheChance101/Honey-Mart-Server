@@ -6,7 +6,7 @@ data class OrderDetails(
     val orderId: Long,
     val userId: Long,
     val marketId: Long,
-    val products: List<ProductInOrder>,
+    val products: List<ProductInCart>,
     val totalPrice: Double,
     val date: LocalDateTime,
     val state: Int

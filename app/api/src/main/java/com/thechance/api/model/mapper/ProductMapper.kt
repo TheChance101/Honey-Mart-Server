@@ -5,5 +5,5 @@ import com.thechance.core.entity.Product
 
 
 internal fun Product.toApiProductModel(): ProductModel {
-    return ProductModel(id = id, name = name, quantity = quantity, price = price)
+    return ProductModel(id = id, name = name, quantity = quantity, price = price, images = image.map { it.imageUrl })
 }

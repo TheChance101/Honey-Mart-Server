@@ -12,12 +12,17 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         productQuantity: String?,
         categoriesId: List<Long>?,
         marketOwnerId: Long?,
-        role: String?
-    ): Product {
+        role: String?,
+        images: List<Long>?
+    ): Boolean {
         isValidInput(productName, productPrice, productQuantity, categoriesId, marketOwnerId, role)?.let { throw it }
 
         return if (repository.checkCategoriesInDb(categoriesId!!)) {
-            repository.createProduct(productName, productPrice, productQuantity!!, categoriesId!!)
+            if (isMarketOwner(marketOwnerId!!, categoryId = categoriesId[0])) {
+                repository.createProduct(productName, productPrice, productQuantity!!, categoriesId, images!!)
+            } else {
+                throw UnauthorizedException()
+            }
         } else {
             throw NotValidCategoryList()
         }
@@ -32,7 +37,7 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         role: String?
     ): Exception? {
         return when {
-            !isValidProductName(productName) -> {
+            !isValidMarketProductName(productName) -> {
                 InvalidProductNameException()
             }
 
@@ -62,19 +67,14 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         }
     }
 
-    private fun isValidProductName(productName: String?): Boolean {
-        return if (productName == null) {
-            false
-        } else {
-            val fullNameRegex = Regex("^[a-zA-Z0-9 ]{4,20}$")
-            fullNameRegex.matches(productName)
-        }
-    }
-
     private fun checkProductQuantity(quantity: String?): Boolean {
         return quantity?.let {
             return it.length !in 6..20
         } ?: true
     }
 
+    private suspend fun isMarketOwner(marketOwnerId: Long, categoryId: Long): Boolean {
+        val marketId = repository.getMarketIdByCategoryId(categoryId)
+        return repository.getOwnerIdByMarketId(marketId) == marketOwnerId
+    }
 }

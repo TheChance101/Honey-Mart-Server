@@ -1,15 +1,17 @@
 package com.thechance.core.data.datasource
 
 import com.thechance.core.data.datasource.database.tables.NormalUserTable
-import com.thechance.core.data.datasource.database.tables.ProductTable
+import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartTable
+import com.thechance.core.data.datasource.database.tables.product.GalleryTable
+import com.thechance.core.data.datasource.database.tables.product.ProductGalleryTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListProductTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListTable
 import com.thechance.core.data.datasource.mapper.toProduct
-import com.thechance.core.entity.*
 import com.thechance.core.data.repository.dataSource.UserDataSource
 import com.thechance.core.data.security.hashing.SaltedHash
+import com.thechance.core.entity.*
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -43,8 +45,9 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
                     userId = it[NormalUserTable.id].value,
                     email = it[NormalUserTable.email],
                     fullName = it[NormalUserTable.fullName],
+                    profileImage = it[NormalUserTable.imageUrl],
                     password = it[NormalUserTable.password],
-                    salt = it[NormalUserTable.salt]
+                    salt = it[NormalUserTable.salt],
                 )
             }.single()
         }
@@ -53,6 +56,21 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
     override suspend fun isEmailExists(email: String): Boolean {
         return dbQuery {
             NormalUserTable.select { NormalUserTable.email eq email }.singleOrNull() != null
+        }
+    }
+
+    override suspend fun getProfile(userId: Long): User {
+        return dbQuery {
+            NormalUserTable.select { NormalUserTable.id eq userId }.map {
+                User(
+                    userId = it[NormalUserTable.id].value,
+                    email = it[NormalUserTable.email],
+                    fullName = it[NormalUserTable.fullName],
+                    profileImage = it[NormalUserTable.imageUrl],
+                    password = "",
+                    salt = ""
+                )
+            }.single()
         }
     }
     //endregion
@@ -147,9 +165,21 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
     private suspend fun getProduct(productId: Long): Product {
         return dbQuery {
             ProductTable.select { ProductTable.id eq productId }.map { productRow ->
-                productRow.toProduct()
+                val images = getProductImages(productRow[ProductTable.id].value)
+                productRow.toProduct(images)
             }.single()
         }
+    }
+
+    private fun getProductImages(productId: Long): List<Image> {
+        return (GalleryTable innerJoin ProductGalleryTable)
+            .select { ProductGalleryTable.productId eq productId }
+            .map { imageRow ->
+                Image(
+                    id = imageRow[GalleryTable.id].value,
+                    imageUrl = imageRow[GalleryTable.imageUrl],
+                )
+            }
     }
 
     override suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean {
@@ -230,21 +260,28 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getWishList(wishListId: Long): List<ProductInWishList> = dbQuery {
+    override suspend fun getWishList(wishListId: Long): List<Product> = dbQuery {
         WishListProductTable.select {
             (WishListProductTable.wishListId eq wishListId) and
                     (WishListProductTable.isDeleted eq false)
+        }.map { productRow ->
+            getProduct(productId = productRow[WishListProductTable.productId].value)
         }
-            .map { productRow ->
-                val product = getProduct(productId = productRow[WishListProductTable.productId].value)
-                ProductInWishList(
-                    productId = product.id,
-                    name = product.name,
-                    price = product.price,
-                )
-            }
     }
 
+    //endregion
+
+    //region image
+    override suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean = dbQuery {
+        NormalUserTable.update({ (NormalUserTable.id eq userId) }) { it[NormalUserTable.imageUrl] = imageUrl }
+        true
+    }
+
+    override suspend fun getUserProfileImage(userId: Long): String? = dbQuery {
+        NormalUserTable.select {
+            (NormalUserTable.id eq userId)
+        }.map { it[NormalUserTable.imageUrl] }.singleOrNull()
+    }
     //endregion
 
 }

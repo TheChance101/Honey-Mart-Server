@@ -1,5 +1,6 @@
 package com.thechance.core.data.datasource
 
+import com.thechance.core.data.datasource.database.tables.MarketTable
 import com.thechance.core.data.datasource.database.tables.NormalUserTable
 import com.thechance.core.entity.Owner
 import com.thechance.core.data.datasource.database.tables.OwnerTable
@@ -45,4 +46,15 @@ class OwnerDataSourceImp : OwnerDataSource, KoinComponent {
         }
     }
 
+    override suspend fun isValidOwner(ownerId: Long): Boolean {
+        return dbQuery {
+            val owner = OwnerTable.select { OwnerTable.id eq ownerId }.singleOrNull()
+            if (owner != null) {
+                val ownerHasMarket = MarketTable.select { MarketTable.ownerId eq ownerId }.singleOrNull()
+                ownerHasMarket == null
+            } else {
+                false
+            }
+        }
+    }
 }
