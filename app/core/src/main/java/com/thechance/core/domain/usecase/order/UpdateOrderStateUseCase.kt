@@ -8,7 +8,7 @@ class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : Koi
     suspend operator fun invoke(orderId: Long?, newOrderState: Int?, role: String?): Boolean {
 
         return when {
-            !isValidRole(NORMAL_USER_ROLE, role) -> {
+            !isValidRole(NORMAL_USER_ROLE, role) && !isValidRole(MARKET_OWNER_ROLE, role) -> {
                 throw InvalidUserIdException()
             }
 
