@@ -3,6 +3,7 @@ package com.thechance.core.domain.usecase.product
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
+import java.io.File
 
 class DeleteImageFromProductUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(marketOwnerId: Long?, role: String?, productId: Long?, imageId: Long?): Boolean {
@@ -10,7 +11,12 @@ class DeleteImageFromProductUseCase(private val repository: HoneyMartRepository)
         isValidInput(marketOwnerId, role, productId, imageId)?.let { throw it }
 
         return if (isMarketOwner(marketOwnerId!!, productId!!)) {
-            repository.deleteImageFromProduct(productId = productId, imageId = imageId!!)
+            val path = repository.deleteImageFromProduct(productId = productId, imageId = imageId!!)
+            val file = File(path)
+            if (file.exists()) {
+                file.delete()
+            }
+            true
         } else {
             throw UnauthorizedException()
         }

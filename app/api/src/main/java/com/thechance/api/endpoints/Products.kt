@@ -7,7 +7,7 @@ import com.thechance.api.model.mapper.toApiProductModel
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
 import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
-import com.thechance.core.utils.ROLE_TYPE
+import com.thechance.core.utils.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -17,6 +17,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
+import java.io.File
 
 fun Route.productsRoutes() {
 
@@ -26,11 +27,9 @@ fun Route.productsRoutes() {
 
         get("/{productId}") {
             val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
-
             val categories = productUseCasesContainer.getCategoriesForProductUseCase(productId = productId)
                 .map { it.toApiCategoryModel() }
             call.respond(ServerResponse.success(categories))
-
         }
 
         authenticate {
@@ -130,7 +129,6 @@ fun Route.productsRoutes() {
                     productId = productId, imageId = imageId, role = role, marketOwnerId = marketOwnerId
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
-
             }
         }
     }

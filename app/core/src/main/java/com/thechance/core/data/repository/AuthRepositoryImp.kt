@@ -61,6 +61,8 @@ class AuthRepositoryImp(
 
     override suspend fun isValidOwner(ownerId: Long): Boolean = ownerDataSource.isValidOwner(ownerId)
 
+    override suspend fun getOwner(ownerId: Long): User = ownerDataSource.getOwner(ownerId)
+
     //endregion
 
     override fun getToken(id: Long, role: String): String {

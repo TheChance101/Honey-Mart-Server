@@ -150,14 +150,15 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         }
     }
 
-    override suspend fun deleteImageFromProduct(productId: Long, imageId: Long): Boolean {
+    override suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String {
         return dbQuery {
             ProductGalleryTable.deleteWhere {
                 (ProductGalleryTable.productId eq productId) and
                         (ProductGalleryTable.galleryId eq imageId)
             }
+            val imageUrl = GalleryTable.select { GalleryTable.id eq imageId }.map { it[GalleryTable.imageUrl] }.single()
             GalleryTable.deleteWhere { GalleryTable.id eq imageId }
-            true
+            imageUrl
         }
     }
 

@@ -50,14 +50,6 @@ fun Route.userRoutes() {
                 call.respond(HttpStatusCode.Created, ServerResponse.success(imageUrl, "Added successfully"))
             }
 
-            get("/profileImage") {
-                val principal = call.principal<JWTPrincipal>()
-                val userId = principal?.payload?.subject?.toLongOrNull()
-                val role = principal?.getClaim(ROLE_TYPE, String::class)
-                val image = userUseCasesContainer.getUserProfileImageUseCase(userId, role)
-                call.respond(HttpStatusCode.Found, ServerResponse.success(image, "Get Image successfully"))
-            }
-
             get("/myProfile") {
                 val principal = call.principal<JWTPrincipal>()
                 val userId = principal?.payload?.subject?.toLongOrNull()
