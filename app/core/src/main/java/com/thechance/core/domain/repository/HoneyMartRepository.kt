@@ -74,7 +74,7 @@ interface HoneyMartRepository {
 
     suspend fun addImageProduct(imageUrl: String): Image
 
-    suspend fun deleteImageFromProduct(productId: Long, imageId: Long): Boolean
+    suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
     //endregion
 
     //region order

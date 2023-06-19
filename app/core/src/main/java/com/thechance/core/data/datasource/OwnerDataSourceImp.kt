@@ -6,6 +6,7 @@ import com.thechance.core.entity.Owner
 import com.thechance.core.data.datasource.database.tables.OwnerTable
 import com.thechance.core.data.repository.dataSource.OwnerDataSource
 import com.thechance.core.data.security.hashing.SaltedHash
+import com.thechance.core.entity.User
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -55,6 +56,20 @@ class OwnerDataSourceImp : OwnerDataSource, KoinComponent {
             } else {
                 false
             }
+        }
+    }
+
+    override suspend fun getOwner(ownerId: Long): User {
+        return dbQuery {
+            val owner = OwnerTable.select { OwnerTable.id eq ownerId }.single()
+            User(
+                userId = owner[OwnerTable.id].value,
+                email = owner[OwnerTable.email],
+                fullName = owner[OwnerTable.fullName],
+                password = "",
+                salt = "",
+                profileImage = ""
+            )
         }
     }
 }

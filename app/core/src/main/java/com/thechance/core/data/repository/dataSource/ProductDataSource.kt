@@ -30,5 +30,5 @@ interface ProductDataSource {
 
     suspend fun getAllProductsInCategory(categoryId: Long): List<Product>
 
-    suspend fun deleteImageFromProduct(productId: Long, imageId: Long): Boolean
+    suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
 }

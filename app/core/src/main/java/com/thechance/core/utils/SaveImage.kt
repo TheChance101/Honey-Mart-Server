@@ -11,11 +11,15 @@ internal fun saveImage(imageParts: List<PartData>, name: String): String {
         val imageBytes = image.streamProvider().readBytes()
 
         // Save the image to the server
-        val uploadDir = File(USER_IMAGES_PATH)
+        val uploadDir = File(IMAGES_PATH)
         uploadDir.mkdirs() // Create the directory if it doesn't exist
         File(uploadDir, imageName).writeBytes(imageBytes)
-        return "$BASE_URL/$USER_IMAGES_PATH/$imageName"
+        return "$BASE_URL/$IMAGES_PATH/$imageName"
     } else {
         throw AddImageFailedException()
     }
+}
+
+internal fun getInternalImagePath(url: String): String {
+    return url.substringAfter("://").substringAfter("/")
 }

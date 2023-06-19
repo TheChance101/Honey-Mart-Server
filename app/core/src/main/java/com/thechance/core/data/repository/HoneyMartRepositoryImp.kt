@@ -152,7 +152,7 @@ class HoneyMartRepositoryImp(
 
     override suspend fun addImageProduct(imageUrl: String): Image = productDataSource.addImageToGallery(imageUrl)
 
-    override suspend fun deleteImageFromProduct(productId: Long, imageId: Long): Boolean =
+    override suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String =
         productDataSource.deleteImageFromProduct(productId, imageId)
     //endregion
 

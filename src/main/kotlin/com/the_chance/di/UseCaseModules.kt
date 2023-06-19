@@ -5,6 +5,7 @@ import com.thechance.core.domain.usecase.category.*
 import com.thechance.core.domain.usecase.market.*
 import com.thechance.core.domain.usecase.order.*
 import com.thechance.core.domain.usecase.owner.CreateOwnerUseCase
+import com.thechance.core.domain.usecase.owner.GetOwnerProfileUseCase
 import com.thechance.core.domain.usecase.owner.LoginMarketOwnerUseCase
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.domain.usecase.product.*
@@ -65,7 +66,6 @@ val userUseCaseModule = module {
     singleOf(::CreateUserUseCase) { bind<CreateUserUseCase>() }
     singleOf(::VerifyUserUseCase) { bind<VerifyUserUseCase>() }
     singleOf(::SaveUserProfileImageUseCase) { bind<SaveUserProfileImageUseCase>() }
-    singleOf(::GetUserProfileImageUseCase) { bind<GetUserProfileImageUseCase>() }
     singleOf(::GetUserProfileUseCase) { bind<GetUserProfileUseCase>() }
 
 }
@@ -74,6 +74,7 @@ val ownerUseCaseModule = module {
     singleOf(::OwnerUseCaseContainer) { bind<OwnerUseCaseContainer>() }
     singleOf(::CreateOwnerUseCase) { bind<CreateOwnerUseCase>() }
     singleOf(::LoginMarketOwnerUseCase) { bind<LoginMarketOwnerUseCase>() }
+    singleOf(::GetOwnerProfileUseCase) { bind<GetOwnerProfileUseCase>() }
 }
 
 val cartUseCase = module {
