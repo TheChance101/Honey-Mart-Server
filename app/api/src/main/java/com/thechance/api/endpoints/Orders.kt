@@ -58,10 +58,13 @@ fun Route.orderRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val isCreated = orderUseCasesContainer.createOrderUseCase(userId, role)
-                call.respond(ServerResponse.success(isCreated))
+                call.respond(ServerResponse.success(isCreated,"Checkout Success"))
 
             }
 
+            /**
+             * Update order state
+             */
             put("/{id}") {
                 val params = call.receiveParameters()
                 val orderId = call.parameters["id"]?.trim()?.toLongOrNull()
@@ -74,7 +77,6 @@ fun Route.orderRoutes() {
                 call.respond(ServerResponse.success(updatedStatus))
 
             }
-
         }
     }
 }
