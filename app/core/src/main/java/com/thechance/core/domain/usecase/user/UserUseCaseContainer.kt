@@ -6,6 +6,5 @@ data class UserUseCaseContainer(
     val createUserUseCase: CreateUserUseCase,
     val verifyUserUseCase: VerifyUserUseCase,
     val saveUserProfileImageUseCase: SaveUserProfileImageUseCase,
-    val getUserProfileImageUseCase: GetUserProfileImageUseCase,
     val getUserProfileUseCase: GetUserProfileUseCase
 ) : KoinComponent

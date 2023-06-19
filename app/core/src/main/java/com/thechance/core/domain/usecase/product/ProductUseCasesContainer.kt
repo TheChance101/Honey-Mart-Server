@@ -9,5 +9,5 @@ data class ProductUseCasesContainer(
     val updateProductCategoryUseCase: UpdateProductCategoryUseCase,
     val getCategoriesForProductUseCase: GetCategoriesForProductUseCase,
     val addImageProductUseCase: AddImageProductUseCase,
-    val deleteImageFromProductUseCase: DeleteImageFromProductUseCase
+    val deleteImageFromProductUseCase: DeleteImageFromProductUseCase,
 ) : KoinComponent
