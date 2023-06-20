@@ -12,4 +12,6 @@ const val ROLE_TYPE = "ROLE_TYPE"
 
 const val BASE_URL = "http://0.0.0.0:8080"//"https://honey-mart-server-oe345.ondigitalocean.app"
 
+const val PRODUCT_IMAGES_PATH = "files/market"
+
 const val IMAGES_PATH = "files/image_uploads"

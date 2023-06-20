@@ -22,15 +22,3 @@ internal fun saveImage(imageParts: List<PartData>, name: String): String {
         throw AddImageFailedException()
     }
 }
-
-
-internal fun saveImagesFile(images: List<File>): List<String> {
-    val imagesUrL = mutableListOf<String>()
-    images.forEach {
-        val uploadDir = File(IMAGES_PATH)
-        uploadDir.mkdirs()
-        File(uploadDir, it.name).writeBytes(it.readBytes())
-        imagesUrL.add("$BASE_URL/$IMAGES_PATH/${it.name}")
-    }
-    return imagesUrL
-}

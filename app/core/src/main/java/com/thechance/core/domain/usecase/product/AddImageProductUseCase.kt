@@ -16,9 +16,13 @@ class AddImageProductUseCase(private val repository: HoneyMartRepository) : Koin
 
         isValidInput(marketOwnerId, role, productId)?.let { throw it }
 
-        val imagesUrl = saveImagesFile(getImages(image))
+        repository.getMarketIdByOwnerId(marketOwnerId!!)?.let {
+            val imagesUrl = saveImagesFile(it, getImages(image))
 
-        return repository.addImageProduct(imagesUrl, productId!!)
+            return repository.addImageProduct(imagesUrl, productId!!)
+        }
+
+        throw InvalidOwnerIdException()
     }
 
     private suspend fun getImages(images: MultiPartData): List<File> {
@@ -43,6 +47,17 @@ class AddImageProductUseCase(private val repository: HoneyMartRepository) : Koin
             part.dispose()
         }
         return files
+    }
+
+    private fun saveImagesFile(marketId: Long, images: List<File>): List<String> {
+        val imagesUrL = mutableListOf<String>()
+        images.forEach {
+            val uploadDir = File("$PRODUCT_IMAGES_PATH/$marketId")
+            uploadDir.mkdirs()
+            File(uploadDir, it.name).writeBytes(it.readBytes())
+            imagesUrL.add("$BASE_URL/$PRODUCT_IMAGES_PATH/$marketId/${it.name}")
+        }
+        return imagesUrL
     }
 
     private fun isValidInput(marketOwnerId: Long?, role: String?, productId: Long?): Exception? {
