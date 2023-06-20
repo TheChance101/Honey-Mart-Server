@@ -21,22 +21,27 @@ fun Route.orderRoutes() {
         route("/order") {
 
             get("/marketOrders") {
+                val params = call.request.queryParameters
+                val orderState = params["orderState"]?.trim()?.toIntOrNull()
                 val principal = call.principal<JWTPrincipal>()
                 val ownerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val orders =
-                    orderUseCasesContainer.getOrdersForMarketUseCase(ownerId, role).map { it.toApiOrderModel() }
+                    orderUseCasesContainer.getOrdersForMarketUseCase(ownerId, role, orderState)
+                        .map { it.toApiOrderModel() }
                 call.respond(ServerResponse.success(orders))
 
             }
 
             get("/userOrders") {
+                val params = call.request.queryParameters
+                val orderState = params["orderState"]?.trim()?.toIntOrNull()
                 val principal = call.principal<JWTPrincipal>()
                 val userId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val orders =
-                    orderUseCasesContainer.getOrdersForUserUseCase(userId, role).toApiOrders()
+                    orderUseCasesContainer.getOrdersForUserUseCase(userId, role, orderState).toApiOrders()
                 call.respond(ServerResponse.success(orders))
 
             }
@@ -58,7 +63,7 @@ fun Route.orderRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val isCreated = orderUseCasesContainer.createOrderUseCase(userId, role)
-                call.respond(ServerResponse.success(isCreated,"Checkout Success"))
+                call.respond(ServerResponse.success(isCreated, "Checkout Success"))
 
             }
 

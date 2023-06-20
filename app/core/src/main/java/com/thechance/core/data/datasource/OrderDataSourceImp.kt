@@ -29,6 +29,27 @@ class OrderDataSourceImp : OrderDataSource {
         true
     }
 
+    override suspend fun getOrdersForMarket(
+        marketId: Long,
+        state: Int
+    ): List<Order> = dbQuery {
+        OrderTable.select {
+            (OrderTable.marketId eq marketId) and
+                    not(OrderTable.state eq ORDER_STATE_DELETED) and
+                    (OrderTable.state eq state)
+        }
+            .map {
+                Order(
+                    it[OrderTable.id].value,
+                    it[OrderTable.userId].value,
+                    it[OrderTable.marketId].value,
+                    it[OrderTable.totalPrice],
+                    it[OrderTable.orderDate],
+                    it[OrderTable.state]
+                )
+            }
+    }
+
     override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> = dbQuery {
         OrderTable.select {
             (OrderTable.marketId eq marketId) and
@@ -46,9 +67,28 @@ class OrderDataSourceImp : OrderDataSource {
             }
     }
 
-    override suspend fun getAllOrdersForUser(
-        userId: Long
+    override suspend fun getOrdersForUser(
+        userId: Long,
+        state: Int
     ): List<Order> = dbQuery {
+        OrderTable.select {
+            (OrderTable.userId eq userId) and
+                    not(OrderTable.state eq ORDER_STATE_DELETED) and
+                    (OrderTable.state eq state)
+        }
+            .map {
+                Order(
+                    it[OrderTable.id].value,
+                    it[OrderTable.userId].value,
+                    it[OrderTable.marketId].value,
+                    it[OrderTable.totalPrice],
+                    it[OrderTable.orderDate],
+                    it[OrderTable.state]
+                )
+            }
+    }
+
+    override suspend fun getAllOrdersForUser(userId: Long): List<Order> = dbQuery {
         OrderTable.select {
             (OrderTable.userId eq userId) and
                     not(OrderTable.state eq ORDER_STATE_DELETED)
@@ -96,4 +136,13 @@ class OrderDataSourceImp : OrderDataSource {
         dbQuery {
             OrderTable.select { OrderTable.id eq orderId }.singleOrNull() != null
         }
+
+    override suspend fun getOrderState(orderId: Long): Int = dbQuery {
+        OrderTable.select {
+            OrderTable.id eq orderId
+        }.map {
+            it[OrderTable.state]
+        }.single()
+    }
+
 }

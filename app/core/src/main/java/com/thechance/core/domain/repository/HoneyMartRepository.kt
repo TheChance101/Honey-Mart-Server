@@ -79,8 +79,8 @@ interface HoneyMartRepository {
 
     //region order
     suspend fun createOrder(cartId: Long, userId: Long): Boolean
-    suspend fun getAllOrdersForMarket(marketId: Long): List<Order>
-    suspend fun getAllOrdersForUser(userId: Long): List<Order>
+    suspend fun getOrdersForMarket(marketId: Long, state: Int): List<Order>
+    suspend fun getOrdersForUser(userId: Long, state: Int): List<Order>
     suspend fun getOrderById(orderId: Long): OrderDetails
     suspend fun updateOrderState(orderId: Long, newOrderState: Int): Boolean
     suspend fun isOrderExist(orderId: Long): Boolean
@@ -92,4 +92,7 @@ interface HoneyMartRepository {
 
     suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean
     suspend fun getUserProfileImage(userId: Long): String?
+    suspend fun getOrderState(orderId: Long): Int
+    suspend fun getAllOrdersForUser(userId: Long): List<Order>
+    suspend fun getAllOrdersForMarket(marketId: Long): List<Order>
 }
