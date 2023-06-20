@@ -41,7 +41,7 @@ class OrderDataSourceImp : OrderDataSource {
     }
 
     override suspend fun getAllOrdersForMarket(marketId: Long): List<MarketOrder> = dbQuery {
-        OrderTable.select {
+        (OrderTable innerJoin NormalUserTable).select {
             (OrderTable.marketId eq marketId) and
                     not(OrderTable.state eq ORDER_STATE_DELETED)
         }.map { it.toMarketOrder() }
