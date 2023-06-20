@@ -30,7 +30,7 @@ fun Route.wishListRoutes() {
 
                 call.respond(
                     HttpStatusCode.Created,
-                    ServerResponse.success("Added To WishList successfully \uD83E\uDD73")
+                    ServerResponse.success(true, "Added To WishList successfully \uD83E\uDD73")
                 )
 
             }
@@ -52,7 +52,7 @@ fun Route.wishListRoutes() {
                 wishListUseCaseContainer.deleteProductFromWishListUseCase(userId, productId)
                 call.respond(
                     HttpStatusCode.OK,
-                    ServerResponse.success("Deleted From WishList successfully \uD83D\uDE25\u200F ")
+                    ServerResponse.success(true, "Deleted From WishList successfully \uD83D\uDE25\u200F ")
                 )
             }
         }

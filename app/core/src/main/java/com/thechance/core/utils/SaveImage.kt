@@ -1,6 +1,9 @@
 package com.thechance.core.utils
 
 import io.ktor.http.content.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.File
 
 
@@ -18,8 +21,4 @@ internal fun saveImage(imageParts: List<PartData>, name: String): String {
     } else {
         throw AddImageFailedException()
     }
-}
-
-internal fun getInternalImagePath(url: String): String {
-    return url.substringAfter("://").substringAfter("/")
 }

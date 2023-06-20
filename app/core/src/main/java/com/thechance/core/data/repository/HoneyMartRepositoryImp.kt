@@ -117,14 +117,15 @@ class HoneyMartRepositoryImp(
 
     //region product
     override suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, images: List<Long>
-    ): Boolean =
-        productDataSource.createProduct(
-            productName = productName, productPrice = productPrice, productQuantity = productQuantity,
-            categoriesId = categoriesId, images = images
-        )
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+    ): Product = productDataSource.createProduct(
+        productName = productName, productPrice = productPrice, productQuantity = productQuantity,
+        categoriesId = categoriesId
+    )
 
     override suspend fun getAllProducts(): List<Product> = productDataSource.getAllProducts()
+
+    override suspend fun getProduct(productId: Long) = productDataSource.getProduct(productId)
 
     override suspend fun getAllCategoryForProduct(productId: Long): List<Category> =
         productDataSource.getAllCategoryForProduct(productId)
@@ -150,7 +151,8 @@ class HoneyMartRepositoryImp(
 
     override suspend fun getProductMarketId(productId: Long): Long = productDataSource.getProductMarketId(productId)
 
-    override suspend fun addImageProduct(imageUrl: String): Image = productDataSource.addImageToGallery(imageUrl)
+    override suspend fun addImageProduct(imagesUrl: List<String>, productId: Long): Boolean =
+        productDataSource.addImageToGallery(imagesUrl, productId)
 
     override suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String =
         productDataSource.deleteImageFromProduct(productId, imageId)
