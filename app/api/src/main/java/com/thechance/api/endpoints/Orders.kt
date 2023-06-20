@@ -1,8 +1,9 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.model.mapper.toApiOrderModel
-import com.thechance.api.model.mapper.toApiOrders
+import com.thechance.api.model.mapper.toApiMarketOrder
+import com.thechance.api.model.mapper.toApiMarketOrders
+import com.thechance.api.model.mapper.toApiUserOrders
 import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.server.application.*
@@ -28,8 +29,7 @@ fun Route.orderRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val orders =
-                    orderUseCasesContainer.getOrdersForMarketUseCase(ownerId, role, orderState)
-                        .map { it.toApiOrderModel() }
+                    orderUseCasesContainer.getOrdersForMarketUseCase(ownerId, role, orderState).toApiMarketOrders()
                 call.respond(ServerResponse.success(orders))
 
             }
@@ -41,7 +41,7 @@ fun Route.orderRoutes() {
                 val userId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val orders =
-                    orderUseCasesContainer.getOrdersForUserUseCase(userId, role, orderState).toApiOrders()
+                    orderUseCasesContainer.getOrdersForUserUseCase(userId, role, orderState).toApiUserOrders()
                 call.respond(ServerResponse.success(orders))
 
             }
@@ -52,7 +52,7 @@ fun Route.orderRoutes() {
             get("/{id}") {
                 val orderId = call.parameters["id"]?.trim()?.toLongOrNull()
                 val orders =
-                    orderUseCasesContainer.getOrderDetailsUseCase(orderId).toApiOrderModel()
+                    orderUseCasesContainer.getOrderDetailsUseCase(orderId).toApiMarketOrder()
                 call.respond(ServerResponse.success(orders))
 
             }
