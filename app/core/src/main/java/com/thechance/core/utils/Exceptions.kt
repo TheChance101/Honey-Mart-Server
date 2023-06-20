@@ -62,4 +62,6 @@ class ProductNotInSameCartMarketException : Exception()
 class InvalidOwnerIdException : Exception()
 class InvalidStateOrderException : Exception()
 
+class CantUpdateOrderStateException : Exception()
+
 //endregion

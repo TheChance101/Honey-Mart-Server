@@ -6,7 +6,7 @@ internal const val NORMAL_USER_ROLE = "NormalUser"
 internal const val MARKET_OWNER_ROLE = "MarketOwner"
 
 internal const val ORDER_STATE_IN_PROGRESS = 1
-internal const val ORDER_STATE_IN_DONE = 2
+internal const val ORDER_STATE_DONE = 2
 internal const val ORDER_STATE_CANCELED = 3
 internal const val ORDER_STATE_DELETED = 4
 
