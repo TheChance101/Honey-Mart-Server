@@ -431,18 +431,13 @@ paths:
         required: false
         schema:
           type: "string"
-      - name: "images"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
       responses:
         "201":
           description: "Created"
           content:
             '*/*':
               schema:
-                type: "string"
+                $ref: "#/components/schemas/ProductModel"
   /product/{id}:
     delete:
       description: ""
@@ -504,6 +499,22 @@ paths:
           content:
             '*/*':
               schema:
+                $ref: "#/components/schemas/ProductModel"
+  /product/{productId}/categories:
+    get:
+      description: ""
+      parameters:
+      - name: "productId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/CategoryModel"
@@ -549,16 +560,22 @@ paths:
             '*/*':
               schema:
                 type: "string"
-  /product/uploadImage:
+  /product/{productId}/uploadImages:
     post:
       description: ""
+      parameters:
+      - name: "productId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
       responses:
         "201":
           description: "Created"
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/ProductImage"
+                type: "boolean"
   /user/login:
     post:
       description: ""
@@ -652,7 +669,7 @@ paths:
           content:
             '*/*':
               schema:
-                type: "string"
+                type: "boolean"
   /wishList/{productId}:
     delete:
       description: ""
@@ -668,7 +685,7 @@ paths:
           content:
             '*/*':
               schema:
-                type: "string"
+                type: "boolean"
 components:
   schemas:
     ProductWithCount:
@@ -781,12 +798,4 @@ components:
         email:
           type: "string"
         profileImage:
-          type: "string"
-    ProductImage:
-      type: "object"
-      properties:
-        id:
-          type: "integer"
-          format: "int64"
-        imageUrl:
           type: "string"
