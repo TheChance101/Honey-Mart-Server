@@ -3,12 +3,12 @@ package com.thechance.core.data.datasource
 import com.thechance.core.data.datasource.database.tables.order.OrderProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderTable
 import com.thechance.core.data.datasource.database.tables.product.ProductTable
-import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.datasource.mapper.toProductInOrder
 import com.thechance.core.data.repository.dataSource.OrderDataSource
 import com.thechance.core.entity.Order
 import com.thechance.core.entity.OrderDetails
 import com.thechance.core.entity.OrderItem
+import com.thechance.core.utils.ORDER_STATE_DELETED
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 
@@ -29,8 +29,15 @@ class OrderDataSourceImp : OrderDataSource {
         true
     }
 
-    override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> = dbQuery {
-        OrderTable.select { OrderTable.marketId eq marketId }
+    override suspend fun getOrdersForMarket(
+        marketId: Long,
+        state: Int
+    ): List<Order> = dbQuery {
+        OrderTable.select {
+            (OrderTable.marketId eq marketId) and
+                    not(OrderTable.state eq ORDER_STATE_DELETED) and
+                    (OrderTable.state eq state)
+        }
             .map {
                 Order(
                     it[OrderTable.id].value,
@@ -43,10 +50,49 @@ class OrderDataSourceImp : OrderDataSource {
             }
     }
 
-    override suspend fun getAllOrdersForUser(
-        userId: Long
+    override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> = dbQuery {
+        OrderTable.select {
+            (OrderTable.marketId eq marketId) and
+                    not(OrderTable.state eq ORDER_STATE_DELETED)
+        }
+            .map {
+                Order(
+                    it[OrderTable.id].value,
+                    it[OrderTable.userId].value,
+                    it[OrderTable.marketId].value,
+                    it[OrderTable.totalPrice],
+                    it[OrderTable.orderDate],
+                    it[OrderTable.state]
+                )
+            }
+    }
+
+    override suspend fun getOrdersForUser(
+        userId: Long,
+        state: Int
     ): List<Order> = dbQuery {
-        OrderTable.select { OrderTable.userId eq userId }
+        OrderTable.select {
+            (OrderTable.userId eq userId) and
+                    not(OrderTable.state eq ORDER_STATE_DELETED) and
+                    (OrderTable.state eq state)
+        }
+            .map {
+                Order(
+                    it[OrderTable.id].value,
+                    it[OrderTable.userId].value,
+                    it[OrderTable.marketId].value,
+                    it[OrderTable.totalPrice],
+                    it[OrderTable.orderDate],
+                    it[OrderTable.state]
+                )
+            }
+    }
+
+    override suspend fun getAllOrdersForUser(userId: Long): List<Order> = dbQuery {
+        OrderTable.select {
+            (OrderTable.userId eq userId) and
+                    not(OrderTable.state eq ORDER_STATE_DELETED)
+        }
             .map {
                 Order(
                     it[OrderTable.id].value,
@@ -90,4 +136,13 @@ class OrderDataSourceImp : OrderDataSource {
         dbQuery {
             OrderTable.select { OrderTable.id eq orderId }.singleOrNull() != null
         }
+
+    override suspend fun getOrderState(orderId: Long): Int = dbQuery {
+        OrderTable.select {
+            OrderTable.id eq orderId
+        }.map {
+            it[OrderTable.state]
+        }.single()
+    }
+
 }

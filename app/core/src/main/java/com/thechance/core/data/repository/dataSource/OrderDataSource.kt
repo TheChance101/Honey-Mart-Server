@@ -12,6 +12,11 @@ interface OrderDataSource {
         totalPrice: Double
     ): Boolean
 
+    suspend fun getOrdersForMarket(
+        marketId: Long,
+        state: Int
+    ): List<Order>
+
     suspend fun getAllOrdersForMarket(
         marketId: Long
     ): List<Order>
@@ -19,6 +24,8 @@ interface OrderDataSource {
     //end region
     suspend fun isOrderExist(orderId: Long): Boolean
     suspend fun updateOrderState(orderId: Long, newState: Int): Boolean
+    suspend fun getOrdersForUser(userId: Long, state: Int): List<Order>
     suspend fun getAllOrdersForUser(userId: Long): List<Order>
     suspend fun getOrderById(orderId: Long): OrderDetails
+    suspend fun getOrderState(orderId: Long): Int
 }
