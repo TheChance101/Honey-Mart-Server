@@ -7,19 +7,14 @@ import org.koin.core.component.KoinComponent
 
 class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(
-        productName: String,
-        productPrice: Double,
-        productQuantity: String?,
-        categoriesId: List<Long>?,
-        marketOwnerId: Long?,
-        role: String?,
-        images: List<Long>?
-    ): Boolean {
+        productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?,
+        marketOwnerId: Long?, role: String?
+    ): Product {
         isValidInput(productName, productPrice, productQuantity, categoriesId, marketOwnerId, role)?.let { throw it }
 
         return if (repository.checkCategoriesInDb(categoriesId!!)) {
             if (isMarketOwner(marketOwnerId!!, categoryId = categoriesId[0])) {
-                repository.createProduct(productName, productPrice, productQuantity!!, categoriesId, images!!)
+                repository.createProduct(productName, productPrice, productQuantity!!, categoriesId)
             } else {
                 throw UnauthorizedException()
             }
@@ -29,12 +24,8 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
     }
 
     private fun isValidInput(
-        productName: String,
-        productPrice: Double,
-        productQuantity: String?,
-        categoriesId: List<Long>?,
-        marketOwnerId: Long?,
-        role: String?
+        productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?,
+        marketOwnerId: Long?, role: String?
     ): Exception? {
         return when {
             !isValidMarketProductName(productName) -> {

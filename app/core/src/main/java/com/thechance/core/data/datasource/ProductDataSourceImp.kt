@@ -16,12 +16,8 @@ import org.koin.core.component.KoinComponent
 
 class ProductDataSourceImp : ProductDataSource, KoinComponent {
     override suspend fun createProduct(
-        productName: String,
-        productPrice: Double,
-        productQuantity: String,
-        categoriesId: List<Long>,
-        images: List<Long>
-    ): Boolean = dbQuery {
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+    ): Product = dbQuery {
         val newProduct = ProductTable.insert { productRow ->
             productRow[name] = productName
             productRow[price] = productPrice
@@ -30,11 +26,13 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
         insertCategoryForProduct(categoriesId, newProduct[ProductTable.id].value)
 
-        ProductGalleryTable.batchInsert(images) { image ->
-            this[ProductGalleryTable.productId] = newProduct[ProductTable.id].value
-            this[ProductGalleryTable.galleryId] = image
-        }
-        true
+        Product(
+            id = newProduct[ProductTable.id].value,
+            name = newProduct[ProductTable.name],
+            quantity = newProduct[ProductTable.quantity],
+            price = newProduct[ProductTable.price],
+            image = emptyList()
+        )
     }
 
     private fun insertCategoryForProduct(categoriesId: List<Long>, productId: Long) {
@@ -137,16 +135,17 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         }
     }
 
-    override suspend fun addImageToGallery(imageUrl: String): Image {
+    override suspend fun addImageToGallery(imagesUrl: List<String>, productId: Long): Boolean {
         return dbQuery {
-            val newImage = GalleryTable.insert { image ->
-                image[GalleryTable.imageUrl] = imageUrl
+            GalleryTable.batchInsert(imagesUrl) { image ->
+                this[GalleryTable.imageUrl] = image
+            }.map { imageRow ->
+                ProductGalleryTable.insert {
+                    it[ProductGalleryTable.productId] = productId
+                    it[ProductGalleryTable.galleryId] = imageRow[GalleryTable.id]
+                }
             }
-
-            Image(
-                id = newImage[GalleryTable.id].value,
-                imageUrl = newImage[GalleryTable.imageUrl]
-            )
+            true
         }
     }
 

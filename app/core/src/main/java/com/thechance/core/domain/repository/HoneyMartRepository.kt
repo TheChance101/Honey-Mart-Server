@@ -56,8 +56,8 @@ interface HoneyMartRepository {
 
     //region product
     suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, images: List<Long>
-    ): Boolean
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+    ): Product
 
     suspend fun getAllProducts(): List<Product>
     suspend fun getAllCategoryForProduct(productId: Long): List<Category>
@@ -72,7 +72,7 @@ interface HoneyMartRepository {
 
     suspend fun getProductMarketId(productId: Long): Long
 
-    suspend fun addImageProduct(imageUrl: String): Image
+    suspend fun addImageProduct(imagesUrl: List<String>, productId: Long): Boolean
 
     suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
     //endregion

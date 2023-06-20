@@ -5,8 +5,8 @@ import com.thechance.core.entity.*
 interface ProductDataSource {
 
     suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, images: List<Long>
-    ): Boolean
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+    ): Product
 
     suspend fun getAllProducts(): List<Product>
 
@@ -26,7 +26,7 @@ interface ProductDataSource {
 
     suspend fun getProductMarketId(productId: Long): Long
 
-    suspend fun addImageToGallery(imageUrl: String): Image
+    suspend fun addImageToGallery(imagesUrl: List<String>, productId: Long): Boolean
 
     suspend fun getAllProductsInCategory(categoryId: Long): List<Product>
 

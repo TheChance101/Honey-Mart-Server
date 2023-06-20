@@ -38,18 +38,17 @@ fun Route.productsRoutes() {
                 val principal = call.principal<JWTPrincipal>()
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
-
                 val params = call.receiveParameters()
                 val productName = params["name"]?.trim().orEmpty()
                 val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
                 val productQuantity = params["quantity"]?.trim()
                 val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
-                val images = params["images"]?.trim()?.toLongIds()
 
-                productUseCasesContainer.createProductUseCase(
-                    productName, productPrice, productQuantity, categoriesId, marketOwnerId, role, images
-                )
-                call.respond(HttpStatusCode.Created, ServerResponse.success("Added successfully"))
+                val product = productUseCasesContainer.createProductUseCase(
+                    productName, productPrice, productQuantity, categoriesId, marketOwnerId, role
+                ).toApiProductModel()
+
+                call.respond(HttpStatusCode.Created, ServerResponse.success(product))
             }
 
             put("{id}") {
@@ -106,16 +105,17 @@ fun Route.productsRoutes() {
                 )
             }
 
-            post("uploadImage") {
+            post("/{productId}/uploadImages") {
                 val principal = call.principal<JWTPrincipal>()
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
-                val imageParts = call.receiveMultipart().readAllParts()
+                val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
+                val imageParts = call.receiveMultipart()
 
-                val image = productUseCasesContainer.addImageProductUseCase(
-                    marketOwnerId = marketOwnerId, role = role, image = imageParts
-                ).toApiProductImage()
-                call.respond(HttpStatusCode.Created, ServerResponse.success(image, "uploaded."))
+                productUseCasesContainer.addImageProductUseCase(
+                    marketOwnerId = marketOwnerId, role = role, productId = productId, image = imageParts
+                )
+                call.respond(HttpStatusCode.Created, ServerResponse.success(true, "uploaded."))
             }
 
             delete("{productId}/image/{imageId}") {
@@ -132,5 +132,7 @@ fun Route.productsRoutes() {
             }
         }
     }
+
+
 }
 

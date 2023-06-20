@@ -10,6 +10,6 @@ internal const val ORDER_STATE_IN_DONE = 1
 
 const val ROLE_TYPE = "ROLE_TYPE"
 
-const val BASE_URL = "https://honey-mart-server-oe345.ondigitalocean.app"
+const val BASE_URL = "http://0.0.0.0:8080"//"https://honey-mart-server-oe345.ondigitalocean.app"
 
 const val IMAGES_PATH = "files/image_uploads"
