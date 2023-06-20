@@ -56,6 +56,13 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         }
     }
 
+    override suspend fun getProduct(productId: Long): Product = dbQuery {
+        ProductTable.select { ProductTable.id eq productId }.map { productRow ->
+            val images = getProductImages(productRow[ProductTable.id].value)
+            productRow.toProduct(images = images)
+        }.single()
+    }
+
     private fun getProductImages(productId: Long): List<Image> {
         return (GalleryTable innerJoin ProductGalleryTable)
             .select { ProductGalleryTable.productId eq productId }

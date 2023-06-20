@@ -60,7 +60,11 @@ interface HoneyMartRepository {
     ): Product
 
     suspend fun getAllProducts(): List<Product>
+
+    suspend fun getProduct(productId: Long): Product
+
     suspend fun getAllCategoryForProduct(productId: Long): List<Category>
+
     suspend fun updateProduct(
         productId: Long, productName: String?, productPrice: Double?, productQuantity: String?
     ): Boolean

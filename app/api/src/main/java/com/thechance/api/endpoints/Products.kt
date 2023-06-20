@@ -25,10 +25,17 @@ fun Route.productsRoutes() {
 
     route("/product") {
 
-        get("/{productId}") {
+        get("/{productId}/categories") {
             val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
             val categories = productUseCasesContainer.getCategoriesForProductUseCase(productId = productId)
                 .map { it.toApiCategoryModel() }
+            call.respond(ServerResponse.success(categories))
+        }
+
+        get("/{productId}") {
+            val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
+            val categories = productUseCasesContainer.getProductDetailsUseCase(productId = productId)
+                .toApiProductModel()
             call.respond(ServerResponse.success(categories))
         }
 

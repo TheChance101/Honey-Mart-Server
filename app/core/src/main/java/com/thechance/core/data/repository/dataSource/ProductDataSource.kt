@@ -10,6 +10,8 @@ interface ProductDataSource {
 
     suspend fun getAllProducts(): List<Product>
 
+    suspend fun getProduct(productId: Long): Product
+
     suspend fun getAllCategoryForProduct(productId: Long): List<Category>
 
     suspend fun updateProduct(

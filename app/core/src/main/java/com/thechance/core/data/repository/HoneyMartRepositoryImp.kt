@@ -125,6 +125,8 @@ class HoneyMartRepositoryImp(
 
     override suspend fun getAllProducts(): List<Product> = productDataSource.getAllProducts()
 
+    override suspend fun getProduct(productId: Long) = productDataSource.getProduct(productId)
+
     override suspend fun getAllCategoryForProduct(productId: Long): List<Category> =
         productDataSource.getAllCategoryForProduct(productId)
 
