@@ -12,7 +12,7 @@ internal const val ORDER_STATE_DELETED = 4
 
 const val ROLE_TYPE = "ROLE_TYPE"
 
-const val BASE_URL = "http://0.0.0.0:8080"//"https://honey-mart-server-oe345.ondigitalocean.app"
+const val BASE_URL = "https://honey-mart-server-oe345.ondigitalocean.app"// "http://0.0.0.0:8080"
 
 const val PRODUCT_IMAGES_PATH = "files/market"
 
