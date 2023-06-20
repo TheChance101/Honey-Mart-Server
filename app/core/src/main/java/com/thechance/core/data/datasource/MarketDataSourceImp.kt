@@ -33,15 +33,24 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         }
     }
 
-    override suspend fun createMarket(marketName: String, ownerId: Long): Market =
+    override suspend fun createMarket(marketName: String, ownerId: Long): Boolean =
         dbQuery {
             val newMarket = MarketTable.insert {
                 it[name] = marketName
                 it[isDeleted] = false
                 it[MarketTable.ownerId] = ownerId
             }
-            Market(marketId = newMarket[MarketTable.id].value, marketName = newMarket[MarketTable.name])
+            true
         }
+
+    override suspend fun addMarketImage(marketId: Long, imageUrl: String): Boolean {
+        return dbQuery {
+            MarketTable.update({ MarketTable.id eq marketId }) {
+                it[MarketTable.imageUrl] = imageUrl
+            }
+            true
+        }
+    }
 
     override suspend fun getAllMarkets(): List<Market> = dbQuery {
         MarketTable.select { MarketTable.isDeleted eq false }.map { it.toMarket() }
@@ -61,11 +70,12 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
     }
 
 
-    override suspend fun updateMarket(marketId: Long, marketName: String): Market = dbQuery {
-        MarketTable.update({ MarketTable.id eq marketId }) {
-            it[name] = marketName
+    override suspend fun updateMarket(marketId: Long, marketName: String?, imageUrl: String?): Boolean = dbQuery {
+        MarketTable.update({ MarketTable.id eq marketId }) { marketRow ->
+            marketName?.let { marketRow[MarketTable.name] = it }
+            imageUrl?.let { marketRow[MarketTable.imageUrl] = it }
         }
-        Market(marketId = marketId, marketName = marketName)
+        true
     }
 
     override suspend fun isDeleted(marketId: Long): Boolean? = dbQuery {

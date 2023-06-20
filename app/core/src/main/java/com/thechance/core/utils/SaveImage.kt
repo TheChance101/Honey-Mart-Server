@@ -7,17 +7,15 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.File
 
 
-internal fun saveImage(imageParts: List<PartData>, name: String): String {
+internal fun saveImage(imageParts: List<PartData>, name: String, imagePath: String): String {
     val image = imageParts.filterIsInstance<PartData.FileItem>().firstOrNull()
     if (image != null) {
         val imageName = "$name.jpg"
         val imageBytes = image.streamProvider().readBytes()
-
-        // Save the image to the server
-        val uploadDir = File(IMAGES_PATH)
-        uploadDir.mkdirs() // Create the directory if it doesn't exist
+        val uploadDir = File(imagePath)
+        uploadDir.mkdirs()
         File(uploadDir, imageName).writeBytes(imageBytes)
-        return "$BASE_URL/$IMAGES_PATH/$imageName"
+        return "$BASE_URL/$imagePath/$imageName"
     } else {
         throw AddImageFailedException()
     }
