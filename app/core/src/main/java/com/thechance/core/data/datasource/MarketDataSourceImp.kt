@@ -25,7 +25,6 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         }
     }
 
-
     override suspend fun getOwnerIdByMarketId(marketId: Long): Long {
         return dbQuery {
             MarketTable.select { MarketTable.id eq marketId }.map {

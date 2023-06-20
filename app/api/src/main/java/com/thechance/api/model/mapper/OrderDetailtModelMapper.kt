@@ -1,9 +1,9 @@
 package com.thechance.api.model.mapper
 
 import com.thechance.api.model.OrderDetailsModel
-import com.thechance.core.entity.OrderDetails
+import com.thechance.core.entity.order.OrderDetails
 
-internal fun OrderDetails.toApiOrderModel(): OrderDetailsModel {
+internal fun OrderDetails.toApiMarketOrder(): OrderDetailsModel {
     return OrderDetailsModel(
         orderId = orderId,
         userId = userId,

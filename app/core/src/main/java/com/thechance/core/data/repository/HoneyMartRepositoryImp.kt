@@ -3,6 +3,7 @@ package com.thechance.core.data.repository
 import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.entity.*
+import com.thechance.core.entity.order.*
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
@@ -171,33 +172,29 @@ class HoneyMartRepositoryImp(
         )
     }
 
-    override suspend fun getOrdersForMarket(marketId: Long, state: Int): List<Order> =
+    override suspend fun getOrdersForMarket(marketId: Long, state: Int): List<MarketOrder> =
         orderDataSource.getOrdersForMarket(marketId, state)
 
-    override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> =
+    override suspend fun getAllOrdersForMarket(marketId: Long): List<MarketOrder> =
         orderDataSource.getAllOrdersForMarket(marketId)
 
-    override suspend fun getAllOrdersForUser(userId: Long): List<Order> {
-        return orderDataSource.getAllOrdersForUser(userId)
-    }
+    override suspend fun getAllOrdersForUser(userId: Long) = orderDataSource.getAllOrdersForUser(userId)
 
-    override suspend fun getOrdersForUser(userId: Long, state: Int): List<Order> {
-        return orderDataSource.getOrdersForUser(userId, state)
-    }
 
-    override suspend fun getOrderById(orderId: Long): OrderDetails {
-        return orderDataSource.getOrderById(orderId)
-    }
+    override suspend fun getOrdersForUser(userId: Long, state: Int) = orderDataSource.getOrdersForUser(userId, state)
 
-    override suspend fun updateOrderState(orderId: Long, newOrderState: Int): Boolean {
-        return orderDataSource.updateOrderState(orderId, newOrderState)
-    }
 
-    override suspend fun isOrderExist(orderId: Long): Boolean =
-        orderDataSource.isOrderExist(orderId)
+    override suspend fun getOrderById(orderId: Long) = orderDataSource.getOrderById(orderId)
 
-    override suspend fun getOrderState(orderId: Long): Int =
-        orderDataSource.getOrderState(orderId)
+
+    override suspend fun updateOrderState(orderId: Long, newOrderState: Int) =
+        orderDataSource.updateOrderState(orderId, newOrderState)
+
+
+    override suspend fun isOrderExist(orderId: Long): Boolean = orderDataSource.isOrderExist(orderId)
+
+    override suspend fun getOrderState(orderId: Long): Int = orderDataSource.getOrderState(orderId)
+
     //endregion
 
     //region image
