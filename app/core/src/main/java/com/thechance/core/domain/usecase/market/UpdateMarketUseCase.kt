@@ -1,17 +1,18 @@
 package com.thechance.core.domain.usecase.market
 
 import com.thechance.core.domain.repository.HoneyMartRepository
-import com.thechance.core.entity.Market
 import com.thechance.core.utils.*
+import io.ktor.http.content.*
 import org.koin.core.component.KoinComponent
 
 class UpdateMarketUseCase(private val repository: HoneyMartRepository) : KoinComponent {
-    suspend operator fun invoke(marketName: String?, marketOwnerId: Long?, role: String?): Market {
-
-
-        isValidInput(marketName, marketOwnerId, role)?.let { throw it }
+    suspend operator fun invoke(
+        marketName: String?, marketOwnerId: Long?, role: String?, image: List<PartData>?
+    ): Boolean {
+        isValidInput(marketName, marketOwnerId, role, image)?.let { throw it }
 
         val marketId = repository.getMarketIdByOwnerId(ownerId = marketOwnerId!!)
+        val imageUrl: String?
 
         return if (marketId == null) {
             throw InvalidMarketIdException()
@@ -21,18 +22,23 @@ class UpdateMarketUseCase(private val repository: HoneyMartRepository) : KoinCom
                 throw IdNotFoundException()
             } else if (isDeleted) {
                 throw MarketDeletedException()
+            } else if (image != null) {
+                imageUrl = saveImage(image, name = "market$marketId", MARKET_IMAGES_PATH)
+                repository.updateMarket(marketId, imageUrl = imageUrl, marketName = null)
             } else {
-                repository.updateMarket(marketId, marketName!!)
+                repository.updateMarket(marketId, marketName = marketName, imageUrl = null)
             }
         }
     }
 
 
-    private fun isValidInput(marketName: String?, marketOwnerId: Long?, role: String?): Exception? {
-        return if (isInvalidId(marketOwnerId)) {
+    private fun isValidInput(
+        marketName: String?, marketOwnerId: Long?, role: String?, image: List<PartData>?
+    ): Exception? {
+        return if (marketName == null && image == null) {
+            InvalidInputException()
+        } else if (isInvalidId(marketOwnerId)) {
             InvalidMarketIdException()
-        } else if (!isValidMarketProductName(marketName)) {
-            InvalidMarketNameException()
         } else if (!isValidRole(MARKET_OWNER_ROLE, role)) {
             InvalidOwnerIdException()
         } else {

@@ -48,11 +48,11 @@ fun Route.productsRoutes() {
                 val params = call.receiveParameters()
                 val productName = params["name"]?.trim().orEmpty()
                 val productPrice = params["price"]?.trim()?.toDoubleOrNull().orZero()
-                val productQuantity = params["quantity"]?.trim()
+                val description = params["description"]?.trim()
                 val categoriesId = params["categoriesId"]?.trim()?.toLongIds()
 
                 val product = productUseCasesContainer.createProductUseCase(
-                    productName, productPrice, productQuantity, categoriesId, marketOwnerId, role
+                    productName, productPrice, description, categoriesId, marketOwnerId, role
                 ).toApiProductModel()
 
                 call.respond(HttpStatusCode.Created, ServerResponse.success(product))
@@ -67,13 +67,13 @@ fun Route.productsRoutes() {
                 val params = call.receiveParameters()
                 val productName = params["name"]?.trim()
                 val productPrice = params["price"]?.trim()?.toDoubleOrNull()
-                val productQuantity = params["quantity"]?.trim()
+                val description = params["description"]?.trim()
 
                 productUseCasesContainer.updateProductUseCase(
                     productId = productId,
                     productName = productName,
                     productPrice = productPrice,
-                    productQuantity = productQuantity,
+                    productQuantity = description,
                     marketOwnerId, role
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
