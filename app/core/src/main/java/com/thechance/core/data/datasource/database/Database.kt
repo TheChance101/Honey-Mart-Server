@@ -38,6 +38,7 @@ class CoreDataBase {
     }
 
     init {
+
         createTables()
     }
 
