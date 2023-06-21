@@ -225,6 +225,32 @@ paths:
               examples:
                 Example#1:
                   value: "File not found"
+  /files/markets/{image}:
+    get:
+      description: ""
+      parameters:
+      - name: "image"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK <br> A file response"
+          content:
+            application/*:
+              schema:
+                type: "object"
+                format: "binary"
+        "404":
+          description: "Not Found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "File not found"
   /markets:
     get:
       description: ""
@@ -256,7 +282,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/MarketModel"
+                type: "boolean"
   /markets/{id}:
     delete:
       description: ""
@@ -292,7 +318,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/MarketModel"
+                type: "boolean"
   /markets/{id}/categories:
     get:
       description: ""
@@ -311,6 +337,22 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/CategoryModel"
+  /markets/{id}/image:
+    put:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "boolean"
   /order/{id}:
     get:
       description: "get Order Details"
@@ -464,7 +506,7 @@ paths:
         required: false
         schema:
           type: "string"
-      - name: "quantity"
+      - name: "description"
         in: "query"
         required: false
         schema:
@@ -515,7 +557,7 @@ paths:
         required: false
         schema:
           type: "string"
-      - name: "quantity"
+      - name: "description"
         in: "query"
         required: false
         schema:
@@ -763,7 +805,7 @@ components:
           format: "int64"
         name:
           type: "string"
-        quantity:
+        description:
           type: "string"
         price:
           type: "number"
@@ -779,6 +821,8 @@ components:
           type: "integer"
           format: "int64"
         marketName:
+          type: "string"
+        imageUrl:
           type: "string"
     CategoryModel:
       type: "object"

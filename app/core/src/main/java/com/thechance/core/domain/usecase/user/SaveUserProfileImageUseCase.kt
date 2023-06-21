@@ -12,7 +12,7 @@ import java.io.File
 class SaveUserProfileImageUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(imageParts: List<PartData>, userId: Long?, role: String?): String {
         return if (userId != null) {
-            val imageUrl = saveImage(imageParts, userId.toString())
+            val imageUrl = saveImage(imageParts, userId.toString(), USER_IMAGES_PATH)
 
             isInvalidInput(imageUrl, role)
 

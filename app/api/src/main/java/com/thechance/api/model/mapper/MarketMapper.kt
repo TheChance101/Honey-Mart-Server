@@ -7,6 +7,7 @@ import com.thechance.core.entity.Market
 internal fun Market.toApiMarketModel(): MarketModel {
     return MarketModel(
         marketId = marketId,
-        marketName = marketName
+        marketName = marketName,
+        imageUrl = imageUrl
     )
 }
