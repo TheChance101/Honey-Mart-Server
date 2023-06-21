@@ -1,8 +1,9 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.entity.*
 import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.domain.repository.HoneyMartRepository
+import com.thechance.core.entity.*
+import com.thechance.core.entity.order.*
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
@@ -117,14 +118,15 @@ class HoneyMartRepositoryImp(
 
     //region product
     override suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, images: List<Long>
-    ): Boolean =
-        productDataSource.createProduct(
-            productName = productName, productPrice = productPrice, productQuantity = productQuantity,
-            categoriesId = categoriesId, images = images
-        )
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+    ): Product = productDataSource.createProduct(
+        productName = productName, productPrice = productPrice, productQuantity = productQuantity,
+        categoriesId = categoriesId
+    )
 
     override suspend fun getAllProducts(): List<Product> = productDataSource.getAllProducts()
+
+    override suspend fun getProduct(productId: Long) = productDataSource.getProduct(productId)
 
     override suspend fun getAllCategoryForProduct(productId: Long): List<Category> =
         productDataSource.getAllCategoryForProduct(productId)
@@ -150,7 +152,8 @@ class HoneyMartRepositoryImp(
 
     override suspend fun getProductMarketId(productId: Long): Long = productDataSource.getProductMarketId(productId)
 
-    override suspend fun addImageProduct(imageUrl: String): Image = productDataSource.addImageToGallery(imageUrl)
+    override suspend fun addImageProduct(imagesUrl: List<String>, productId: Long): Boolean =
+        productDataSource.addImageToGallery(imagesUrl, productId)
 
     override suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String =
         productDataSource.deleteImageFromProduct(productId, imageId)
@@ -169,23 +172,29 @@ class HoneyMartRepositoryImp(
         )
     }
 
-    override suspend fun getAllOrdersForMarket(marketId: Long): List<Order> =
+    override suspend fun getOrdersForMarket(marketId: Long, state: Int): List<MarketOrder> =
+        orderDataSource.getOrdersForMarket(marketId, state)
+
+    override suspend fun getAllOrdersForMarket(marketId: Long): List<MarketOrder> =
         orderDataSource.getAllOrdersForMarket(marketId)
 
-    override suspend fun getAllOrdersForUser(userId: Long): List<Order> {
-        return orderDataSource.getAllOrdersForUser(userId)
-    }
+    override suspend fun getAllOrdersForUser(userId: Long) = orderDataSource.getAllOrdersForUser(userId)
 
-    override suspend fun getOrderById(orderId: Long): OrderDetails {
-        return orderDataSource.getOrderById(orderId)
-    }
 
-    override suspend fun updateOrderState(orderId: Long, newOrderState: Int): Boolean {
-        return orderDataSource.updateOrderState(orderId, newOrderState)
-    }
+    override suspend fun getOrdersForUser(userId: Long, state: Int) = orderDataSource.getOrdersForUser(userId, state)
 
-    override suspend fun isOrderExist(orderId: Long): Boolean =
-        orderDataSource.isOrderExist(orderId)
+
+    override suspend fun getOrderById(orderId: Long) = orderDataSource.getOrderById(orderId)
+
+
+    override suspend fun updateOrderState(orderId: Long, newOrderState: Int) =
+        orderDataSource.updateOrderState(orderId, newOrderState)
+
+
+    override suspend fun isOrderExist(orderId: Long): Boolean = orderDataSource.isOrderExist(orderId)
+
+    override suspend fun getOrderState(orderId: Long): Int = orderDataSource.getOrderState(orderId)
+
     //endregion
 
     //region image

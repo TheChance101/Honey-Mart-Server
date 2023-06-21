@@ -1,6 +1,9 @@
 package com.thechance.core.domain.repository
 
 import com.thechance.core.entity.*
+import com.thechance.core.entity.order.MarketOrder
+import com.thechance.core.entity.order.OrderDetails
+import com.thechance.core.entity.order.UserOrder
 
 interface HoneyMartRepository {
 
@@ -56,11 +59,15 @@ interface HoneyMartRepository {
 
     //region product
     suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, images: List<Long>
-    ): Boolean
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+    ): Product
 
     suspend fun getAllProducts(): List<Product>
+
+    suspend fun getProduct(productId: Long): Product
+
     suspend fun getAllCategoryForProduct(productId: Long): List<Category>
+
     suspend fun updateProduct(
         productId: Long, productName: String?, productPrice: Double?, productQuantity: String?
     ): Boolean
@@ -72,18 +79,24 @@ interface HoneyMartRepository {
 
     suspend fun getProductMarketId(productId: Long): Long
 
-    suspend fun addImageProduct(imageUrl: String): Image
+    suspend fun addImageProduct(imagesUrl: List<String>, productId: Long): Boolean
 
     suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
     //endregion
 
     //region order
     suspend fun createOrder(cartId: Long, userId: Long): Boolean
-    suspend fun getAllOrdersForMarket(marketId: Long): List<Order>
-    suspend fun getAllOrdersForUser(userId: Long): List<Order>
+    suspend fun getOrdersForMarket(marketId: Long, state: Int): List<MarketOrder>
+    suspend fun getOrdersForUser(userId: Long, state: Int): List<UserOrder>
     suspend fun getOrderById(orderId: Long): OrderDetails
     suspend fun updateOrderState(orderId: Long, newOrderState: Int): Boolean
     suspend fun isOrderExist(orderId: Long): Boolean
+
+    suspend fun getOrderState(orderId: Long): Int
+
+    suspend fun getAllOrdersForUser(userId: Long): List<UserOrder>
+
+    suspend fun getAllOrdersForMarket(marketId: Long): List<MarketOrder>
 
     //endregion
 
@@ -91,5 +104,7 @@ interface HoneyMartRepository {
 
 
     suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean
+
     suspend fun getUserProfileImage(userId: Long): String?
+
 }

@@ -194,6 +194,37 @@ paths:
               examples:
                 Example#1:
                   value: "File not found"
+  /files/market/{marketId}/{image}:
+    get:
+      description: ""
+      parameters:
+      - name: "image"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      - name: "marketId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK <br> A file response"
+          content:
+            application/*:
+              schema:
+                type: "object"
+                format: "binary"
+        "404":
+          description: "Not Found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "File not found"
   /markets:
     get:
       description: ""
@@ -297,7 +328,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/OrderDetailsModel"
     put:
-      description: ""
+      description: "Update order state"
       parameters:
       - name: "id"
         in: "path"
@@ -329,6 +360,12 @@ paths:
   /order/marketOrders:
     get:
       description: ""
+      parameters:
+      - name: "orderState"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
       responses:
         "200":
           description: "OK"
@@ -337,10 +374,16 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/OrderModel"
+                  $ref: "#/components/schemas/MarketOrderModel"
   /order/userOrders:
     get:
       description: ""
+      parameters:
+      - name: "orderState"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
       responses:
         "200":
           description: "OK"
@@ -349,7 +392,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/OrderModel"
+                  $ref: "#/components/schemas/UserOrderModel"
   /owner/Profile:
     get:
       description: ""
@@ -431,18 +474,13 @@ paths:
         required: false
         schema:
           type: "string"
-      - name: "images"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
       responses:
         "201":
           description: "Created"
           content:
             '*/*':
               schema:
-                type: "string"
+                $ref: "#/components/schemas/ProductModel"
   /product/{id}:
     delete:
       description: ""
@@ -504,6 +542,22 @@ paths:
           content:
             '*/*':
               schema:
+                $ref: "#/components/schemas/ProductModel"
+  /product/{productId}/categories:
+    get:
+      description: ""
+      parameters:
+      - name: "productId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/CategoryModel"
@@ -549,16 +603,22 @@ paths:
             '*/*':
               schema:
                 type: "string"
-  /product/uploadImage:
+  /product/{productId}/uploadImages:
     post:
       description: ""
+      parameters:
+      - name: "productId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
       responses:
         "201":
           description: "Created"
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/ProductImage"
+                type: "boolean"
   /user/login:
     post:
       description: ""
@@ -652,7 +712,7 @@ paths:
           content:
             '*/*':
               schema:
-                type: "string"
+                type: "boolean"
   /wishList/{productId}:
     delete:
       description: ""
@@ -668,7 +728,7 @@ paths:
           content:
             '*/*':
               schema:
-                type: "string"
+                type: "boolean"
 components:
   schemas:
     ProductWithCount:
@@ -755,7 +815,19 @@ components:
         state:
           type: "integer"
           format: "int32"
-    OrderModel:
+    UserModel:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+          format: "int64"
+        fullName:
+          type: "string"
+        email:
+          type: "string"
+        profileImage:
+          type: "string"
+    MarketOrderModel:
       type: "object"
       properties:
         orderId:
@@ -770,23 +842,22 @@ components:
         date:
           type: "integer"
           format: "int64"
-    UserModel:
+        user:
+          $ref: "#/components/schemas/UserModel"
+    UserOrderModel:
       type: "object"
       properties:
-        userId:
+        orderId:
           type: "integer"
           format: "int64"
-        fullName:
-          type: "string"
-        email:
-          type: "string"
-        profileImage:
-          type: "string"
-    ProductImage:
-      type: "object"
-      properties:
-        id:
+        totalPrice:
+          type: "number"
+          format: "double"
+        state:
+          type: "integer"
+          format: "int32"
+        date:
           type: "integer"
           format: "int64"
-        imageUrl:
-          type: "string"
+        market:
+          $ref: "#/components/schemas/MarketModel"

@@ -1,18 +1,19 @@
 package com.thechance.api.model.mapper
 
-import com.thechance.api.model.OrderModel
+import com.thechance.api.model.MarketOrderModel
 import com.thechance.api.utils.convertDateToMillis
-import com.thechance.core.entity.Order
+import com.thechance.core.entity.order.MarketOrder
 
-internal fun Order.toApiOrderModel(): OrderModel {
-    return OrderModel(
+internal fun MarketOrder.toApiMarketOrder(): MarketOrderModel {
+    return MarketOrderModel(
         orderId = orderId,
         totalPrice = totalPrice,
         state = state,
-        date = date.convertDateToMillis()
+        date = date.convertDateToMillis(),
+        user = user.toApiUserModel()
     )
 }
 
-internal fun List<Order>.toApiOrders() = map { it.toApiOrderModel() }
+internal fun List<MarketOrder>.toApiMarketOrders() = map { it.toApiMarketOrder() }
 
 

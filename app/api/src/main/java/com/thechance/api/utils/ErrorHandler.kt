@@ -145,7 +145,11 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         }
 
         is InvalidStateOrderException -> {
-            ServerResponse.error("State must be 0 or 1", HttpStatusCode.BadRequest.value)
+            ServerResponse.error("State must be number from 1 to 4", HttpStatusCode.BadRequest.value)
+        }
+
+        is CantUpdateOrderStateException -> {
+            ServerResponse.error("Can't update order state", HttpStatusCode.BadRequest.value)
         }
 
         is UnauthorizedException -> {
