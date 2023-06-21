@@ -38,7 +38,7 @@ class CoreDataBase {
     }
 
     init {
-        createTables()
+        //createTables()
     }
 
     private fun getDatabaseInstance(): Database {
