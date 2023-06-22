@@ -48,19 +48,27 @@ class OrderDataSourceImp : OrderDataSource {
     }
 
     override suspend fun getOrdersForUser(userId: Long, state: Int): List<UserOrder> = dbQuery {
+
+
         (OrderTable innerJoin MarketTable)
             .select {
                 (OrderTable.userId eq userId) and
                         not(OrderTable.state eq ORDER_STATE_DELETED) and
                         (OrderTable.state eq state)
-            }.map { it.toUserOrder() }
+            }.map {
+                val itemsCount = OrderProductTable.select { OrderProductTable.orderId eq it[OrderTable.id] }.count()
+                it.toUserOrder(itemsCount)
+            }
     }
 
     override suspend fun getAllOrdersForUser(userId: Long): List<UserOrder> = dbQuery {
         (OrderTable innerJoin MarketTable).select {
             (OrderTable.userId eq userId) and
                     not(OrderTable.state eq ORDER_STATE_DELETED)
-        }.map { it.toUserOrder() }
+        }.map {
+            val itemsCount = OrderProductTable.select { OrderProductTable.orderId eq it[OrderTable.id] }.count()
+            it.toUserOrder(itemsCount)
+        }
     }
 
     override suspend fun getOrderById(orderId: Long): OrderDetails = dbQuery {

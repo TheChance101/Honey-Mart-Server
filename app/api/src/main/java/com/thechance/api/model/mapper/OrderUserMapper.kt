@@ -11,7 +11,8 @@ internal fun UserOrder.toApiUserOrder(): UserOrderModel {
         totalPrice = totalPrice,
         state = state,
         date = date.convertDateToMillis(),
-        market = market.toApiMarketModel()
+        market = market.toApiMarketModel(),
+        numItems = numItems
     )
 }
 
