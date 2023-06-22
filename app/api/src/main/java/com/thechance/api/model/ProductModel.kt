@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 data class ProductModel(
     val id: Long,
     val name: String,
-    val quantity: String?,
+    val description: String?,
     val price: Double,
     val images: List<String>
 )

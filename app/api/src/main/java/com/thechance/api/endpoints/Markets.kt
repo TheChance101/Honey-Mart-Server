@@ -6,6 +6,7 @@ import com.thechance.api.model.mapper.toApiMarketModel
 import com.thechance.core.domain.usecase.market.MarketUseCaseContainer
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -40,12 +41,29 @@ fun Route.marketsRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val marketName = call.receiveParameters()["name"]?.trim()
-                val updatedMarket =
-                    marketUseCaseContainer.updateMarketUseCase(marketName, marketOwnerId, role)
-                        .toApiMarketModel()
+
+                marketUseCaseContainer.updateMarketUseCase(marketName = marketName, marketOwnerId, role, image = null)
+
                 call.respond(
                     HttpStatusCode.OK,
-                    ServerResponse.success(updatedMarket, "Market updated successfully")
+                    ServerResponse.success(true, "Market updated successfully")
+                )
+            }
+
+            put("/{id}/image") {
+                val principal = call.principal<JWTPrincipal>()
+                val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+
+                val image = call.receiveMultipart().readAllParts()
+
+                marketUseCaseContainer.updateMarketUseCase(
+                    marketOwnerId = marketOwnerId, role = role, marketName = null, image = image
+                )
+
+                call.respond(
+                    HttpStatusCode.OK,
+                    ServerResponse.success(true, "Market updated successfully")
                 )
             }
         }
@@ -54,14 +72,13 @@ fun Route.marketsRoutes() {
 
         post {
             val params = call.receiveParameters()
-
             val marketName = params["name"]?.trim().orEmpty()
             val ownerId = params["ownerId"]?.toLongOrNull()
 
-            val newMarket = marketUseCaseContainer.createMarketUseCase(marketName, ownerId).toApiMarketModel()
+            marketUseCaseContainer.createMarketUseCase(marketName, ownerId)
             call.respond(
                 HttpStatusCode.Created,
-                ServerResponse.success(newMarket, "Market created successfully")
+                ServerResponse.success(true, "Market created successfully")
             )
         }
 

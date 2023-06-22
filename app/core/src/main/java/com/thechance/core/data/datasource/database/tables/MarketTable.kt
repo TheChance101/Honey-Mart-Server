@@ -6,4 +6,5 @@ object MarketTable : LongIdTable() {
     val name = text("name")
     val ownerId = reference("ownerId", OwnerTable)
     val isDeleted = bool("isDeleted").default(false)
+    val imageUrl = text("imageUrl").default("")
 }

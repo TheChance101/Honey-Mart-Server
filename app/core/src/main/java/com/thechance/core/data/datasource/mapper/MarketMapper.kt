@@ -8,5 +8,6 @@ internal fun ResultRow.toMarket(): Market {
     return Market(
         marketId = this[MarketTable.id].value,
         marketName = this[MarketTable.name],
+        imageUrl = this[MarketTable.imageUrl]
     )
 }
