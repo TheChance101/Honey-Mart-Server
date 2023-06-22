@@ -19,7 +19,7 @@ class AddProductToCartUseCase(private val repository: HoneyMartRepository) : Koi
         } else if (!isProductInSameMarket(productId = productId, cartId = cartId)) {
             throw ProductNotInSameCartMarketException()
         } else {
-            if (repository.isProductInCart(userId, productId)) {
+            if (repository.isProductInCart(cartId, productId)) {
                 repository.updateProductCountInCart(cartId, productId, count!!)
             } else {
                 val marketId = repository.getMarketId(productId)
