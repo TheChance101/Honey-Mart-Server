@@ -4,6 +4,7 @@ import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.entity.*
 import com.thechance.core.entity.order.*
+import com.thechance.core.entity.order.OrderItem
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
