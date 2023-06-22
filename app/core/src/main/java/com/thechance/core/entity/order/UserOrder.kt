@@ -8,5 +8,6 @@ data class UserOrder(
     val totalPrice: Double,
     val date: LocalDateTime,
     val state: Int,
-    val market: Market
+    val market: Market,
+    val numItems: Long
 )
