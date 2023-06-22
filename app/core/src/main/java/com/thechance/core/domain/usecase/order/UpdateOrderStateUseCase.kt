@@ -63,7 +63,7 @@ class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : Koi
                 throw CantUpdateOrderStateException()
             }
 
-            (state == ORDER_STATE_IN_PROGRESS) && (newOrderState != ORDER_STATE_CANCELED) -> {
+            (state == ORDER_STATE_IN_PROGRESS) && (newOrderState != ORDER_STATE_DONE) -> {
                 throw CantUpdateOrderStateException()
             }
         }
