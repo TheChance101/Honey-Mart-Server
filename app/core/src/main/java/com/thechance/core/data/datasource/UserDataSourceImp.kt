@@ -131,7 +131,8 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
                         id = product.id,
                         name = product.name,
                         price = product.price,
-                        count = productRow[CartProductTable.count]
+                        count = productRow[CartProductTable.count],
+                        images = product.image
                     )
                     total += product.price * cartProduct.count
 

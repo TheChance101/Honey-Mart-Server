@@ -4,18 +4,23 @@ import com.thechance.core.data.datasource.database.tables.MarketTable
 import com.thechance.core.data.datasource.database.tables.NormalUserTable
 import com.thechance.core.data.datasource.database.tables.order.OrderProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderTable
+import com.thechance.core.data.datasource.database.tables.product.GalleryTable
+import com.thechance.core.data.datasource.database.tables.product.ProductGalleryTable
 import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import com.thechance.core.data.datasource.mapper.toMarket
 import com.thechance.core.data.datasource.mapper.toMarketOrder
 import com.thechance.core.data.datasource.mapper.toProductInOrder
 import com.thechance.core.data.datasource.mapper.toUserOrder
 import com.thechance.core.data.repository.dataSource.OrderDataSource
+import com.thechance.core.entity.Image
 import com.thechance.core.entity.order.*
 import com.thechance.core.utils.ORDER_STATE_DELETED
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class OrderDataSourceImp : OrderDataSource {
+
     override suspend fun createOrder(
         userId: Long, marketId: Long, products: List<OrderItem>, totalPrice: Double
     ): Boolean = dbQuery {
@@ -48,8 +53,6 @@ class OrderDataSourceImp : OrderDataSource {
     }
 
     override suspend fun getOrdersForUser(userId: Long, state: Int): List<UserOrder> = dbQuery {
-
-
         (OrderTable innerJoin MarketTable)
             .select {
                 (OrderTable.userId eq userId) and
@@ -77,7 +80,11 @@ class OrderDataSourceImp : OrderDataSource {
             .select {
                 (OrderProductTable.orderId eq orderId) and
                         (OrderProductTable.productId eq ProductTable.id)
-            }.map(ResultRow::toProductInOrder)
+            }.map { productRow ->
+                val images = getProductImages(productRow[ProductTable.id].value)
+                productRow.toProductInOrder(images)
+            }
+
 
         OrderDetails(
             orderId = orderId,
@@ -88,6 +95,17 @@ class OrderDataSourceImp : OrderDataSource {
             date = order[OrderTable.orderDate],
             state = order[OrderTable.state]
         )
+    }
+
+    private fun getProductImages(productId: Long): List<Image> {
+        return (GalleryTable innerJoin ProductGalleryTable)
+            .select { ProductGalleryTable.productId eq productId }
+            .map { imageRow ->
+                Image(
+                    id = imageRow[GalleryTable.id].value,
+                    imageUrl = imageRow[GalleryTable.imageUrl],
+                )
+            }
     }
 
     override suspend fun updateOrderState(orderId: Long, newState: Int): Boolean = dbQuery {
