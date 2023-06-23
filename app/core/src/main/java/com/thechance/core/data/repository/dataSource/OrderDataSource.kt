@@ -1,5 +1,6 @@
 package com.thechance.core.data.repository.dataSource
 
+import com.thechance.core.entity.Image
 import com.thechance.core.entity.order.*
 
 interface OrderDataSource {
@@ -22,4 +23,6 @@ interface OrderDataSource {
     suspend fun getOrderById(orderId: Long): OrderDetails
 
     suspend fun getOrderState(orderId: Long): Int
+
+    suspend fun getProductImages(productId: Long): List<Image>
 }

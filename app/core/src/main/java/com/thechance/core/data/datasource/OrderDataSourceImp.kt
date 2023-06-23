@@ -98,7 +98,7 @@ class OrderDataSourceImp : OrderDataSource {
         )
     }
 
-    private fun getProductImages(productId: Long): List<Image> {
+    override suspend fun getProductImages(productId: Long): List<Image> {
         return (GalleryTable innerJoin ProductGalleryTable)
             .select { ProductGalleryTable.productId eq productId }
             .map { imageRow ->
