@@ -20,6 +20,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class OrderDataSourceImp : OrderDataSource {
+
     override suspend fun createOrder(
         userId: Long, marketId: Long, products: List<OrderItem>, totalPrice: Double
     ): Boolean = dbQuery {
@@ -52,8 +53,6 @@ class OrderDataSourceImp : OrderDataSource {
     }
 
     override suspend fun getOrdersForUser(userId: Long, state: Int): List<UserOrder> = dbQuery {
-
-
         (OrderTable innerJoin MarketTable)
             .select {
                 (OrderTable.userId eq userId) and
@@ -98,7 +97,7 @@ class OrderDataSourceImp : OrderDataSource {
         )
     }
 
-    override suspend fun getProductImages(productId: Long): List<Image> {
+    private fun getProductImages(productId: Long): List<Image> {
         return (GalleryTable innerJoin ProductGalleryTable)
             .select { ProductGalleryTable.productId eq productId }
             .map { imageRow ->

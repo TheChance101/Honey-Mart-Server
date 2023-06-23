@@ -4,6 +4,7 @@ import com.thechance.core.entity.Image
 import com.thechance.core.entity.order.*
 
 interface OrderDataSource {
+
     suspend fun createOrder(
         userId: Long, marketId: Long, products: List<OrderItem>, totalPrice: Double
     ): Boolean
@@ -23,6 +24,4 @@ interface OrderDataSource {
     suspend fun getOrderById(orderId: Long): OrderDetails
 
     suspend fun getOrderState(orderId: Long): Int
-
-    suspend fun getProductImages(productId: Long): List<Image>
 }
