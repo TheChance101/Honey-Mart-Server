@@ -1,5 +1,6 @@
 package com.thechance.api.model
 
+import com.thechance.api.model.market.MarketModel
 import kotlinx.serialization.Serializable
 
 @Serializable
