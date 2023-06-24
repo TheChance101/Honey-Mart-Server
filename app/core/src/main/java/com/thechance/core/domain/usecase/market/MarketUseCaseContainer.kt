@@ -7,5 +7,6 @@ data class MarketUseCaseContainer(
     val updateMarketUseCase: UpdateMarketUseCase,
     val deleteMarketUseCase: DeleteMarketUseCase,
     val getMarketsUseCase: GetMarketsUseCase,
-    val getCategoriesByMarketIdUseCase: GetCategoriesByMarketIdUseCase
+    val getCategoriesByMarketIdUseCase: GetCategoriesByMarketIdUseCase,
+    val getMarketDetailsUseCase: GetMarketDetailsUseCase
 ) : KoinComponent

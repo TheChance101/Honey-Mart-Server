@@ -28,7 +28,6 @@ val productUseCaseModule = module {
     singleOf(::AddImageProductUseCase) { bind<AddImageProductUseCase>() }
     singleOf(::DeleteImageFromProductUseCase) { bind<DeleteImageFromProductUseCase>() }
     singleOf(::GetProductDetailsUseCase) { bind<GetProductDetailsUseCase>() }
-
 }
 
 val marketUseCaseModule = module {
@@ -38,6 +37,7 @@ val marketUseCaseModule = module {
     singleOf(::GetMarketsUseCase) { bind<GetMarketsUseCase>() }
     singleOf(::UpdateMarketUseCase) { bind<UpdateMarketUseCase>() }
     singleOf(::GetCategoriesByMarketIdUseCase) { bind<GetCategoriesByMarketIdUseCase>() }
+    singleOf(::GetMarketDetailsUseCase) { bind<GetMarketDetailsUseCase>() }
 }
 
 val categoryUseCaseModule = module {

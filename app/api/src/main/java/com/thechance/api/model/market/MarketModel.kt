@@ -1,4 +1,4 @@
-package com.thechance.api.model
+package com.thechance.api.model.market
 
 import kotlinx.serialization.Serializable
 

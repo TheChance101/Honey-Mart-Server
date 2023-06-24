@@ -15,6 +15,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.component.KoinComponent
 
 class ProductDataSourceImp : ProductDataSource, KoinComponent {
+
     override suspend fun createProduct(
         productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
     ): Product = dbQuery {
@@ -135,7 +136,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
     override suspend fun getProductMarketId(productId: Long): Long {
         return dbQuery {
             val categoryId = CategoryProductTable.select { CategoryProductTable.productId eq productId }
-                .map { it[CategoryProductTable.categoryId].value }.single()
+                .map { it[CategoryProductTable.categoryId].value }.first()
 
             CategoriesTable.select { CategoriesTable.id eq categoryId }.map { it[CategoriesTable.marketId].value }
                 .single()

@@ -2,6 +2,7 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCategoryModel
+import com.thechance.api.model.mapper.toApiMarketDetailsModel
 import com.thechance.api.model.mapper.toApiMarketModel
 import com.thechance.core.domain.usecase.market.MarketUseCaseContainer
 import com.thechance.core.utils.ROLE_TYPE
@@ -31,6 +32,12 @@ fun Route.marketsRoutes() {
             val categories =
                 marketUseCaseContainer.getCategoriesByMarketIdUseCase(marketId).map { it.toApiCategoryModel() }
             call.respond(HttpStatusCode.OK, ServerResponse.success(categories))
+        }
+
+        get("/{id}") {
+            val marketId = call.parameters["id"]?.toLongOrNull()
+            val market = marketUseCaseContainer.getMarketDetailsUseCase(marketId).toApiMarketDetailsModel()
+            call.respond(HttpStatusCode.OK, ServerResponse.success(market))
         }
 
 

@@ -1,6 +1,6 @@
 package com.thechance.core.entity.order
 
-import com.thechance.core.entity.Market
+import com.thechance.core.entity.market.Market
 import java.time.LocalDateTime
 
 data class UserOrder(

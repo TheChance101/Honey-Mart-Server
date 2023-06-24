@@ -11,3 +11,5 @@ internal fun Category.toApiCategoryModel(): CategoryModel {
         imageId = imageId
     )
 }
+
+internal fun List<Category>.toApiCategoryModel() = map { it.toApiCategoryModel() }
