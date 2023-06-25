@@ -36,7 +36,9 @@ interface HoneyMartRepository {
     suspend fun getAllMarkets(): List<Market>
     suspend fun getCategoriesByMarket(marketId: Long): List<Category>
     suspend fun deleteMarket(marketId: Long): Boolean
-    suspend fun updateMarket(marketId: Long, marketName: String?, imageUrl: String?): Boolean
+    suspend fun updateMarket(marketId: Long, marketName: String?, description: String?): Boolean
+    suspend fun updateMarketImage(marketId: Long, imageUrl: String?): Boolean
+    suspend fun updateMarketLocation(marketId: Long, latitude: Double?, longitude: Double?, address: String?): Boolean
     suspend fun isMarketDeleted(marketId: Long): Boolean?
     suspend fun getMarketId(productId: Long): Long?
     suspend fun getOwnerIdByMarketId(marketId: Long): Long?
