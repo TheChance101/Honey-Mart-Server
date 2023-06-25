@@ -1,5 +1,6 @@
 package com.thechance.core.domain.repository
 
+import com.thechance.core.data.security.token.Tokens
 import com.thechance.core.entity.*
 
 interface AuthRepository {
@@ -36,5 +37,5 @@ interface AuthRepository {
     //endregion
 
 
-    fun getToken(id: Long, role: String): String
+    fun getTokens(id: Long, role: String): Tokens
 }

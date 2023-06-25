@@ -7,6 +7,7 @@ import com.thechance.core.data.repository.security.TokenService
 import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.data.security.token.TokenClaim
 import com.thechance.core.data.security.token.TokenConfig
+import com.thechance.core.data.security.token.Tokens
 import com.thechance.core.domain.repository.AuthRepository
 import com.thechance.core.entity.Owner
 import com.thechance.core.entity.User
@@ -65,9 +66,11 @@ class AuthRepositoryImp(
 
     //endregion
 
-    override fun getToken(id: Long, role: String): String {
-        return tokenService.generate(
-            config = tokenConfig, subject = id.toString(), TokenClaim(name = ROLE_TYPE, value = role)
+    override fun getTokens(id: Long, role: String): Tokens {
+        return tokenService.generateTokens(
+            config = tokenConfig,
+            subject = id.toString(),
+            TokenClaim(name = ROLE_TYPE, value = role)
         )
     }
 }
