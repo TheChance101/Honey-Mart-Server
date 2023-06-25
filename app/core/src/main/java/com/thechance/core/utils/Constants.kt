@@ -12,11 +12,15 @@ internal const val ORDER_STATE_DELETED = 4
 
 const val ROLE_TYPE = "ROLE_TYPE"
 
-const val BASE_URL = "https://honey-mart-server-oe345.ondigitalocean.app"
+//const val BASE_URL = "https://honey-mart-server-oe345.ondigitalocean.app"
 //const val BASE_URL = "http://0.0.0.0:8080"
+const val BASE_URL = "http://192.168.1.10:8080/"
 
 const val PRODUCT_IMAGES_PATH = "files/market"
-
 const val MARKET_IMAGES_PATH = "files/markets"
-
 const val USER_IMAGES_PATH = "files/image_uploads"
+
+const val API_KEY_HEADER_NAME = "apiKey"
+const val API_SECRET_KEY = "honeyKey"
+const val JWT_AUTHENTICATION = "jwt"
+const val API_KEY_AUTHENTICATION = "apiKey"
