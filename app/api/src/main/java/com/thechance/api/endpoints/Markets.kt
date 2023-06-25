@@ -4,7 +4,7 @@ import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCategoryModel
 import com.thechance.api.model.mapper.toApiMarketDetailsModel
 import com.thechance.api.model.mapper.toApiMarketModel
-import com.thechance.core.domain.usecase.market.MarketUseCaseContainer
+import com.thechance.core.data.datasource.database.tables.market.MarketUseCaseContainer
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -48,8 +48,28 @@ fun Route.marketsRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val marketName = call.receiveParameters()["name"]?.trim()
+                val description = call.receiveParameters()["description"]?.trim()
 
-                marketUseCaseContainer.updateMarketUseCase(marketName = marketName, marketOwnerId, role, image = null)
+                marketUseCaseContainer.updateMarketUseCase(marketName = marketName, description, marketOwnerId, role)
+
+                call.respond(
+                    HttpStatusCode.OK,
+                    ServerResponse.success(true, "Market updated successfully")
+                )
+            }
+
+            put("/{id}/location") {
+                val principal = call.principal<JWTPrincipal>()
+                val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+
+                val address = call.receiveParameters()["address"]?.trim()
+                val latitude = call.receiveParameters()["latitude"]?.trim()?.toDoubleOrNull()
+                val longitude = call.receiveParameters()["longitude"]?.trim()?.toDoubleOrNull()
+
+                marketUseCaseContainer.updateMarketUseCase.updateLocation(
+                    marketOwnerId, role, address, latitude, longitude
+                )
 
                 call.respond(
                     HttpStatusCode.OK,
@@ -64,9 +84,7 @@ fun Route.marketsRoutes() {
 
                 val image = call.receiveMultipart().readAllParts()
 
-                marketUseCaseContainer.updateMarketUseCase(
-                    marketOwnerId = marketOwnerId, role = role, marketName = null, image = image
-                )
+                marketUseCaseContainer.updateMarketUseCase.updateImage(marketOwnerId, role, image)
 
                 call.respond(
                     HttpStatusCode.OK,
