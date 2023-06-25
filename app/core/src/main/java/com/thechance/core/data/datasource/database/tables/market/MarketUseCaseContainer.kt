@@ -1,4 +1,4 @@
-package com.thechance.core.domain.usecase.market
+package com.thechance.core.data.datasource.database.tables.market
 
 import org.koin.core.component.KoinComponent
 

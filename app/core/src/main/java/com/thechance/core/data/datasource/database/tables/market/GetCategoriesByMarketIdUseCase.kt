@@ -1,24 +1,26 @@
-package com.thechance.core.domain.usecase.market
+package com.thechance.core.data.datasource.database.tables.market
 
 import com.thechance.core.domain.repository.HoneyMartRepository
+import com.thechance.core.entity.Category
 import com.thechance.core.utils.IdNotFoundException
 import com.thechance.core.utils.InvalidMarketIdException
 import com.thechance.core.utils.MarketDeletedException
 import com.thechance.core.utils.isInvalidId
 import org.koin.core.component.KoinComponent
 
-class DeleteMarketUseCase(private val repository: HoneyMartRepository) : KoinComponent {
-    suspend operator fun invoke(marketId: Long?): Boolean {
+class GetCategoriesByMarketIdUseCase(private val repository: HoneyMartRepository) : KoinComponent {
+
+    suspend operator fun invoke(marketId: Long?): List<Category> {
         return if (isInvalidId(marketId)) {
             throw InvalidMarketIdException()
         } else {
-            val isDeleted = repository.isMarketDeleted(marketId!!)
-            if (isDeleted == null) {
+            val isMarketDeleted = repository.isMarketDeleted(marketId!!)
+            if (isMarketDeleted == null){
                 throw IdNotFoundException()
-            } else if (isDeleted) {
+            }else if (isMarketDeleted){
                 throw MarketDeletedException()
-            } else {
-                repository.deleteMarket(marketId)
+            }else{
+                repository.getCategoriesByMarket(marketId)
             }
         }
     }
