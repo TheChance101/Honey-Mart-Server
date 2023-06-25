@@ -6,7 +6,7 @@ class UnauthorizedException : Exception()
 class InvalidCategoryNameException : Exception()
 class InvalidMarketNameException : Exception()
 class InvalidProductNameException : Exception()
-class InvalidProductQuantityException : Exception()
+class InvalidProductDescriptionException : Exception()
 class InvalidProductPriceException : Exception()
 
 class InvalidCategoryNameLettersException : Exception()
