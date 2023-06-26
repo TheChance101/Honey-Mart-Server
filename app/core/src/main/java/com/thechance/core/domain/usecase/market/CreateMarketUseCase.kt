@@ -1,4 +1,4 @@
-package com.thechance.core.data.datasource.database.tables.market
+package com.thechance.core.domain.usecase.market
 
 import com.thechance.core.domain.repository.AuthRepository
 import com.thechance.core.domain.repository.HoneyMartRepository
