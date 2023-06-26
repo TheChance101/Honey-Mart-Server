@@ -7,7 +7,7 @@ import com.thechance.core.data.datasource.database.tables.category.CategoryProdu
 import com.thechance.core.data.datasource.database.tables.MarketTable
 import com.thechance.core.data.repository.dataSource.MarketDataSource
 import com.thechance.core.entity.Category
-import com.thechance.core.entity.Market
+import com.thechance.core.entity.market.Market
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
@@ -35,7 +35,7 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
 
     override suspend fun createMarket(marketName: String, ownerId: Long): Boolean =
         dbQuery {
-            val newMarket = MarketTable.insert {
+            MarketTable.insert {
                 it[name] = marketName
                 it[isDeleted] = false
                 it[MarketTable.ownerId] = ownerId
@@ -63,17 +63,22 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
     }
 
     override suspend fun deleteMarket(marketId: Long): Boolean = dbQuery {
-        MarketTable.update({ MarketTable.id eq marketId }) {
-            it[isDeleted] = true
-        }
+        MarketTable.update({ MarketTable.id eq marketId }) { it[isDeleted] = true }
         true
     }
 
 
-    override suspend fun updateMarket(marketId: Long, marketName: String?, imageUrl: String?): Boolean = dbQuery {
+    override suspend fun updateMarket(
+        marketId: Long, marketName: String?, imageUrl: String?, latitude: Double?, longitude: Double?,
+        description: String?, address: String?
+    ): Boolean = dbQuery {
         MarketTable.update({ MarketTable.id eq marketId }) { marketRow ->
             marketName?.let { marketRow[MarketTable.name] = it }
             imageUrl?.let { marketRow[MarketTable.imageUrl] = it }
+            latitude?.let { marketRow[MarketTable.latitude] = it }
+            longitude?.let { marketRow[MarketTable.longitude] = it }
+            description?.let { marketRow[MarketTable.description] = it }
+            address?.let { marketRow[MarketTable.address] = it }
         }
         true
     }
@@ -99,6 +104,14 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
                     }.singleOrNull()
                 marketId
             }
+        }
+    }
+
+    override suspend fun getMarket(marketId: Long): Market? {
+        return dbQuery {
+            MarketTable.select { MarketTable.id eq marketId }.map {
+                it.toMarket()
+            }.singleOrNull()
         }
     }
 

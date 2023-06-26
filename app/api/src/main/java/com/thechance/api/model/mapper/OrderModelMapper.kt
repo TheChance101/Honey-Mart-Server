@@ -1,6 +1,6 @@
 package com.thechance.api.model.mapper
 
-import com.thechance.api.model.MarketOrderModel
+import com.thechance.api.model.order.MarketOrderModel
 import com.thechance.api.utils.convertDateToMillis
 import com.thechance.core.entity.order.MarketOrder
 

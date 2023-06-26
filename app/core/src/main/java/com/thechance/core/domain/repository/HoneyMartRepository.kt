@@ -1,6 +1,7 @@
 package com.thechance.core.domain.repository
 
 import com.thechance.core.entity.*
+import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.order.MarketOrder
 import com.thechance.core.entity.order.OrderDetails
 import com.thechance.core.entity.order.UserOrder
@@ -16,7 +17,6 @@ interface HoneyMartRepository {
     suspend fun updateProductCountInCart(cartId: Long, productId: Long, count: Int): Boolean
     suspend fun createCart(userId: Long): Long
     suspend fun getCartMarketId(cartId: Long): Long?
-
     suspend fun deleteCart(cartId: Long): Boolean
 
     //endregion
@@ -32,18 +32,18 @@ interface HoneyMartRepository {
 
     //region market
     suspend fun getMarketIdByOwnerId(ownerId: Long): Long?
-
     suspend fun createMarket(marketName: String, ownerId: Long): Boolean
     suspend fun getAllMarkets(): List<Market>
     suspend fun getCategoriesByMarket(marketId: Long): List<Category>
     suspend fun deleteMarket(marketId: Long): Boolean
-    suspend fun updateMarket(marketId: Long, marketName: String?, imageUrl: String?): Boolean
+    suspend fun updateMarket(marketId: Long, marketName: String?, description: String?): Boolean
+    suspend fun updateMarketImage(marketId: Long, imageUrl: String?): Boolean
+    suspend fun updateMarketLocation(marketId: Long, latitude: Double?, longitude: Double?, address: String?): Boolean
     suspend fun isMarketDeleted(marketId: Long): Boolean?
     suspend fun getMarketId(productId: Long): Long?
-
     suspend fun getOwnerIdByMarketId(marketId: Long): Long?
-
     suspend fun addMarketImage(marketId: Long, imageUrl: String): Boolean
+    suspend fun getMarket(marketId: Long): Market?
     //endregion
 
 
@@ -55,7 +55,6 @@ interface HoneyMartRepository {
     suspend fun getAllProductsInCategory(categoryId: Long): List<Product>
     suspend fun isCategoryDeleted(categoryId: Long): Boolean?
     suspend fun isCategoryNameUnique(categoryName: String, marketId: Long): Boolean
-
     suspend fun getMarketIdByCategoryId(categoryId: Long): Long
     //endregion
 
@@ -93,11 +92,8 @@ interface HoneyMartRepository {
     suspend fun getOrderById(orderId: Long): OrderDetails
     suspend fun updateOrderState(orderId: Long, newOrderState: Int): Boolean
     suspend fun isOrderExist(orderId: Long): Boolean
-
     suspend fun getOrderState(orderId: Long): Int
-
     suspend fun getAllOrdersForUser(userId: Long): List<UserOrder>
-
     suspend fun getAllOrdersForMarket(marketId: Long): List<MarketOrder>
 
     //endregion

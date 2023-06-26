@@ -35,12 +35,12 @@ class AddProductToCartUseCase(private val repository: HoneyMartRepository) : Koi
     }
 
     private suspend fun isProductInSameMarket(productId: Long, cartId: Long): Boolean {
-        val cartMarketId = repository.getCartMarketId(cartId = cartId)
+        val marketId = repository.getCartMarketId(cartId = cartId)
         val productMarketId = repository.getProductMarketId(productId)
-        return if (cartMarketId == null) {
+        return if (marketId == null) {
             true
         } else {
-            cartMarketId == productMarketId
+            marketId == productMarketId
         }
     }
 

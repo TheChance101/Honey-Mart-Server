@@ -1,5 +1,6 @@
-package com.thechance.api.model
+package com.thechance.api.model.order
 
+import com.thechance.api.model.UserModel
 import kotlinx.serialization.Serializable
 
 @Serializable

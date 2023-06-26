@@ -27,10 +27,6 @@ internal fun isValidPassword(password: String?): Boolean {
     }
 }
 
-internal fun isValidNameLength(name: String): Boolean {
-    return name.length in 4..14
-}
-
 internal fun isInvalidId(id: Long?): Boolean {
     return id == null || id == 0L
 }
@@ -68,5 +64,20 @@ internal fun isValidRole(role: String, inputRole: String?): Boolean {
         false
     } else {
         inputRole == role
+    }
+}
+
+internal fun isInValidDescription(description: String?): Boolean {
+    return description?.let {
+        return it.length !in 6..500
+    } ?: true
+}
+
+internal fun isValidAddress(address: String?): Boolean {
+   return if (address.isNullOrEmpty()) {
+        false
+    }else{
+       val pattern = Regex("^[0-9]+\\s[A-Za-z\\s]+,[A-Za-z\\s]+,[A-Za-z]{2}$")
+        pattern.matches(address.trim())
     }
 }

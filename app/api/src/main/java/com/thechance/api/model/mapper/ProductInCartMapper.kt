@@ -5,5 +5,11 @@ import com.thechance.core.entity.ProductInCart
 
 
 internal fun ProductInCart.toApiProductWithCount(): ProductWithCount {
-    return ProductWithCount(id = id, name = name, count = count, price = price)
+    return ProductWithCount(
+        id = id,
+        name = name,
+        count = count,
+        price = price,
+        images = images.map { it.imageUrl }
+    )
 }
