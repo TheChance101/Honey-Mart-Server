@@ -1,5 +1,6 @@
 package com.the_chance.di
 
+import com.thechance.core.data.datasource.database.tables.market.*
 import com.thechance.core.domain.usecase.cart.*
 import com.thechance.core.domain.usecase.category.*
 import com.thechance.core.domain.usecase.market.*

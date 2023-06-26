@@ -7,10 +7,10 @@ import org.koin.core.component.KoinComponent
 class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinComponent {
 
     suspend operator fun invoke(
-        productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?, marketOwnerId: Long?,
+        productId: Long?, productName: String?, productPrice: Double?, description: String?, marketOwnerId: Long?,
         role: String?
     ): Boolean {
-        isValidInput(productId, productName, productPrice, productQuantity, marketOwnerId, role)?.let { throw it }
+        isValidInput(productId, productName, productPrice, description, marketOwnerId, role)?.let { throw it }
 
         val isProductDeleted = repository.isProductDeleted(productId!!)
 
@@ -21,23 +21,23 @@ class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         } else if (!isMarketOwner(marketOwnerId!!, productId)) {
             throw UnauthorizedException()
         } else {
-            repository.updateProduct(productId, productName, productPrice, productQuantity)
+            repository.updateProduct(productId, productName, productPrice, description)
         }
 
     }
 
     private fun isValidInput(
-        productId: Long?, productName: String?, productPrice: Double?, productQuantity: String?, marketOwnerId: Long?,
+        productId: Long?, productName: String?, productPrice: Double?, description: String?, marketOwnerId: Long?,
         role: String?
     ): Exception? {
         return if (isInvalidId(productId)) {
             InvalidProductIdException()
-        } else if (productName == null && productPrice == null && productQuantity.isNullOrEmpty()) {
+        } else if (productName == null && productPrice == null && description.isNullOrEmpty()) {
             InvalidInputException()
         } else if (productName != null && !isValidMarketProductName(productName)) {
             InvalidProductNameException()
-        } else if (productQuantity != null && !isValidNameLength(productQuantity)) {
-            InvalidProductQuantityException()
+        } else if (description != null && !isInValidDescription(description)) {
+            InvalidProductDescriptionException()
         } else if (productPrice != null && isInvalidPrice(productPrice)) {
             InvalidProductPriceException()
         } else if (isInvalidId(marketOwnerId) || !isValidRole(MARKET_OWNER_ROLE, role)) {

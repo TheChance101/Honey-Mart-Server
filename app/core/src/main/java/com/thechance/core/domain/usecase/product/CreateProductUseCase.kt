@@ -7,14 +7,14 @@ import org.koin.core.component.KoinComponent
 
 class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(
-        productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?,
+        productName: String, productPrice: Double, description: String?, categoriesId: List<Long>?,
         marketOwnerId: Long?, role: String?
     ): Product {
-        isValidInput(productName, productPrice, productQuantity, categoriesId, marketOwnerId, role)?.let { throw it }
+        isValidInput(productName, productPrice, description, categoriesId, marketOwnerId, role)?.let { throw it }
 
         return if (repository.checkCategoriesInDb(categoriesId!!)) {
             if (isMarketOwner(marketOwnerId!!, categoryId = categoriesId[0])) {
-                repository.createProduct(productName, productPrice, productQuantity!!, categoriesId)
+                repository.createProduct(productName, productPrice, description!!, categoriesId)
             } else {
                 throw UnauthorizedException()
             }
@@ -24,7 +24,7 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
     }
 
     private fun isValidInput(
-        productName: String, productPrice: Double, productQuantity: String?, categoriesId: List<Long>?,
+        productName: String, productPrice: Double, description: String?, categoriesId: List<Long>?,
         marketOwnerId: Long?, role: String?
     ): Exception? {
         return when {
@@ -32,8 +32,8 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
                 InvalidProductNameException()
             }
 
-            checkProductQuantity(productQuantity) -> {
-                InvalidProductQuantityException()
+            isInValidDescription(description) -> {
+                InvalidProductDescriptionException()
             }
 
             isInvalidPrice(productPrice) -> {
@@ -56,12 +56,6 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
                 null
             }
         }
-    }
-
-    private fun checkProductQuantity(quantity: String?): Boolean {
-        return quantity?.let {
-            return it.length !in 6..20
-        } ?: true
     }
 
     private suspend fun isMarketOwner(marketOwnerId: Long, categoryId: Long): Boolean {

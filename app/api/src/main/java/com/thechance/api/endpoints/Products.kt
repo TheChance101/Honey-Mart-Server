@@ -73,7 +73,7 @@ fun Route.productsRoutes() {
                     productId = productId,
                     productName = productName,
                     productPrice = productPrice,
-                    productQuantity = description,
+                    description = description,
                     marketOwnerId, role
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
