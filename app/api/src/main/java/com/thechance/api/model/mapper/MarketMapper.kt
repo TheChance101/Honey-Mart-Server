@@ -11,6 +11,10 @@ internal fun Market.toApiMarketModel(): MarketModel {
         marketId = marketId,
         marketName = marketName,
         imageUrl = imageUrl,
+        description = description,
+        latitude = latitude,
+        longitude = longitude,
+        address = address
     )
 }
 
@@ -19,6 +23,10 @@ internal fun MarketDetails.toApiMarketDetailsModel(): MarketDetailsModel {
         marketId = market.marketId,
         marketName = market.marketName,
         imageUrl = market.imageUrl,
+        description = market.description,
+        latitude = market.latitude,
+        longitude = market.longitude,
+        address = market.address,
         categories = categories.toApiCategoryModel()
     )
 }

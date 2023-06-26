@@ -4,7 +4,7 @@ import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCategoryModel
 import com.thechance.api.model.mapper.toApiMarketDetailsModel
 import com.thechance.api.model.mapper.toApiMarketModel
-import com.thechance.core.data.datasource.database.tables.market.MarketUseCaseContainer
+import com.thechance.core.domain.usecase.market.MarketUseCaseContainer
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -47,8 +47,9 @@ fun Route.marketsRoutes() {
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
-                val marketName = call.receiveParameters()["name"]?.trim()
-                val description = call.receiveParameters()["description"]?.trim()
+                val params = call.receiveParameters()
+                val marketName = params["name"]?.trim()
+                val description = params["description"]?.trim()
 
                 marketUseCaseContainer.updateMarketUseCase(marketName = marketName, description, marketOwnerId, role)
 
@@ -63,9 +64,10 @@ fun Route.marketsRoutes() {
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
-                val address = call.receiveParameters()["address"]?.trim()
-                val latitude = call.receiveParameters()["latitude"]?.trim()?.toDoubleOrNull()
-                val longitude = call.receiveParameters()["longitude"]?.trim()?.toDoubleOrNull()
+                val params = call.receiveParameters()
+                val address = params["address"]?.trim()
+                val latitude = params["latitude"]?.trim()?.toDoubleOrNull()
+                val longitude = params["longitude"]?.trim()?.toDoubleOrNull()
 
                 marketUseCaseContainer.updateMarketUseCase.updateLocation(
                     marketOwnerId, role, address, latitude, longitude
