@@ -9,13 +9,22 @@ import com.thechance.core.utils.TOKEN_TYPE
 import org.koin.core.component.KoinComponent
 import java.util.*
 
-class TokenServiceImp : TokenService, KoinComponent {
+class TokenServiceImp(verifier: TokenVerifier) : TokenService, KoinComponent {
+    private val jwtVerifier = verifier.getVerifier()
 
     override fun generateTokens(config: TokenConfig, subject: String, vararg claims: TokenClaim) = Tokens(
         refreshToken = generateRefreshToken(config, subject, *claims),
         accessToken = generateAccessToken(config, subject, *claims)
     )
-
+    override fun verifyToken(token: String): String {
+        return jwtVerifier.verify(token).subject
+    }
+    override fun getTokenExpiration(token: String): Date {
+        return jwtVerifier.verify(token).expiresAt
+    }
+    override fun verifyTokenType(token: String): String {
+        return jwtVerifier.verify(token).claims["tokenType"]!!.asString()
+    }
     override fun generateAccessToken(config: TokenConfig, subject: String, vararg claims: TokenClaim): String {
         var token = JWT.create()
             .withSubject(subject)
@@ -29,7 +38,6 @@ class TokenServiceImp : TokenService, KoinComponent {
 
         return token.sign(Algorithm.HMAC256(config.secret))
     }
-
     override fun generateRefreshToken(config: TokenConfig, subject: String, vararg claims: TokenClaim): String {
         var refreshToken = JWT.create()
             .withSubject(subject)

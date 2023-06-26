@@ -65,3 +65,6 @@ class InvalidStateOrderException : Exception()
 class CantUpdateOrderStateException : Exception()
 
 //endregion
+//auth region
+class InvalidRuleException() : Exception()
+//end region

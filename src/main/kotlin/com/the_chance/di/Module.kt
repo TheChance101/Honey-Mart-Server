@@ -6,6 +6,7 @@ import com.thechance.core.data.repository.security.TokenService
 import com.thechance.core.data.security.hashing.SHA256HashingService
 import com.thechance.core.data.security.token.TokenConfig
 import com.thechance.core.data.security.token.TokenServiceImp
+import com.thechance.core.data.security.token.TokenVerifier
 import com.thechance.core.domain.usecase.DeleteAllTablesUseCase
 import io.ktor.server.config.*
 import org.koin.core.module.dsl.bind
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit
 
 val appModules = module {
     single { CoreDataBase() }
-    single<TokenService> { TokenServiceImp() }
+    singleOf(::TokenServiceImp) { bind<TokenService>() }
     single<HashingService> { SHA256HashingService() }
 
     single<TokenConfig> {
@@ -28,6 +29,7 @@ val appModules = module {
             secret = System.getenv("HONEY_JWT_SECRET")
         )
     }
+    singleOf(::TokenVerifier) { bind<TokenVerifier>() }
 
     singleOf(::DeleteAllTablesUseCase) { bind<DeleteAllTablesUseCase>() }
 
