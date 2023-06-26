@@ -5,6 +5,8 @@ import com.thechance.api.model.mapper.toApiMarketOrder
 import com.thechance.api.model.mapper.toApiMarketOrders
 import com.thechance.api.model.mapper.toApiUserOrders
 import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
+import com.thechance.core.utils.API_KEY_AUTHENTICATION
+import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -18,7 +20,7 @@ fun Route.orderRoutes() {
 
     val orderUseCasesContainer: OrderUseCasesContainer by inject()
 
-    authenticate {
+    authenticate(API_KEY_AUTHENTICATION, JWT_AUTHENTICATION) {
         route("/order") {
 
             get("/marketOrders") {

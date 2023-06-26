@@ -15,13 +15,46 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.config.*
 import org.koin.ktor.ext.inject
 
-fun Application.configureSecurity() {
+//fun Application.configureSecurity() {
+//
+//    val config: TokenConfig by inject()
+//
+//    install(Authentication) {
+//
+//        apiKey(API_KEY_AUTHENTICATION) {
+//            headerName = API_KEY_HEADER_NAME
+//            val apiKey = System.getenv(API_SECRET_KEY)
+//            validate { keyFromHeader ->
+//                keyFromHeader.takeIf { it == apiKey }?.let { AppPrincipal(it) }
+//            }
+//        }
+//
+//        jwt(JWT_AUTHENTICATION) {
+//            realm = this@configureSecurity.environment.config.tryGetString("jwt.realm").toString()
+//            verifier(
+//                JWT.require(Algorithm.HMAC256(config.secret))
+//                    .withAudience(config.audience)
+//                    .withIssuer(config.issuer)
+//                    .build()
+//            )
+//            validate { credential ->
+//                if (credential.payload.audience.contains(config.audience)) {
+//                    JWTPrincipal(credential.payload)
+//                } else null
+//            }
+//        }
+//    }
+//
+//}
 
+fun Application.configureSecurity() {
     val config: TokenConfig by inject()
 
     install(Authentication) {
+        val apiKeyAuthName = API_KEY_AUTHENTICATION
+        val jwtAuthName = JWT_AUTHENTICATION
 
-        apiKey(API_KEY_AUTHENTICATION) {
+        apiKey(apiKeyAuthName) {
             headerName = API_KEY_HEADER_NAME
             val apiKey = System.getenv(API_SECRET_KEY)
             validate { keyFromHeader ->
@@ -29,7 +62,7 @@ fun Application.configureSecurity() {
             }
         }
 
-        jwt(JWT_AUTHENTICATION) {
+        jwt(jwtAuthName) {
             realm = this@configureSecurity.environment.config.tryGetString("jwt.realm").toString()
             verifier(
                 JWT.require(Algorithm.HMAC256(config.secret))
@@ -44,5 +77,4 @@ fun Application.configureSecurity() {
             }
         }
     }
-
 }

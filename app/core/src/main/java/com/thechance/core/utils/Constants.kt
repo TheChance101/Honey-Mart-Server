@@ -21,6 +21,6 @@ const val MARKET_IMAGES_PATH = "files/markets"
 const val USER_IMAGES_PATH = "files/image_uploads"
 
 const val API_KEY_HEADER_NAME = "apiKey"
-const val API_SECRET_KEY = "honeyKey"
+const val API_SECRET_KEY = "honey_secret_api_key"
 const val JWT_AUTHENTICATION = "jwt"
 const val API_KEY_AUTHENTICATION = "apiKey"

@@ -3,6 +3,7 @@ package com.thechance.api.endpoints.user
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiProductModel
 import com.thechance.core.domain.usecase.wishlist.WishListUseCaseContainer
+import com.thechance.core.utils.API_KEY_AUTHENTICATION
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -16,7 +17,7 @@ fun Route.wishListRoutes() {
 
     val wishListUseCaseContainer: WishListUseCaseContainer by inject()
 
-    authenticate {
+    authenticate(API_KEY_AUTHENTICATION) {
         route("/wishList") {
 
             post {
