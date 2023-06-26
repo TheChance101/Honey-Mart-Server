@@ -2,14 +2,12 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCategoryModel
-import com.thechance.api.model.mapper.toApiProductImage
 import com.thechance.api.model.mapper.toApiProductModel
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
 import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
-import com.thechance.core.utils.*
+import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
-import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -17,7 +15,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
-import java.io.File
 
 fun Route.productsRoutes() {
 
