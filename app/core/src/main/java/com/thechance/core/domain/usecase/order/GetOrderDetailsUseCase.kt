@@ -7,6 +7,7 @@ import com.thechance.core.utils.isInvalidId
 import org.koin.core.component.KoinComponent
 
 class GetOrderDetailsUseCase(private val repository: HoneyMartRepository) : KoinComponent {
+
     suspend operator fun invoke(orderId: Long?): OrderDetails {
         return if (isInvalidId(orderId) || !repository.isOrderExist(orderId!!)) {
             throw InvalidOrderIdException()

@@ -9,6 +9,10 @@ internal fun ResultRow.toMarket(): Market {
         marketId = this[MarketTable.id].value,
         marketName = this[MarketTable.name],
         imageUrl = this[MarketTable.imageUrl],
-        isDeleted = this[MarketTable.isDeleted]
+        isDeleted = this[MarketTable.isDeleted],
+        description = this[MarketTable.description],
+        latitude = this[MarketTable.latitude],
+        longitude = this[MarketTable.longitude],
+        address = this[MarketTable.address],
     )
 }

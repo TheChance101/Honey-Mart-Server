@@ -5,10 +5,8 @@ import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
 
 class CreateOrderUseCase(private val repository: HoneyMartRepository) : KoinComponent {
-    suspend operator fun invoke(
-        userId: Long?,
-        role: String?
-    ): Boolean {
+
+    suspend operator fun invoke(userId: Long?, role: String?): Boolean {
         return if (isInvalidId(userId) || !isValidRole(NORMAL_USER_ROLE, role)) {
             throw InvalidUserIdException()
         } else if (!isEmptyCart(getCartId(userId!!))) {

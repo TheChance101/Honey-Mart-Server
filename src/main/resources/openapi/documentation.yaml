@@ -6,32 +6,7 @@ info:
 servers:
 - url: "https://com_the_chance_honey_mart"
 paths:
-  /json/kotlinx-serialization:
-    get:
-      description: ""
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "string"
   /cart:
-    delete:
-      description: ""
-      parameters:
-      - name: "productId"
-        in: "query"
-        required: false
-        schema:
-          type: "string"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "string"
     get:
       description: ""
       responses:
@@ -41,6 +16,22 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/CartModel"
+  /cart/{productId}:
+    delete:
+      description: ""
+      parameters:
+      - name: "productId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
   /cart/addProduct:
     post:
       description: ""
@@ -299,10 +290,30 @@ paths:
             '*/*':
               schema:
                 type: "string"
+    get:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "number"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MarketDetailsModel"
     put:
       description: ""
       parameters:
       - name: "name"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "description"
         in: "query"
         required: false
         schema:
@@ -341,6 +352,37 @@ paths:
     put:
       description: ""
       parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "boolean"
+  /markets/{id}/location:
+    put:
+      description: ""
+      parameters:
+      - name: "address"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "latitude"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "longitude"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
       - name: "id"
         in: "path"
         required: true
@@ -771,6 +813,16 @@ paths:
             '*/*':
               schema:
                 type: "boolean"
+  /json/kotlinx-serialization:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
 components:
   schemas:
     ProductWithCount:
@@ -787,6 +839,10 @@ components:
         price:
           type: "number"
           format: "double"
+        images:
+          type: "array"
+          items:
+            type: "string"
     CartModel:
       type: "object"
       properties:
@@ -824,6 +880,16 @@ components:
           type: "string"
         imageUrl:
           type: "string"
+        description:
+          type: "string"
+        address:
+          type: "string"
+        latitude:
+          type: "number"
+          format: "double"
+        longitude:
+          type: "number"
+          format: "double"
     CategoryModel:
       type: "object"
       properties:
@@ -835,6 +901,30 @@ components:
         imageId:
           type: "integer"
           format: "int32"
+    MarketDetailsModel:
+      type: "object"
+      properties:
+        marketId:
+          type: "integer"
+          format: "int64"
+        marketName:
+          type: "string"
+        imageUrl:
+          type: "string"
+        description:
+          type: "string"
+        address:
+          type: "string"
+        latitude:
+          type: "number"
+          format: "double"
+        longitude:
+          type: "number"
+          format: "double"
+        categories:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CategoryModel"
     OrderDetailsModel:
       type: "object"
       properties:
@@ -905,3 +995,6 @@ components:
           format: "int64"
         market:
           $ref: "#/components/schemas/MarketModel"
+        numItems:
+          type: "integer"
+          format: "int64"

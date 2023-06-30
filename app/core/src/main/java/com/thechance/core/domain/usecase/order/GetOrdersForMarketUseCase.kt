@@ -6,6 +6,7 @@ import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
 
 class GetOrdersForMarketUseCase(private val repository: HoneyMartRepository) : KoinComponent {
+
     suspend operator fun invoke(ownerId: Long?, role: String?, state: Int?): List<MarketOrder> {
         return if ((isInvalidId(ownerId) || !isValidRole(MARKET_OWNER_ROLE, role))) {
             throw InvalidUserIdException()

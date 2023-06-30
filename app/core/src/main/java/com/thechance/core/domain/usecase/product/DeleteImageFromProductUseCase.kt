@@ -9,10 +9,9 @@ class DeleteImageFromProductUseCase(private val repository: HoneyMartRepository)
     suspend operator fun invoke(marketOwnerId: Long?, role: String?, productId: Long?, imageId: Long?): Boolean {
 
         isValidInput(marketOwnerId, role, productId, imageId)?.let { throw it }
-
         return if (isMarketOwner(marketOwnerId!!, productId!!)) {
             val path = repository.deleteImageFromProduct(productId = productId, imageId = imageId!!)
-            val file = File(path)
+            val file = File(extractFilePath(path))
             if (file.exists()) {
                 file.delete()
             }
@@ -45,6 +44,11 @@ class DeleteImageFromProductUseCase(private val repository: HoneyMartRepository)
                 null
             }
         }
+    }
+
+    private fun extractFilePath(url: String): String {
+        val prefix = "$BASE_URL/"
+        return url.substringAfterLast(prefix)
     }
 
     private suspend fun isMarketOwner(marketOwnerId: Long, productId: Long): Boolean {
