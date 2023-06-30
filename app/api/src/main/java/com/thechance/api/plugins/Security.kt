@@ -15,12 +15,12 @@ import org.koin.ktor.ext.inject
 fun Application.configureSecurity() {
 
     val config: TokenConfig by inject()
+    val apiKey = System.getenv(API_SECRET_KEY)
 
     install(Authentication) {
 
         apiKey(API_KEY_AUTHENTICATION) {
             headerName = API_KEY_HEADER_NAME
-            val apiKey = System.getenv(API_SECRET_KEY)
 
             challenge {
                 throw InvalidApiKeyException()

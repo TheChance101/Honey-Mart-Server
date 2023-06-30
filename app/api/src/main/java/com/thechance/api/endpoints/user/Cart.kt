@@ -19,7 +19,7 @@ fun Route.cartRoutes() {
 
     val cartUseCasesContainer: CartUseCasesContainer by inject()
 
-    authenticate(API_KEY_AUTHENTICATION, JWT_AUTHENTICATION) {
+    authenticate(JWT_AUTHENTICATION) {
         route("/cart") {
             get {
 

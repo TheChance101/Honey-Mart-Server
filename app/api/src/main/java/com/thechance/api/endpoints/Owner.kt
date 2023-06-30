@@ -19,9 +19,8 @@ fun Route.ownerRoutes() {
 
     val ownerUseCaseContainer: OwnerUseCaseContainer by inject()
 
-    authenticate(API_KEY_AUTHENTICATION) {
-        route("/owner") {
-
+    route("/owner") {
+        authenticate(API_KEY_AUTHENTICATION) {
             post("/signup") {
                 val params = call.receiveParameters()
                 val name = params["fullName"]?.trim()
@@ -41,17 +40,18 @@ fun Route.ownerRoutes() {
                 val token = ownerUseCaseContainer.verifyMarketOwnerUseCase(email, password)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
             }
+        }
 
-            authenticate(JWT_AUTHENTICATION) {
-                get("/Profile") {
-                    val principal = call.principal<JWTPrincipal>()
-                    val ownerId = principal?.payload?.subject?.toLongOrNull()
-                    val role = principal?.getClaim(ROLE_TYPE, String::class)
-                    val owner = ownerUseCaseContainer.getOwnerProfileUseCase(ownerId, role).toApiUserModel()
-                    call.respond(HttpStatusCode.Found, ServerResponse.success(owner))
-                }
+
+        authenticate(JWT_AUTHENTICATION) {
+            get("/Profile") {
+                val principal = call.principal<JWTPrincipal>()
+                val ownerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val owner = ownerUseCaseContainer.getOwnerProfileUseCase(ownerId, role).toApiUserModel()
+                call.respond(HttpStatusCode.Found, ServerResponse.success(owner))
             }
-
         }
     }
+
 }

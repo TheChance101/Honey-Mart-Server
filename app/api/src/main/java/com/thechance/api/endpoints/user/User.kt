@@ -20,9 +20,9 @@ fun Route.userRoutes() {
 
     val userUseCasesContainer: UserUseCaseContainer by inject()
 
-    authenticate(API_KEY_AUTHENTICATION) {
-        route("/user") {
+    route("/user") {
 
+        authenticate(API_KEY_AUTHENTICATION) {
             post("/signup") {
                 val params = call.receiveParameters()
                 val password = params["password"]?.trim()
@@ -41,25 +41,25 @@ fun Route.userRoutes() {
                 val token = userUseCasesContainer.verifyUserUseCase(email, password)
                 call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
             }
+        }
 
-            authenticate(JWT_AUTHENTICATION) {
+        authenticate(JWT_AUTHENTICATION) {
 
-                post("/profileImage") {
-                    val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.payload?.subject?.toLongOrNull()
-                    val role = principal?.getClaim(ROLE_TYPE, String::class)
-                    val imageParts = call.receiveMultipart().readAllParts()
-                    val imageUrl = userUseCasesContainer.saveUserProfileImageUseCase(imageParts, userId, role)
-                    call.respond(HttpStatusCode.Created, ServerResponse.success(imageUrl, "Added successfully"))
-                }
+            post("/profileImage") {
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val imageParts = call.receiveMultipart().readAllParts()
+                val imageUrl = userUseCasesContainer.saveUserProfileImageUseCase(imageParts, userId, role)
+                call.respond(HttpStatusCode.Created, ServerResponse.success(imageUrl, "Added successfully"))
+            }
 
-                get("/myProfile") {
-                    val principal = call.principal<JWTPrincipal>()
-                    val userId = principal?.payload?.subject?.toLongOrNull()
-                    val role = principal?.getClaim(ROLE_TYPE, String::class)
-                    val user = userUseCasesContainer.getUserProfileUseCase(userId, role).toApiUserModel()
-                    call.respond(HttpStatusCode.Found, ServerResponse.success(user))
-                }
+            get("/myProfile") {
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val user = userUseCasesContainer.getUserProfileUseCase(userId, role).toApiUserModel()
+                call.respond(HttpStatusCode.Found, ServerResponse.success(user))
             }
         }
     }
