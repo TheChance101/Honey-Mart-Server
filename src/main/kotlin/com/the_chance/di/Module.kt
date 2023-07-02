@@ -25,7 +25,7 @@ val appModules = module {
             issuer = ApplicationConfig("jwt.issuer").toString(),
             audience = ApplicationConfig("jwt.audience").toString(),
             accessTokenExpiresIn = TimeUnit.DAYS.toMillis(1),
-            refreshTokenExpiresIn = TimeUnit.MINUTES.toMillis(1),
+            refreshTokenExpiresIn = TimeUnit.DAYS.toMillis(30),
             secret = System.getenv("HONEY_JWT_SECRET")
         )
     }
