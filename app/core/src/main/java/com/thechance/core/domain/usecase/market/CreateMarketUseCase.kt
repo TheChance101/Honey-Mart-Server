@@ -10,16 +10,23 @@ class CreateMarketUseCase(private val repository: HoneyMartRepository, private v
     KoinComponent {
 
     suspend operator fun invoke(marketName: String?, ownerId: Long?): Boolean {
-        return if (!isValidMarketProductName(marketName)) {
-            throw InvalidMarketNameException()
-        } else if (isInvalidId(ownerId)) {
-            throw InvalidOwnerIdException()
+        isValidInput(marketName, ownerId)?.let { throw it }
+        return if (authRepository.isValidOwner(ownerId!!)) {
+            repository.createMarket(marketName = marketName!!, ownerId = ownerId)
         } else {
-            if (authRepository.isValidOwner(ownerId!!)) {
-                repository.createMarket(marketName!!, ownerId)
-            } else {
-                throw InvalidOwnerIdException()
-            }
+            throw InvalidOwnerIdException()
+        }
+    }
+
+    private fun isValidInput(
+        marketName: String?, ownerId: Long?
+    ): Exception? {
+        return if (!isValidMarketProductName(marketName)) {
+            InvalidMarketNameException()
+        } else if (isInvalidId(ownerId)) {
+            InvalidOwnerIdException()
+        } else {
+            null
         }
     }
 

@@ -47,9 +47,31 @@ fun Route.marketsRoutes() {
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
-                val marketName = call.receiveParameters()["name"]?.trim()
+                val params = call.receiveParameters()
+                val marketName = params["name"]?.trim()
+                val description = params["description"]?.trim()
 
-                marketUseCaseContainer.updateMarketUseCase(marketName = marketName, marketOwnerId, role, image = null)
+                marketUseCaseContainer.updateMarketUseCase(marketName = marketName, description, marketOwnerId, role)
+
+                call.respond(
+                    HttpStatusCode.OK,
+                    ServerResponse.success(true, "Market updated successfully")
+                )
+            }
+
+            put("/{id}/location") {
+                val principal = call.principal<JWTPrincipal>()
+                val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+
+                val params = call.receiveParameters()
+                val address = params["address"]?.trim()
+                val latitude = params["latitude"]?.trim()?.toDoubleOrNull()
+                val longitude = params["longitude"]?.trim()?.toDoubleOrNull()
+
+                marketUseCaseContainer.updateMarketUseCase.updateLocation(
+                    marketOwnerId, role, address, latitude, longitude
+                )
 
                 call.respond(
                     HttpStatusCode.OK,
@@ -64,9 +86,7 @@ fun Route.marketsRoutes() {
 
                 val image = call.receiveMultipart().readAllParts()
 
-                marketUseCaseContainer.updateMarketUseCase(
-                    marketOwnerId = marketOwnerId, role = role, marketName = null, image = image
-                )
+                marketUseCaseContainer.updateMarketUseCase.updateImage(marketOwnerId, role, image)
 
                 call.respond(
                     HttpStatusCode.OK,

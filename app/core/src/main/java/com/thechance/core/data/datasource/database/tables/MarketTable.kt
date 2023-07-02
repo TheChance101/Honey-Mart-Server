@@ -7,4 +7,8 @@ object MarketTable : LongIdTable() {
     val ownerId = reference("ownerId", OwnerTable)
     val isDeleted = bool("isDeleted").default(false)
     val imageUrl = text("imageUrl").default("")
+    val address = text("address").default("")
+    val latitude = double("latitude").default(0.0)
+    val longitude = double("longitude").default(0.0)
+    val description = text("description").default("")
 }

@@ -35,7 +35,7 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
 
     override suspend fun createMarket(marketName: String, ownerId: Long): Boolean =
         dbQuery {
-            val newMarket = MarketTable.insert {
+            MarketTable.insert {
                 it[name] = marketName
                 it[isDeleted] = false
                 it[MarketTable.ownerId] = ownerId
@@ -68,10 +68,17 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
     }
 
 
-    override suspend fun updateMarket(marketId: Long, marketName: String?, imageUrl: String?): Boolean = dbQuery {
+    override suspend fun updateMarket(
+        marketId: Long, marketName: String?, imageUrl: String?, latitude: Double?, longitude: Double?,
+        description: String?, address: String?
+    ): Boolean = dbQuery {
         MarketTable.update({ MarketTable.id eq marketId }) { marketRow ->
             marketName?.let { marketRow[MarketTable.name] = it }
             imageUrl?.let { marketRow[MarketTable.imageUrl] = it }
+            latitude?.let { marketRow[MarketTable.latitude] = it }
+            longitude?.let { marketRow[MarketTable.longitude] = it }
+            description?.let { marketRow[MarketTable.description] = it }
+            address?.let { marketRow[MarketTable.address] = it }
         }
         true
     }
