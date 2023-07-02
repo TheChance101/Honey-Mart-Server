@@ -1,5 +1,6 @@
 package com.the_chance.di
 
+import com.thechance.core.domain.usecase.RefreshTokenUseCase
 import com.thechance.core.domain.usecase.cart.*
 import com.thechance.core.domain.usecase.category.*
 import com.thechance.core.domain.usecase.market.*
@@ -85,4 +86,8 @@ val cartUseCase = module {
     singleOf(::DeleteProductInCartUseCase) { bind<DeleteProductInCartUseCase>() }
     singleOf(::CartUseCasesContainer) { bind<CartUseCasesContainer>() }
     singleOf(::DeleteCartUseCase) { bind<DeleteCartUseCase>() }
+}
+
+val tokenUseCase = module {
+    singleOf(::RefreshTokenUseCase) { bind<RefreshTokenUseCase>() }
 }

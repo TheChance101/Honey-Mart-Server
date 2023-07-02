@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.thechance.core.data.repository.security.TokenService
 import com.thechance.core.utils.ACCESS_TOKEN
 import com.thechance.core.utils.REFRESH_TOKEN
+import com.thechance.core.utils.ROLE_TYPE
 import com.thechance.core.utils.TOKEN_TYPE
 import org.koin.core.component.KoinComponent
 import java.util.*
@@ -16,14 +17,17 @@ class TokenServiceImp(verifier: TokenVerifier) : TokenService, KoinComponent {
         refreshToken = generateRefreshToken(config, subject, *claims),
         accessToken = generateAccessToken(config, subject, *claims)
     )
-    override fun verifyToken(token: String): String {
+    override fun verifyTokenSubject(token: String): String {
         return jwtVerifier.verify(token).subject
     }
     override fun getTokenExpiration(token: String): Date {
         return jwtVerifier.verify(token).expiresAt
     }
     override fun verifyTokenType(token: String): String {
-        return jwtVerifier.verify(token).claims["tokenType"]!!.asString()
+        return jwtVerifier.verify(token).claims[TOKEN_TYPE]!!.asString()
+    }
+    override fun verifyTokenRole(token: String): String {
+        return jwtVerifier.verify(token).claims[ROLE_TYPE]!!.asString()
     }
     override fun generateAccessToken(config: TokenConfig, subject: String, vararg claims: TokenClaim): String {
         var token = JWT.create()
@@ -41,7 +45,6 @@ class TokenServiceImp(verifier: TokenVerifier) : TokenService, KoinComponent {
     override fun generateRefreshToken(config: TokenConfig, subject: String, vararg claims: TokenClaim): String {
         var refreshToken = JWT.create()
             .withSubject(subject)
-            .withAudience(config.audience)
             .withIssuer(config.issuer)
             .withExpiresAt(Date(System.currentTimeMillis() + config.refreshTokenExpiresIn))
             .withClaim(TOKEN_TYPE, REFRESH_TOKEN)

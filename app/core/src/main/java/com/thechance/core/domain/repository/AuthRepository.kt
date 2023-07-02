@@ -2,6 +2,7 @@ package com.thechance.core.domain.repository
 
 import com.thechance.core.data.security.token.Tokens
 import com.thechance.core.entity.*
+import java.util.*
 
 interface AuthRepository {
 
@@ -33,9 +34,14 @@ interface AuthRepository {
 
     suspend fun isValidOwner(ownerId: Long): Boolean
 
-    suspend fun getOwner(ownerId: Long): User
+    suspend fun getOwner(ownerId: Long): Owner
     //endregion
 
 
     fun getTokens(id: Long, role: String): Tokens
+    fun verifyTokenSubject(token: String): String
+    fun getTokenExpiration(token: String): Date
+    fun verifyTokenType(token: String): String
+    fun verifyTokenRole(token: String): String
+    suspend fun getUser(userId: Long): User
 }

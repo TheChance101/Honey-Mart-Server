@@ -8,7 +8,6 @@ import org.koin.core.component.KoinComponent
 
 class TokenVerifier(private val config: TokenConfig) : KoinComponent {
     fun getVerifier(): JWTVerifier = JWT.require(Algorithm.HMAC256(config.secret))
-        .withAudience(config.audience)
         .withIssuer(config.issuer)
         .build()
 }

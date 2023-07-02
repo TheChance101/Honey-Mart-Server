@@ -24,8 +24,8 @@ val appModules = module {
         TokenConfig(
             issuer = ApplicationConfig("jwt.issuer").toString(),
             audience = ApplicationConfig("jwt.audience").toString(),
-            accessTokenExpiresIn = TimeUnit.MINUTES.toMillis(1),
-            refreshTokenExpiresIn = TimeUnit.DAYS.toMillis(30),
+            accessTokenExpiresIn = TimeUnit.DAYS.toMillis(1),
+            refreshTokenExpiresIn = TimeUnit.MINUTES.toMillis(1),
             secret = System.getenv("HONEY_JWT_SECRET")
         )
     }
@@ -43,7 +43,8 @@ val appModules = module {
         orderUseCaseModule,
         userUseCaseModule,
         ownerUseCaseModule,
-        repositoriesModules
+        repositoriesModules,
+        tokenUseCase
     )
 }
 

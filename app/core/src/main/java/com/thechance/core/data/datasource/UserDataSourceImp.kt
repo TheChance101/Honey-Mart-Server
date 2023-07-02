@@ -1,11 +1,11 @@
 package com.thechance.core.data.datasource
 
 import com.thechance.core.data.datasource.database.tables.NormalUserTable
-import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartTable
 import com.thechance.core.data.datasource.database.tables.product.GalleryTable
 import com.thechance.core.data.datasource.database.tables.product.ProductGalleryTable
+import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListProductTable
 import com.thechance.core.data.datasource.database.tables.wishlist.WishListTable
 import com.thechance.core.data.datasource.mapper.toProduct
@@ -56,6 +56,20 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
     override suspend fun isEmailExists(email: String): Boolean {
         return dbQuery {
             NormalUserTable.select { NormalUserTable.email eq email }.singleOrNull() != null
+        }
+    }
+
+    override suspend fun getUser(userId: Long): User {
+        return dbQuery {
+            val user = NormalUserTable.select { NormalUserTable.id eq userId }.single()
+            User(
+                userId = user[NormalUserTable.id].value,
+                email = user[NormalUserTable.email],
+                fullName = user[NormalUserTable.fullName],
+                password = "",
+                salt = "",
+                profileImage = ""
+            )
         }
     }
 

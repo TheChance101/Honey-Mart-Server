@@ -13,6 +13,7 @@ import com.thechance.core.entity.Owner
 import com.thechance.core.entity.User
 import com.thechance.core.utils.ROLE_TYPE
 import org.koin.core.component.KoinComponent
+import java.util.*
 
 class AuthRepositoryImp(
     private val userDataSource: UserDataSource,
@@ -34,6 +35,8 @@ class AuthRepositoryImp(
 
 
     override suspend fun getUserByEmail(email: String): User = userDataSource.getUserByEmail(email)
+
+    override suspend fun getUser(userId: Long): User = userDataSource.getUser(userId)
 
 
     override fun isUserValidPassword(user: User, password: String) = hashingService.verify(
@@ -62,7 +65,7 @@ class AuthRepositoryImp(
 
     override suspend fun isValidOwner(ownerId: Long): Boolean = ownerDataSource.isValidOwner(ownerId)
 
-    override suspend fun getOwner(ownerId: Long): User = ownerDataSource.getOwner(ownerId)
+    override suspend fun getOwner(ownerId: Long): Owner = ownerDataSource.getOwner(ownerId)
 
     //endregion
 
@@ -72,5 +75,21 @@ class AuthRepositoryImp(
             subject = id.toString(),
             TokenClaim(name = ROLE_TYPE, value = role)
         )
+    }
+
+    override fun verifyTokenSubject(token: String): String {
+        return tokenService.verifyTokenSubject(token)
+    }
+
+    override fun getTokenExpiration(token: String): Date {
+        return tokenService.getTokenExpiration(token)
+    }
+
+    override fun verifyTokenType(token: String): String {
+        return tokenService.verifyTokenType(token)
+    }
+
+    override fun verifyTokenRole(token: String): String {
+        return tokenService.verifyTokenRole(token)
     }
 }

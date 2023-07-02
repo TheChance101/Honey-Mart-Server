@@ -66,5 +66,8 @@ class CantUpdateOrderStateException : Exception()
 
 //endregion
 //auth region
-class InvalidRuleException() : Exception()
+class InvalidRuleException : Exception()
+class TokenExpiredException : Exception()
+class InvalidTokenException : Exception()
+class InvalidTokenTypeException : Exception()
 //end region
