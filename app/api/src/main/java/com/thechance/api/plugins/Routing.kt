@@ -3,6 +3,7 @@ package com.thechance.api.plugins
 
 import com.thechance.api.endpoints.*
 import com.thechance.api.endpoints.user.cartRoutes
+import com.thechance.api.endpoints.user.tokenRouts
 import com.thechance.api.endpoints.user.userRoutes
 import com.thechance.api.endpoints.user.wishListRoutes
 import io.ktor.server.application.*
@@ -29,5 +30,6 @@ fun Application.configureRouting() {
         wishListRoutes()
         deleteAllTables()
         imageRouts()
+        tokenRouts()
     }
 }

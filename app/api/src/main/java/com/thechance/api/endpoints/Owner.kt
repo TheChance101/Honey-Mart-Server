@@ -1,7 +1,8 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.model.mapper.toApiUserModel
+import com.thechance.api.model.mapper.toApiOwnerModel
+import com.thechance.api.model.mapper.toApiTokens
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
@@ -35,7 +36,7 @@ fun Route.ownerRoutes() {
             val email = params["email"]?.trim().toString()
             val password = params["password"]?.trim().toString()
 
-            val token = ownerUseCaseContainer.verifyMarketOwnerUseCase(email, password)
+            val token = ownerUseCaseContainer.verifyMarketOwnerUseCase(email, password).toApiTokens()
             call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
         }
 
@@ -44,7 +45,7 @@ fun Route.ownerRoutes() {
                 val principal = call.principal<JWTPrincipal>()
                 val ownerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
-                val owner = ownerUseCaseContainer.getOwnerProfileUseCase(ownerId, role).toApiUserModel()
+                val owner = ownerUseCaseContainer.getOwnerProfileUseCase(ownerId, role).toApiOwnerModel()
                 call.respond(HttpStatusCode.Found, ServerResponse.success(owner))
             }
         }

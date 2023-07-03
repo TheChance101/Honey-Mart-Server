@@ -59,16 +59,15 @@ class OwnerDataSourceImp : OwnerDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getOwner(ownerId: Long): User {
+    override suspend fun getOwner(ownerId: Long): Owner {
         return dbQuery {
             val owner = OwnerTable.select { OwnerTable.id eq ownerId }.single()
-            User(
-                userId = owner[OwnerTable.id].value,
+            Owner(
+                ownerId = owner[OwnerTable.id].value,
                 email = owner[OwnerTable.email],
                 fullName = owner[OwnerTable.fullName],
                 password = "",
                 salt = "",
-                profileImage = ""
             )
         }
     }

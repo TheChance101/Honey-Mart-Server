@@ -170,6 +170,22 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             ServerResponse.error("InvalidOwnerId", HttpStatusCode.BadRequest.value)
         }
 
+        is InvalidRuleException -> {
+            ServerResponse.error("Invalid Token Rule", HttpStatusCode.Unauthorized.value)
+        }
+
+        is TokenExpiredException -> {
+            ServerResponse.error("Expired Token", HttpStatusCode.Unauthorized.value)
+        }
+
+        is InvalidTokenException -> {
+            ServerResponse.error("Invalid Token", HttpStatusCode.Unauthorized.value)
+        }
+
+        is InvalidTokenTypeException -> {
+            ServerResponse.error("Invalid Token Type", HttpStatusCode.Unauthorized.value)
+        }
+
         else -> {
             ServerResponse.error(cause.message.toString(), HttpStatusCode.InternalServerError.value)
         }
