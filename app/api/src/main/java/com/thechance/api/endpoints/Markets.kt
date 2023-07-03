@@ -23,7 +23,8 @@ fun Route.marketsRoutes() {
     route("/markets") {
 
         get {
-            val markets = marketUseCaseContainer.getMarketsUseCase().map { it.toApiMarketModel() }
+            val page = call.parameters["page"]?.toIntOrNull() ?: 1
+            val markets = marketUseCaseContainer.getMarketsUseCase(page).map { it.toApiMarketModel() }
             call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
         }
 

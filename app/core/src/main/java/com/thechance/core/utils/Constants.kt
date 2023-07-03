@@ -20,3 +20,5 @@ const val PRODUCT_IMAGES_PATH = "files/market"
 const val MARKET_IMAGES_PATH = "files/markets"
 
 const val USER_IMAGES_PATH = "files/image_uploads"
+
+internal const val PAGE_SIZE = 10

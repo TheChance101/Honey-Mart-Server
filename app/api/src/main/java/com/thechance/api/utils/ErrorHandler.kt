@@ -169,6 +169,9 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is InvalidOwnerIdException -> {
             ServerResponse.error("InvalidOwnerId", HttpStatusCode.BadRequest.value)
         }
+        is InvalidPageNumberException -> {
+            ServerResponse.error("Invalid Page Number", HttpStatusCode.NotFound.value)
+        }
 
         else -> {
             ServerResponse.error(cause.message.toString(), HttpStatusCode.InternalServerError.value)

@@ -1,7 +1,6 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.model.mapper.toApiCategoryModel
 import com.thechance.api.model.mapper.toApiProductModel
 import com.thechance.core.domain.usecase.category.CategoryUseCasesContainer
 import com.thechance.core.utils.ROLE_TYPE
@@ -21,8 +20,9 @@ fun Route.categoryRoutes() {
     route("/category") {
 
         get("/{categoryId}/allProduct") {
+            val page = call.parameters["page"]?.toIntOrNull() ?: 1
             val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
-            val products = categoryUseCasesContainer.getAllCategoriesUseCase(categoryId = categoryId)
+            val products = categoryUseCasesContainer.getAllCategoriesUseCase(categoryId = categoryId, page = page)
                 .map { it.toApiProductModel() }
             call.respond(ServerResponse.success(products))
 

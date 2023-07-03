@@ -1,13 +1,14 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.datasource.mapper.toCategory
-import com.thechance.core.data.datasource.mapper.toMarket
+import com.thechance.core.data.datasource.database.tables.MarketTable
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
-import com.thechance.core.data.datasource.database.tables.MarketTable
+import com.thechance.core.data.datasource.mapper.toCategory
+import com.thechance.core.data.datasource.mapper.toMarket
 import com.thechance.core.data.repository.dataSource.MarketDataSource
 import com.thechance.core.entity.Category
 import com.thechance.core.entity.market.Market
+import com.thechance.core.utils.PAGE_SIZE
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
@@ -52,8 +53,12 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getAllMarkets(): List<Market> = dbQuery {
-        MarketTable.select { MarketTable.isDeleted eq false }.map { it.toMarket() }
+    override suspend fun getAllMarkets(page: Int): List<Market> = dbQuery {
+        val offset =( (page - 1) * PAGE_SIZE).toLong()
+        MarketTable.select { MarketTable.isDeleted eq false }
+            .limit(PAGE_SIZE, offset)
+            .map { it.toMarket() }
+            .toList()
     }
 
     override suspend fun getCategoriesByMarket(marketId: Long): List<Category> = dbQuery {

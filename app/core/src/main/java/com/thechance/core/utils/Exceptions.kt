@@ -64,4 +64,6 @@ class InvalidStateOrderException : Exception()
 
 class CantUpdateOrderStateException : Exception()
 
+class InvalidPageNumberException : Exception()
+
 //endregion

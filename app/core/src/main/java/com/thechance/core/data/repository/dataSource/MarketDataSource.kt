@@ -1,6 +1,6 @@
 package com.thechance.core.data.repository.dataSource
 
-import com.thechance.core.entity.*
+import com.thechance.core.entity.Category
 import com.thechance.core.entity.market.Market
 
 interface MarketDataSource {
@@ -8,8 +8,7 @@ interface MarketDataSource {
     suspend fun getMarketIdByOwnerId(ownerId: Long): Long?
 
     suspend fun createMarket(marketName: String, ownerId: Long): Boolean
-
-    suspend fun getAllMarkets(): List<Market>
+    suspend fun getAllMarkets(page: Int): List<Market>
 
     suspend fun getCategoriesByMarket(marketId: Long): List<Category>
 
