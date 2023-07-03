@@ -2,9 +2,11 @@ package com.thechance.core.data.repository
 
 import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.domain.repository.HoneyMartRepository
-import com.thechance.core.entity.*
+import com.thechance.core.entity.Cart
+import com.thechance.core.entity.Category
+import com.thechance.core.entity.Product
 import com.thechance.core.entity.market.Market
-import com.thechance.core.entity.order.*
+import com.thechance.core.entity.order.MarketOrder
 import com.thechance.core.entity.order.OrderItem
 import org.koin.core.component.KoinComponent
 
@@ -68,7 +70,7 @@ class HoneyMartRepositoryImp(
     override suspend fun createMarket(marketName: String, ownerId: Long) =
         marketDataSource.createMarket(marketName, ownerId)
 
-    override suspend fun getAllMarkets(): List<Market> = marketDataSource.getAllMarkets()
+    override suspend fun getAllMarkets(page: Int): List<Market> = marketDataSource.getAllMarkets(page)
 
     override suspend fun getCategoriesByMarket(marketId: Long): List<Category> =
         marketDataSource.getCategoriesByMarket(marketId)
@@ -117,8 +119,8 @@ class HoneyMartRepositoryImp(
             categoryId = categoryId, categoryName = categoryName, marketId = marketId, imageId = imageId
         )
 
-    override suspend fun getAllProductsInCategory(categoryId: Long): List<Product> =
-        productDataSource.getAllProductsInCategory(categoryId)
+    override suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product> =
+        productDataSource.getAllProductsInCategory(categoryId,page)
 
     override suspend fun isCategoryDeleted(categoryId: Long): Boolean? =
         categoryDataSource.isCategoryDeleted(categoryId)

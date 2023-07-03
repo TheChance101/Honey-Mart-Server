@@ -31,6 +31,10 @@ internal fun isInvalidId(id: Long?): Boolean {
     return id == null || id == 0L
 }
 
+internal fun isInvalidPageNumber(page: Int?): Boolean {
+    return page == null || page < 1
+}
+
 internal fun isValidIds(ids: List<Long>?): Boolean {
     return ids.isNullOrEmpty() || ids.filterNot { it == 0L }.isEmpty()
 }
