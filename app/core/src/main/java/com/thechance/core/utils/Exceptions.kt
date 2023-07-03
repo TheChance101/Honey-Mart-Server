@@ -66,3 +66,9 @@ class CantUpdateOrderStateException : Exception()
 class InvalidApiKeyException : Exception()
 
 //endregion
+//auth region
+class InvalidRuleException : Exception()
+class TokenExpiredException : Exception()
+class InvalidTokenException : Exception()
+class InvalidTokenTypeException : Exception()
+//end region

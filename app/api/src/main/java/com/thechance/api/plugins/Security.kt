@@ -6,6 +6,7 @@ import com.thechance.core.data.security.principal.AppPrincipal
 import com.thechance.core.data.security.token.TokenConfig
 import com.thechance.core.utils.*
 import dev.forst.ktor.apikey.apiKey
+import com.thechance.core.data.security.token.TokenVerifier
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -15,6 +16,8 @@ import org.koin.ktor.ext.inject
 fun Application.configureSecurity() {
 
     val config: TokenConfig by inject()
+    val verifier: TokenVerifier by inject()
+    val jwtVerifier = verifier.getVerifier()
     val apiKey = System.getenv(API_SECRET_KEY)
 
     install(Authentication) {
@@ -34,10 +37,7 @@ fun Application.configureSecurity() {
         jwt(JWT_AUTHENTICATION) {
             realm = this@configureSecurity.environment.config.tryGetString("jwt.realm").toString()
             verifier(
-                JWT.require(Algorithm.HMAC256(config.secret))
-                    .withAudience(config.audience)
-                    .withIssuer(config.issuer)
-                    .build()
+                jwtVerifier
             )
             validate { credential ->
                 if (credential.payload.audience.contains(config.audience)) {

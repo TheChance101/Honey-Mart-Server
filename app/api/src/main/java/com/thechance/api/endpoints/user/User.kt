@@ -1,6 +1,7 @@
 package com.thechance.api.endpoints.user
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.model.mapper.toApiTokens
 import com.thechance.api.model.mapper.toApiUserModel
 import com.thechance.core.domain.usecase.user.UserUseCaseContainer
 import com.thechance.core.utils.API_KEY_AUTHENTICATION
@@ -38,9 +39,8 @@ fun Route.userRoutes() {
                 val email = params["email"]?.trim().toString()
                 val password = params["password"]?.trim().toString()
 
-                val token = userUseCasesContainer.verifyUserUseCase(email, password)
-                call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
-            }
+            val token = userUseCasesContainer.verifyUserUseCase(email, password).toApiTokens()
+            call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
         }
 
         authenticate(JWT_AUTHENTICATION) {
@@ -62,5 +62,7 @@ fun Route.userRoutes() {
                 call.respond(HttpStatusCode.Found, ServerResponse.success(user))
             }
         }
+
+
     }
 }

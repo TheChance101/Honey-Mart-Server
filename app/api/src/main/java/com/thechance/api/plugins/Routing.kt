@@ -3,6 +3,7 @@ package com.thechance.api.plugins
 
 import com.thechance.api.endpoints.*
 import com.thechance.api.endpoints.user.cartRoutes
+import com.thechance.api.endpoints.user.tokenRouts
 import com.thechance.api.endpoints.user.userRoutes
 import com.thechance.api.endpoints.user.wishListRoutes
 import com.thechance.core.utils.API_KEY_AUTHENTICATION
@@ -22,18 +23,17 @@ fun Application.configureRouting() {
         openAPI(path = "openapi", swaggerFile = "openapi/documentation.yaml") {
             codegen = StaticHtmlCodegen()
         }
-//        authenticate(API_KEY_AUTHENTICATION) {
-            productsRoutes()
-            categoryRoutes()
-            marketsRoutes()
-            userRoutes()
-            ownerRoutes()
-            cartRoutes()
-            orderRoutes()
-            wishListRoutes()
-            deleteAllTables()
-            imageRouts()
-//        }
+        productsRoutes()
+        categoryRoutes()
+        marketsRoutes()
+        userRoutes()
+        ownerRoutes()
+        cartRoutes()
+        orderRoutes()
+        wishListRoutes()
+        deleteAllTables()
+        imageRouts()
+        tokenRouts()
     }
 
 }
