@@ -5,6 +5,8 @@ import com.thechance.api.model.mapper.toApiCategoryModel
 import com.thechance.api.model.mapper.toApiMarketDetailsModel
 import com.thechance.api.model.mapper.toApiMarketModel
 import com.thechance.core.domain.usecase.market.MarketUseCaseContainer
+import com.thechance.core.utils.API_KEY_AUTHENTICATION
+import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -22,26 +24,28 @@ fun Route.marketsRoutes() {
 
     route("/markets") {
 
-        get {
-            val markets = marketUseCaseContainer.getMarketsUseCase().map { it.toApiMarketModel() }
-            call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
+        authenticate(API_KEY_AUTHENTICATION) {
+            get {
+                val markets = marketUseCaseContainer.getMarketsUseCase().map { it.toApiMarketModel() }
+                call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
+            }
+
+            get("/{id}/categories") {
+                val marketId = call.parameters["id"]?.toLongOrNull()
+                val categories =
+                    marketUseCaseContainer.getCategoriesByMarketIdUseCase(marketId).map { it.toApiCategoryModel() }
+                call.respond(HttpStatusCode.OK, ServerResponse.success(categories))
+            }
+
+            get("/{id}") {
+                val marketId = call.parameters["id"]?.toLongOrNull()
+                val market = marketUseCaseContainer.getMarketDetailsUseCase(marketId).toApiMarketDetailsModel()
+                call.respond(HttpStatusCode.OK, ServerResponse.success(market))
+            }
         }
 
-        get("/{id}/categories") {
-            val marketId = call.parameters["id"]?.toLongOrNull()
-            val categories =
-                marketUseCaseContainer.getCategoriesByMarketIdUseCase(marketId).map { it.toApiCategoryModel() }
-            call.respond(HttpStatusCode.OK, ServerResponse.success(categories))
-        }
 
-        get("/{id}") {
-            val marketId = call.parameters["id"]?.toLongOrNull()
-            val market = marketUseCaseContainer.getMarketDetailsUseCase(marketId).toApiMarketDetailsModel()
-            call.respond(HttpStatusCode.OK, ServerResponse.success(market))
-        }
-
-
-        authenticate {
+        authenticate(JWT_AUTHENTICATION) {
             put("/{id}") {
                 val principal = call.principal<JWTPrincipal>()
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
@@ -93,27 +97,28 @@ fun Route.marketsRoutes() {
                     ServerResponse.success(true, "Market updated successfully")
                 )
             }
+
+
+            //TODO: authenticate for Admin only.
+
+            post {
+                val params = call.receiveParameters()
+                val marketName = params["name"]?.trim().orEmpty()
+                val ownerId = params["ownerId"]?.toLongOrNull()
+
+                marketUseCaseContainer.createMarketUseCase(marketName, ownerId)
+                call.respond(
+                    HttpStatusCode.Created,
+                    ServerResponse.success(true, "Market created successfully")
+                )
+            }
+
+            delete("/{id}") {
+                val marketId = call.parameters["id"]?.toLongOrNull()
+                marketUseCaseContainer.deleteMarketUseCase(marketId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Market Deleted Successfully"))
+            }
+
         }
-
-        //TODO: authenticate for Admin only.
-
-        post {
-            val params = call.receiveParameters()
-            val marketName = params["name"]?.trim().orEmpty()
-            val ownerId = params["ownerId"]?.toLongOrNull()
-
-            marketUseCaseContainer.createMarketUseCase(marketName, ownerId)
-            call.respond(
-                HttpStatusCode.Created,
-                ServerResponse.success(true, "Market created successfully")
-            )
-        }
-
-        delete("/{id}") {
-            val marketId = call.parameters["id"]?.toLongOrNull()
-            marketUseCaseContainer.deleteMarketUseCase(marketId)
-            call.respond(HttpStatusCode.OK, ServerResponse.success("Market Deleted Successfully"))
-        }
-
     }
 }

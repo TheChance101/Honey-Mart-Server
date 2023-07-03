@@ -6,6 +6,8 @@ import com.thechance.api.model.mapper.toApiProductModel
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
 import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
+import com.thechance.core.utils.API_KEY_AUTHENTICATION
+import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -22,21 +24,23 @@ fun Route.productsRoutes() {
 
     route("/product") {
 
-        get("/{productId}/categories") {
-            val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
-            val categories = productUseCasesContainer.getCategoriesForProductUseCase(productId = productId)
-                .map { it.toApiCategoryModel() }
-            call.respond(ServerResponse.success(categories))
+        authenticate(API_KEY_AUTHENTICATION) {
+            get("/{productId}/categories") {
+                val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
+                val categories = productUseCasesContainer.getCategoriesForProductUseCase(productId = productId)
+                    .map { it.toApiCategoryModel() }
+                call.respond(ServerResponse.success(categories))
+            }
+
+            get("/{productId}") {
+                val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
+                val categories = productUseCasesContainer.getProductDetailsUseCase(productId = productId)
+                    .toApiProductModel()
+                call.respond(ServerResponse.success(categories))
+            }
         }
 
-        get("/{productId}") {
-            val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
-            val categories = productUseCasesContainer.getProductDetailsUseCase(productId = productId)
-                .toApiProductModel()
-            call.respond(ServerResponse.success(categories))
-        }
-
-        authenticate {
+        authenticate(JWT_AUTHENTICATION) {
 
             post {
                 val principal = call.principal<JWTPrincipal>()
@@ -136,7 +140,5 @@ fun Route.productsRoutes() {
             }
         }
     }
-
-
 }
 

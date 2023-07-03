@@ -6,13 +6,16 @@ import com.thechance.api.endpoints.user.cartRoutes
 import com.thechance.api.endpoints.user.tokenRouts
 import com.thechance.api.endpoints.user.userRoutes
 import com.thechance.api.endpoints.user.wishListRoutes
+import com.thechance.core.utils.API_KEY_AUTHENTICATION
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.openapi.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
 import io.swagger.codegen.v3.generators.html.StaticHtmlCodegen
 
 fun Application.configureRouting() {
+
     routing {
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml") {
             version = "4.15.5"
@@ -32,4 +35,5 @@ fun Application.configureRouting() {
         imageRouts()
         tokenRouts()
     }
+
 }

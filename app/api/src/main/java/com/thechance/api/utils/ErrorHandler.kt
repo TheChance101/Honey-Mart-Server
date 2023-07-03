@@ -170,6 +170,9 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             ServerResponse.error("InvalidOwnerId", HttpStatusCode.BadRequest.value)
         }
 
+        is InvalidApiKeyException -> {
+            ServerResponse.error("Invalid Api Key", HttpStatusCode.BadRequest.value)
+        }
         is InvalidRuleException -> {
             ServerResponse.error("Invalid Token Rule", HttpStatusCode.Unauthorized.value)
         }

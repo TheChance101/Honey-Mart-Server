@@ -63,6 +63,7 @@ class InvalidOwnerIdException : Exception()
 class InvalidStateOrderException : Exception()
 
 class CantUpdateOrderStateException : Exception()
+class InvalidApiKeyException : Exception()
 
 //endregion
 //auth region
