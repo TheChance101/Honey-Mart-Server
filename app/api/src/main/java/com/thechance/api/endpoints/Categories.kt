@@ -22,11 +22,12 @@ fun Route.categoryRoutes() {
     route("/category") {
         authenticate(API_KEY_AUTHENTICATION) {
 
-            get("/{categoryId}/allProduct") {
-                val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
-                val products = categoryUseCasesContainer.getAllCategoriesUseCase(categoryId = categoryId)
-                    .map { it.toApiProductModel() }
-                call.respond(ServerResponse.success(products))
+        get("/{categoryId}/allProduct") {
+            val page = call.parameters["page"]?.toIntOrNull() ?: 1
+            val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
+            val products = categoryUseCasesContainer.getAllCategoriesUseCase(categoryId = categoryId, page = page)
+                .map { it.toApiProductModel() }
+            call.respond(ServerResponse.success(products))
 
             }
         }

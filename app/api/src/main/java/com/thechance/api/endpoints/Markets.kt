@@ -25,10 +25,11 @@ fun Route.marketsRoutes() {
     route("/markets") {
 
         authenticate(API_KEY_AUTHENTICATION) {
-            get {
-                val markets = marketUseCaseContainer.getMarketsUseCase().map { it.toApiMarketModel() }
-                call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
-            }
+        get {
+            val page = call.parameters["page"]?.toIntOrNull() ?: 1
+            val markets = marketUseCaseContainer.getMarketsUseCase(page).map { it.toApiMarketModel() }
+            call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
+        }
 
             get("/{id}/categories") {
                 val marketId = call.parameters["id"]?.toLongOrNull()

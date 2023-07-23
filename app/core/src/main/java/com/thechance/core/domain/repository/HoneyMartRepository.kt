@@ -1,6 +1,8 @@
 package com.thechance.core.domain.repository
 
-import com.thechance.core.entity.*
+import com.thechance.core.entity.Cart
+import com.thechance.core.entity.Category
+import com.thechance.core.entity.Product
 import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.order.MarketOrder
 import com.thechance.core.entity.order.OrderDetails
@@ -33,7 +35,7 @@ interface HoneyMartRepository {
     //region market
     suspend fun getMarketIdByOwnerId(ownerId: Long): Long?
     suspend fun createMarket(marketName: String, ownerId: Long): Boolean
-    suspend fun getAllMarkets(): List<Market>
+    suspend fun getAllMarkets(page: Int): List<Market>
     suspend fun getCategoriesByMarket(marketId: Long): List<Category>
     suspend fun deleteMarket(marketId: Long): Boolean
     suspend fun updateMarket(marketId: Long, marketName: String?, description: String?): Boolean
@@ -52,7 +54,7 @@ interface HoneyMartRepository {
     suspend fun getCategoriesByMarketId(marketId: Long): List<Category>
     suspend fun deleteCategory(categoryId: Long): Boolean
     suspend fun updateCategory(categoryId: Long, categoryName: String?, marketId: Long, imageId: Int?): Boolean
-    suspend fun getAllProductsInCategory(categoryId: Long): List<Product>
+    suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product>
     suspend fun isCategoryDeleted(categoryId: Long): Boolean?
     suspend fun isCategoryNameUnique(categoryName: String, marketId: Long): Boolean
     suspend fun getMarketIdByCategoryId(categoryId: Long): Long

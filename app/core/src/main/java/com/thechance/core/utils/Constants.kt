@@ -22,6 +22,9 @@ const val PRODUCT_IMAGES_PATH = "files/market"
 const val MARKET_IMAGES_PATH = "files/markets"
 const val USER_IMAGES_PATH = "files/image_uploads"
 
+internal const val PAGE_SIZE = 10
+
+
 const val API_KEY_HEADER_NAME = "apiKey"
 const val API_SECRET_KEY = "honey_secret_api_key"
 const val JWT_AUTHENTICATION = "jwt"

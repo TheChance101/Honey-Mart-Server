@@ -65,6 +65,8 @@ class InvalidStateOrderException : Exception()
 class CantUpdateOrderStateException : Exception()
 class InvalidApiKeyException : Exception()
 
+class InvalidPageNumberException : Exception()
+
 //endregion
 //auth region
 class InvalidRuleException : Exception()
