@@ -3,6 +3,8 @@ package com.thechance.api.endpoints
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiProductModel
 import com.thechance.core.domain.usecase.category.CategoryUseCasesContainer
+import com.thechance.core.utils.API_KEY_AUTHENTICATION
+import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -18,6 +20,7 @@ fun Route.categoryRoutes() {
     val categoryUseCasesContainer: CategoryUseCasesContainer by inject()
 
     route("/category") {
+        authenticate(API_KEY_AUTHENTICATION) {
 
         get("/{categoryId}/allProduct") {
             val page = call.parameters["page"]?.toIntOrNull() ?: 1
@@ -26,9 +29,9 @@ fun Route.categoryRoutes() {
                 .map { it.toApiProductModel() }
             call.respond(ServerResponse.success(products))
 
+            }
         }
-
-        authenticate {
+        authenticate(JWT_AUTHENTICATION) {
 
             post {
                 val principal = call.principal<JWTPrincipal>()
@@ -54,7 +57,13 @@ fun Route.categoryRoutes() {
                 val categoryName = params["name"]?.trim()
                 val imageId = params["imageId"]?.toIntOrNull()
 
-                categoryUseCasesContainer.updateCategoryUseCase(categoryId, categoryName, imageId, marketOwnerId, role)
+                categoryUseCasesContainer.updateCategoryUseCase(
+                    categoryId,
+                    categoryName,
+                    imageId,
+                    marketOwnerId,
+                    role
+                )
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Update successfully"))
 
             }
@@ -65,9 +74,11 @@ fun Route.categoryRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
-                val isCategoryDeleted = categoryUseCasesContainer.deleteCategoryUseCase(categoryId, marketOwnerId, role)
+                val isCategoryDeleted =
+                    categoryUseCasesContainer.deleteCategoryUseCase(categoryId, marketOwnerId, role)
                 call.respond(HttpStatusCode.OK, ServerResponse.success(result = isCategoryDeleted))
             }
         }
     }
+
 }

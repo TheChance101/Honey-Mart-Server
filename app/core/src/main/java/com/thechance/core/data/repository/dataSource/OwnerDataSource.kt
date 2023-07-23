@@ -13,5 +13,5 @@ interface OwnerDataSource {
 
     suspend fun isValidOwner(ownerId: Long): Boolean
 
-    suspend fun getOwner(ownerId: Long): User
+    suspend fun getOwner(ownerId: Long): Owner
 }
