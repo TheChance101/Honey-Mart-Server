@@ -138,6 +138,15 @@ fun Route.productsRoutes() {
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
             }
+
+            get("/search") {
+                val query = call.request.queryParameters["q"]?.trim()
+                val searchResults = query?.let {
+                    productUseCasesContainer.searchProductsByNameUseCase(it)
+                        .map { it.toApiProductModel() }
+                } ?: emptyList()
+                call.respond(ServerResponse.success(searchResults))
+            }
         }
     }
 }
