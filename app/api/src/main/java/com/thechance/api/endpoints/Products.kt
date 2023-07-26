@@ -144,7 +144,7 @@ fun Route.productsRoutes() {
                 val searchResults = query?.let {
                     productUseCasesContainer.searchProductsByNameUseCase(it)
                         .map { it.toApiProductModel() }
-                } ?: emptyList()
+                }
                 call.respond(ServerResponse.success(searchResults))
             }
         }
