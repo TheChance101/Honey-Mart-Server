@@ -120,7 +120,7 @@ class HoneyMartRepositoryImp(
         )
 
     override suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product> =
-        productDataSource.getAllProductsInCategory(categoryId,page)
+        productDataSource.getAllProductsInCategory(categoryId, page)
 
     override suspend fun isCategoryDeleted(categoryId: Long): Boolean? =
         categoryDataSource.isCategoryDeleted(categoryId)
@@ -174,6 +174,9 @@ class HoneyMartRepositoryImp(
 
     override suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String =
         productDataSource.deleteImageFromProduct(productId, imageId)
+
+    override suspend fun searchProductsByName(productName: String): List<Product> =
+        productDataSource.searchProductsByName(productName)
 //endregion
 
     //region order
