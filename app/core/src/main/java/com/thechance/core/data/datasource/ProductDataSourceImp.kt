@@ -174,4 +174,13 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         }
     }
 
+    override suspend fun searchProductsByName(productName: String): List<Product> = dbQuery {
+        ProductTable
+            .select { (ProductTable.name like "%$productName%") and (ProductTable.isDeleted eq false) }
+            .map { productRow ->
+                val images = getProductImages(productRow[ProductTable.id].value)
+                productRow.toProduct(images = images)
+            }
+    }
+
 }
