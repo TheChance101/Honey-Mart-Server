@@ -1,16 +1,19 @@
 package com.thechance.core.data.datasource
 
+import com.thechance.core.data.datasource.database.tables.MarketTable
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
 import com.thechance.core.data.datasource.database.tables.product.GalleryTable
 import com.thechance.core.data.datasource.database.tables.product.ProductGalleryTable
 import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import com.thechance.core.data.datasource.mapper.toCategory
+import com.thechance.core.data.datasource.mapper.toMarket
 import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.repository.dataSource.ProductDataSource
 import com.thechance.core.entity.Category
 import com.thechance.core.entity.Image
 import com.thechance.core.entity.Product
+import com.thechance.core.entity.market.Market
 import com.thechance.core.utils.PAGE_SIZE
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
@@ -174,9 +177,11 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         }
     }
 
-    override suspend fun searchProductsByName(productName: String): List<Product> = dbQuery {
+    override suspend fun searchProductsByName(productName: String, page: Int): List<Product> = dbQuery {
+        val offset = ((page - 1) * PAGE_SIZE).toLong()
         ProductTable
             .select { (ProductTable.name like "%$productName%") and (ProductTable.isDeleted eq false) }
+            .limit(PAGE_SIZE, offset)
             .map { productRow ->
                 val images = getProductImages(productRow[ProductTable.id].value)
                 productRow.toProduct(images = images)
