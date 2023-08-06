@@ -141,8 +141,9 @@ fun Route.productsRoutes() {
 
             get("/search") {
                 val query = call.request.queryParameters["q"]?.trim()
-                val searchResults = query?.let {
-                    productUseCasesContainer.searchProductsByNameUseCase(it)
+                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
+                val searchResults = query?.let { q ->
+                    productUseCasesContainer.searchProductsByNameUseCase(q, page)
                         .map { it.toApiProductModel() }
                 }
                 call.respond(ServerResponse.success(searchResults))
