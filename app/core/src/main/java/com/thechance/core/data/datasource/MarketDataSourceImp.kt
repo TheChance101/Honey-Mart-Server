@@ -55,7 +55,7 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
 
     override suspend fun getAllMarkets(page: Int): List<Market> = dbQuery {
         val offset = ((page - 1) * PAGE_SIZE).toLong()
-        MarketTable.select { MarketTable.isDeleted eq false }
+        MarketTable.select { (MarketTable.isDeleted eq false ) and (MarketTable.status eq true)}
             .limit(PAGE_SIZE, offset)
             .map { it.toMarket() }
             .toList()
