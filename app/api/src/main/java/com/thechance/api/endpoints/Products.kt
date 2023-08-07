@@ -40,16 +40,10 @@ fun Route.productsRoutes() {
             }
 
             get("/search") {
-                val query = call.request.queryParameters["query"]?.trim()
-                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
+                val param = call.request.queryParameters
+                val query = param["query"]?.trim()
+                val page = param["page"]?.toIntOrNull() ?: 1
 
-                if (query == null) {
-                    call.respond(
-                        HttpStatusCode.BadRequest,
-                        ServerResponse.error("Missing query parameter", HttpStatusCode.BadRequest.value)
-                    )
-                    return@get
-                }
                 val searchResults = productUseCasesContainer.searchProductsByNameUseCase(query, page)
                     .map { it.toApiProductModel() }
 
