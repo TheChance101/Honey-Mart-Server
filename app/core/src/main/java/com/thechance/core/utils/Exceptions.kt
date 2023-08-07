@@ -29,6 +29,8 @@ class ProductDeletedException : Exception()
 
 class NotValidCategoryList : Exception()
 
+class MissingQueryParameterException : Exception()
+
 class CategoryNameNotUniqueException : Exception()
 
 //region user

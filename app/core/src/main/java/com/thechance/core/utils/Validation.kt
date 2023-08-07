@@ -9,6 +9,15 @@ fun isValidMarketProductName(name: String?): Boolean {
     }
 }
 
+fun isValidQuery(name: String?): Boolean {
+    return if (name == null) {
+        false
+    } else {
+        val pattern = Regex("^[A-Za-z0-9\\s\\[\\]\\(\\)\\-.,&]*$")
+        pattern.matches(name)
+    }
+}
+
 fun isValidCategoryName(name: String?): Boolean {
     return if (name == null) {
         false
@@ -78,10 +87,10 @@ internal fun isInValidDescription(description: String?): Boolean {
 }
 
 internal fun isValidAddress(address: String?): Boolean {
-   return if (address.isNullOrEmpty()) {
+    return if (address.isNullOrEmpty()) {
         false
-    }else{
-       val pattern = Regex("^[0-9]+\\s[A-Za-z\\s]+,[A-Za-z\\s]+,[A-Za-z]{2}$")
+    } else {
+        val pattern = Regex("^[0-9]+\\s[A-Za-z\\s]+,[A-Za-z\\s]+,[A-Za-z]{2}$")
         pattern.matches(address.trim())
     }
 }
