@@ -38,6 +38,23 @@ fun Route.productsRoutes() {
                     .toApiProductModel()
                 call.respond(ServerResponse.success(categories))
             }
+
+            get("/search") {
+                val query = call.request.queryParameters["query"]?.trim()
+                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
+
+                if (query == null) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ServerResponse.error("Missing query parameter", HttpStatusCode.BadRequest.value)
+                    )
+                    return@get
+                }
+                val searchResults = productUseCasesContainer.searchProductsByNameUseCase(query, page)
+                    .map { it.toApiProductModel() }
+
+                call.respond(ServerResponse.success(searchResults))
+            }
         }
 
         authenticate(JWT_AUTHENTICATION) {
@@ -139,15 +156,6 @@ fun Route.productsRoutes() {
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
             }
 
-            get("/search") {
-                val query = call.request.queryParameters["q"]?.trim()
-                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
-                val searchResults = query?.let { q ->
-                    productUseCasesContainer.searchProductsByNameUseCase(q, page)
-                        .map { it.toApiProductModel() }
-                }
-                call.respond(ServerResponse.success(searchResults))
-            }
         }
     }
 }
