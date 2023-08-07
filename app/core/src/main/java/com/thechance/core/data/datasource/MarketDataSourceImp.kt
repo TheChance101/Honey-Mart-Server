@@ -54,7 +54,7 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
     }
 
     override suspend fun getAllMarkets(page: Int): List<Market> = dbQuery {
-        val offset =( (page - 1) * PAGE_SIZE).toLong()
+        val offset = ((page - 1) * PAGE_SIZE).toLong()
         MarketTable.select { MarketTable.isDeleted eq false }
             .limit(PAGE_SIZE, offset)
             .map { it.toMarket() }
@@ -84,6 +84,13 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
             longitude?.let { marketRow[MarketTable.longitude] = it }
             description?.let { marketRow[MarketTable.description] = it }
             address?.let { marketRow[MarketTable.address] = it }
+        }
+        true
+    }
+
+    override suspend fun updateMarketStatus(marketId: Long, status: Boolean): Boolean = dbQuery {
+        MarketTable.update({ MarketTable.id eq marketId }) { marketRow ->
+            marketRow[MarketTable.status] = status
         }
         true
     }

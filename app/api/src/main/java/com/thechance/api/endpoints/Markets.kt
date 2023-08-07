@@ -25,11 +25,11 @@ fun Route.marketsRoutes() {
     route("/markets") {
 
         authenticate(API_KEY_AUTHENTICATION) {
-        get {
-            val page = call.parameters["page"]?.toIntOrNull() ?: 1
-            val markets = marketUseCaseContainer.getMarketsUseCase(page).map { it.toApiMarketModel() }
-            call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
-        }
+            get {
+                val page = call.parameters["page"]?.toIntOrNull() ?: 1
+                val markets = marketUseCaseContainer.getMarketsUseCase(page).map { it.toApiMarketModel() }
+                call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
+            }
 
             get("/{id}/categories") {
                 val marketId = call.parameters["id"]?.toLongOrNull()
@@ -58,6 +58,24 @@ fun Route.marketsRoutes() {
 
                 marketUseCaseContainer.updateMarketUseCase(marketName = marketName, description, marketOwnerId, role)
 
+                call.respond(
+                    HttpStatusCode.OK,
+                    ServerResponse.success(true, "Market updated successfully")
+                )
+            }
+
+            /**
+             * 1 => open
+             * 2 =>close
+             * */
+            put("/status") {
+                val principal = call.principal<JWTPrincipal>()
+                val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+
+                val params = call.receiveParameters()
+                val status = params["status"]?.trim()?.toIntOrNull()
+                marketUseCaseContainer.updateMarketStatus(marketOwnerId, role, status)
                 call.respond(
                     HttpStatusCode.OK,
                     ServerResponse.success(true, "Market updated successfully")

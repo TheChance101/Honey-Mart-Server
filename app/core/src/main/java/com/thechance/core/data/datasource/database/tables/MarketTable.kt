@@ -11,4 +11,5 @@ object MarketTable : LongIdTable() {
     val latitude = double("latitude").default(0.0)
     val longitude = double("longitude").default(0.0)
     val description = text("description").default("")
+    val status = bool("status").default(true)
 }
