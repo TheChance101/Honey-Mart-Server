@@ -6,14 +6,10 @@ import com.thechance.core.entity.market.Market
 interface MarketDataSource {
 
     suspend fun getMarketIdByOwnerId(ownerId: Long): Long?
-
     suspend fun createMarket(marketName: String, ownerId: Long): Boolean
     suspend fun getAllMarkets(page: Int): List<Market>
-
     suspend fun getCategoriesByMarket(marketId: Long): List<Category>
-
     suspend fun deleteMarket(marketId: Long): Boolean
-
     suspend fun updateMarket(
         marketId: Long,
         marketName: String? = null,
@@ -23,6 +19,8 @@ interface MarketDataSource {
         description: String? = null,
         address: String? = null
     ): Boolean
+
+    suspend fun updateMarketStatus(marketId: Long, status: Boolean): Boolean
 
     suspend fun isDeleted(marketId: Long): Boolean?
 

@@ -88,6 +88,10 @@ class HoneyMartRepositoryImp(
         marketId: Long, latitude: Double?, longitude: Double?, address: String?
     ) = marketDataSource.updateMarket(marketId, latitude = latitude, longitude = longitude, address = address)
 
+    override suspend fun updateMarketStatus(marketId: Long, state: Boolean): Boolean {
+        return marketDataSource.updateMarketStatus(marketId,state)
+    }
+
     override suspend fun isMarketDeleted(marketId: Long): Boolean? =
         marketDataSource.isDeleted(marketId)
 
