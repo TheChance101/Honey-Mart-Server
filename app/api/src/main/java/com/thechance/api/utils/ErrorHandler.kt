@@ -169,6 +169,7 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is InvalidOwnerIdException -> {
             ServerResponse.error("InvalidOwnerId", HttpStatusCode.BadRequest.value)
         }
+
         is InvalidPageNumberException -> {
             ServerResponse.error("Invalid Page Number", HttpStatusCode.NotFound.value)
         }
@@ -176,6 +177,7 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is InvalidApiKeyException -> {
             ServerResponse.error("Invalid Api Key", HttpStatusCode.BadRequest.value)
         }
+
         is InvalidRuleException -> {
             ServerResponse.error("Invalid Token Rule", HttpStatusCode.Unauthorized.value)
         }
@@ -190,6 +192,10 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
 
         is InvalidTokenTypeException -> {
             ServerResponse.error("Invalid Token Type", HttpStatusCode.Unauthorized.value)
+        }
+
+        is MissingQueryParameterException -> {
+            ServerResponse.error("Missing Query Parameter", HttpStatusCode.BadRequest.value)
         }
 
         else -> {

@@ -38,6 +38,17 @@ fun Route.productsRoutes() {
                     .toApiProductModel()
                 call.respond(ServerResponse.success(categories))
             }
+
+            get("/search") {
+                val param = call.request.queryParameters
+                val query = param["query"]?.trim()
+                val page = param["page"]?.toIntOrNull() ?: 1
+
+                val searchResults = productUseCasesContainer.searchProductsByNameUseCase(query, page)
+                    .map { it.toApiProductModel() }
+
+                call.respond(ServerResponse.success(searchResults))
+            }
         }
 
         authenticate(JWT_AUTHENTICATION) {
@@ -138,6 +149,7 @@ fun Route.productsRoutes() {
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
             }
+
         }
     }
 }
