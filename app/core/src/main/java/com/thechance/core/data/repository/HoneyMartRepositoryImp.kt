@@ -89,7 +89,7 @@ class HoneyMartRepositoryImp(
     ) = marketDataSource.updateMarket(marketId, latitude = latitude, longitude = longitude, address = address)
 
     override suspend fun updateMarketStatus(marketId: Long, state: Boolean): Boolean {
-        return marketDataSource.updateMarketStatus(marketId,state)
+        return marketDataSource.updateMarketStatus(marketId, state)
     }
 
     override suspend fun isMarketDeleted(marketId: Long): Boolean? =
@@ -181,6 +181,10 @@ class HoneyMartRepositoryImp(
 
     override suspend fun searchProductsByName(productName: String, page: Int): List<Product> =
         productDataSource.searchProductsByName(productName, page)
+
+    override suspend fun getAllProducts(page: Int): List<Product> =
+        productDataSource.getAllProducts(page)
+
 //endregion
 
     //region order
