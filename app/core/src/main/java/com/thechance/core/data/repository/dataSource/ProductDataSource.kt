@@ -34,5 +34,8 @@ interface ProductDataSource {
     suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product>
 
     suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
-    suspend fun searchProductsByName(productName: String,page: Int): List<Product>
+
+    suspend fun searchProductsByName(productName: String, page: Int): List<Product>
+
+    suspend fun getAllProducts(page: Int): List<Product>
 }
