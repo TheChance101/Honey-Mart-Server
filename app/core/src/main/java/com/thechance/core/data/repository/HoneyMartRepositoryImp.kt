@@ -15,7 +15,8 @@ class HoneyMartRepositoryImp(
     private val categoryDataSource: CategoryDataSource,
     private val productDataSource: ProductDataSource,
     private val orderDataSource: OrderDataSource,
-    private val userDataSource: UserDataSource
+    private val userDataSource: UserDataSource,
+    private val notificationDataSource: NotificationDataSource
 ) : HoneyMartRepository, KoinComponent {
 
     //region cart
@@ -227,6 +228,10 @@ class HoneyMartRepositoryImp(
 
     override suspend fun getUserProfileImage(userId: Long): String? =
         userDataSource.getUserProfileImage(userId)
+
+    override suspend fun sendNotificationByToken(userTokens: List<String>, title: String, body: String):List<String> {
+        return notificationDataSource.sendNotificationByTokens(userTokens,title,body)
+    }
 
 //endregion
 

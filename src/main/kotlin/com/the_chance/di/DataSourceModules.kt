@@ -11,4 +11,5 @@ val dataSourceModules = module {
     single<UserDataSource> { UserDataSourceImp() }
     single<OwnerDataSource> { OwnerDataSourceImp() }
     single<OrderDataSource> { OrderDataSourceImp() }
+    single<NotificationDataSource> { NotificationDataSourceImp(get()) }
 }

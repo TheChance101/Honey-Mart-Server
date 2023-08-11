@@ -110,4 +110,6 @@ interface HoneyMartRepository {
 
     suspend fun getUserProfileImage(userId: Long): String?
 
+    suspend fun sendNotificationByToken(userTokens: List<String>, title:String, body:String): List<String>
+
 }
