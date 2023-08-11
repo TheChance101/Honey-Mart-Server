@@ -4,10 +4,12 @@ import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.entity.Cart
 import com.thechance.core.entity.Category
+import com.thechance.core.entity.NotificationRequest
 import com.thechance.core.entity.Product
 import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.order.MarketOrder
 import com.thechance.core.entity.order.OrderItem
+import org.jetbrains.exposed.sql.not
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
@@ -90,7 +92,7 @@ class HoneyMartRepositoryImp(
     ) = marketDataSource.updateMarket(marketId, latitude = latitude, longitude = longitude, address = address)
 
     override suspend fun updateMarketStatus(marketId: Long, state: Boolean): Boolean {
-        return marketDataSource.updateMarketStatus(marketId,state)
+        return marketDataSource.updateMarketStatus(marketId, state)
     }
 
     override suspend fun isMarketDeleted(marketId: Long): Boolean? =
@@ -228,11 +230,19 @@ class HoneyMartRepositoryImp(
 
     override suspend fun getUserProfileImage(userId: Long): String? =
         userDataSource.getUserProfileImage(userId)
+    //end region
 
-    override suspend fun sendNotificationByToken(userTokens: List<String>, title: String, body: String):List<String> {
-        return notificationDataSource.sendNotificationByTokens(userTokens,title,body)
+    //region notification
+    override suspend fun sendNotificationByTokens(tokens: List<String>, orderId: Long, title: String, body: String): Boolean {
+        return notificationDataSource.sendNotificationByTokens(tokens,orderId,title,body)
+
     }
+    //end region
 
+    //region tokens
+    override suspend fun getReceiverTokens(userId: Long): List<String> {
+        return userDataSource.getUserTokens(userId)
+    }
 //endregion
 
 }

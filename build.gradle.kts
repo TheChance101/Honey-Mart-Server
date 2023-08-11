@@ -50,7 +50,7 @@ dependencies {
 
     implementation ("io.insert-koin:koin-ktor:$koin_version")
     implementation ("io.insert-koin:koin-logger-slf4j:$koin_version")
-    implementation ("ch.qos.logback:logback-classic:1.2.10")
+    implementation ("ch.qos.logback:logback-classic:1.4.7")
 
 
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")

@@ -1,5 +1,5 @@
 package com.thechance.core.data.repository.dataSource
 
 interface NotificationDataSource {
-    suspend fun sendNotificationByTokens(userTokens: List<String>, title: String, body: String): List<String>
+    suspend fun sendNotificationByTokens(tokens: List<String>, orderId: Long, title: String, body: String): Boolean
 }

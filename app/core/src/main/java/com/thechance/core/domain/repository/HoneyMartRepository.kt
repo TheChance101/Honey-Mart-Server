@@ -41,7 +41,7 @@ interface HoneyMartRepository {
     suspend fun updateMarket(marketId: Long, marketName: String?, description: String?): Boolean
     suspend fun updateMarketImage(marketId: Long, imageUrl: String?): Boolean
     suspend fun updateMarketLocation(marketId: Long, latitude: Double?, longitude: Double?, address: String?): Boolean
-    suspend fun updateMarketStatus(marketId: Long,state: Boolean):Boolean
+    suspend fun updateMarketStatus(marketId: Long, state: Boolean): Boolean
     suspend fun isMarketDeleted(marketId: Long): Boolean?
     suspend fun getMarketId(productId: Long): Long?
     suspend fun getOwnerIdByMarketId(marketId: Long): Long?
@@ -87,7 +87,7 @@ interface HoneyMartRepository {
 
     suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
 
-    suspend fun searchProductsByName(productName: String,page: Int): List<Product>
+    suspend fun searchProductsByName(productName: String, page: Int): List<Product>
     //endregion
 
     //region order
@@ -110,6 +110,8 @@ interface HoneyMartRepository {
 
     suspend fun getUserProfileImage(userId: Long): String?
 
-    suspend fun sendNotificationByToken(userTokens: List<String>, title:String, body:String): List<String>
+    suspend fun sendNotificationByTokens(tokens: List<String>, orderId: Long, title: String, body: String): Boolean
+
+    suspend fun getReceiverTokens(userId: Long): List<String>
 
 }

@@ -51,4 +51,7 @@ interface UserDataSource {
     suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean
     suspend fun getUserProfileImage(userId: Long): String?
     suspend fun getUser(userId: Long): User
+
+    //region tokens
+    suspend fun getUserTokens(userId: Long): List<String>
 }

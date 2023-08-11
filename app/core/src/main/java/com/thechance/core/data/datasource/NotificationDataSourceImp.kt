@@ -7,16 +7,16 @@ import org.koin.core.component.KoinComponent
 
 class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging) : NotificationDataSource,
     KoinComponent {
+
     override suspend fun sendNotificationByTokens(
-        userTokens: List<String>,
-        title: String,
-        body: String
-    ): List<String> {
+        tokens: List<String>, orderId: Long, title: String, body: String
+    ): Boolean {
         val response = mutableListOf<String>()
-        for (token in userTokens) {
+        for (token in tokens) {
             val message = Message.builder()
                 .putData(TITLE, title)
                 .putData(BODY, body)
+                .putData(ORDER_ID, orderId.toString())
                 .setToken(token)
                 .build()
             try {
@@ -26,12 +26,11 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
                 response.add(e.message.toString())
             }
         }
-        return response
+        return response.isNotEmpty()
     }
-
     companion object {
         private const val TITLE = "title"
         private const val BODY = "body"
+        private const val ORDER_ID = "orderId"
     }
-
 }
