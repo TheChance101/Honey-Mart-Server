@@ -28,4 +28,7 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
     implementation("commons-codec:commons-codec:1.15")
 
+    implementation("com.google.firebase:firebase-admin:9.1.1")
+
+
 }

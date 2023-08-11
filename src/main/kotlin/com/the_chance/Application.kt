@@ -22,6 +22,7 @@ fun Application.module() {
     }
 
     CoreDataBase()
+    configureFirebaseApp()
     configureSerialization()
     configureStatusExceptions()
     configureMonitoring()

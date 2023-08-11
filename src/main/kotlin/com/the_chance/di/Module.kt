@@ -1,5 +1,6 @@
 package com.the_chance.di
 
+import com.google.firebase.messaging.FirebaseMessaging
 import com.thechance.core.data.datasource.database.CoreDataBase
 import com.thechance.core.data.repository.security.HashingService
 import com.thechance.core.data.repository.security.TokenService
@@ -17,6 +18,9 @@ import java.util.concurrent.TimeUnit
 
 val appModules = module {
     single { CoreDataBase() }
+    single { FirebaseMessaging.getInstance() }
+
+
     singleOf(::TokenServiceImp) { bind<TokenService>() }
     single<HashingService> { SHA256HashingService() }
 
@@ -44,7 +48,8 @@ val appModules = module {
         userUseCaseModule,
         ownerUseCaseModule,
         repositoriesModules,
-        tokenUseCase
+        tokenUseCase,
+        notificationUseCase
     )
 }
 

@@ -4,6 +4,8 @@ val logback_version: String by project
 val exposed_version : String by project
 val h2_version : String by project
 val koin_version:String by project
+val firebase_version : String by project
+
 
 plugins {
     kotlin("jvm") version "1.8.10"
@@ -48,9 +50,16 @@ dependencies {
 
     implementation ("io.insert-koin:koin-ktor:$koin_version")
     implementation ("io.insert-koin:koin-logger-slf4j:$koin_version")
+    implementation ("ch.qos.logback:logback-classic:1.2.10")
+
 
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
     implementation("io.ktor:ktor-server-status-pages:$ktor_version")
+
+    // firebase
+    implementation("com.google.firebase:firebase-admin:9.0.0")
+
+
 
 }
 

@@ -44,4 +44,7 @@ dependencies {
 
     implementation ("dev.forst:ktor-api-key:1.1.0")
 
+    implementation("com.google.firebase:firebase-admin:9.1.1")
+
+
 }
