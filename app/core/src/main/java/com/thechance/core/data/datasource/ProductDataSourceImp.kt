@@ -13,8 +13,14 @@ import com.thechance.core.entity.Image
 import com.thechance.core.entity.Product
 import com.thechance.core.utils.PAGE_SIZE
 import com.thechance.core.utils.dbQuery
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.batchInsert
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 
 class ProductDataSourceImp : ProductDataSource, KoinComponent {
@@ -37,6 +43,18 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
             price = newProduct[ProductTable.price],
             image = emptyList()
         )
+    }
+
+    override suspend fun getMostRecentProductsByPosition(): List<Product> = dbQuery {
+        ProductTable
+            .select { ProductTable.isDeleted eq false }
+            .orderBy(ProductTable.id, order = SortOrder.DESC)
+            .toList()
+            .takeLast(20)
+            .map { productRow ->
+                val images = getProductImages(productRow[ProductTable.id].value)
+                productRow.toProduct(images = images)
+            }
     }
 
     private fun insertCategoryForProduct(categoriesId: List<Long>, productId: Long) {
@@ -78,17 +96,18 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
             }
     }
 
-    override suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product> = dbQuery {
-        val offset = ((page - 1) * PAGE_SIZE).toLong()
-        (ProductTable innerJoin CategoryProductTable)
-            .select { CategoryProductTable.categoryId eq categoryId }
-            .limit(n = PAGE_SIZE, offset = offset)
-            .filterNot { it[ProductTable.isDeleted] }
-            .map { productRow ->
-                val images = getProductImages(productRow[ProductTable.id].value)
-                productRow.toProduct(images)
-            }
-    }
+    override suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product> =
+        dbQuery {
+            val offset = ((page - 1) * PAGE_SIZE).toLong()
+            (ProductTable innerJoin CategoryProductTable)
+                .select { CategoryProductTable.categoryId eq categoryId }
+                .limit(n = PAGE_SIZE, offset = offset)
+                .filterNot { it[ProductTable.isDeleted] }
+                .map { productRow ->
+                    val images = getProductImages(productRow[ProductTable.id].value)
+                    productRow.toProduct(images)
+                }
+        }
 
     override suspend fun getAllCategoryForProduct(productId: Long): List<Category> = dbQuery {
         (CategoriesTable innerJoin CategoryProductTable)
@@ -140,10 +159,12 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
     override suspend fun getProductMarketId(productId: Long): Long {
         return dbQuery {
-            val categoryId = CategoryProductTable.select { CategoryProductTable.productId eq productId }
-                .map { it[CategoryProductTable.categoryId].value }.first()
+            val categoryId =
+                CategoryProductTable.select { CategoryProductTable.productId eq productId }
+                    .map { it[CategoryProductTable.categoryId].value }.first()
 
-            CategoriesTable.select { CategoriesTable.id eq categoryId }.map { it[CategoriesTable.marketId].value }
+            CategoriesTable.select { CategoriesTable.id eq categoryId }
+                .map { it[CategoriesTable.marketId].value }
                 .single()
         }
     }
@@ -168,21 +189,24 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
                 (ProductGalleryTable.productId eq productId) and
                         (ProductGalleryTable.galleryId eq imageId)
             }
-            val imageUrl = GalleryTable.select { GalleryTable.id eq imageId }.map { it[GalleryTable.imageUrl] }.single()
+            val imageUrl =
+                GalleryTable.select { GalleryTable.id eq imageId }.map { it[GalleryTable.imageUrl] }
+                    .single()
             GalleryTable.deleteWhere { GalleryTable.id eq imageId }
             imageUrl
         }
     }
 
-    override suspend fun searchProductsByName(productName: String, page: Int): List<Product> = dbQuery {
-        val offset = ((page - 1) * PAGE_SIZE).toLong()
-        ProductTable
-            .select { (ProductTable.name like "%$productName%") and (ProductTable.isDeleted eq false) }
-            .limit(PAGE_SIZE, offset)
-            .map { productRow ->
-                val images = getProductImages(productRow[ProductTable.id].value)
-                productRow.toProduct(images = images)
-            }
-    }
+    override suspend fun searchProductsByName(productName: String, page: Int): List<Product> =
+        dbQuery {
+            val offset = ((page - 1) * PAGE_SIZE).toLong()
+            ProductTable
+                .select { (ProductTable.name like "%$productName%") and (ProductTable.isDeleted eq false) }
+                .limit(PAGE_SIZE, offset)
+                .map { productRow ->
+                    val images = getProductImages(productRow[ProductTable.id].value)
+                    productRow.toProduct(images = images)
+                }
+        }
 
 }

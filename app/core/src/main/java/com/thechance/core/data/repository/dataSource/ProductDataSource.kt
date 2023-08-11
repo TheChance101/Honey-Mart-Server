@@ -9,6 +9,7 @@ interface ProductDataSource {
         productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
     ): Product
 
+    suspend fun getMostRecentProductsByPosition(): List<Product>
     suspend fun getAllProducts(): List<Product>
 
     suspend fun getProduct(productId: Long): Product
@@ -34,5 +35,5 @@ interface ProductDataSource {
     suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product>
 
     suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
-    suspend fun searchProductsByName(productName: String,page: Int): List<Product>
+    suspend fun searchProductsByName(productName: String, page: Int): List<Product>
 }

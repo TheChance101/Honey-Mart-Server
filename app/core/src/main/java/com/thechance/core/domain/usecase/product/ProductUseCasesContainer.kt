@@ -11,5 +11,7 @@ data class ProductUseCasesContainer(
     val addImageProductUseCase: AddImageProductUseCase,
     val deleteImageFromProductUseCase: DeleteImageFromProductUseCase,
     val getProductDetailsUseCase: GetProductDetailsUseCase,
-    val searchProductsByNameUseCase: SearchProductsByNameUseCase
+    val searchProductsByNameUseCase: SearchProductsByNameUseCase,
+    val getMostRecentProductsByPositionUseCase: GetMostRecentProductsByPositionUseCase
+
 ) : KoinComponent

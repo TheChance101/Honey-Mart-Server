@@ -9,13 +9,20 @@ import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
 import com.thechance.core.utils.API_KEY_AUTHENTICATION
 import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.principal
+import io.ktor.server.request.receiveMultipart
+import io.ktor.server.request.receiveParameters
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.delete
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.put
+import io.ktor.server.routing.route
 import org.koin.ktor.ext.inject
 
 fun Route.productsRoutes() {
@@ -27,16 +34,23 @@ fun Route.productsRoutes() {
         authenticate(API_KEY_AUTHENTICATION) {
             get("/{productId}/categories") {
                 val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
-                val categories = productUseCasesContainer.getCategoriesForProductUseCase(productId = productId)
-                    .map { it.toApiCategoryModel() }
+                val categories =
+                    productUseCasesContainer.getCategoriesForProductUseCase(productId = productId)
+                        .map { it.toApiCategoryModel() }
                 call.respond(ServerResponse.success(categories))
             }
 
             get("/{productId}") {
                 val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
-                val categories = productUseCasesContainer.getProductDetailsUseCase(productId = productId)
-                    .toApiProductModel()
+                val categories =
+                    productUseCasesContainer.getProductDetailsUseCase(productId = productId)
+                        .toApiProductModel()
                 call.respond(ServerResponse.success(categories))
+            }
+
+            get("/recent-products") {
+                val products = productUseCasesContainer.getMostRecentProductsByPositionUseCase()
+                call.respond(products)
             }
 
             get("/search") {
@@ -44,8 +58,9 @@ fun Route.productsRoutes() {
                 val query = param["query"]?.trim()
                 val page = param["page"]?.toIntOrNull() ?: 1
 
-                val searchResults = productUseCasesContainer.searchProductsByNameUseCase(query, page)
-                    .map { it.toApiProductModel() }
+                val searchResults =
+                    productUseCasesContainer.searchProductsByNameUseCase(query, page)
+                        .map { it.toApiProductModel() }
 
                 call.respond(ServerResponse.success(searchResults))
             }
@@ -117,10 +132,17 @@ fun Route.productsRoutes() {
                 val productId = call.parameters["id"]?.trim()?.toLongOrNull()
 
                 val result =
-                    productUseCasesContainer.deleteProductUseCase(productId = productId, marketOwnerId, role)
+                    productUseCasesContainer.deleteProductUseCase(
+                        productId = productId,
+                        marketOwnerId,
+                        role
+                    )
                 call.respond(
                     HttpStatusCode.OK,
-                    ServerResponse.success(result = result, successMessage = "Product Deleted successfully.")
+                    ServerResponse.success(
+                        result = result,
+                        successMessage = "Product Deleted successfully."
+                    )
                 )
             }
 
@@ -132,7 +154,10 @@ fun Route.productsRoutes() {
                 val imageParts = call.receiveMultipart()
 
                 productUseCasesContainer.addImageProductUseCase(
-                    marketOwnerId = marketOwnerId, role = role, productId = productId, image = imageParts
+                    marketOwnerId = marketOwnerId,
+                    role = role,
+                    productId = productId,
+                    image = imageParts
                 )
                 call.respond(HttpStatusCode.Created, ServerResponse.success(true, "uploaded."))
             }
@@ -145,7 +170,10 @@ fun Route.productsRoutes() {
                 val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
 
                 productUseCasesContainer.deleteImageFromProductUseCase(
-                    productId = productId, imageId = imageId, role = role, marketOwnerId = marketOwnerId
+                    productId = productId,
+                    imageId = imageId,
+                    role = role,
+                    marketOwnerId = marketOwnerId
                 )
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Deleted successfully"))
             }

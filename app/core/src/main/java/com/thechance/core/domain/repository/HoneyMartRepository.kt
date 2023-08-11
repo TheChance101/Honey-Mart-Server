@@ -40,8 +40,14 @@ interface HoneyMartRepository {
     suspend fun deleteMarket(marketId: Long): Boolean
     suspend fun updateMarket(marketId: Long, marketName: String?, description: String?): Boolean
     suspend fun updateMarketImage(marketId: Long, imageUrl: String?): Boolean
-    suspend fun updateMarketLocation(marketId: Long, latitude: Double?, longitude: Double?, address: String?): Boolean
-    suspend fun updateMarketStatus(marketId: Long,state: Boolean):Boolean
+    suspend fun updateMarketLocation(
+        marketId: Long,
+        latitude: Double?,
+        longitude: Double?,
+        address: String?
+    ): Boolean
+
+    suspend fun updateMarketStatus(marketId: Long, state: Boolean): Boolean
     suspend fun isMarketDeleted(marketId: Long): Boolean?
     suspend fun getMarketId(productId: Long): Long?
     suspend fun getOwnerIdByMarketId(marketId: Long): Long?
@@ -54,7 +60,13 @@ interface HoneyMartRepository {
     suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Boolean
     suspend fun getCategoriesByMarketId(marketId: Long): List<Category>
     suspend fun deleteCategory(categoryId: Long): Boolean
-    suspend fun updateCategory(categoryId: Long, categoryName: String?, marketId: Long, imageId: Int?): Boolean
+    suspend fun updateCategory(
+        categoryId: Long,
+        categoryName: String?,
+        marketId: Long,
+        imageId: Int?
+    ): Boolean
+
     suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product>
     suspend fun isCategoryDeleted(categoryId: Long): Boolean?
     suspend fun isCategoryNameUnique(categoryName: String, marketId: Long): Boolean
@@ -87,7 +99,10 @@ interface HoneyMartRepository {
 
     suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
 
-    suspend fun searchProductsByName(productName: String,page: Int): List<Product>
+    suspend fun searchProductsByName(productName: String, page: Int): List<Product>
+
+    suspend fun getMostRecentProductsByPosition(): List<Product>
+
     //endregion
 
     //region order
