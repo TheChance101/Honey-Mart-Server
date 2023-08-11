@@ -50,7 +50,7 @@ fun Route.productsRoutes() {
 
             get("/recent-products") {
                 val products = productUseCasesContainer.getMostRecentProductsByPositionUseCase()
-                call.respond(products)
+                call.respond(ServerResponse.success(products))
             }
 
             get("/search") {
