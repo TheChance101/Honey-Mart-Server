@@ -2,13 +2,8 @@ package com.thechance.api.plugins
 
 
 import com.thechance.api.endpoints.*
-import com.thechance.api.endpoints.user.cartRoutes
-import com.thechance.api.endpoints.user.tokenRouts
-import com.thechance.api.endpoints.user.userRoutes
-import com.thechance.api.endpoints.user.wishListRoutes
-import com.thechance.core.utils.API_KEY_AUTHENTICATION
+import com.thechance.api.endpoints.user.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.plugins.openapi.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
@@ -34,6 +29,7 @@ fun Application.configureRouting() {
         deleteAllTables()
         imageRouts()
         tokenRouts()
+        notificationRoutes()
     }
 
 }
