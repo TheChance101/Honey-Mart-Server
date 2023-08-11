@@ -45,12 +45,12 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         )
     }
 
-    override suspend fun getMostRecentProducts(page: Int): List<Product> = dbQuery {
-        val offset = ((page - 1) * PAGE_SIZE).toLong()
+    override suspend fun getMostRecentProducts(): List<Product> = dbQuery {
         ProductTable
             .select { ProductTable.isDeleted eq false }
             .orderBy(ProductTable.id, order = SortOrder.DESC)
-            .limit(n = PAGE_SIZE, offset = offset)
+            .toList()
+            .takeLast(20)
             .map { productRow ->
                 val images = getProductImages(productRow[ProductTable.id].value)
                 productRow.toProduct(images = images)

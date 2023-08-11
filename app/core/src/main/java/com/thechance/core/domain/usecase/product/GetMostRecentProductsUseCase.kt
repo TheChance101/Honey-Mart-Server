@@ -6,8 +6,8 @@ import org.koin.core.component.KoinComponent
 
 class GetMostRecentProductsUseCase(private val repository: HoneyMartRepository) :
     KoinComponent {
-    suspend operator fun invoke(page:Int): List<Product> {
-        return repository.getMostRecentProducts(page)
+    suspend operator fun invoke(): List<Product> {
+        return repository.getMostRecentProducts()
     }
 
 
