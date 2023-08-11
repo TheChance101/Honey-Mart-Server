@@ -101,7 +101,7 @@ interface HoneyMartRepository {
 
     suspend fun searchProductsByName(productName: String, page: Int): List<Product>
 
-    suspend fun getMostRecentProductsByPosition(): List<Product>
+    suspend fun getMostRecentProducts(page: Int): List<Product>
 
     //endregion
 

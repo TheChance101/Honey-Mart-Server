@@ -29,17 +29,7 @@ import com.thechance.core.domain.usecase.owner.CreateOwnerUseCase
 import com.thechance.core.domain.usecase.owner.GetOwnerProfileUseCase
 import com.thechance.core.domain.usecase.owner.LoginMarketOwnerUseCase
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
-import com.thechance.core.domain.usecase.product.AddImageProductUseCase
-import com.thechance.core.domain.usecase.product.CreateProductUseCase
-import com.thechance.core.domain.usecase.product.DeleteImageFromProductUseCase
-import com.thechance.core.domain.usecase.product.DeleteProductUseCase
-import com.thechance.core.domain.usecase.product.GetCategoriesForProductUseCase
-import com.thechance.core.domain.usecase.product.GetMostRecentProductsByPositionUseCase
-import com.thechance.core.domain.usecase.product.GetProductDetailsUseCase
-import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
-import com.thechance.core.domain.usecase.product.SearchProductsByNameUseCase
-import com.thechance.core.domain.usecase.product.UpdateProductCategoryUseCase
-import com.thechance.core.domain.usecase.product.UpdateProductUseCase
+import com.thechance.core.domain.usecase.product.*
 import com.thechance.core.domain.usecase.user.CreateUserUseCase
 import com.thechance.core.domain.usecase.user.GetUserProfileUseCase
 import com.thechance.core.domain.usecase.user.SaveUserProfileImageUseCase
@@ -64,7 +54,7 @@ val productUseCaseModule = module {
     singleOf(::DeleteImageFromProductUseCase) { bind<DeleteImageFromProductUseCase>() }
     singleOf(::GetProductDetailsUseCase) { bind<GetProductDetailsUseCase>() }
     singleOf(::SearchProductsByNameUseCase) { bind<SearchProductsByNameUseCase>() }
-    singleOf(::GetMostRecentProductsByPositionUseCase) { bind<GetMostRecentProductsByPositionUseCase>() }
+    singleOf(::GetMostRecentProductsUseCase) { bind<GetMostRecentProductsUseCase>() }
 }
 
 val marketUseCaseModule = module {

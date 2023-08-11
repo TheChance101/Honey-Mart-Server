@@ -224,8 +224,8 @@ class HoneyMartRepositoryImp(
     override suspend fun searchProductsByName(productName: String, page: Int): List<Product> =
         productDataSource.searchProductsByName(productName, page)
 
-    override suspend fun getMostRecentProductsByPosition(): List<Product> =
-        productDataSource.getMostRecentProductsByPosition()
+    override suspend fun getMostRecentProducts(page: Int): List<Product> =
+        productDataSource.getMostRecentProducts(page)
 //endregion
 
     //region order

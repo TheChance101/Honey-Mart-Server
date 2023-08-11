@@ -9,7 +9,7 @@ interface ProductDataSource {
         productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
     ): Product
 
-    suspend fun getMostRecentProductsByPosition(): List<Product>
+    suspend fun getMostRecentProducts(page: Int): List<Product>
     suspend fun getAllProducts(): List<Product>
 
     suspend fun getProduct(productId: Long): Product
