@@ -23,6 +23,7 @@ const val MARKET_IMAGES_PATH = "files/markets"
 const val USER_IMAGES_PATH = "files/image_uploads"
 
 internal const val PAGE_SIZE = 10
+internal const val RECENT_PRODUCT = 20
 
 
 const val API_KEY_HEADER_NAME = "apiKey"

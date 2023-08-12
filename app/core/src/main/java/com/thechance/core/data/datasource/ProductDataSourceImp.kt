@@ -12,6 +12,7 @@ import com.thechance.core.entity.Category
 import com.thechance.core.entity.Image
 import com.thechance.core.entity.Product
 import com.thechance.core.utils.PAGE_SIZE
+import com.thechance.core.utils.RECENT_PRODUCT
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -50,7 +51,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
             .select { ProductTable.isDeleted eq false }
             .orderBy(ProductTable.id, order = SortOrder.DESC)
             .toList()
-            .takeLast(20)
+            .takeLast(RECENT_PRODUCT)
             .map { productRow ->
                 val images = getProductImages(productRow[ProductTable.id].value)
                 productRow.toProduct(images = images)

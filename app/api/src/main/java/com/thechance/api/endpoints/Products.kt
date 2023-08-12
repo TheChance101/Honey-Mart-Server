@@ -48,7 +48,7 @@ fun Route.productsRoutes() {
                 call.respond(ServerResponse.success(categories))
             }
 
-            get("/recent-products") {
+            get("/recentProducts") {
                 val products =
                     productUseCasesContainer.getMostRecentProductsUseCase()
                         .map { it.toApiProductModel() }
