@@ -68,8 +68,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
     }
 
     private fun getProductImages(productId: Long): List<Image> {
-        return (GalleryTable innerJoin ProductGalleryTable)
-            .select { ProductGalleryTable.productId eq productId }
+        return (GalleryTable innerJoin ProductGalleryTable).select { ProductGalleryTable.productId eq productId }
             .map { imageRow ->
                 Image(
                     id = imageRow[GalleryTable.id].value,
@@ -80,19 +79,15 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
     override suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product> = dbQuery {
         val offset = ((page - 1) * PAGE_SIZE).toLong()
-        (ProductTable innerJoin CategoryProductTable)
-            .select { CategoryProductTable.categoryId eq categoryId }
-            .limit(n = PAGE_SIZE, offset = offset)
-            .filterNot { it[ProductTable.isDeleted] }
-            .map { productRow ->
+        (ProductTable innerJoin CategoryProductTable).select { CategoryProductTable.categoryId eq categoryId }
+            .limit(n = PAGE_SIZE, offset = offset).filterNot { it[ProductTable.isDeleted] }.map { productRow ->
                 val images = getProductImages(productRow[ProductTable.id].value)
                 productRow.toProduct(images)
             }
     }
 
     override suspend fun getAllCategoryForProduct(productId: Long): List<Category> = dbQuery {
-        (CategoriesTable innerJoin CategoryProductTable)
-            .select { CategoryProductTable.productId eq productId }
+        (CategoriesTable innerJoin CategoryProductTable).select { CategoryProductTable.productId eq productId }
             .map { it.toCategory() }
     }
 
@@ -107,16 +102,15 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         true
     }
 
-    override suspend fun updateProductCategory(productId: Long, categoryIds: List<Long>): Boolean =
-        dbQuery {
-            CategoryProductTable.deleteWhere { CategoryProductTable.productId eq productId }
+    override suspend fun updateProductCategory(productId: Long, categoryIds: List<Long>): Boolean = dbQuery {
+        CategoryProductTable.deleteWhere { CategoryProductTable.productId eq productId }
 
-            CategoryProductTable.batchInsert(categoryIds) { categoryId ->
-                this[CategoryProductTable.productId] = productId
-                this[CategoryProductTable.categoryId] = categoryId
-            }
-            true
+        CategoryProductTable.batchInsert(categoryIds) { categoryId ->
+            this[CategoryProductTable.productId] = productId
+            this[CategoryProductTable.categoryId] = categoryId
         }
+        true
+    }
 
     override suspend fun deleteProduct(productId: Long): Boolean = dbQuery {
         ProductTable.update({ ProductTable.id eq productId }) { productRow ->
@@ -134,8 +128,8 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
 
     override suspend fun checkCategoriesInDb(categoryIds: List<Long>): Boolean = dbQuery {
-        CategoriesTable.select { CategoriesTable.id inList categoryIds }
-            .filterNot { it[CategoriesTable.isDeleted] }.toList().size == categoryIds.size
+        CategoriesTable.select { CategoriesTable.id inList categoryIds }.filterNot { it[CategoriesTable.isDeleted] }
+            .toList().size == categoryIds.size
     }
 
     override suspend fun getProductMarketId(productId: Long): Long {
@@ -165,8 +159,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
     override suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String {
         return dbQuery {
             ProductGalleryTable.deleteWhere {
-                (ProductGalleryTable.productId eq productId) and
-                        (ProductGalleryTable.galleryId eq imageId)
+                (ProductGalleryTable.productId eq productId) and (ProductGalleryTable.galleryId eq imageId)
             }
             val imageUrl = GalleryTable.select { GalleryTable.id eq imageId }.map { it[GalleryTable.imageUrl] }.single()
             GalleryTable.deleteWhere { GalleryTable.id eq imageId }
@@ -176,13 +169,19 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
     override suspend fun searchProductsByName(productName: String, page: Int): List<Product> = dbQuery {
         val offset = ((page - 1) * PAGE_SIZE).toLong()
-        ProductTable
-            .select { (ProductTable.name like "%$productName%") and (ProductTable.isDeleted eq false) }
-            .limit(PAGE_SIZE, offset)
-            .map { productRow ->
+        ProductTable.select { (ProductTable.name.lowerCase() like "%$productName.lowerCase() %") and (ProductTable.isDeleted eq false) }
+            .limit(PAGE_SIZE, offset).map { productRow ->
                 val images = getProductImages(productRow[ProductTable.id].value)
                 productRow.toProduct(images = images)
             }
+    }
+
+    override suspend fun getAllProducts(page: Int): List<Product> = dbQuery {
+        val offset = ((page - 1) * PAGE_SIZE).toLong()
+        ProductTable.select { ProductTable.isDeleted eq false }.limit(PAGE_SIZE, offset).map { productRow ->
+            val images = getProductImages(productRow[ProductTable.id].value)
+            productRow.toProduct(images = images)
+        }
     }
 
 }
