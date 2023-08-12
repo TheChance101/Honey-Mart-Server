@@ -37,7 +37,7 @@ class SendNotificationOnOrderStateUseCase(private val repository: HoneyMartRepos
         private const val ORDER_CANCELLED_BODY = "We regret to inform you that your recent order has been canceled. We apologize for any inconvenience this may have caused. "
         private const val ORDER_DONE_TITLE = "Order Is Complete!"
         private const val ORDER_DONE_BODY = "Thank you for your order! We're delighted to confirm that your purchase has been successfully completed."
-        private const val ORDER_PENDING_TITLE = "Thank you for your order! We're delighted to confirm that your purchase has been successfully completed."
-        private const val ORDER_PENDING_BODY = "Thank you for your order! We're delighted to confirm that your purchase has been successfully completed."
+        private const val ORDER_PENDING_TITLE = "New Pending Request"
+        private const val ORDER_PENDING_BODY = "You have a new pending request from a customer. Please review and respond as soon as possible."
     }
 }
