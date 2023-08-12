@@ -13,9 +13,10 @@ class SendNotificationOnOrderStateUseCase(private val repository: HoneyMartRepos
     suspend operator fun invoke(receiverId: Long, orderId: Long, orderState: Int): Boolean {
         val pairForOrderState = orderStateContentMap[orderState]
         return if (pairForOrderState != null) {
-            val (titleContent, bodyContent) = pairForOrderState
+            val (title, body) = pairForOrderState
             val tokens = repository.getReceiverTokens(receiverId)
-            return repository.sendNotificationByTokens(tokens, orderId, titleContent, bodyContent)
+            repository.saveNotification(title,body,receiverId)
+            return repository.sendNotificationByTokens(tokens, orderId, title, body)
         } else {
             false
         }
@@ -28,7 +29,6 @@ class SendNotificationOnOrderStateUseCase(private val repository: HoneyMartRepos
         ORDER_STATUS_CANCELED_BY_OWNER to Pair(ORDER_CANCELLED_TITLE, ORDER_CANCELLED_BODY),
         ORDER_STATUS_DONE to Pair(ORDER_DONE_TITLE, ORDER_DONE_BODY),
     )
-
 
     companion object {
         private const val ORDER_IN_PROGRESS_TITLE = "Order in progress!"
