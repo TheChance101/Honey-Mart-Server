@@ -10,7 +10,7 @@ class GetOrdersForUserUseCase(private val repository: HoneyMartRepository) : Koi
     suspend operator fun invoke(userId: Long?, role: String?, state: Int?): List<UserOrder> {
         return if (isInvalidId(userId) || !isValidRole(NORMAL_USER_ROLE, role)) {
             throw InvalidUserIdException()
-        } else if (state in ORDER_STATE_IN_PROGRESS..ORDER_STATE_CANCELED && state != null) {
+        } else if (state in ORDER_STATUS_PENDING..ORDER_STATUS_CANCELED_BY_OWNER && state != null) {
             repository.getOrdersForUser(userId!!, state)
         } else {
             repository.getAllOrdersForUser(userId!!)

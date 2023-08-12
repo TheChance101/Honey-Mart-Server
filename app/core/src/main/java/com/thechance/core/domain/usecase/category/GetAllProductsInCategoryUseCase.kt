@@ -5,7 +5,7 @@ import com.thechance.core.entity.Product
 import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
 
-class GetAllCategoriesUseCase(private val repository: HoneyMartRepository) : KoinComponent {
+class GetAllProductsInCategoryUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(categoryId: Long?, page:Int?): List<Product> {
         return if (isInvalidId(categoryId)) {
             throw InvalidCategoryIdException()

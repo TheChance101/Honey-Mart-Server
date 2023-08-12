@@ -32,6 +32,12 @@ fun Route.productsRoutes() {
     route("/product") {
 
         authenticate(API_KEY_AUTHENTICATION) {
+            get {
+                val page = call.parameters["page"]?.toIntOrNull() ?: 1
+                val products = productUseCasesContainer.getAllProductsUseCase(page).map { it.toApiProductModel() }
+                call.respond(HttpStatusCode.OK, ServerResponse.success(products))
+            }
+
             get("/{productId}/categories") {
                 val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
                 val categories =

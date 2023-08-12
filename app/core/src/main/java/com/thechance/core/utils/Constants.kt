@@ -5,10 +5,12 @@ internal const val NORMAL_USER_ROLE = "NormalUser"
 
 internal const val MARKET_OWNER_ROLE = "MarketOwner"
 
-internal const val ORDER_STATE_IN_PROGRESS = 1
-internal const val ORDER_STATE_DONE = 2
-internal const val ORDER_STATE_CANCELED = 3
-internal const val ORDER_STATE_DELETED = 4
+internal const val ORDER_STATUS_PENDING = 1
+internal const val ORDER_STATUS_IN_PROGRESS = 2
+internal const val ORDER_STATUS_DONE = 3
+internal const val ORDER_STATUS_CANCELED_BY_USER = 4
+internal const val ORDER_STATUS_CANCELED_BY_OWNER = 5
+internal const val ORDER_STATUS_DELETED = 6
 
 const val ROLE_TYPE = "ROLE_TYPE"
 const val TOKEN_TYPE = "tokenType"

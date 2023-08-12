@@ -25,7 +25,7 @@ fun Route.categoryRoutes() {
         get("/{categoryId}/allProduct") {
             val page = call.parameters["page"]?.toIntOrNull() ?: 1
             val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
-            val products = categoryUseCasesContainer.getAllCategoriesUseCase(categoryId = categoryId, page = page)
+            val products = categoryUseCasesContainer.getAllProductsInCategoryUseCase(categoryId = categoryId, page = page)
                 .map { it.toApiProductModel() }
             call.respond(ServerResponse.success(products))
 
