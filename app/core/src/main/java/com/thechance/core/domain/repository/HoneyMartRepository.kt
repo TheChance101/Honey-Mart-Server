@@ -69,7 +69,7 @@ interface HoneyMartRepository {
 
     //region product
     suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>,ownerId: Long?
     ): Product
 
     suspend fun getAllProducts(): List<Product>

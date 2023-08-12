@@ -11,10 +11,10 @@ class CreateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         marketOwnerId: Long?, role: String?
     ): Product {
         isValidInput(productName, productPrice, description, categoriesId, marketOwnerId, role)?.let { throw it }
-
+        val marketId = repository.getMarketIdByOwnerId(ownerId = marketOwnerId!!)
         return if (repository.checkCategoriesInDb(categoriesId!!)) {
             if (isMarketOwner(marketOwnerId!!, categoryId = categoriesId[0])) {
-                repository.createProduct(productName, productPrice, description!!, categoriesId)
+                repository.createProduct(productName, productPrice, description!!, categoriesId, marketId)
             } else {
                 throw UnauthorizedException()
             }
