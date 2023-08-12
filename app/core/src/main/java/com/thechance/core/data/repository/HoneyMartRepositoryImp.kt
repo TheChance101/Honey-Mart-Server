@@ -1,6 +1,10 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.data.repository.dataSource.*
+import com.thechance.core.data.repository.dataSource.CategoryDataSource
+import com.thechance.core.data.repository.dataSource.MarketDataSource
+import com.thechance.core.data.repository.dataSource.OrderDataSource
+import com.thechance.core.data.repository.dataSource.ProductDataSource
+import com.thechance.core.data.repository.dataSource.UserDataSource
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.entity.Cart
 import com.thechance.core.entity.Category
@@ -28,19 +32,35 @@ class HoneyMartRepositoryImp(
         userDataSource.isProductInCart(cartId, productId)
 
 
-    override suspend fun addToCart(cartId: Long, productId: Long, marketId: Long, count: Int): Boolean =
-        userDataSource.addToCart(cartId = cartId, productId = productId, marketId = marketId, count = count)
+    override suspend fun addToCart(
+        cartId: Long,
+        productId: Long,
+        marketId: Long,
+        count: Int
+    ): Boolean =
+        userDataSource.addToCart(
+            cartId = cartId,
+            productId = productId,
+            marketId = marketId,
+            count = count
+        )
 
 
     override suspend fun deleteProductInCart(cartId: Long, productId: Long): Boolean =
         userDataSource.deleteProductInCart(cartId, productId)
 
-    override suspend fun updateProductCountInCart(cartId: Long, productId: Long, count: Int): Boolean =
+    override suspend fun updateProductCountInCart(
+        cartId: Long,
+        productId: Long,
+        count: Int
+    ): Boolean =
         userDataSource.updateCount(cartId, productId, count)
 
     override suspend fun createCart(userId: Long): Long = userDataSource.createCart(userId)
 
-    override suspend fun getCartMarketId(cartId: Long): Long? = userDataSource.getCartMarketId(cartId)
+    override suspend fun getCartMarketId(cartId: Long): Long? =
+        userDataSource.getCartMarketId(cartId)
+
     override suspend fun deleteCart(cartId: Long): Boolean = userDataSource.deleteCart(cartId)
 
     override suspend fun deleteAllProductsInCart(cartId: Long): Boolean =
@@ -50,7 +70,8 @@ class HoneyMartRepositoryImp(
     //endregion
 
     //region WishList
-    override suspend fun getWishList(wishListId: Long): List<Product> = userDataSource.getWishList(wishListId)
+    override suspend fun getWishList(wishListId: Long): List<Product> =
+        userDataSource.getWishList(wishListId)
 
     override suspend fun deleteProductFromWishList(wishListId: Long, productId: Long): Boolean =
         userDataSource.deleteProductFromWishList(wishListId, productId)
@@ -66,12 +87,14 @@ class HoneyMartRepositoryImp(
     //endregion
 
     //region market
-    override suspend fun getMarketIdByOwnerId(ownerId: Long): Long? = marketDataSource.getMarketIdByOwnerId(ownerId)
+    override suspend fun getMarketIdByOwnerId(ownerId: Long): Long? =
+        marketDataSource.getMarketIdByOwnerId(ownerId)
 
     override suspend fun createMarket(marketName: String, ownerId: Long) =
         marketDataSource.createMarket(marketName, ownerId)
 
-    override suspend fun getAllMarkets(page: Int): List<Market> = marketDataSource.getAllMarkets(page)
+    override suspend fun getAllMarkets(page: Int): List<Market> =
+        marketDataSource.getAllMarkets(page)
 
     override suspend fun getCategoriesByMarket(marketId: Long): List<Category> =
         marketDataSource.getCategoriesByMarket(marketId)
@@ -87,7 +110,12 @@ class HoneyMartRepositoryImp(
 
     override suspend fun updateMarketLocation(
         marketId: Long, latitude: Double?, longitude: Double?, address: String?
-    ) = marketDataSource.updateMarket(marketId, latitude = latitude, longitude = longitude, address = address)
+    ) = marketDataSource.updateMarket(
+        marketId,
+        latitude = latitude,
+        longitude = longitude,
+        address = address
+    )
 
     override suspend fun updateMarketStatus(marketId: Long, state: Boolean): Boolean {
         return marketDataSource.updateMarketStatus(marketId, state)
@@ -96,9 +124,11 @@ class HoneyMartRepositoryImp(
     override suspend fun isMarketDeleted(marketId: Long): Boolean? =
         marketDataSource.isDeleted(marketId)
 
-    override suspend fun getMarketId(productId: Long): Long? = marketDataSource.getMarketId(productId)
+    override suspend fun getMarketId(productId: Long): Long? =
+        marketDataSource.getMarketId(productId)
 
-    override suspend fun getOwnerIdByMarketId(marketId: Long): Long? = marketDataSource.getOwnerIdByMarketId(marketId)
+    override suspend fun getOwnerIdByMarketId(marketId: Long): Long? =
+        marketDataSource.getOwnerIdByMarketId(marketId)
 
     override suspend fun addMarketImage(marketId: Long, imageUrl: String): Boolean =
         marketDataSource.addMarketImage(marketId, imageUrl)
@@ -108,8 +138,16 @@ class HoneyMartRepositoryImp(
 //endregion
 
     //region category
-    override suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Boolean =
-        categoryDataSource.createCategory(categoryName = categoryName, marketId = marketId, imageId = imageId)
+    override suspend fun createCategory(
+        categoryName: String,
+        marketId: Long,
+        imageId: Int
+    ): Boolean =
+        categoryDataSource.createCategory(
+            categoryName = categoryName,
+            marketId = marketId,
+            imageId = imageId
+        )
 
     override suspend fun getCategoriesByMarketId(marketId: Long): List<Category> =
         categoryDataSource.getCategoriesByMarketId(marketId)
@@ -121,7 +159,10 @@ class HoneyMartRepositoryImp(
         categoryId: Long, categoryName: String?, marketId: Long, imageId: Int?
     ): Boolean =
         categoryDataSource.updateCategory(
-            categoryId = categoryId, categoryName = categoryName, marketId = marketId, imageId = imageId
+            categoryId = categoryId,
+            categoryName = categoryName,
+            marketId = marketId,
+            imageId = imageId
         )
 
     override suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product> =
@@ -172,7 +213,8 @@ class HoneyMartRepositoryImp(
     override suspend fun isProductDeleted(id: Long): Boolean? =
         productDataSource.isDeleted(id)
 
-    override suspend fun getProductMarketId(productId: Long): Long = productDataSource.getProductMarketId(productId)
+    override suspend fun getProductMarketId(productId: Long): Long =
+        productDataSource.getProductMarketId(productId)
 
     override suspend fun addImageProduct(imagesUrl: List<String>, productId: Long): Boolean =
         productDataSource.addImageToGallery(imagesUrl, productId)
@@ -182,6 +224,13 @@ class HoneyMartRepositoryImp(
 
     override suspend fun searchProductsByName(productName: String, page: Int): List<Product> =
         productDataSource.searchProductsByName(productName, page)
+
+    override suspend fun getAllProducts(page: Int): List<Product> =
+        productDataSource.getAllProducts(page)
+
+
+    override suspend fun getMostRecentProducts(): List<Product> =
+        productDataSource.getMostRecentProducts()
 //endregion
 
     //region order
@@ -203,10 +252,12 @@ class HoneyMartRepositoryImp(
     override suspend fun getAllOrdersForMarket(marketId: Long): List<MarketOrder> =
         orderDataSource.getAllOrdersForMarket(marketId)
 
-    override suspend fun getAllOrdersForUser(userId: Long) = orderDataSource.getAllOrdersForUser(userId)
+    override suspend fun getAllOrdersForUser(userId: Long) =
+        orderDataSource.getAllOrdersForUser(userId)
 
 
-    override suspend fun getOrdersForUser(userId: Long, state: Int) = orderDataSource.getOrdersForUser(userId, state)
+    override suspend fun getOrdersForUser(userId: Long, state: Int) =
+        orderDataSource.getOrdersForUser(userId, state)
 
 
     override suspend fun getOrderById(orderId: Long) = orderDataSource.getOrderById(orderId)
@@ -216,7 +267,8 @@ class HoneyMartRepositoryImp(
         orderDataSource.updateOrderState(orderId, newOrderState)
 
 
-    override suspend fun isOrderExist(orderId: Long): Boolean = orderDataSource.isOrderExist(orderId)
+    override suspend fun isOrderExist(orderId: Long): Boolean =
+        orderDataSource.isOrderExist(orderId)
 
     override suspend fun getOrderState(orderId: Long): Int = orderDataSource.getOrderState(orderId)
 
