@@ -54,7 +54,13 @@ interface HoneyMartRepository {
     suspend fun createCategory(categoryName: String, marketId: Long, imageId: Int): Boolean
     suspend fun getCategoriesByMarketId(marketId: Long): List<Category>
     suspend fun deleteCategory(categoryId: Long): Boolean
-    suspend fun updateCategory(categoryId: Long, categoryName: String?, marketId: Long, imageId: Int?): Boolean
+    suspend fun updateCategory(
+        categoryId: Long,
+        categoryName: String?,
+        marketId: Long,
+        imageId: Int?
+    ): Boolean
+
     suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product>
     suspend fun isCategoryDeleted(categoryId: Long): Boolean?
     suspend fun isCategoryNameUnique(categoryName: String, marketId: Long): Boolean
@@ -88,6 +94,8 @@ interface HoneyMartRepository {
     suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
 
     suspend fun searchProductsByName(productName: String, page: Int): List<Product>
+
+    suspend fun getMostRecentProducts(): List<Product>
 
     suspend fun getAllProducts(page: Int): List<Product>
     //endregion
