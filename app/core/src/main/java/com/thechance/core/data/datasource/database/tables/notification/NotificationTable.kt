@@ -2,11 +2,12 @@ package com.thechance.core.data.datasource.database.tables.notification
 
 import com.thechance.core.data.datasource.database.tables.NormalUserTable
 import org.jetbrains.exposed.dao.id.LongIdTable
-import org.jetbrains.exposed.sql.javatime.timestamp
+import org.jetbrains.exposed.sql.javatime.datetime
+import java.time.LocalDateTime
 
-object NotificationTable: LongIdTable() {
+object NotificationTable : LongIdTable() {
     val title = text("title")
     val body = text("body")
-    val timeStamp = timestamp("timeStamp")
-    val userId = reference("userId",NormalUserTable)
+    val timeStamp = datetime("timeStamp").clientDefault { LocalDateTime.now() }
+    val receiverId = reference("userId", NormalUserTable)
 }

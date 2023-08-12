@@ -4,12 +4,10 @@ import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.entity.Cart
 import com.thechance.core.entity.Category
-import com.thechance.core.entity.NotificationRequest
 import com.thechance.core.entity.Product
 import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.order.MarketOrder
 import com.thechance.core.entity.order.OrderItem
-import org.jetbrains.exposed.sql.not
 import org.koin.core.component.KoinComponent
 
 class HoneyMartRepositoryImp(
@@ -236,6 +234,9 @@ class HoneyMartRepositoryImp(
     override suspend fun sendNotificationByTokens(tokens: List<String>, orderId: Long, title: String, body: String): Boolean {
         return notificationDataSource.sendNotificationByTokens(tokens,orderId,title,body)
 
+    }
+    override suspend fun saveNotification(title: String, body: String, receiverId: Long): Boolean {
+        return notificationDataSource.saveNotification(title,body,receiverId)
     }
     //end region
 

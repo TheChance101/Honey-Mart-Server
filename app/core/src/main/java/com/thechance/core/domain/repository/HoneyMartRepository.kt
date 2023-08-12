@@ -105,13 +105,11 @@ interface HoneyMartRepository {
 
     suspend fun deleteAllProductsInCart(cartId: Long): Boolean
 
-
     suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean
-
     suspend fun getUserProfileImage(userId: Long): String?
 
     suspend fun sendNotificationByTokens(tokens: List<String>, orderId: Long, title: String, body: String): Boolean
+    suspend fun saveNotification(title: String, body: String, receiverId: Long): Boolean
 
     suspend fun getReceiverTokens(userId: Long): List<String>
-
 }

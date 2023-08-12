@@ -2,7 +2,10 @@ package com.thechance.core.data.datasource
 
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
+import com.thechance.core.data.datasource.database.tables.notification.NotificationTable
 import com.thechance.core.data.repository.dataSource.NotificationDataSource
+import com.thechance.core.utils.dbQuery
+import org.jetbrains.exposed.sql.insert
 import org.koin.core.component.KoinComponent
 
 class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging) : NotificationDataSource,
@@ -28,6 +31,18 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
         }
         return response.isNotEmpty()
     }
+
+    override suspend fun saveNotification(title: String, body: String, receiverId: Long): Boolean {
+        return dbQuery {
+            NotificationTable.insert {
+                it[this.title] = title
+                it[this.body] = body
+                it[this.receiverId] = receiverId
+            }
+            true
+        }
+    }
+
     companion object {
         private const val TITLE = "title"
         private const val BODY = "body"
