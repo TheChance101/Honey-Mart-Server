@@ -304,7 +304,7 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
     //region tokens
     override suspend fun getUserTokens(userId: Long): List<String> = dbQuery {
         TokenTable.select {
-            (NormalUserTable.id eq userId)
+            (TokenTable.id eq userId)
         }.map { resultRow ->
             resultRow[TokenTable.token] }.toList()
     }
