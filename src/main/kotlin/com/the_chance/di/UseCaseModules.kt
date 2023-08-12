@@ -9,7 +9,7 @@ import com.thechance.core.domain.usecase.cart.GetCartUseCase
 import com.thechance.core.domain.usecase.category.CategoryUseCasesContainer
 import com.thechance.core.domain.usecase.category.CreateCategoryUseCase
 import com.thechance.core.domain.usecase.category.DeleteCategoryUseCase
-import com.thechance.core.domain.usecase.category.GetAllCategoriesUseCase
+import com.thechance.core.domain.usecase.category.GetAllProductsInCategoryUseCase
 import com.thechance.core.domain.usecase.category.UpdateCategoryUseCase
 import com.thechance.core.domain.usecase.market.CreateMarketUseCase
 import com.thechance.core.domain.usecase.market.DeleteMarketUseCase
@@ -29,7 +29,18 @@ import com.thechance.core.domain.usecase.owner.CreateOwnerUseCase
 import com.thechance.core.domain.usecase.owner.GetOwnerProfileUseCase
 import com.thechance.core.domain.usecase.owner.LoginMarketOwnerUseCase
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
-import com.thechance.core.domain.usecase.product.*
+import com.thechance.core.domain.usecase.product.AddImageProductUseCase
+import com.thechance.core.domain.usecase.product.CreateProductUseCase
+import com.thechance.core.domain.usecase.product.DeleteImageFromProductUseCase
+import com.thechance.core.domain.usecase.product.DeleteProductUseCase
+import com.thechance.core.domain.usecase.product.GetAllProductsUseCase
+import com.thechance.core.domain.usecase.product.GetCategoriesForProductUseCase
+import com.thechance.core.domain.usecase.product.GetMostRecentProductsUseCase
+import com.thechance.core.domain.usecase.product.GetProductDetailsUseCase
+import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
+import com.thechance.core.domain.usecase.product.SearchProductsByNameUseCase
+import com.thechance.core.domain.usecase.product.UpdateProductCategoryUseCase
+import com.thechance.core.domain.usecase.product.UpdateProductUseCase
 import com.thechance.core.domain.usecase.user.CreateUserUseCase
 import com.thechance.core.domain.usecase.user.GetUserProfileUseCase
 import com.thechance.core.domain.usecase.user.SaveUserProfileImageUseCase
@@ -73,7 +84,7 @@ val categoryUseCaseModule = module {
     singleOf(::CategoryUseCasesContainer) { bind<CategoryUseCasesContainer>() }
     singleOf(::CreateCategoryUseCase) { bind<CreateCategoryUseCase>() }
     singleOf(::DeleteCategoryUseCase) { bind<DeleteCategoryUseCase>() }
-    singleOf(::GetAllCategoriesUseCase) { bind<GetAllCategoriesUseCase>() }
+    singleOf(::GetAllProductsInCategoryUseCase) { bind<GetAllProductsInCategoryUseCase>() }
     singleOf(::UpdateCategoryUseCase) { bind<UpdateCategoryUseCase>() }
 }
 val wishListUseCaseModule = module {

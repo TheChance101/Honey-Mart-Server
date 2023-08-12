@@ -40,5 +40,4 @@ interface ProductDataSource {
     suspend fun searchProductsByName(productName: String, page: Int): List<Product>
 
     suspend fun getAllProducts(page: Int): List<Product>
-    suspend fun searchProductsByName(productName: String, page: Int): List<Product>
 }

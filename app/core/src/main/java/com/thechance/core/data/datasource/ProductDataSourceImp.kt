@@ -20,6 +20,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
@@ -108,14 +109,6 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
                     productRow.toProduct(images)
                 }
         }
-    override suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product> = dbQuery {
-        val offset = ((page - 1) * PAGE_SIZE).toLong()
-        (ProductTable innerJoin CategoryProductTable).select { CategoryProductTable.categoryId eq categoryId }
-            .limit(n = PAGE_SIZE, offset = offset).filterNot { it[ProductTable.isDeleted] }.map { productRow ->
-                val images = getProductImages(productRow[ProductTable.id].value)
-                productRow.toProduct(images)
-            }
-    }
 
     override suspend fun getAllCategoryForProduct(productId: Long): List<Category> = dbQuery {
         (CategoriesTable innerJoin CategoryProductTable).select { CategoryProductTable.productId eq productId }
@@ -202,17 +195,6 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         }
     }
 
-    override suspend fun searchProductsByName(productName: String, page: Int): List<Product> =
-        dbQuery {
-            val offset = ((page - 1) * PAGE_SIZE).toLong()
-            ProductTable
-                .select { (ProductTable.name like "%$productName%") and (ProductTable.isDeleted eq false) }
-                .limit(PAGE_SIZE, offset)
-                .map { productRow ->
-                    val images = getProductImages(productRow[ProductTable.id].value)
-                    productRow.toProduct(images = images)
-                }
-        }
     override suspend fun searchProductsByName(productName: String, page: Int): List<Product> = dbQuery {
         val offset = ((page - 1) * PAGE_SIZE).toLong()
         ProductTable.select { (ProductTable.name.lowerCase() like "%$productName.lowerCase() %") and (ProductTable.isDeleted eq false) }
