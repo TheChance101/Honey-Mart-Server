@@ -130,3 +130,7 @@ val cartUseCase = module {
 val tokenUseCase = module {
     singleOf(::RefreshTokenUseCase) { bind<RefreshTokenUseCase>() }
 }
+
+val notificationUseCase = module {
+    singleOf(::SendNotificationOnOrderStateUseCase) { bind<SendNotificationOnOrderStateUseCase>() }
+}

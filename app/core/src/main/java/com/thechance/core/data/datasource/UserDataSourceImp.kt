@@ -3,6 +3,7 @@ package com.thechance.core.data.datasource
 import com.thechance.core.data.datasource.database.tables.NormalUserTable
 import com.thechance.core.data.datasource.database.tables.cart.CartProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartTable
+import com.thechance.core.data.datasource.database.tables.notification.TokenTable
 import com.thechance.core.data.datasource.database.tables.product.GalleryTable
 import com.thechance.core.data.datasource.database.tables.product.ProductGalleryTable
 import com.thechance.core.data.datasource.database.tables.product.ProductTable
@@ -296,6 +297,16 @@ class UserDataSourceImp : UserDataSource, KoinComponent {
         NormalUserTable.select {
             (NormalUserTable.id eq userId)
         }.map { it[NormalUserTable.imageUrl] }.singleOrNull()
+    }
+    //endregion
+
+
+    //region tokens
+    override suspend fun getUserTokens(userId: Long): List<String> = dbQuery {
+        TokenTable.select {
+            (TokenTable.id eq userId)
+        }.map { resultRow ->
+            resultRow[TokenTable.token] }.toList()
     }
     //endregion
 
