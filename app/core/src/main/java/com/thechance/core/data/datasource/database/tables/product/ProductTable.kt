@@ -7,6 +7,6 @@ object ProductTable : LongIdTable() {
     val name = text("name")
     val price = double("price")
     val quantity = text("quantity").nullable()
-    val marketId = reference("market_id", MarketTable)
+    val marketId = reference("marketId", MarketTable)
     val isDeleted = bool("isDeleted").default(false)
 }
