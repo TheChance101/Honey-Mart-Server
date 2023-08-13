@@ -28,13 +28,13 @@ import org.koin.core.component.KoinComponent
 class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
     override suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, ownertId: Long
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, marketsId: Long
     ): Product = dbQuery {
         val newProduct = ProductTable.insert { productRow ->
             productRow[name] = productName
             productRow[price] = productPrice
             productRow[quantity] = productQuantity
-            productRow[marketId]= ownertId
+            productRow[marketId]= marketsId
         }
 
         insertCategoryForProduct(categoriesId, newProduct[ProductTable.id].value)
