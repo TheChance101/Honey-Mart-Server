@@ -1,6 +1,7 @@
 package com.thechance.core.domain.usecase.order
 
 import com.thechance.core.domain.repository.HoneyMartRepository
+import com.thechance.core.domain.usecase.notification.SendNotificationOnOrderStateUseCase
 import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

@@ -29,7 +29,6 @@ fun Application.configureRouting() {
         deleteAllTables()
         imageRouts()
         tokenRouts()
-        notificationRoutes()
     }
 
 }
