@@ -19,12 +19,7 @@ import com.thechance.core.domain.usecase.market.GetMarketsUseCase
 import com.thechance.core.domain.usecase.market.MarketUseCaseContainer
 import com.thechance.core.domain.usecase.market.UpdateMarketStatusUseCase
 import com.thechance.core.domain.usecase.market.UpdateMarketUseCase
-import com.thechance.core.domain.usecase.order.CreateOrderUseCase
-import com.thechance.core.domain.usecase.order.GetOrderDetailsUseCase
-import com.thechance.core.domain.usecase.order.GetOrdersForMarketUseCase
-import com.thechance.core.domain.usecase.order.GetOrdersForUserUseCase
-import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
-import com.thechance.core.domain.usecase.order.UpdateOrderStateUseCase
+import com.thechance.core.domain.usecase.order.*
 import com.thechance.core.domain.usecase.owner.CreateOwnerUseCase
 import com.thechance.core.domain.usecase.owner.GetOwnerProfileUseCase
 import com.thechance.core.domain.usecase.owner.LoginMarketOwnerUseCase
@@ -133,4 +128,6 @@ val tokenUseCase = module {
 
 val notificationUseCase = module {
     singleOf(::SendNotificationOnOrderStateUseCase) { bind<SendNotificationOnOrderStateUseCase>() }
+    singleOf(::GetNotificationHistoryUseCase) { bind<GetNotificationHistoryUseCase>() }
+    singleOf(::SaveNotificationUseCase) { bind<SaveNotificationUseCase>() }
 }
