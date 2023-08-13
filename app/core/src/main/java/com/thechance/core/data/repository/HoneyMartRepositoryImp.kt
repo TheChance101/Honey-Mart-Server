@@ -181,10 +181,10 @@ class HoneyMartRepositoryImp(
 
     //region product
     override suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>,marketsId:Long
     ): Product = productDataSource.createProduct(
         productName = productName, productPrice = productPrice, productQuantity = productQuantity,
-        categoriesId = categoriesId
+        categoriesId = categoriesId, marketsId = marketsId
     )
 
     override suspend fun getAllProducts(): List<Product> = productDataSource.getAllProducts()
