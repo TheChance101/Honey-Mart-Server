@@ -1,4 +1,4 @@
-package com.thechance.core.domain.usecase.order
+package com.thechance.core.domain.usecase.notification
 
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.utils.*
@@ -10,8 +10,8 @@ class SendNotificationOnOrderStateUseCase(private val repository: HoneyMartRepos
         val pairForOrderState = orderStateContentMap[orderState]
         return if (pairForOrderState != null) {
             val (title, body) = pairForOrderState
-            val tokens = repository.getReceiverTokens(receiverId)
-            return repository.sendNotificationByTokens(tokens, orderId, title, body).also {
+            val tokens = repository.getDeviceTokens(receiverId)
+            return repository.sendNotification(tokens, orderId, title, body).also {
                 repository.saveNotification(title, body, receiverId,orderId)
             }
         } else {

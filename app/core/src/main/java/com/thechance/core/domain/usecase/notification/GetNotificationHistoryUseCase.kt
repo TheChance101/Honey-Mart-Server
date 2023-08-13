@@ -1,4 +1,4 @@
-package com.thechance.core.domain.usecase.order
+package com.thechance.core.domain.usecase.notification
 
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.entity.Notification

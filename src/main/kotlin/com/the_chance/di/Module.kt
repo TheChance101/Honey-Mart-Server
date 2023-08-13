@@ -49,7 +49,8 @@ val appModules = module {
         ownerUseCaseModule,
         repositoriesModules,
         tokenUseCase,
-        notificationUseCase
+        notificationUseCase,
+        deviceTokenUseCase
     )
 }
 

@@ -17,7 +17,8 @@ class HoneyMartRepositoryImp(
     private val productDataSource: ProductDataSource,
     private val orderDataSource: OrderDataSource,
     private val userDataSource: UserDataSource,
-    private val notificationDataSource: NotificationDataSource
+    private val notificationDataSource: NotificationDataSource,
+    private val deviceTokenDataSource: DeviceTokenDataSource,
 ) : HoneyMartRepository, KoinComponent {
 
     //region cart
@@ -280,22 +281,32 @@ class HoneyMartRepositoryImp(
     //end region
 
     //region notification
-    override suspend fun sendNotificationByTokens(tokens: List<String>, orderId: Long, title: String, body: String): Boolean {
-        return notificationDataSource.sendNotification(tokens,orderId,title,body)
+    override suspend fun sendNotification(
+        tokens: List<String>,
+        orderId: Long,
+        title: String,
+        body: String
+    ): Boolean {
+        return notificationDataSource.sendNotification(tokens, orderId, title, body)
 
     }
-    override suspend fun saveNotification(title: String, body: String, receiverId: Long,orderId: Long): Boolean {
-        return notificationDataSource.saveNotification(title,body,receiverId,orderId)
+
+    override suspend fun saveNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
+        return notificationDataSource.saveNotification(title, body, receiverId, orderId)
     }
 
     override suspend fun getNotificationHistory(receiverId: Long): List<Notification> {
-        TODO("Not yet implemented")
+        return notificationDataSource.getNotificationHistory(receiverId)
     }
     //end region
 
-    //region tokens
-    override suspend fun getReceiverTokens(userId: Long): List<String> {
-        return userDataSource.getUserTokens(userId)
+    //region deviceTokens
+    override suspend fun getDeviceTokens(receiverId: Long): List<String> {
+        return deviceTokenDataSource.getDeviceTokens(receiverId)
+    }
+
+    override suspend fun saveDeviceTokens(receiverId: Long, token: String) {
+        deviceTokenDataSource.saveDeviceTokens(receiverId, token)
     }
 //endregion
 
