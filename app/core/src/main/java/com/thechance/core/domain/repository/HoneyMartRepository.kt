@@ -73,8 +73,6 @@ interface HoneyMartRepository {
         productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>,marketsId: Long
     ): Product
 
-    suspend fun getAllProducts(): List<Product>
-
     suspend fun getProduct(productId: Long): Product
 
     suspend fun getAllCategoryForProduct(productId: Long): List<Category>

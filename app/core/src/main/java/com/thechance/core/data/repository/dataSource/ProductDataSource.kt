@@ -11,7 +11,6 @@ interface ProductDataSource {
 
     suspend fun getMostRecentProducts(): List<Product>
 
-    suspend fun getAllProducts(): List<Product>
 
     suspend fun getProduct(productId: Long): Product
 

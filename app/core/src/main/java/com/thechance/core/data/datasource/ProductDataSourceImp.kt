@@ -75,12 +75,6 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getAllProducts(): List<Product> = dbQuery {
-        ProductTable.select { ProductTable.isDeleted eq false }.map { productRow ->
-            val images = getProductImages(productRow[ProductTable.id].value)
-            productRow.toProduct(images = images)
-        }
-    }
 
     override suspend fun getProduct(productId: Long): Product = dbQuery {
         ProductTable.select { ProductTable.id eq productId }.map { productRow ->
