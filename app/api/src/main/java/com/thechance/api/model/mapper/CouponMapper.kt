@@ -3,7 +3,7 @@ package com.thechance.api.model.mapper
 import com.thechance.api.model.coupon.CouponModel
 import com.thechance.core.entity.coupon.Coupon
 
-fun Coupon.toApiCoupon(): CouponModel {
+internal fun Coupon.toApiCoupon(): CouponModel {
     return CouponModel(
         couponId = couponId,
         count = count,

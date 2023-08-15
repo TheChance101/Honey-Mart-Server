@@ -2,6 +2,7 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCoupon
+import com.thechance.api.model.mapper.toApiMarketCoupon
 import com.thechance.api.model.mapper.toApiUserCoupon
 import com.thechance.core.domain.usecase.coupon.CouponUseCaseContainer
 import com.thechance.core.utils.JWT_AUTHENTICATION
@@ -46,6 +47,16 @@ fun Route.couponRoutes() {
                 val coupons =
                     couponUseCaseContainer.getAllClippedCouponsForUser(userId, role)
                         .map { it.toApiUserCoupon() }
+                call.respond(ServerResponse.success(coupons))
+            }
+            //get all coupons for specific market products
+            get("/allMarketCoupons") {
+                val principal = call.principal<JWTPrincipal>()
+                val ownerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val coupons =
+                    couponUseCaseContainer.getAllCouponsForMarket(ownerId, role)
+                        .map { it.toApiMarketCoupon() }
                 call.respond(ServerResponse.success(coupons))
             }
 
