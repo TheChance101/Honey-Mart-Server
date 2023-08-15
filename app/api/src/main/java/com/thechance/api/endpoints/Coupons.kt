@@ -5,6 +5,7 @@ import com.thechance.api.model.mapper.toApiCoupon
 import com.thechance.api.model.mapper.toApiMarketCoupon
 import com.thechance.api.model.mapper.toApiUserCoupon
 import com.thechance.core.domain.usecase.coupon.CouponUseCaseContainer
+import com.thechance.core.utils.API_KEY_AUTHENTICATION
 import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
@@ -19,8 +20,7 @@ import org.koin.ktor.ext.inject
 fun Route.couponRoutes() {
     val couponUseCaseContainer: CouponUseCaseContainer by inject()
     route("/coupon") {
-        authenticate(JWT_AUTHENTICATION) {
-
+        authenticate(API_KEY_AUTHENTICATION) {
             //get all valid coupons
             get("/allValidCoupons") {
                 val coupons =
@@ -28,6 +28,8 @@ fun Route.couponRoutes() {
                         .map { it.toApiCoupon() }
                 call.respond(ServerResponse.success(coupons))
             }
+        }
+        authenticate(JWT_AUTHENTICATION) {
 
             //get all coupons that not clipped from a specific user
             get("/allUserCoupons") {
