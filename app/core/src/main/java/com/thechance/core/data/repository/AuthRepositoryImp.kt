@@ -12,6 +12,7 @@ import com.thechance.core.entity.Admin
 import com.thechance.core.entity.Notification
 import com.thechance.core.entity.Owner
 import com.thechance.core.entity.User
+import com.thechance.core.entity.market.Market
 import com.thechance.core.utils.ROLE_TYPE
 import org.koin.core.component.KoinComponent
 import java.util.*
@@ -78,6 +79,14 @@ class AuthRepositoryImp(
     }
 
     override suspend fun getAdminByEmail(email: String): Admin = adminDataSource.getAdminByEmail(email)
+
+    override suspend fun getUnApprovedMarkets(): List<Market> {
+        return adminDataSource.getUnApprovedMarkets()
+    }
+
+    override suspend fun approveMarket(marketId: Long, isApproved: Boolean): Boolean  {
+       return adminDataSource.approveMarket(marketId,isApproved)
+    }
     //endregion
 
     //region token

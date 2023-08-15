@@ -42,6 +42,7 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
                 it[MarketTable.address] = address
                 it[MarketTable.description] = description
                 it[MarketTable.isDeleted] = false
+                it[MarketTable.isApproved] = false
                 it[MarketTable.ownerId] = ownerId
             }
         }
