@@ -3,6 +3,7 @@ package com.thechance.core.data.datasource
 import com.thechance.core.data.datasource.database.tables.MarketTable
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
+import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import com.thechance.core.data.datasource.mapper.toCategory
 import com.thechance.core.data.datasource.mapper.toMarket
 import com.thechance.core.data.repository.dataSource.MarketDataSource
@@ -53,9 +54,14 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         }
     }
 
+    override suspend fun getProductsCountForMarket(marketId: Long): Int = dbQuery {
+        ProductTable.select { ProductTable.marketId eq marketId }
+            .count().toInt()
+    }
+
     override suspend fun getAllMarkets(page: Int): List<Market> = dbQuery {
         val offset = ((page - 1) * PAGE_SIZE).toLong()
-        MarketTable.select { (MarketTable.isDeleted eq false ) and (MarketTable.status eq true)}
+        MarketTable.select { (MarketTable.isDeleted eq false) and (MarketTable.status eq true) }
             .limit(PAGE_SIZE, offset)
             .map { it.toMarket() }
             .toList()

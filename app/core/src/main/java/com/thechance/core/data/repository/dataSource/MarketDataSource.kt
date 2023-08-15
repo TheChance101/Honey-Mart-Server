@@ -32,4 +32,5 @@ interface MarketDataSource {
 
     suspend fun getMarket(marketId: Long): Market?
 
+    suspend fun getProductsCountForMarket(marketId: Long): Int
 }

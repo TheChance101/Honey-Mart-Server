@@ -52,6 +52,7 @@ interface HoneyMartRepository {
     suspend fun getOwnerIdByMarketId(marketId: Long): Long?
     suspend fun addMarketImage(marketId: Long, imageUrl: String): Boolean
     suspend fun getMarket(marketId: Long): Market?
+    suspend fun getProductsCountForMarket(marketId: Long): Int
     //endregion
 
 
