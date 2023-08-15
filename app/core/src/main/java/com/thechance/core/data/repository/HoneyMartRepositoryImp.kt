@@ -6,10 +6,14 @@ import com.thechance.core.entity.Cart
 import com.thechance.core.entity.Category
 import com.thechance.core.entity.Notification
 import com.thechance.core.entity.Product
+import com.thechance.core.entity.coupon.Coupon
+import com.thechance.core.entity.coupon.MarketCoupon
+import com.thechance.core.entity.coupon.UserCoupon
 import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.order.MarketOrder
 import com.thechance.core.entity.order.OrderItem
 import org.koin.core.component.KoinComponent
+import java.time.LocalDateTime
 
 class HoneyMartRepositoryImp(
     private val marketDataSource: MarketDataSource,
@@ -19,6 +23,7 @@ class HoneyMartRepositoryImp(
     private val userDataSource: UserDataSource,
     private val notificationDataSource: NotificationDataSource,
     private val deviceTokenDataSource: DeviceTokenDataSource,
+    private val couponDataSource: CouponDataSource
 ) : HoneyMartRepository, KoinComponent {
 
     //region cart
@@ -179,7 +184,7 @@ class HoneyMartRepositoryImp(
 
     //region product
     override suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>,marketsId:Long
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, marketsId: Long
     ): Product = productDataSource.createProduct(
         productName = productName, productPrice = productPrice, productQuantity = productQuantity,
         categoriesId = categoriesId, marketsId = marketsId
@@ -306,6 +311,43 @@ class HoneyMartRepositoryImp(
     override suspend fun saveDeviceTokens(receiverId: Long, token: String) {
         deviceTokenDataSource.saveDeviceTokens(receiverId, token)
     }
-//endregion
+    //endregion
+
+    //region coupons
+    override suspend fun addCoupon(
+        marketId: Long,
+        productId: Long,
+        count: Int,
+        discountPercentage: Double,
+        expirationDate: LocalDateTime
+    ): Boolean =
+        couponDataSource.addCoupon(marketId, productId, count, discountPercentage, expirationDate)
+
+
+    override suspend fun getCouponsForUser(userId: Long): List<UserCoupon> =
+        couponDataSource.getCouponsForUser(userId)
+
+    override suspend fun getClippedCouponsForUser(userId: Long): List<UserCoupon> =
+        couponDataSource.getClippedCouponsForUser(userId)
+
+    override suspend fun getCouponsForMarket(marketId: Long): List<MarketCoupon> =
+        couponDataSource.getCouponsForMarket(marketId)
+
+    override suspend fun deleteCoupon(couponId: Long): Boolean =
+        couponDataSource.deleteCoupon(couponId)
+
+    override suspend fun clipCoupon(couponId: Long, userId: Long): Boolean =
+        couponDataSource.clipCoupon(couponId, userId)
+
+    override suspend fun isCouponClipped(couponId: Long, userId: Long): Boolean =
+        couponDataSource.isCouponClipped(couponId, userId)
+
+    override suspend fun isValidCoupon(couponId: Long): Boolean =
+        couponDataSource.isValidCoupon(couponId)
+
+    override suspend fun getAllValidCoupons(): List<Coupon> =
+        couponDataSource.getAllValidCoupons()
+
+    //end coupons region
 
 }
