@@ -2,6 +2,7 @@ package com.thechance.core.domain.repository
 
 import com.thechance.core.entity.Cart
 import com.thechance.core.entity.Category
+import com.thechance.core.entity.Notification
 import com.thechance.core.entity.Product
 import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.order.MarketOrder
@@ -69,10 +70,8 @@ interface HoneyMartRepository {
 
     //region product
     suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>,marketsId: Long
     ): Product
-
-    suspend fun getAllProducts(): List<Product>
 
     suspend fun getProduct(productId: Long): Product
 
@@ -115,8 +114,19 @@ interface HoneyMartRepository {
 
     suspend fun deleteAllProductsInCart(cartId: Long): Boolean
 
-
     suspend fun saveUserProfileImage(imageUrl: String, userId: Long): Boolean
-
     suspend fun getUserProfileImage(userId: Long): String?
+
+    //region notification
+    suspend fun sendNotification(tokens: List<String>, orderId: Long, title: String, body: String): Boolean
+    suspend fun saveNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean
+    suspend fun getNotificationHistory(receiverId: Long): List<Notification>
+
+    //endregion
+
+    //region deviceTokens
+    suspend fun getDeviceTokens(receiverId: Long): List<String>
+    suspend fun saveDeviceTokens(receiverId: Long,token: String)
+
+    //endregion
 }

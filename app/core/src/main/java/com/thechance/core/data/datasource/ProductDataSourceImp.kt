@@ -28,12 +28,13 @@ import org.koin.core.component.KoinComponent
 class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
     override suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, marketsId: Long
     ): Product = dbQuery {
         val newProduct = ProductTable.insert { productRow ->
             productRow[name] = productName
             productRow[price] = productPrice
             productRow[quantity] = productQuantity
+            productRow[marketId]= marketsId
         }
 
         insertCategoryForProduct(categoriesId, newProduct[ProductTable.id].value)
@@ -43,7 +44,8 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
             name = newProduct[ProductTable.name],
             quantity = newProduct[ProductTable.quantity],
             price = newProduct[ProductTable.price],
-            image = emptyList()
+            image = emptyList(),
+            marketId = newProduct[ProductTable.marketId].value
         )
     }
 
@@ -73,12 +75,6 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getAllProducts(): List<Product> = dbQuery {
-        ProductTable.select { ProductTable.isDeleted eq false }.map { productRow ->
-            val images = getProductImages(productRow[ProductTable.id].value)
-            productRow.toProduct(images = images)
-        }
-    }
 
     override suspend fun getProduct(productId: Long): Product = dbQuery {
         ProductTable.select { ProductTable.id eq productId }.map { productRow ->

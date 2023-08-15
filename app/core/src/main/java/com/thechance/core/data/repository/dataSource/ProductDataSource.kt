@@ -6,12 +6,11 @@ import com.thechance.core.entity.Product
 interface ProductDataSource {
 
     suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, marketsId: Long
     ): Product
 
     suspend fun getMostRecentProducts(): List<Product>
 
-    suspend fun getAllProducts(): List<Product>
 
     suspend fun getProduct(productId: Long): Product
 
