@@ -10,6 +10,7 @@ import com.thechance.core.entity.NotificationRequest
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 
 class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging) : NotificationDataSource,
@@ -19,13 +20,9 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
         notification: NotificationRequest
     ): Boolean {
         return firebaseMessaging.sendAll(notification.tokens.map {
-            Message.builder()
-                .putData(TITLE, notification.title)
-                .putData(BODY, notification.body)
+            Message.builder().putData(TITLE, notification.title).putData(BODY, notification.body)
                 .putData(ORDER_ID, notification.orderId.toString())
-                .putData(ORDER_Status, notification.status.toString())
-                .setToken(it)
-                .build()
+                .putData(ORDER_Status, notification.orderStatus.toString()).setToken(it).build()
         }).failureCount == 0
     }
 
@@ -45,6 +42,13 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
         NotificationHistoryTable.select { NotificationHistoryTable.receiverId eq receiverId }.map {
             it.toNotification()
         }.toList()
+    }
+
+    override suspend fun updateNotificationState(receiverId: Long, isRead: Boolean): Boolean = dbQuery {
+        NotificationHistoryTable.update({ NotificationHistoryTable.receiverId eq receiverId }) { notificationRow ->
+            notificationRow[this.isRead] = isRead
+        }
+        true
     }
 
     companion object {

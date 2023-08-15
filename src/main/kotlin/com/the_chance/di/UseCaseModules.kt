@@ -11,7 +11,9 @@ import com.thechance.core.domain.usecase.coupon.*
 import com.thechance.core.domain.usecase.deviceToken.SaveDeviceTokenUseCase
 import com.thechance.core.domain.usecase.market.*
 import com.thechance.core.domain.usecase.notification.GetNotificationHistoryUseCase
+import com.thechance.core.domain.usecase.notification.NotificationUseCaseContainer
 import com.thechance.core.domain.usecase.notification.SendNotificationOnOrderStateUseCase
+import com.thechance.core.domain.usecase.notification.UpdateNotificationState
 import com.thechance.core.domain.usecase.order.*
 import com.thechance.core.domain.usecase.owner.CreateOwnerUseCase
 import com.thechance.core.domain.usecase.owner.GetOwnerProfileUseCase
@@ -113,7 +115,9 @@ val tokenUseCase = module {
 
 val notificationUseCase = module {
     singleOf(::SendNotificationOnOrderStateUseCase) { bind<SendNotificationOnOrderStateUseCase>() }
+    singleOf(::NotificationUseCaseContainer) { bind<NotificationUseCaseContainer>() }
     singleOf(::GetNotificationHistoryUseCase) { bind<GetNotificationHistoryUseCase>() }
+    singleOf(::UpdateNotificationState) { bind<UpdateNotificationState>() }
 }
 
 val deviceTokenUseCase = module {

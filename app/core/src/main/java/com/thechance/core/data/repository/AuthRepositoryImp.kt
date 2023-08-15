@@ -131,6 +131,10 @@ class AuthRepositoryImp(
 
     }
 
+    override suspend fun updateNotificationState(receiverId: Long, isRead: Boolean): Boolean {
+        return notificationDataSource.updateNotificationState(receiverId,isRead)
+    }
+
     override suspend fun saveNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
         return notificationDataSource.saveNotification(title, body, receiverId, orderId)
     }

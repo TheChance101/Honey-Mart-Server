@@ -5,5 +5,5 @@ data class NotificationRequest (
     val orderId: Long,
     val title: String,
     val body: String,
-    val status: Int
+    val orderStatus: Int
 )
