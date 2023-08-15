@@ -34,7 +34,11 @@ class CreateOrderUseCase(private val repository: HoneyMartRepository) : KoinComp
             val discountPercentage = coupon?.discountPercentage ?: 0.0
             val discountAmount = product.price * (discountPercentage / 100)
             val adjustedPrice = product.price - discountAmount
-            adjustedPrice * product.count
+            if (product.count > 1) {
+                adjustedPrice + (product.price * product.count - 1)
+            } else {
+                adjustedPrice * product.count
+            }
         }
         return newTotalPrice
     }
