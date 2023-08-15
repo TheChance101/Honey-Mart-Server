@@ -8,7 +8,7 @@ import com.thechance.core.utils.isInvalidId
 import com.thechance.core.utils.isValidRole
 import org.koin.core.component.KoinComponent
 
-class GetAllClippedCouponsForUser(private val repository: HoneyMartRepository) : KoinComponent {
+class GetAllClippedCouponsForUserUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(userId: Long?, role: String?): List<UserCoupon> {
 
         return if (isInvalidId(userId) || !isValidRole(NORMAL_USER_ROLE, role)) {

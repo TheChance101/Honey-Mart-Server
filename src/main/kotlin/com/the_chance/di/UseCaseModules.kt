@@ -115,6 +115,7 @@ val couponsUseCase = module {
     singleOf(::CreateCouponUseCase) { bind<CreateCouponUseCase>() }
     singleOf(::GetValidCouponsUseCase) { bind<GetValidCouponsUseCase>() }
     singleOf(::GetAllCouponsForUserUseCase) { bind<GetAllCouponsForUserUseCase>() }
-    singleOf(::GetAllClippedCouponsForUser) { bind<GetAllClippedCouponsForUser>() }
-    singleOf(::GetAllCouponsForMarket) { bind<GetAllCouponsForMarket>() }
+    singleOf(::GetAllClippedCouponsForUserUseCase) { bind<GetAllClippedCouponsForUserUseCase>() }
+    singleOf(::GetAllCouponsForMarketUseCase) { bind<GetAllCouponsForMarketUseCase>() }
+    singleOf(::ClipCouponUseCase) { bind<ClipCouponUseCase>() }
 }

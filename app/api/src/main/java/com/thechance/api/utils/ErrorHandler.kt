@@ -207,7 +207,22 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         }
 
         is InvalidExpirationDateException -> {
-            ServerResponse.error("Invalid Expiration Date, format should be yyyy-MM-dd HH:mm:ss", HttpStatusCode.BadRequest.value)
+            ServerResponse.error(
+                "Invalid Expiration Date, format should be yyyy-MM-dd HH:mm:ss",
+                HttpStatusCode.BadRequest.value
+            )
+        }
+
+        is InvalidCouponIdException -> {
+            ServerResponse.error("Invalid Coupon Id", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidCouponException -> {
+            ServerResponse.error("Invalid Coupon", HttpStatusCode.BadRequest.value)
+        }
+
+        is CouponAlreadyClippedException -> {
+            ServerResponse.error("Coupon Already Clipped", HttpStatusCode.BadRequest.value)
         }
 
         else -> {

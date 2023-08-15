@@ -5,7 +5,7 @@ import com.thechance.core.entity.coupon.MarketCoupon
 import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
 
-class GetAllCouponsForMarket(private val repository: HoneyMartRepository) : KoinComponent {
+class GetAllCouponsForMarketUseCase(private val repository: HoneyMartRepository) : KoinComponent {
     suspend operator fun invoke(ownerId: Long?, role: String?): List<MarketCoupon> {
 
         val marketId = repository.getMarketIdByOwnerId(ownerId = ownerId!!)

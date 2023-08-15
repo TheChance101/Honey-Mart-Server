@@ -45,7 +45,7 @@ fun Route.couponRoutes() {
                 val userId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val coupons =
-                    couponUseCaseContainer.getAllClippedCouponsForUser(userId, role)
+                    couponUseCaseContainer.getAllClippedCouponsForUserUseCase(userId, role)
                         .map { it.toApiUserCoupon() }
                 call.respond(ServerResponse.success(coupons))
             }
@@ -55,9 +55,22 @@ fun Route.couponRoutes() {
                 val ownerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val coupons =
-                    couponUseCaseContainer.getAllCouponsForMarket(ownerId, role)
+                    couponUseCaseContainer.getAllCouponsForMarketUseCase(ownerId, role)
                         .map { it.toApiMarketCoupon() }
                 call.respond(ServerResponse.success(coupons))
+            }
+
+            //clip coupon for user
+            put("/clip/{id}") {
+                val couponId = call.parameters["id"]?.trim()?.toLongOrNull()
+
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+
+                val isClipped = couponUseCaseContainer.clipCouponUseCase(userId, role, couponId)
+                call.respond(ServerResponse.success(isClipped))
+
             }
 
             //add new coupon
