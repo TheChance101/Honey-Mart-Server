@@ -13,6 +13,7 @@ class InvalidExpirationDateException : Exception()
 class InvalidCouponIdException : Exception()
 class InvalidCouponException : Exception()
 class CouponAlreadyClippedException : Exception()
+class InvalidDescriptionException : Exception()
 class InvalidProductPriceException : Exception()
 
 class InvalidCategoryNameLettersException : Exception()

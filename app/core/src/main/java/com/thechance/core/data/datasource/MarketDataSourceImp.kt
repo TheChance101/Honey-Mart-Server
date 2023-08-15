@@ -34,15 +34,18 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         }
     }
 
-    override suspend fun createMarket(marketName: String, ownerId: Long): Boolean =
+    override suspend fun createMarket(ownerId: Long, name: String, address: String, description: String): Long? {
         dbQuery {
             MarketTable.insert {
-                it[name] = marketName
-                it[isDeleted] = false
+                it[MarketTable.name] = name
+                it[MarketTable.address] = address
+                it[MarketTable.description] = description
+                it[MarketTable.isDeleted] = false
                 it[MarketTable.ownerId] = ownerId
             }
-            true
         }
+        return getMarketIdByOwnerId(ownerId)
+    }
 
     override suspend fun addMarketImage(marketId: Long, imageUrl: String): Boolean {
         return dbQuery {
@@ -55,7 +58,7 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
 
     override suspend fun getAllMarkets(page: Int): List<Market> = dbQuery {
         val offset = ((page - 1) * PAGE_SIZE).toLong()
-        MarketTable.select { (MarketTable.isDeleted eq false ) and (MarketTable.status eq true)}
+        MarketTable.select { (MarketTable.isDeleted eq false) and (MarketTable.status eq true) }
             .limit(PAGE_SIZE, offset)
             .map { it.toMarket() }
             .toList()

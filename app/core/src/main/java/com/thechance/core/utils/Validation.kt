@@ -111,11 +111,19 @@ internal fun isInValidDescription(description: String?): Boolean {
     } ?: true
 }
 
+
+//Starts with one or more digits.
+//Followed by a space.
+//Followed by one or more uppercase or lowercase letters, including spaces.
+//Followed by a comma and a space.
+//Followed by one or more uppercase or lowercase letters, including spaces.
+//Followed by a comma and a space.
+//Ends with exactly two uppercase or lowercase letters.
 internal fun isValidAddress(address: String?): Boolean {
     return if (address.isNullOrEmpty()) {
         false
     } else {
-        val pattern = Regex("^[0-9]+\\s[A-Za-z\\s]+,[A-Za-z\\s]+,[A-Za-z]{2}$")
+        val pattern = Regex("^[0-9]+\\s[A-Za-z\\s]+,\\s[A-Za-z\\s]+,\\s[A-Za-z]{2}\$")
         pattern.matches(address.trim())
     }
 }

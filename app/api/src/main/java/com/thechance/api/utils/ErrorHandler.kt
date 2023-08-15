@@ -35,6 +35,9 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is InvalidProductDescriptionException -> {
             ServerResponse.error("error in quantity.", HttpStatusCode.NotFound.value)
         }
+        is InvalidDescriptionException -> {
+            ServerResponse.error("Invalid description.", HttpStatusCode.NotFound.value)
+        }
 
         is InvalidProductPriceException -> {
             ServerResponse.error("error in product price", HttpStatusCode.NotFound.value)
