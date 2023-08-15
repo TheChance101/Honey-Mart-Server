@@ -1,5 +1,8 @@
 package com.thechance.core.utils
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 fun isValidMarketProductName(name: String?): Boolean {
     return if (name == null) {
         false
@@ -40,6 +43,10 @@ internal fun isInvalidId(id: Long?): Boolean {
     return id == null || id == 0L
 }
 
+internal fun isInvalidNumber(number: Int?): Boolean {
+    return number == null || number == 0
+}
+
 internal fun isInvalidPageNumber(page: Int?): Boolean {
     return page == null || page < 1
 }
@@ -51,6 +58,24 @@ internal fun isValidIds(ids: List<Long>?): Boolean {
 internal fun isInvalidPrice(price: Double?): Boolean {
     return price?.let {
         return it !in 0.1..999999.0
+    } ?: true
+}
+
+internal fun isInvalidPercentage(percentage: Double?): Boolean {
+    return percentage?.let {
+        it < 0.0 || it > 100.0
+    } ?: true
+}
+
+internal fun isInvalidDate(date: String?): Boolean {
+    return date?.let {
+        try {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            val parsedDate = LocalDateTime.parse(it, formatter)
+            parsedDate.isAfter(LocalDateTime.now())
+        } catch (e: Exception) {
+            true
+        }
     } ?: true
 }
 

@@ -198,6 +198,18 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             ServerResponse.error("Missing Query Parameter", HttpStatusCode.BadRequest.value)
         }
 
+        is InvalidCountException -> {
+            ServerResponse.error("Invalid Count", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidPercentage -> {
+            ServerResponse.error("Invalid Percentage", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidExpirationDateException -> {
+            ServerResponse.error("Invalid Expiration Date, format should be yyyy-MM-dd HH:mm:ss", HttpStatusCode.BadRequest.value)
+        }
+
         else -> {
             ServerResponse.error(cause.message.toString(), HttpStatusCode.InternalServerError.value)
         }
