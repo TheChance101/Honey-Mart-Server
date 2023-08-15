@@ -5,5 +5,6 @@ import org.koin.core.component.KoinComponent
 data class CouponUseCaseContainer(
     val createCouponUseCase: CreateCouponUseCase,
     val getValidCouponsUseCase: GetValidCouponsUseCase,
-    val getAllCouponsForUserUseCase: GetAllCouponsForUserUseCase
+    val getAllCouponsForUserUseCase: GetAllCouponsForUserUseCase,
+    val getAllClippedCouponsForUser: GetAllClippedCouponsForUser
 ) : KoinComponent

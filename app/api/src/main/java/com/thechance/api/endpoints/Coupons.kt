@@ -26,7 +26,6 @@ fun Route.couponRoutes() {
                     couponUseCaseContainer.getValidCouponsUseCase()
                         .map { it.toApiCoupon() }
                 call.respond(ServerResponse.success(coupons))
-
             }
 
             //get all coupons that not clipped from a specific user
@@ -38,7 +37,16 @@ fun Route.couponRoutes() {
                     couponUseCaseContainer.getAllCouponsForUserUseCase(userId, role)
                         .map { it.toApiUserCoupon() }
                 call.respond(ServerResponse.success(coupons))
-
+            }
+            //get all coupons that not clipped from a specific user
+            get("/allClippedUserCoupons") {
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val coupons =
+                    couponUseCaseContainer.getAllClippedCouponsForUser(userId, role)
+                        .map { it.toApiUserCoupon() }
+                call.respond(ServerResponse.success(coupons))
             }
 
             //add new coupon
