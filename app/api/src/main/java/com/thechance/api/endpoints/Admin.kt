@@ -2,12 +2,16 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiMarketModel
+import com.thechance.api.model.mapper.toApiOwnerModel
 import com.thechance.api.model.mapper.toApiTokens
 import com.thechance.core.domain.usecase.admin.AdminUseCaseContainer
 import com.thechance.core.utils.API_KEY_AUTHENTICATION
+import com.thechance.core.utils.JWT_AUTHENTICATION
+import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -27,16 +31,22 @@ fun Route.adminRoutes() {
                 call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
             }
 
+        }
+        authenticate(JWT_AUTHENTICATION) {
             get("/markets") {
-                val markets = adminUseCase.getUnApprovedMarkets().map { it.toApiMarketModel() }
+                val principal = call.principal<JWTPrincipal>()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val markets = adminUseCase.getUnApprovedMarkets(role).map { it.toApiMarketModel() }
                 call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
             }
 
-            put("/approve/{id}") {
+            put("/request/{id}") {
+                val principal = call.principal<JWTPrincipal>()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val params = call.receiveParameters()
-                val marketId = params["marketId"]?.trim()?.toLong()
+                val marketId = call.parameters["id"]?.trim()?.toLongOrNull()
                 val isApproved = params["isApproved"]?.trim().toBoolean()
-                adminUseCase.approveMarketUseCase(marketId!!, isApproved)
+                adminUseCase.approveMarketUseCase(marketId, isApproved,role)
                 call.respond(HttpStatusCode.OK, ServerResponse.success(true, "Market updated successfully"))
             }
         }

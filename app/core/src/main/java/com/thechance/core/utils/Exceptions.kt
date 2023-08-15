@@ -42,6 +42,7 @@ class CategoryNameNotUniqueException : Exception()
 
 //region user
 class InvalidUserIdException : Exception()
+class AdminAccessDeniedException : Exception()
 class UsernameAlreadyExistException : Exception()
 class UnKnownUserException : Exception()
 class InvalidUserNameOrPasswordException : Exception()
