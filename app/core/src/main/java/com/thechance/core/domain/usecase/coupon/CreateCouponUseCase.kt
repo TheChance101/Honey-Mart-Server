@@ -15,7 +15,7 @@ class CreateCouponUseCase(private val repository: HoneyMartRepository) : KoinCom
         discountPercentage: Double?,
         expirationDate: String?
     ): Boolean {
-        isValidInput(ownerId, role, productId, count, discountPercentage, expirationDate)
+        isValidInput(ownerId, role, productId, count, discountPercentage, expirationDate)?.let { throw it }
         return repository.addCoupon(
             repository.getMarketIdByOwnerId(ownerId!!)!!,
             productId!!,

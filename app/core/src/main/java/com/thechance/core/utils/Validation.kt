@@ -44,7 +44,7 @@ internal fun isInvalidId(id: Long?): Boolean {
 }
 
 internal fun isInvalidNumber(number: Int?): Boolean {
-    return number == null || number == 0
+    return number == null || number <= 0
 }
 
 internal fun isInvalidPageNumber(page: Int?): Boolean {
@@ -72,7 +72,7 @@ internal fun isInvalidDate(date: String?): Boolean {
         try {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             val parsedDate = LocalDateTime.parse(it, formatter)
-            parsedDate.isAfter(LocalDateTime.now())
+            parsedDate.isBefore(LocalDateTime.now())
         } catch (e: Exception) {
             true
         }

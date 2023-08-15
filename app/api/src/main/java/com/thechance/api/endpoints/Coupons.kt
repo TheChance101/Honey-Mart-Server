@@ -1,6 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.model.mapper.toApiCoupon
 import com.thechance.core.domain.usecase.coupon.CouponUseCaseContainer
 import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
@@ -17,6 +18,15 @@ fun Route.couponRoutes() {
     val couponUseCaseContainer: CouponUseCaseContainer by inject()
     route("/coupon") {
         authenticate(JWT_AUTHENTICATION) {
+
+            get("/allValidCoupons") {
+                val coupons =
+                    couponUseCaseContainer.getValidCouponsUseCase()
+                        .map { it.toApiCoupon() }
+                call.respond(ServerResponse.success(coupons))
+
+            }
+
             //add new coupon
             post {
                 val principal = call.principal<JWTPrincipal>()

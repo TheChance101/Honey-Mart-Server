@@ -5,6 +5,7 @@ import com.thechance.core.domain.usecase.cart.*
 import com.thechance.core.domain.usecase.category.*
 import com.thechance.core.domain.usecase.coupon.CouponUseCaseContainer
 import com.thechance.core.domain.usecase.coupon.CreateCouponUseCase
+import com.thechance.core.domain.usecase.coupon.GetValidCouponsUseCase
 import com.thechance.core.domain.usecase.deviceToken.SaveDeviceTokenUseCase
 import com.thechance.core.domain.usecase.market.*
 import com.thechance.core.domain.usecase.notification.GetNotificationHistoryUseCase
@@ -114,4 +115,5 @@ val deviceTokenUseCase = module {
 val couponsUseCase = module {
     singleOf(::CouponUseCaseContainer) { bind<CouponUseCaseContainer>() }
     singleOf(::CreateCouponUseCase) { bind<CreateCouponUseCase>() }
+    singleOf(::GetValidCouponsUseCase) { bind<GetValidCouponsUseCase>() }
 }
