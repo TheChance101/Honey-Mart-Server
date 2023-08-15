@@ -20,13 +20,15 @@ internal fun Market.toApiMarketModel(): MarketModel {
 
 internal fun MarketDetails.toApiMarketDetailsModel(): MarketDetailsModel {
     return MarketDetailsModel(
-        marketId = market.marketId,
-        marketName = market.marketName,
-        imageUrl = market.imageUrl,
-        description = market.description,
-        latitude = market.latitude,
-        longitude = market.longitude,
-        address = market.address,
+        marketId = marketId,
+        marketName = marketName,
+        imageUrl = imageUrl,
+        categoriesCount = categories.count(),
+        productsCount = productsCount,
+        description = description,
+        latitude = latitude,
+        longitude = longitude,
+        address = address,
         categories = categories.toApiCategoryModel()
     )
 }

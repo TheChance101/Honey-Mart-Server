@@ -137,6 +137,8 @@ class HoneyMartRepositoryImp(
         marketDataSource.addMarketImage(marketId, imageUrl)
 
     override suspend fun getMarket(marketId: Long) = marketDataSource.getMarket(marketId)
+    override suspend fun getProductsCountForMarket(marketId: Long): Int =
+        marketDataSource.getProductsCountForMarket(marketId)
 
 //endregion
 
