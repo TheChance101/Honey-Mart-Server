@@ -50,7 +50,8 @@ val appModules = module {
         repositoriesModules,
         tokenUseCase,
         notificationUseCase,
-        deviceTokenUseCase
+        deviceTokenUseCase,
+        couponsUseCase
     )
 }
 
