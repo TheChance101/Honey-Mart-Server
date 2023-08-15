@@ -14,15 +14,9 @@ import com.thechance.core.entity.Product
 import com.thechance.core.utils.PAGE_SIZE
 import com.thechance.core.utils.RECENT_PRODUCT
 import com.thechance.core.utils.dbQuery
-import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.lowerCase
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.koin.core.component.KoinComponent
 
 class ProductDataSourceImp : ProductDataSource, KoinComponent {
@@ -34,7 +28,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
             productRow[name] = productName
             productRow[price] = productPrice
             productRow[quantity] = productQuantity
-            productRow[marketId]= marketsId
+            productRow[marketId] = marketsId
         }
 
         insertCategoryForProduct(categoriesId, newProduct[ProductTable.id].value)
@@ -188,6 +182,25 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
                     .single()
             GalleryTable.deleteWhere { GalleryTable.id eq imageId }
             imageUrl
+        }
+    }
+
+    override suspend fun deleteProductImages(productId: Long): List<String> {
+        return dbQuery {
+
+            val productImages = ProductGalleryTable.select {
+                ProductGalleryTable.productId eq productId
+            }.map { it[ProductGalleryTable.galleryId].value }
+
+            ProductGalleryTable.deleteWhere {
+                (ProductGalleryTable.productId eq productId)
+            }
+            val imagesUrl =
+                GalleryTable.select { GalleryTable.id inList productImages }.map { it[GalleryTable.imageUrl] }
+
+            GalleryTable.deleteWhere { GalleryTable.id inList productImages }
+
+            imagesUrl
         }
     }
 

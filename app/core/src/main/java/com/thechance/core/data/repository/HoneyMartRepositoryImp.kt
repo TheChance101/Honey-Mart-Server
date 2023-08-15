@@ -228,6 +228,9 @@ class HoneyMartRepositoryImp(
     override suspend fun getAllProducts(page: Int): List<Product> =
         productDataSource.getAllProducts(page)
 
+    override suspend fun deleteProductImages(productId: Long): List<String> =
+        productDataSource.deleteProductImages(productId)
+
 
     override suspend fun getMostRecentProducts(): List<Product> =
         productDataSource.getMostRecentProducts()
