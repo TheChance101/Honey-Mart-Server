@@ -3,6 +3,8 @@ package com.the_chance.di
 import com.thechance.core.domain.usecase.RefreshTokenUseCase
 import com.thechance.core.domain.usecase.cart.*
 import com.thechance.core.domain.usecase.category.*
+import com.thechance.core.domain.usecase.coupon.CouponUseCaseContainer
+import com.thechance.core.domain.usecase.coupon.CreateCouponUseCase
 import com.thechance.core.domain.usecase.deviceToken.SaveDeviceTokenUseCase
 import com.thechance.core.domain.usecase.market.*
 import com.thechance.core.domain.usecase.notification.GetNotificationHistoryUseCase
@@ -107,4 +109,9 @@ val notificationUseCase = module {
 val deviceTokenUseCase = module {
     singleOf(::SaveDeviceTokenUseCase) { bind<SaveDeviceTokenUseCase>() }
     singleOf(::SaveDeviceTokenUseCase) { bind<SaveDeviceTokenUseCase>() }
+}
+
+val couponsUseCase = module {
+    singleOf(::CouponUseCaseContainer) { bind<CouponUseCaseContainer>() }
+    singleOf(::CreateCouponUseCase) { bind<CreateCouponUseCase>() }
 }
