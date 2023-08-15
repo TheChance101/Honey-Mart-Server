@@ -101,6 +101,7 @@ interface HoneyMartRepository {
     suspend fun getMostRecentProducts(): List<Product>
 
     suspend fun getAllProducts(page: Int): List<Product>
+    suspend fun deleteProductImages(productId: Long): List<String>
     //endregion
 
     //region order
