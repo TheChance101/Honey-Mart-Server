@@ -2,7 +2,7 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiOwnerModel
-import com.thechance.api.model.mapper.toApiTokens
+import com.thechance.api.model.mapper.toApiOwnerTokens
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.utils.API_KEY_AUTHENTICATION
 import com.thechance.core.utils.JWT_AUTHENTICATION
@@ -37,9 +37,8 @@ fun Route.ownerRoutes() {
                 val params = call.receiveParameters()
                 val email = params["email"]?.trim().toString()
                 val password = params["password"]?.trim().toString()
-
-                val token = ownerUseCaseContainer.verifyMarketOwnerUseCase(email, password).toApiTokens()
-                call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
+                val ownerTokens = ownerUseCaseContainer.verifyMarketOwnerUseCase(email, password).toApiOwnerTokens()
+                call.respond(HttpStatusCode.Created, ServerResponse.success(ownerTokens, "Logged in Successfully"))
             }
 
 

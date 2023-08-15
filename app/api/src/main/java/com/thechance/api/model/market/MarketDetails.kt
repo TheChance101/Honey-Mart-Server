@@ -9,6 +9,8 @@ data class MarketDetailsModel(
     val marketId: Long,
     val marketName: String,
     val imageUrl: String,
+    val productsCount:Int,
+    val categoriesCount:Int,
     val description: String,
     val address: String,
     val latitude: Double,

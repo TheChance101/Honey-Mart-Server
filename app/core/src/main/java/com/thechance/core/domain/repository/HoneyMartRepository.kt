@@ -3,10 +3,14 @@ package com.thechance.core.domain.repository
 import com.thechance.core.entity.Cart
 import com.thechance.core.entity.Category
 import com.thechance.core.entity.Product
+import com.thechance.core.entity.coupon.Coupon
+import com.thechance.core.entity.coupon.MarketCoupon
+import com.thechance.core.entity.coupon.UserCoupon
 import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.order.MarketOrder
 import com.thechance.core.entity.order.OrderDetails
 import com.thechance.core.entity.order.UserOrder
+import java.time.LocalDateTime
 
 interface HoneyMartRepository {
 
@@ -34,7 +38,7 @@ interface HoneyMartRepository {
 
     //region market
     suspend fun getMarketIdByOwnerId(ownerId: Long): Long?
-    suspend fun createMarket(marketName: String, ownerId: Long): Boolean
+    suspend fun createMarket(ownerId: Long, name: String, address: String, description: String): Long?
     suspend fun getAllMarkets(page: Int): List<Market>
     suspend fun getCategoriesByMarket(marketId: Long): List<Category>
     suspend fun deleteMarket(marketId: Long): Boolean
@@ -47,6 +51,7 @@ interface HoneyMartRepository {
     suspend fun getOwnerIdByMarketId(marketId: Long): Long?
     suspend fun addMarketImage(marketId: Long, imageUrl: String): Boolean
     suspend fun getMarket(marketId: Long): Market?
+    suspend fun getProductsCountForMarket(marketId: Long): Int
     //endregion
 
 
@@ -69,10 +74,8 @@ interface HoneyMartRepository {
 
     //region product
     suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, marketsId: Long
     ): Product
-
-    suspend fun getAllProducts(): List<Product>
 
     suspend fun getProduct(productId: Long): Product
 
@@ -101,7 +104,7 @@ interface HoneyMartRepository {
     //endregion
 
     //region order
-    suspend fun createOrder(cartId: Long, userId: Long): Boolean
+    suspend fun createOrder(userId: Long, cart: Cart, totalPrice: Double): Boolean
     suspend fun getOrdersForMarket(marketId: Long, state: Int): List<MarketOrder>
     suspend fun getOrdersForUser(userId: Long, state: Int): List<UserOrder>
     suspend fun getOrderById(orderId: Long): OrderDetails
@@ -119,6 +122,25 @@ interface HoneyMartRepository {
     suspend fun getUserProfileImage(userId: Long): String?
 
 
+    //endregion
 
+    //region coupons
+    suspend fun addCoupon(
+        marketId: Long,
+        productId: Long,
+        count: Int,
+        discountPercentage: Double,
+        expirationDate: LocalDateTime
+    ): Boolean
 
+    suspend fun getCouponsForUser(userId: Long): List<UserCoupon>
+    suspend fun getClippedCouponsForUser(userId: Long): List<UserCoupon>
+    suspend fun getCouponsForMarket(marketId: Long): List<MarketCoupon>
+    suspend fun deleteCoupon(couponId: Long): Boolean
+    suspend fun clipCoupon(couponId: Long, userId: Long): Boolean
+    suspend fun useCoupon(couponId: Long, userId: Long): Boolean
+    suspend fun isCouponClipped(couponId: Long, userId: Long): Boolean
+    suspend fun isValidCoupon(couponId: Long): Boolean
+    suspend fun getAllValidCoupons(): List<Coupon>
+    //end coupons region
 }

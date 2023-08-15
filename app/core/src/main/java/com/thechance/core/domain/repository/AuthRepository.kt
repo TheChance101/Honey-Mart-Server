@@ -28,7 +28,7 @@ interface AuthRepository {
 
     suspend fun isOwnerEmailExists(email: String): Boolean
 
-    suspend fun getMarketOwnerByUsername(userName: String): Owner
+    suspend fun getMarketOwnerByEmail(email: String): Owner
 
     fun isOwnerValidPassword(owner: Owner, password: String): Boolean
 

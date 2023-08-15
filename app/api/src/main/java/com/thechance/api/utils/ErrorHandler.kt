@@ -35,6 +35,9 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is InvalidProductDescriptionException -> {
             ServerResponse.error("error in quantity.", HttpStatusCode.NotFound.value)
         }
+        is InvalidDescriptionException -> {
+            ServerResponse.error("Invalid description.", HttpStatusCode.NotFound.value)
+        }
 
         is InvalidProductPriceException -> {
             ServerResponse.error("error in product price", HttpStatusCode.NotFound.value)
@@ -196,6 +199,33 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
 
         is MissingQueryParameterException -> {
             ServerResponse.error("Missing Query Parameter", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidCountException -> {
+            ServerResponse.error("Invalid Count", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidPercentage -> {
+            ServerResponse.error("Invalid Percentage", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidExpirationDateException -> {
+            ServerResponse.error(
+                "Invalid Expiration Date, format should be yyyy-MM-dd HH:mm:ss",
+                HttpStatusCode.BadRequest.value
+            )
+        }
+
+        is InvalidCouponIdException -> {
+            ServerResponse.error("Invalid Coupon Id", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidCouponException -> {
+            ServerResponse.error("Invalid Coupon", HttpStatusCode.BadRequest.value)
+        }
+
+        is CouponAlreadyClippedException -> {
+            ServerResponse.error("Coupon Already Clipped", HttpStatusCode.BadRequest.value)
         }
 
         else -> {

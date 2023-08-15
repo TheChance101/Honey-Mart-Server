@@ -23,13 +23,14 @@ fun Application.configureRouting() {
         marketsRoutes()
         userRoutes()
         ownerRoutes()
+        adminRoutes()
         cartRoutes()
         orderRoutes()
         wishListRoutes()
         deleteAllTables()
         imageRouts()
         tokenRouts()
-        adminRoutes()
+        couponRoutes()
     }
 
 }

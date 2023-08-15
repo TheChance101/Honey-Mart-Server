@@ -60,7 +60,7 @@ class AuthRepositoryImp(
 
     override suspend fun isOwnerEmailExists(email: String): Boolean = ownerDataSource.isOwnerEmailExists(email)
 
-    override suspend fun getMarketOwnerByUsername(userName: String): Owner = ownerDataSource.getOwnerByEmail(userName)
+    override suspend fun getMarketOwnerByEmail(email: String): Owner = ownerDataSource.getOwnerByEmail(email)
 
 
     override fun isOwnerValidPassword(owner: Owner, password: String): Boolean = hashingService.verify(
