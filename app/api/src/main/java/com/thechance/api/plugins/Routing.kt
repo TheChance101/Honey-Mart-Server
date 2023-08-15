@@ -23,6 +23,7 @@ fun Application.configureRouting() {
         marketsRoutes()
         userRoutes()
         ownerRoutes()
+        adminRoutes()
         cartRoutes()
         orderRoutes()
         wishListRoutes()

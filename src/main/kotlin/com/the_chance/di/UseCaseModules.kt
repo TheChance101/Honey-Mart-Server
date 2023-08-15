@@ -1,6 +1,7 @@
 package com.the_chance.di
 
 import com.thechance.core.domain.usecase.RefreshTokenUseCase
+import com.thechance.core.domain.usecase.admin.VerifyAdminUseCase
 import com.thechance.core.domain.usecase.cart.*
 import com.thechance.core.domain.usecase.category.*
 import com.thechance.core.domain.usecase.coupon.*
@@ -86,6 +87,10 @@ val ownerUseCaseModule = module {
     singleOf(::CreateOwnerUseCase) { bind<CreateOwnerUseCase>() }
     singleOf(::LoginMarketOwnerUseCase) { bind<LoginMarketOwnerUseCase>() }
     singleOf(::GetOwnerProfileUseCase) { bind<GetOwnerProfileUseCase>() }
+}
+
+val adminUseCaseModule = module {
+    singleOf(::VerifyAdminUseCase) { bind<VerifyAdminUseCase>() }
 }
 
 val cartUseCase = module {

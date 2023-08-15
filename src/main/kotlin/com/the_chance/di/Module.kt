@@ -47,6 +47,7 @@ val appModules = module {
         orderUseCaseModule,
         userUseCaseModule,
         ownerUseCaseModule,
+        adminUseCaseModule,
         repositoriesModules,
         tokenUseCase,
         notificationUseCase,

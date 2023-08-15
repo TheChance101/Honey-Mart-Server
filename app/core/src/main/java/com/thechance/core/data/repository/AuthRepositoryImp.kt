@@ -1,7 +1,6 @@
 package com.thechance.core.data.repository
 
-import com.thechance.core.data.repository.dataSource.OwnerDataSource
-import com.thechance.core.data.repository.dataSource.UserDataSource
+import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.data.repository.security.HashingService
 import com.thechance.core.data.repository.security.TokenService
 import com.thechance.core.data.security.hashing.SaltedHash
@@ -9,6 +8,8 @@ import com.thechance.core.data.security.token.TokenClaim
 import com.thechance.core.data.security.token.TokenConfig
 import com.thechance.core.data.security.token.Tokens
 import com.thechance.core.domain.repository.AuthRepository
+import com.thechance.core.entity.Admin
+import com.thechance.core.entity.Notification
 import com.thechance.core.entity.Owner
 import com.thechance.core.entity.User
 import com.thechance.core.utils.ROLE_TYPE
@@ -18,10 +19,13 @@ import java.util.*
 class AuthRepositoryImp(
     private val userDataSource: UserDataSource,
     private val ownerDataSource: OwnerDataSource,
+    private val adminDataSource: AdminDataSource,
     private val hashingService: HashingService,
     private val tokenService: TokenService,
-    private val tokenConfig: TokenConfig
-) : AuthRepository, KoinComponent {
+    private val tokenConfig: TokenConfig,
+    private val deviceTokenDataSource: DeviceTokenDataSource,
+    private val notificationDataSource: NotificationDataSource,
+    ) : AuthRepository, KoinComponent {
 
     //region user
     override suspend fun createUser(password: String, fullName: String, email: String): Boolean {
@@ -59,16 +63,24 @@ class AuthRepositoryImp(
     override suspend fun getMarketOwnerByEmail(email: String): Owner = ownerDataSource.getOwnerByEmail(email)
 
 
-    override fun isOwnerValidPassword(owner: Owner, password: String) = hashingService.verify(
+    override fun isOwnerValidPassword(owner: Owner, password: String): Boolean = hashingService.verify(
         value = password, saltedHash = SaltedHash(hash = owner.password, salt = owner.salt)
     )
 
     override suspend fun isValidOwner(ownerId: Long): Boolean = ownerDataSource.isValidOwner(ownerId)
 
     override suspend fun getOwner(ownerId: Long): Owner = ownerDataSource.getOwner(ownerId)
-
     //endregion
 
+    //region admin
+    override suspend fun isValidAdmin( password: String, email: String): Boolean {
+        return adminDataSource.isValidAdmin(password,email)
+    }
+
+    override suspend fun getAdminByEmail(email: String): Admin = adminDataSource.getAdminByEmail(email)
+    //endregion
+
+    //region token
     override fun getTokens(id: Long, role: String): Tokens {
         return tokenService.generateTokens(
             config = tokenConfig,
@@ -92,4 +104,36 @@ class AuthRepositoryImp(
     override fun verifyTokenRole(token: String): String {
         return tokenService.verifyTokenRole(token)
     }
+    //endregion
+
+
+    //region deviceTokens
+    override suspend fun getDeviceTokens(receiverId: Long): List<String> {
+        return deviceTokenDataSource.getDeviceTokens(receiverId)
+    }
+
+    override suspend fun saveDeviceTokens(receiverId: Long, token: String) {
+        deviceTokenDataSource.saveDeviceTokens(receiverId, token)
+    }
+//endregion
+
+    //region notification
+    override suspend fun sendNotification(
+        tokens: List<String>,
+        orderId: Long,
+        title: String,
+        body: String
+    ): Boolean {
+        return notificationDataSource.sendNotification(tokens, orderId, title, body)
+
+    }
+
+    override suspend fun saveNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
+        return notificationDataSource.saveNotification(title, body, receiverId, orderId)
+    }
+
+    override suspend fun getNotificationHistory(receiverId: Long): List<Notification> {
+        return notificationDataSource.getNotificationHistory(receiverId)
+    }
+    //end region
 }
