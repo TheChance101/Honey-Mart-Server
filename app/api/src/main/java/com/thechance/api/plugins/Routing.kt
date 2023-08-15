@@ -29,6 +29,7 @@ fun Application.configureRouting() {
         deleteAllTables()
         imageRouts()
         tokenRouts()
+        couponRoutes()
     }
 
 }
