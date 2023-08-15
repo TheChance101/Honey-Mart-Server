@@ -5,6 +5,8 @@ import com.thechance.core.data.datasource.database.tables.cart.CartProductTable
 import com.thechance.core.data.datasource.database.tables.cart.CartTable
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
+import com.thechance.core.data.datasource.database.tables.coupon.CouponTable
+import com.thechance.core.data.datasource.database.tables.coupon.CouponUserTable
 import com.thechance.core.data.datasource.database.tables.order.OrderProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderTable
 import com.thechance.core.data.datasource.database.tables.product.GalleryTable
@@ -33,7 +35,9 @@ class CoreDataBase {
             OrderTable,
             MarketTable,
             GalleryTable,
-            ProductGalleryTable
+            ProductGalleryTable,
+            CouponTable,
+            CouponUserTable
         )
     }
 

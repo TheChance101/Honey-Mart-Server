@@ -1,5 +1,6 @@
 package com.thechance.core.data.repository.dataSource
 
+import com.thechance.core.entity.coupon.Coupon
 import com.thechance.core.entity.coupon.MarketCoupon
 import com.thechance.core.entity.coupon.UserCoupon
 import java.time.LocalDateTime
@@ -17,5 +18,8 @@ interface CouponDataSource {
     suspend fun getClippedCouponsForUser(userId: Long): List<UserCoupon>
     suspend fun getCouponsForMarket(marketId: Long): List<MarketCoupon>
     suspend fun deleteCoupon(couponId: Long): Boolean
-    suspend fun clipCoupon(couponId: Long): Boolean
+    suspend fun clipCoupon(couponId: Long, userId: Long): Boolean
+    suspend fun isCouponClipped(couponId: Long, userId: Long): Boolean
+    suspend fun isValidCoupon(couponId: Long): Boolean
+    suspend fun getAllValidCoupons(): List<Coupon>
 }
