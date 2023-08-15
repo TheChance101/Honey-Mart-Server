@@ -1,6 +1,7 @@
 package com.thechance.core.domain.usecase.notification
 
 import com.thechance.core.domain.repository.AuthRepository
+import com.thechance.core.entity.NotificationRequest
 import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
 
@@ -11,7 +12,8 @@ class SendNotificationOnOrderStateUseCase(private val repository: AuthRepository
         return if (pairForOrderState != null) {
             val (title, body) = pairForOrderState
             val tokens = repository.getDeviceTokens(receiverId)
-            return repository.sendNotification(tokens, orderId, title, body).also {
+            val notification = NotificationRequest(tokens,orderId,title,body,orderState)
+            return repository.sendNotification(notification).also {
                 repository.saveNotification(title, body, receiverId,orderId)
             }
         } else {
