@@ -4,7 +4,6 @@ import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.entity.Cart
 import com.thechance.core.entity.Category
-import com.thechance.core.entity.Notification
 import com.thechance.core.entity.Product
 import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.order.MarketOrder
@@ -17,8 +16,6 @@ class HoneyMartRepositoryImp(
     private val productDataSource: ProductDataSource,
     private val orderDataSource: OrderDataSource,
     private val userDataSource: UserDataSource,
-    private val notificationDataSource: NotificationDataSource,
-    private val deviceTokenDataSource: DeviceTokenDataSource,
 ) : HoneyMartRepository, KoinComponent {
 
     //region cart
@@ -280,34 +277,8 @@ class HoneyMartRepositoryImp(
         userDataSource.getUserProfileImage(userId)
     //end region
 
-    //region notification
-    override suspend fun sendNotification(
-        tokens: List<String>,
-        orderId: Long,
-        title: String,
-        body: String
-    ): Boolean {
-        return notificationDataSource.sendNotification(tokens, orderId, title, body)
 
-    }
 
-    override suspend fun saveNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
-        return notificationDataSource.saveNotification(title, body, receiverId, orderId)
-    }
 
-    override suspend fun getNotificationHistory(receiverId: Long): List<Notification> {
-        return notificationDataSource.getNotificationHistory(receiverId)
-    }
-    //end region
-
-    //region deviceTokens
-    override suspend fun getDeviceTokens(receiverId: Long): List<String> {
-        return deviceTokenDataSource.getDeviceTokens(receiverId)
-    }
-
-    override suspend fun saveDeviceTokens(receiverId: Long, token: String) {
-        deviceTokenDataSource.saveDeviceTokens(receiverId, token)
-    }
-//endregion
 
 }
