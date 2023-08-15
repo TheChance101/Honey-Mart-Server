@@ -74,7 +74,7 @@ interface HoneyMartRepository {
 
     //region product
     suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>,marketsId: Long
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, marketsId: Long
     ): Product
 
     suspend fun getProduct(productId: Long): Product
@@ -104,7 +104,7 @@ interface HoneyMartRepository {
     //endregion
 
     //region order
-    suspend fun createOrder(cartId: Long, userId: Long): Boolean
+    suspend fun createOrder(userId: Long, cart: Cart, totalPrice: Double): Boolean
     suspend fun getOrdersForMarket(marketId: Long, state: Int): List<MarketOrder>
     suspend fun getOrdersForUser(userId: Long, state: Int): List<UserOrder>
     suspend fun getOrderById(orderId: Long): OrderDetails
@@ -130,7 +130,7 @@ interface HoneyMartRepository {
 
     //region deviceTokens
     suspend fun getDeviceTokens(receiverId: Long): List<String>
-    suspend fun saveDeviceTokens(receiverId: Long,token: String)
+    suspend fun saveDeviceTokens(receiverId: Long, token: String)
 
     //endregion
 
@@ -148,6 +148,7 @@ interface HoneyMartRepository {
     suspend fun getCouponsForMarket(marketId: Long): List<MarketCoupon>
     suspend fun deleteCoupon(couponId: Long): Boolean
     suspend fun clipCoupon(couponId: Long, userId: Long): Boolean
+    suspend fun useCoupon(couponId: Long, userId: Long): Boolean
     suspend fun isCouponClipped(couponId: Long, userId: Long): Boolean
     suspend fun isValidCoupon(couponId: Long): Boolean
     suspend fun getAllValidCoupons(): List<Coupon>

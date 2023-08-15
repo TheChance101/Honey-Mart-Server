@@ -235,15 +235,14 @@ class HoneyMartRepositoryImp(
 //endregion
 
     //region order
-    override suspend fun createOrder(cartId: Long, userId: Long): Boolean {
-        val cart = getCart(cartId)
+    override suspend fun createOrder(userId: Long, cart: Cart, totalPrice: Double): Boolean {
         return orderDataSource.createOrder(
             userId,
             getMarketId(cart.products.first().id)!!,
             cart.products.map {
                 OrderItem(productId = it.id, count = it.count)
             },
-            cart.total
+            totalPrice
         )
     }
 
@@ -338,6 +337,9 @@ class HoneyMartRepositoryImp(
 
     override suspend fun clipCoupon(couponId: Long, userId: Long): Boolean =
         couponDataSource.clipCoupon(couponId, userId)
+
+    override suspend fun useCoupon(couponId: Long, userId: Long): Boolean =
+        couponDataSource.useCoupon(couponId, userId)
 
     override suspend fun isCouponClipped(couponId: Long, userId: Long): Boolean =
         couponDataSource.isCouponClipped(couponId, userId)

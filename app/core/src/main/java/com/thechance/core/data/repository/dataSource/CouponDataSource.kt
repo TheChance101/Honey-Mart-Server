@@ -19,6 +19,7 @@ interface CouponDataSource {
     suspend fun getCouponsForMarket(marketId: Long): List<MarketCoupon>
     suspend fun deleteCoupon(couponId: Long): Boolean
     suspend fun clipCoupon(couponId: Long, userId: Long): Boolean
+    suspend fun useCoupon(couponId: Long, userId: Long): Boolean
     suspend fun isCouponClipped(couponId: Long, userId: Long): Boolean
     suspend fun isValidCoupon(couponId: Long): Boolean
     suspend fun getAllValidCoupons(): List<Coupon>

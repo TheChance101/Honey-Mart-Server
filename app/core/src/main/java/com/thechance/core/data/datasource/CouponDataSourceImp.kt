@@ -111,6 +111,36 @@ class CouponDataSourceImp : CouponDataSource {
         true
     }
 
+    override suspend fun useCoupon(couponId: Long, userId: Long): Boolean = dbQuery {
+        val couponUserEntryExists = CouponUserTable
+            .select { (CouponUserTable.couponId eq couponId) and (CouponUserTable.userId eq userId) }
+            .count() > 0
+
+        if (couponUserEntryExists) {
+            val rowsAffected =
+                CouponUserTable.update({ (CouponUserTable.couponId eq couponId) and (CouponUserTable.userId eq userId) }) {
+                    it[isUsed] = true
+                }
+            if (rowsAffected > 0) {
+                decrementCountByOne(couponId)
+            } else {
+                false
+            }
+        } else {
+            false
+        }
+    }
+
+    private fun decrementCountByOne(couponId: Long): Boolean {
+        val countUpdated =
+            CouponTable.update({ (CouponTable.id eq couponId) and (CouponTable.count greater 0) }) {
+                with(SqlExpressionBuilder) {
+                    it.update(count, count - 1)
+                }
+            }
+        return countUpdated > 0
+    }
+
     override suspend fun isCouponClipped(couponId: Long, userId: Long): Boolean = dbQuery {
         CouponUserTable
             .select { (CouponUserTable.couponId eq couponId) and (CouponUserTable.userId eq userId) }
