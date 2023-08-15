@@ -41,4 +41,5 @@ fun Route.adminRoutes() {
             }
         }
     }
+
 }
