@@ -39,7 +39,7 @@ interface HoneyMartRepository {
 
     //region market
     suspend fun getMarketIdByOwnerId(ownerId: Long): Long?
-    suspend fun createMarket(marketName: String, ownerId: Long): Boolean
+    suspend fun createMarket(ownerId: Long, name: String, address: String, description: String): Long?
     suspend fun getAllMarkets(page: Int): List<Market>
     suspend fun getCategoriesByMarket(marketId: Long): List<Category>
     suspend fun deleteMarket(marketId: Long): Boolean

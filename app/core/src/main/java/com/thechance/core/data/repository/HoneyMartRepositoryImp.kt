@@ -93,8 +93,8 @@ class HoneyMartRepositoryImp(
     override suspend fun getMarketIdByOwnerId(ownerId: Long): Long? =
         marketDataSource.getMarketIdByOwnerId(ownerId)
 
-    override suspend fun createMarket(marketName: String, ownerId: Long) =
-        marketDataSource.createMarket(marketName, ownerId)
+    override suspend fun createMarket(ownerId: Long, name: String, address: String, description: String): Long? =
+        marketDataSource.createMarket(ownerId, name, address, description)
 
     override suspend fun getAllMarkets(page: Int): List<Market> =
         marketDataSource.getAllMarkets(page)
