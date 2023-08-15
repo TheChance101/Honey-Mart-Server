@@ -170,6 +170,22 @@ fun Route.productsRoutes() {
                 call.respond(HttpStatusCode.Created, ServerResponse.success(true, "uploaded."))
             }
 
+            put("/{productId}/updateImages") {
+                val principal = call.principal<JWTPrincipal>()
+                val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
+                val imageParts = call.receiveMultipart()
+
+                productUseCasesContainer.updateProductImageUseCase(
+                    marketOwnerId = marketOwnerId,
+                    role = role,
+                    productId = productId,
+                    image = imageParts
+                )
+                call.respond(HttpStatusCode.Created, ServerResponse.success(true, "images updated."))
+            }
+
             delete("{productId}/image/{imageId}") {
                 val principal = call.principal<JWTPrincipal>()
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
