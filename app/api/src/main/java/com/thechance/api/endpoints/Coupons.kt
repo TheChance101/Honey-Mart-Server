@@ -2,6 +2,7 @@ package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCoupon
+import com.thechance.api.model.mapper.toApiUserCoupon
 import com.thechance.core.domain.usecase.coupon.CouponUseCaseContainer
 import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
@@ -19,10 +20,23 @@ fun Route.couponRoutes() {
     route("/coupon") {
         authenticate(JWT_AUTHENTICATION) {
 
+            //get all valid coupons
             get("/allValidCoupons") {
                 val coupons =
                     couponUseCaseContainer.getValidCouponsUseCase()
                         .map { it.toApiCoupon() }
+                call.respond(ServerResponse.success(coupons))
+
+            }
+
+            //get all coupons that not clipped from a specific user
+            get("/allUserCoupons") {
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val coupons =
+                    couponUseCaseContainer.getAllCouponsForUserUseCase(userId, role)
+                        .map { it.toApiUserCoupon() }
                 call.respond(ServerResponse.success(coupons))
 
             }
