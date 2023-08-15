@@ -23,7 +23,7 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
                 .putData(TITLE, notification.title)
                 .putData(BODY, notification.body)
                 .putData(ORDER_ID, notification.orderId.toString())
-                .putData(ORDER_Status, notification.status.toString())
+                .putData(ORDER_Status, notification.orderStatus.toString())
                 .setToken(it)
                 .build()
         }).failureCount == 0
