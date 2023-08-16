@@ -12,4 +12,5 @@ object NotificationHistoryTable : LongIdTable() {
     val timeStamp = datetime("timeStamp").clientDefault { LocalDateTime.now() }
     val receiverId = reference("userId", NormalUserTable)
     val orderId = reference("orderId",OrderTable)
+    val isRead = bool("isRead").default(false)
 }

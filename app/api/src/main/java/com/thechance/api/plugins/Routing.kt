@@ -31,6 +31,7 @@ fun Application.configureRouting() {
         imageRouts()
         tokenRouts()
         couponRoutes()
+        notificationRoutes()
     }
 
 }
