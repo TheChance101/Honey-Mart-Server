@@ -20,7 +20,9 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
         notification: NotificationRequest
     ): Boolean {
         return firebaseMessaging.sendAll(notification.tokens.map {
-            Message.builder().putData(TITLE, notification.title).putData(BODY, notification.body)
+            Message.builder()
+                .putData(TITLE, notification.title)
+                .putData(BODY, notification.body)
                 .putData(ORDER_ID, notification.orderId.toString())
                 .putData(ORDER_Status, notification.orderStatus.toString()).setToken(it).build()
         }).failureCount == 0

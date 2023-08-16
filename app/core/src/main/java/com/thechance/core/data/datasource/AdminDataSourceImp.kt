@@ -30,9 +30,11 @@ class AdminDataSourceImp : AdminDataSource, KoinComponent {
     }
 
     override suspend fun getUnApprovedMarkets(): List<Market> {
-        return MarketTable.select {
-            (MarketTable.isDeleted eq false) and (MarketTable.status eq true) and (MarketTable.isApproved eq false)
-        }.map { it.toMarket() }.toList()
+        return dbQuery {
+            MarketTable.select {
+                (MarketTable.isDeleted eq false) and (MarketTable.isApproved eq false)
+            }.map { it.toMarket() }.toList()
+        }
     }
 
     override suspend fun approveMarket(marketId: Long, isApproved: Boolean): Boolean = dbQuery {

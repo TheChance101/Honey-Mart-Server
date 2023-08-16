@@ -35,6 +35,7 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is InvalidProductDescriptionException -> {
             ServerResponse.error("error in quantity.", HttpStatusCode.NotFound.value)
         }
+
         is InvalidDescriptionException -> {
             ServerResponse.error("Invalid description.", HttpStatusCode.NotFound.value)
         }
@@ -89,6 +90,10 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
 
         is InvalidUserIdException -> {
             ServerResponse.error("invalid user id", HttpStatusCode.BadRequest.value)
+        }
+
+        is AdminAccessDeniedException -> {
+            ServerResponse.error("access denied", HttpStatusCode.BadRequest.value)
         }
 
         is UnKnownUserException -> {
