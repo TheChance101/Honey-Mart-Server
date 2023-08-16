@@ -42,6 +42,7 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
                 it[MarketTable.address] = address
                 it[MarketTable.description] = description
                 it[MarketTable.isDeleted] = false
+                it[MarketTable.isApproved] = false
                 it[MarketTable.ownerId] = ownerId
             }
         }
@@ -64,7 +65,7 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
 
     override suspend fun getAllMarkets(page: Int): List<Market> = dbQuery {
         val offset = ((page - 1) * PAGE_SIZE).toLong()
-        MarketTable.select { (MarketTable.isDeleted eq false) and (MarketTable.status eq true) }
+        MarketTable.select { (MarketTable.isDeleted eq false) and (MarketTable.status eq true) and (MarketTable.isApproved eq true) }
             .limit(PAGE_SIZE, offset)
             .map { it.toMarket() }
             .toList()

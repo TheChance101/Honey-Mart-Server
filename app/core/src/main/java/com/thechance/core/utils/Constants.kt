@@ -5,7 +5,7 @@ internal const val NORMAL_USER_ROLE = "NormalUser"
 
 internal const val MARKET_OWNER_ROLE = "MarketOwner"
 
-internal const val ADMIN_ROLE = "AdminOwner"
+internal const val ADMIN_ROLE = "Admin"
 
 internal const val ORDER_STATUS_PENDING = 1
 internal const val ORDER_STATUS_IN_PROGRESS = 2
