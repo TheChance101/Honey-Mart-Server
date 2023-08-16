@@ -6,6 +6,7 @@ import com.thechance.core.data.datasource.database.tables.notification.Notificat
 import com.thechance.core.data.datasource.mapper.toNotification
 import com.thechance.core.data.repository.dataSource.NotificationDataSource
 import com.thechance.core.entity.Notification
+import com.thechance.core.entity.NotificationRequest
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -15,13 +16,14 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
     KoinComponent {
 
     override suspend fun sendNotification(
-        tokens: List<String>, orderId: Long, title: String, body: String
+        notification: NotificationRequest
     ): Boolean {
-        return firebaseMessaging.sendAll(tokens.map {
+        return firebaseMessaging.sendAll(notification.tokens.map {
             Message.builder()
-                .putData(TITLE, title)
-                .putData(BODY, body)
-                .putData(ORDER_ID, orderId.toString())
+                .putData(TITLE, notification.title)
+                .putData(BODY, notification.body)
+                .putData(ORDER_ID, notification.orderId.toString())
+                .putData(ORDER_Status, notification.orderStatus.toString())
                 .setToken(it)
                 .build()
         }).failureCount == 0
@@ -49,5 +51,6 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
         private const val TITLE = "title"
         private const val BODY = "body"
         private const val ORDER_ID = "orderId"
+        private const val ORDER_Status = "orderId"
     }
 }

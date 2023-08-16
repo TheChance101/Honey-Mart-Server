@@ -8,10 +8,7 @@ import com.thechance.core.data.security.token.TokenClaim
 import com.thechance.core.data.security.token.TokenConfig
 import com.thechance.core.data.security.token.Tokens
 import com.thechance.core.domain.repository.AuthRepository
-import com.thechance.core.entity.Admin
-import com.thechance.core.entity.Notification
-import com.thechance.core.entity.Owner
-import com.thechance.core.entity.User
+import com.thechance.core.entity.*
 import com.thechance.core.entity.market.Market
 import com.thechance.core.utils.ROLE_TYPE
 import org.koin.core.component.KoinComponent
@@ -128,12 +125,9 @@ class AuthRepositoryImp(
 
     //region notification
     override suspend fun sendNotification(
-        tokens: List<String>,
-        orderId: Long,
-        title: String,
-        body: String
+        notification: NotificationRequest
     ): Boolean {
-        return notificationDataSource.sendNotification(tokens, orderId, title, body)
+        return notificationDataSource.sendNotification(notification)
 
     }
 
