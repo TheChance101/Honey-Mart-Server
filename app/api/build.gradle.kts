@@ -42,4 +42,9 @@ dependencies {
     implementation("io.ktor:ktor-server-host-common-jvm:2.2.4")
     implementation("io.ktor:ktor-server-status-pages-jvm:2.2.4")
 
+    implementation ("dev.forst:ktor-api-key:1.1.0")
+
+    implementation("com.google.firebase:firebase-admin:9.1.1")
+
+
 }

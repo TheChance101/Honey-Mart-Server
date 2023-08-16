@@ -1,13 +1,14 @@
 package com.thechance.core.domain.usecase.owner
 
 import com.thechance.core.domain.repository.AuthRepository
+import com.thechance.core.entity.OwnerTokens
 import com.thechance.core.utils.InvalidUserNameOrPasswordException
 import com.thechance.core.utils.MARKET_OWNER_ROLE
 import org.koin.core.component.KoinComponent
 
 class LoginMarketOwnerUseCase(private val repository: AuthRepository) : KoinComponent {
 
-    suspend operator fun invoke(email: String, password: String): String {
+    suspend operator fun invoke(email: String, password: String): OwnerTokens {
         return if (repository.isOwnerEmailExists(email)) {
             validateUser(email, password)
         } else {
@@ -15,10 +16,11 @@ class LoginMarketOwnerUseCase(private val repository: AuthRepository) : KoinComp
         }
     }
 
-    private suspend fun validateUser(userName: String, password: String): String {
-        return repository.getMarketOwnerByUsername(userName).let { owner ->
+    private suspend fun validateUser(email: String, password: String): OwnerTokens {
+        return repository.getMarketOwnerByEmail(email).let { owner ->
             if (repository.isOwnerValidPassword(owner, password)) {
-                repository.getToken(id = owner.ownerId, role = MARKET_OWNER_ROLE)
+                val tokens = repository.getTokens(id = owner.ownerId, role = MARKET_OWNER_ROLE)
+                OwnerTokens(owner.fullName,tokens)
             } else {
                 throw InvalidUserNameOrPasswordException()
             }

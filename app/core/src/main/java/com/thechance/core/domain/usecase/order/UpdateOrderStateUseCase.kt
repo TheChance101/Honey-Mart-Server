@@ -1,17 +1,21 @@
 package com.thechance.core.domain.usecase.order
 
 import com.thechance.core.domain.repository.HoneyMartRepository
+import com.thechance.core.domain.usecase.notification.SendNotificationOnOrderStateUseCase
 import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : KoinComponent {
+    private val sendNotificationUseCase: SendNotificationOnOrderStateUseCase by inject()
+
     suspend operator fun invoke(orderId: Long?, newOrderState: Int?, role: String?): Boolean {
         return when {
             isInvalidId(orderId) || !repository.isOrderExist(orderId!!) -> {
                 throw InvalidOrderIdException()
             }
 
-            newOrderState == null || newOrderState !in ORDER_STATE_IN_PROGRESS..ORDER_STATE_DELETED -> {
+            newOrderState == null || newOrderState !in ORDER_STATUS_IN_PROGRESS..ORDER_STATUS_DELETED -> {
                 throw InvalidStateOrderException()
             }
 
@@ -24,26 +28,36 @@ class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : Koi
                 } else {
                     throw InvalidUserIdException()
                 }
-                repository.updateOrderState(orderId, newOrderState)
+                if (repository.updateOrderState(orderId, newOrderState)){
+                    val receiverId: Long = if (role == NORMAL_USER_ROLE){
+                        repository.getOrderById(orderId).userId
+                    } else {
+                        repository.getOwnerIdByMarketId(repository.getOrderById(orderId).marketId)!!
+                    }
+                    sendNotificationUseCase(receiverId,orderId,newOrderState)
+                } else {
+                    false
+                }
             }
         }
     }
 
     private fun validateUser(state: Int, newOrderState: Int) {
         when {
-            (state == ORDER_STATE_DONE) && (newOrderState in ORDER_STATE_IN_PROGRESS..ORDER_STATE_CANCELED) -> {
+            state == ORDER_STATUS_DELETED -> {
                 throw CantUpdateOrderStateException()
             }
 
-            state == ORDER_STATE_DELETED -> {
+            (state == ORDER_STATUS_CANCELED_BY_USER
+                    || state == ORDER_STATUS_CANCELED_BY_OWNER
+                    || state == ORDER_STATUS_DONE)
+                    && (newOrderState != ORDER_STATUS_DELETED) -> {
                 throw CantUpdateOrderStateException()
             }
 
-            (state == ORDER_STATE_CANCELED) && (newOrderState != ORDER_STATE_DELETED) -> {
-                throw CantUpdateOrderStateException()
-            }
-
-            (state == ORDER_STATE_IN_PROGRESS) && (newOrderState != ORDER_STATE_CANCELED) -> {
+            (state == ORDER_STATUS_IN_PROGRESS
+                    || state == ORDER_STATUS_PENDING)
+                    && (newOrderState != ORDER_STATUS_CANCELED_BY_USER) -> {
                 throw CantUpdateOrderStateException()
             }
         }
@@ -51,21 +65,26 @@ class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : Koi
 
     private fun validateOwner(state: Int, newOrderState: Int) {
         when {
-            state == ORDER_STATE_DONE -> {
+            state == ORDER_STATUS_DONE
+                    || state == ORDER_STATUS_DELETED
+                    || state == ORDER_STATUS_CANCELED_BY_USER
+                    || state == ORDER_STATUS_CANCELED_BY_OWNER -> {
                 throw CantUpdateOrderStateException()
             }
 
-            state == ORDER_STATE_DELETED -> {
+            state == ORDER_STATUS_IN_PROGRESS
+                    && newOrderState != ORDER_STATUS_DONE
+                    && newOrderState != ORDER_STATUS_CANCELED_BY_OWNER -> {
                 throw CantUpdateOrderStateException()
             }
 
-            state == ORDER_STATE_CANCELED -> {
-                throw CantUpdateOrderStateException()
-            }
-
-            (state == ORDER_STATE_IN_PROGRESS) && (newOrderState != ORDER_STATE_DONE) -> {
+            state == ORDER_STATUS_PENDING
+                    && newOrderState != ORDER_STATUS_IN_PROGRESS
+                    && newOrderState != ORDER_STATUS_CANCELED_BY_OWNER -> {
                 throw CantUpdateOrderStateException()
             }
         }
     }
+
+
 }

@@ -1,8 +1,19 @@
 package com.the_chance.di
 
+import com.thechance.core.domain.usecase.RefreshTokenUseCase
+import com.thechance.core.domain.usecase.admin.AdminUseCaseContainer
+import com.thechance.core.domain.usecase.admin.ApproveMarketUseCase
+import com.thechance.core.domain.usecase.admin.GetUnApprovedMarkets
+import com.thechance.core.domain.usecase.admin.VerifyAdminUseCase
 import com.thechance.core.domain.usecase.cart.*
 import com.thechance.core.domain.usecase.category.*
+import com.thechance.core.domain.usecase.coupon.*
+import com.thechance.core.domain.usecase.deviceToken.SaveDeviceTokenUseCase
 import com.thechance.core.domain.usecase.market.*
+import com.thechance.core.domain.usecase.notification.GetNotificationHistoryUseCase
+import com.thechance.core.domain.usecase.notification.NotificationUseCaseContainer
+import com.thechance.core.domain.usecase.notification.SendNotificationOnOrderStateUseCase
+import com.thechance.core.domain.usecase.notification.UpdateNotificationState
 import com.thechance.core.domain.usecase.order.*
 import com.thechance.core.domain.usecase.owner.CreateOwnerUseCase
 import com.thechance.core.domain.usecase.owner.GetOwnerProfileUseCase
@@ -28,6 +39,10 @@ val productUseCaseModule = module {
     singleOf(::AddImageProductUseCase) { bind<AddImageProductUseCase>() }
     singleOf(::DeleteImageFromProductUseCase) { bind<DeleteImageFromProductUseCase>() }
     singleOf(::GetProductDetailsUseCase) { bind<GetProductDetailsUseCase>() }
+    singleOf(::SearchProductsByNameUseCase) { bind<SearchProductsByNameUseCase>() }
+    singleOf(::GetMostRecentProductsUseCase) { bind<GetMostRecentProductsUseCase>() }
+    singleOf(::GetAllProductsUseCase) { bind<GetAllProductsUseCase>() }
+    singleOf(::UpdateProductImageUseCase) { bind<UpdateProductImageUseCase>() }
 }
 
 val marketUseCaseModule = module {
@@ -38,13 +53,14 @@ val marketUseCaseModule = module {
     singleOf(::UpdateMarketUseCase) { bind<UpdateMarketUseCase>() }
     singleOf(::GetCategoriesByMarketIdUseCase) { bind<GetCategoriesByMarketIdUseCase>() }
     singleOf(::GetMarketDetailsUseCase) { bind<GetMarketDetailsUseCase>() }
+    singleOf(::UpdateMarketStatusUseCase) { bind<UpdateMarketStatusUseCase>() }
 }
 
 val categoryUseCaseModule = module {
     singleOf(::CategoryUseCasesContainer) { bind<CategoryUseCasesContainer>() }
     singleOf(::CreateCategoryUseCase) { bind<CreateCategoryUseCase>() }
     singleOf(::DeleteCategoryUseCase) { bind<DeleteCategoryUseCase>() }
-    singleOf(::GetAllCategoriesUseCase) { bind<GetAllCategoriesUseCase>() }
+    singleOf(::GetAllProductsInCategoryUseCase) { bind<GetAllProductsInCategoryUseCase>() }
     singleOf(::UpdateCategoryUseCase) { bind<UpdateCategoryUseCase>() }
 }
 val wishListUseCaseModule = module {
@@ -79,10 +95,43 @@ val ownerUseCaseModule = module {
     singleOf(::GetOwnerProfileUseCase) { bind<GetOwnerProfileUseCase>() }
 }
 
+val adminUseCaseModule = module {
+    singleOf(::VerifyAdminUseCase) { bind<VerifyAdminUseCase>() }
+    singleOf(::GetUnApprovedMarkets) { bind<GetUnApprovedMarkets>() }
+    singleOf(::ApproveMarketUseCase) { bind<ApproveMarketUseCase>() }
+    singleOf(::AdminUseCaseContainer) { bind<AdminUseCaseContainer>() }
+}
+
 val cartUseCase = module {
     singleOf(::GetCartUseCase) { bind<GetCartUseCase>() }
     singleOf(::AddProductToCartUseCase) { bind<AddProductToCartUseCase>() }
     singleOf(::DeleteProductInCartUseCase) { bind<DeleteProductInCartUseCase>() }
     singleOf(::CartUseCasesContainer) { bind<CartUseCasesContainer>() }
     singleOf(::DeleteCartUseCase) { bind<DeleteCartUseCase>() }
+}
+
+val tokenUseCase = module {
+    singleOf(::RefreshTokenUseCase) { bind<RefreshTokenUseCase>() }
+}
+
+val notificationUseCase = module {
+    singleOf(::SendNotificationOnOrderStateUseCase) { bind<SendNotificationOnOrderStateUseCase>() }
+    singleOf(::NotificationUseCaseContainer) { bind<NotificationUseCaseContainer>() }
+    singleOf(::GetNotificationHistoryUseCase) { bind<GetNotificationHistoryUseCase>() }
+    singleOf(::UpdateNotificationState) { bind<UpdateNotificationState>() }
+}
+
+val deviceTokenUseCase = module {
+    singleOf(::SaveDeviceTokenUseCase) { bind<SaveDeviceTokenUseCase>() }
+    singleOf(::SaveDeviceTokenUseCase) { bind<SaveDeviceTokenUseCase>() }
+}
+
+val couponsUseCase = module {
+    singleOf(::CouponUseCaseContainer) { bind<CouponUseCaseContainer>() }
+    singleOf(::CreateCouponUseCase) { bind<CreateCouponUseCase>() }
+    singleOf(::GetValidCouponsUseCase) { bind<GetValidCouponsUseCase>() }
+    singleOf(::GetAllCouponsForUserUseCase) { bind<GetAllCouponsForUserUseCase>() }
+    singleOf(::GetAllClippedCouponsForUserUseCase) { bind<GetAllClippedCouponsForUserUseCase>() }
+    singleOf(::GetAllCouponsForMarketUseCase) { bind<GetAllCouponsForMarketUseCase>() }
+    singleOf(::ClipCouponUseCase) { bind<ClipCouponUseCase>() }
 }

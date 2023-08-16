@@ -7,17 +7,15 @@ import com.thechance.core.data.datasource.database.tables.order.OrderTable
 import com.thechance.core.data.datasource.database.tables.product.GalleryTable
 import com.thechance.core.data.datasource.database.tables.product.ProductGalleryTable
 import com.thechance.core.data.datasource.database.tables.product.ProductTable
-import com.thechance.core.data.datasource.mapper.toMarket
 import com.thechance.core.data.datasource.mapper.toMarketOrder
 import com.thechance.core.data.datasource.mapper.toProductInOrder
 import com.thechance.core.data.datasource.mapper.toUserOrder
 import com.thechance.core.data.repository.dataSource.OrderDataSource
 import com.thechance.core.entity.Image
 import com.thechance.core.entity.order.*
-import com.thechance.core.utils.ORDER_STATE_DELETED
+import com.thechance.core.utils.ORDER_STATUS_DELETED
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class OrderDataSourceImp : OrderDataSource {
 
@@ -40,7 +38,7 @@ class OrderDataSourceImp : OrderDataSource {
     override suspend fun getOrdersForMarket(marketId: Long, state: Int): List<MarketOrder> = dbQuery {
         (OrderTable innerJoin NormalUserTable).select {
             (OrderTable.marketId eq marketId) and
-                    not(OrderTable.state eq ORDER_STATE_DELETED) and
+                    not(OrderTable.state eq ORDER_STATUS_DELETED) and
                     (OrderTable.state eq state)
         }.map { it.toMarketOrder() }
     }
@@ -48,7 +46,7 @@ class OrderDataSourceImp : OrderDataSource {
     override suspend fun getAllOrdersForMarket(marketId: Long): List<MarketOrder> = dbQuery {
         (OrderTable innerJoin NormalUserTable).select {
             (OrderTable.marketId eq marketId) and
-                    not(OrderTable.state eq ORDER_STATE_DELETED)
+                    not(OrderTable.state eq ORDER_STATUS_DELETED)
         }.map { it.toMarketOrder() }
     }
 
@@ -56,7 +54,7 @@ class OrderDataSourceImp : OrderDataSource {
         (OrderTable innerJoin MarketTable)
             .select {
                 (OrderTable.userId eq userId) and
-                        not(OrderTable.state eq ORDER_STATE_DELETED) and
+                        not(OrderTable.state eq ORDER_STATUS_DELETED) and
                         (OrderTable.state eq state)
             }.map {
                 val itemsCount = OrderProductTable.select { OrderProductTable.orderId eq it[OrderTable.id] }.count()
@@ -67,7 +65,7 @@ class OrderDataSourceImp : OrderDataSource {
     override suspend fun getAllOrdersForUser(userId: Long): List<UserOrder> = dbQuery {
         (OrderTable innerJoin MarketTable).select {
             (OrderTable.userId eq userId) and
-                    not(OrderTable.state eq ORDER_STATE_DELETED)
+                    not(OrderTable.state eq ORDER_STATUS_DELETED)
         }.map {
             val itemsCount = OrderProductTable.select { OrderProductTable.orderId eq it[OrderTable.id] }.count()
             it.toUserOrder(itemsCount)

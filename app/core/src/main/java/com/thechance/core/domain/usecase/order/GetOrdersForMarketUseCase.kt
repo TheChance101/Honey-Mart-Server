@@ -14,7 +14,7 @@ class GetOrdersForMarketUseCase(private val repository: HoneyMartRepository) : K
             val marketId = repository.getMarketIdByOwnerId(ownerId!!)
             if (marketId == null) {
                 throw UnauthorizedException()
-            } else if (state in ORDER_STATE_IN_PROGRESS..ORDER_STATE_CANCELED && state != null) {
+            } else if (state in ORDER_STATUS_PENDING..ORDER_STATUS_CANCELED_BY_OWNER && state != null) {
                 repository.getOrdersForMarket(marketId, state)
             } else {
                 repository.getAllOrdersForMarket(marketId)

@@ -36,6 +36,10 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             ServerResponse.error("error in quantity.", HttpStatusCode.NotFound.value)
         }
 
+        is InvalidDescriptionException -> {
+            ServerResponse.error("Invalid description.", HttpStatusCode.NotFound.value)
+        }
+
         is InvalidProductPriceException -> {
             ServerResponse.error("error in product price", HttpStatusCode.NotFound.value)
         }
@@ -86,6 +90,10 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
 
         is InvalidUserIdException -> {
             ServerResponse.error("invalid user id", HttpStatusCode.BadRequest.value)
+        }
+
+        is AdminAccessDeniedException -> {
+            ServerResponse.error("access denied", HttpStatusCode.BadRequest.value)
         }
 
         is UnKnownUserException -> {
@@ -168,6 +176,61 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
 
         is InvalidOwnerIdException -> {
             ServerResponse.error("InvalidOwnerId", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidPageNumberException -> {
+            ServerResponse.error("Invalid Page Number", HttpStatusCode.NotFound.value)
+        }
+
+        is InvalidApiKeyException -> {
+            ServerResponse.error("Invalid Api Key", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidRuleException -> {
+            ServerResponse.error("Invalid Token Rule", HttpStatusCode.Unauthorized.value)
+        }
+
+        is TokenExpiredException -> {
+            ServerResponse.error("Expired Token", HttpStatusCode.Unauthorized.value)
+        }
+
+        is InvalidTokenException -> {
+            ServerResponse.error("Invalid Token", HttpStatusCode.Unauthorized.value)
+        }
+
+        is InvalidTokenTypeException -> {
+            ServerResponse.error("Invalid Token Type", HttpStatusCode.Unauthorized.value)
+        }
+
+        is MissingQueryParameterException -> {
+            ServerResponse.error("Missing Query Parameter", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidCountException -> {
+            ServerResponse.error("Invalid Count", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidPercentage -> {
+            ServerResponse.error("Invalid Percentage", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidExpirationDateException -> {
+            ServerResponse.error(
+                "Invalid Expiration Date, format should be yyyy-MM-dd HH:mm:ss",
+                HttpStatusCode.BadRequest.value
+            )
+        }
+
+        is InvalidCouponIdException -> {
+            ServerResponse.error("Invalid Coupon Id", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidCouponException -> {
+            ServerResponse.error("Invalid Coupon", HttpStatusCode.BadRequest.value)
+        }
+
+        is CouponAlreadyClippedException -> {
+            ServerResponse.error("Coupon Already Clipped", HttpStatusCode.BadRequest.value)
         }
 
         else -> {

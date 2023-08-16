@@ -21,7 +21,17 @@ class GetMarketDetailsUseCase(private val repository: HoneyMartRepository) : Koi
             } else if (market.isDeleted) {
                 throw MarketDeletedException()
             } else {
-                MarketDetails(market, repository.getCategoriesByMarket(marketId))
+                MarketDetails(
+                    marketId = market.marketId,
+                    marketName = market.marketName,
+                    imageUrl = market.imageUrl,
+                    isDeleted = false,
+                    description = market.description,
+                    address = market.address,
+                    latitude = market.latitude,
+                    productsCount = repository.getProductsCountForMarket(marketId),
+                    longitude = market.longitude, categories = repository.getCategoriesByMarket(marketId)
+                )
             }
         }
     }

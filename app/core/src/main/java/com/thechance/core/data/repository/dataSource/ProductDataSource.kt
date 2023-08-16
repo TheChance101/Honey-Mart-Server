@@ -1,14 +1,16 @@
 package com.thechance.core.data.repository.dataSource
 
-import com.thechance.core.entity.*
+import com.thechance.core.entity.Category
+import com.thechance.core.entity.Product
 
 interface ProductDataSource {
 
     suspend fun createProduct(
-        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>
+        productName: String, productPrice: Double, productQuantity: String, categoriesId: List<Long>, marketsId: Long
     ): Product
 
-    suspend fun getAllProducts(): List<Product>
+    suspend fun getMostRecentProducts(): List<Product>
+
 
     suspend fun getProduct(productId: Long): Product
 
@@ -30,7 +32,12 @@ interface ProductDataSource {
 
     suspend fun addImageToGallery(imagesUrl: List<String>, productId: Long): Boolean
 
-    suspend fun getAllProductsInCategory(categoryId: Long): List<Product>
+    suspend fun getAllProductsInCategory(categoryId: Long, page: Int): List<Product>
 
     suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
+
+    suspend fun searchProductsByName(productName: String, page: Int): List<Product>
+
+    suspend fun getAllProducts(page: Int): List<Product>
+    suspend fun deleteProductImages(productId: Long): List<String>
 }

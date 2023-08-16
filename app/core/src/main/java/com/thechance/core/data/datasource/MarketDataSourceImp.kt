@@ -1,13 +1,15 @@
 package com.thechance.core.data.datasource
 
-import com.thechance.core.data.datasource.mapper.toCategory
-import com.thechance.core.data.datasource.mapper.toMarket
+import com.thechance.core.data.datasource.database.tables.MarketTable
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
-import com.thechance.core.data.datasource.database.tables.MarketTable
+import com.thechance.core.data.datasource.database.tables.product.ProductTable
+import com.thechance.core.data.datasource.mapper.toCategory
+import com.thechance.core.data.datasource.mapper.toMarket
 import com.thechance.core.data.repository.dataSource.MarketDataSource
 import com.thechance.core.entity.Category
 import com.thechance.core.entity.market.Market
+import com.thechance.core.utils.PAGE_SIZE
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
@@ -33,15 +35,19 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         }
     }
 
-    override suspend fun createMarket(marketName: String, ownerId: Long): Boolean =
+    override suspend fun createMarket(ownerId: Long, name: String, address: String, description: String): Long? {
         dbQuery {
             MarketTable.insert {
-                it[name] = marketName
-                it[isDeleted] = false
+                it[MarketTable.name] = name
+                it[MarketTable.address] = address
+                it[MarketTable.description] = description
+                it[MarketTable.isDeleted] = false
+                it[MarketTable.isApproved] = false
                 it[MarketTable.ownerId] = ownerId
             }
-            true
         }
+        return getMarketIdByOwnerId(ownerId)
+    }
 
     override suspend fun addMarketImage(marketId: Long, imageUrl: String): Boolean {
         return dbQuery {
@@ -52,8 +58,17 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getAllMarkets(): List<Market> = dbQuery {
-        MarketTable.select { MarketTable.isDeleted eq false }.map { it.toMarket() }
+    override suspend fun getProductsCountForMarket(marketId: Long): Int = dbQuery {
+        ProductTable.select { ProductTable.marketId eq marketId }
+            .count().toInt()
+    }
+
+    override suspend fun getAllMarkets(page: Int): List<Market> = dbQuery {
+        val offset = ((page - 1) * PAGE_SIZE).toLong()
+        MarketTable.select { (MarketTable.isDeleted eq false) and (MarketTable.status eq true) and (MarketTable.isApproved eq true) }
+            .limit(PAGE_SIZE, offset)
+            .map { it.toMarket() }
+            .toList()
     }
 
     override suspend fun getCategoriesByMarket(marketId: Long): List<Category> = dbQuery {
@@ -79,6 +94,13 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
             longitude?.let { marketRow[MarketTable.longitude] = it }
             description?.let { marketRow[MarketTable.description] = it }
             address?.let { marketRow[MarketTable.address] = it }
+        }
+        true
+    }
+
+    override suspend fun updateMarketStatus(marketId: Long, status: Boolean): Boolean = dbQuery {
+        MarketTable.update({ MarketTable.id eq marketId }) { marketRow ->
+            marketRow[MarketTable.status] = status
         }
         true
     }

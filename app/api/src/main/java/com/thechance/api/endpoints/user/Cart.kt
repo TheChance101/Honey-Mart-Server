@@ -3,6 +3,8 @@ package com.thechance.api.endpoints.user
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCart
 import com.thechance.core.domain.usecase.cart.CartUseCasesContainer
+import com.thechance.core.utils.API_KEY_AUTHENTICATION
+import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -17,7 +19,7 @@ fun Route.cartRoutes() {
 
     val cartUseCasesContainer: CartUseCasesContainer by inject()
 
-    authenticate {
+    authenticate(JWT_AUTHENTICATION) {
         route("/cart") {
             get {
 

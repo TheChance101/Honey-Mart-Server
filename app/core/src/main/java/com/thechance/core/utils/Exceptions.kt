@@ -7,6 +7,13 @@ class InvalidCategoryNameException : Exception()
 class InvalidMarketNameException : Exception()
 class InvalidProductNameException : Exception()
 class InvalidProductDescriptionException : Exception()
+class InvalidCountException : Exception()
+class InvalidPercentage : Exception()
+class InvalidExpirationDateException : Exception()
+class InvalidCouponIdException : Exception()
+class InvalidCouponException : Exception()
+class CouponAlreadyClippedException : Exception()
+class InvalidDescriptionException : Exception()
 class InvalidProductPriceException : Exception()
 
 class InvalidCategoryNameLettersException : Exception()
@@ -29,10 +36,13 @@ class ProductDeletedException : Exception()
 
 class NotValidCategoryList : Exception()
 
+class MissingQueryParameterException : Exception()
+
 class CategoryNameNotUniqueException : Exception()
 
 //region user
 class InvalidUserIdException : Exception()
+class AdminAccessDeniedException : Exception()
 class UsernameAlreadyExistException : Exception()
 class UnKnownUserException : Exception()
 class InvalidUserNameOrPasswordException : Exception()
@@ -63,5 +73,14 @@ class InvalidOwnerIdException : Exception()
 class InvalidStateOrderException : Exception()
 
 class CantUpdateOrderStateException : Exception()
+class InvalidApiKeyException : Exception()
+
+class InvalidPageNumberException : Exception()
 
 //endregion
+//auth region
+class InvalidRuleException : Exception()
+class TokenExpiredException : Exception()
+class InvalidTokenException : Exception()
+class InvalidTokenTypeException : Exception()
+//end region

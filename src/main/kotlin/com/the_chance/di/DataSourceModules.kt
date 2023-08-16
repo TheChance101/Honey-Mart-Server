@@ -10,5 +10,9 @@ val dataSourceModules = module {
     single<ProductDataSource> { ProductDataSourceImp() }
     single<UserDataSource> { UserDataSourceImp() }
     single<OwnerDataSource> { OwnerDataSourceImp() }
+    single<AdminDataSource> { AdminDataSourceImp() }
     single<OrderDataSource> { OrderDataSourceImp() }
+    single<NotificationDataSource> { NotificationDataSourceImp(get()) }
+    single<DeviceTokenDataSource> { DeviceTokenDataSourceImp() }
+    single<CouponDataSource> { CouponDataSourceImp() }
 }
