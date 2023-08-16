@@ -118,6 +118,7 @@ fun Route.marketsRoutes() {
                 )
             }
 
+
             post {
                 val principal = call.principal<JWTPrincipal>()
                 val ownerId = principal?.payload?.subject?.toLongOrNull()
