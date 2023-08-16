@@ -12,17 +12,10 @@ class AddProductToWishListUseCase(private val repository: HoneyMartRepository) :
         } else if (isInvalidId(productId)) {
             throw InvalidProductIdException()
         } else {
-            val isProductDeleted = repository.isProductDeleted(productId!!)
-            if (isProductDeleted == null) {
-                throw IdNotFoundException()
-            } else if (isProductDeleted) {
-                throw ProductDeletedException()
+            if (repository.isProductInWishList(userId!!, productId!!)) {
+                throw ProductAlreadyInWishListException()
             } else {
-                if (repository.isProductInWishList(userId!!, productId)) {
-                    throw ProductAlreadyInWishListException()
-                } else {
-                    repository.addToWishList(getWishListId(userId), productId)
-                }
+                repository.addToWishList(getWishListId(userId), productId)
             }
         }
     }

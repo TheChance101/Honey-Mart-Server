@@ -57,7 +57,7 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:$ktor_version")
 
     // firebase
-    implementation("com.google.firebase:firebase-admin:9.0.0")
+//    implementation("com.google.firebase:firebase-admin:9.0.0")
 
 
 

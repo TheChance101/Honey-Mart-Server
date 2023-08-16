@@ -12,7 +12,7 @@ val dataSourceModules = module {
     single<OwnerDataSource> { OwnerDataSourceImp() }
     single<AdminDataSource> { AdminDataSourceImp() }
     single<OrderDataSource> { OrderDataSourceImp() }
-    single<NotificationDataSource> { NotificationDataSourceImp(get()) }
+//    single<NotificationDataSource> { NotificationDataSourceImp(get()) }
     single<DeviceTokenDataSource> { DeviceTokenDataSourceImp() }
     single<CouponDataSource> { CouponDataSourceImp() }
 }
