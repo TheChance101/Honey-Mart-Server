@@ -206,7 +206,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
     override suspend fun searchProductsByName(productName: String, page: Int): List<Product> = dbQuery {
         val offset = ((page - 1) * PAGE_SIZE).toLong()
-        ProductTable.select { (ProductTable.name.lowerCase() like "%$productName.lowerCase() %") and (ProductTable.isDeleted eq false) }
+        ProductTable.select { (ProductTable.name.lowerCase() like productName.lowercase()) and (ProductTable.isDeleted eq false) }
             .limit(PAGE_SIZE, offset).map { productRow ->
                 val images = getProductImages(productRow[ProductTable.id].value)
                 productRow.toProduct(images = images)
