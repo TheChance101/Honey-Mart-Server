@@ -19,7 +19,8 @@ const val TOKEN_TYPE = "tokenType"
 const val ACCESS_TOKEN = "accessToken"
 const val REFRESH_TOKEN = "refreshToken"
 
-const val BASE_URL = "https://honey-mart-server-oe345.ondigitalocean.app"
+//const val BASE_URL = "https://honey-mart-server-oe345.ondigitalocean.app"
+const val BASE_URL = "ip here"//to run on local server add your device ip
 
 const val PRODUCT_IMAGES_PATH = "files/market"
 const val MARKET_IMAGES_PATH = "files/markets"

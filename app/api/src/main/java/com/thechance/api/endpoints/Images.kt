@@ -10,38 +10,36 @@ import java.io.File
 
 fun Route.imageRouts() {
 
-    authenticate(API_KEY_AUTHENTICATION) {
-        route("files") {
-            get("/image_uploads/{image}") {
-                val fileName = call.parameters["image"].toString()
-                val file = File("$USER_IMAGES_PATH/$fileName")
-                if (file.exists()) {
-                    call.respondFile(file)
-                } else {
-                    call.respondText("File not found", status = HttpStatusCode.NotFound)
-                }
-            }
-        }
-
-        get("$PRODUCT_IMAGES_PATH/{marketId}/{image}") {
+    route("files") {
+        get("/image_uploads/{image}") {
             val fileName = call.parameters["image"].toString()
-            val marketId = call.parameters["marketId"].toString()
-            val file = File("$PRODUCT_IMAGES_PATH/$marketId/$fileName")
+            val file = File("$USER_IMAGES_PATH/$fileName")
             if (file.exists()) {
                 call.respondFile(file)
             } else {
                 call.respondText("File not found", status = HttpStatusCode.NotFound)
             }
         }
+    }
 
-        get("$MARKET_IMAGES_PATH/{image}") {
-            val fileName = call.parameters["image"].toString()
-            val file = File("$MARKET_IMAGES_PATH/$fileName")
-            if (file.exists()) {
-                call.respondFile(file)
-            } else {
-                call.respondText("File not found", status = HttpStatusCode.NotFound)
-            }
+    get("$PRODUCT_IMAGES_PATH/{marketId}/{image}") {
+        val fileName = call.parameters["image"].toString()
+        val marketId = call.parameters["marketId"].toString()
+        val file = File("$PRODUCT_IMAGES_PATH/$marketId/$fileName")
+        if (file.exists()) {
+            call.respondFile(file)
+        } else {
+            call.respondText("File not found", status = HttpStatusCode.NotFound)
+        }
+    }
+
+    get("$MARKET_IMAGES_PATH/{image}") {
+        val fileName = call.parameters["image"].toString()
+        val file = File("$MARKET_IMAGES_PATH/$fileName")
+        if (file.exists()) {
+            call.respondFile(file)
+        } else {
+            call.respondText("File not found", status = HttpStatusCode.NotFound)
         }
     }
 }
