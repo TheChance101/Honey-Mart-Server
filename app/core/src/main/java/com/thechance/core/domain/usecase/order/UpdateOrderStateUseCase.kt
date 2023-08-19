@@ -7,7 +7,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : KoinComponent {
-    private val sendNotificationUseCase: SendNotificationOnOrderStateUseCase by inject()
 
     suspend operator fun invoke(orderId: Long?, newOrderState: Int?, role: String?): Boolean {
         return when {
