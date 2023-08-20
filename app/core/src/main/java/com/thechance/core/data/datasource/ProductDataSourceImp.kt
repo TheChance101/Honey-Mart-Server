@@ -18,6 +18,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.koin.core.component.KoinComponent
+import java.util.*
 
 class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
@@ -206,7 +207,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
 
     override suspend fun searchProductsByName(productName: String, page: Int): List<Product> = dbQuery {
         val offset = ((page - 1) * PAGE_SIZE).toLong()
-        ProductTable.select { (ProductTable.name.lowerCase() like "%$productName.lowerCase() %") and (ProductTable.isDeleted eq false) }
+        ProductTable.select { (ProductTable.name.lowerCase() like "%${productName.lowercase(Locale.getDefault())}%") and (ProductTable.isDeleted eq false) }
             .limit(PAGE_SIZE, offset).map { productRow ->
                 val images = getProductImages(productRow[ProductTable.id].value)
                 productRow.toProduct(images = images)

@@ -48,7 +48,7 @@ fun Route.marketsRoutes() {
 
 
         authenticate(JWT_AUTHENTICATION) {
-            put("/{id}") {
+            put("/updateMarket") {
                 val principal = call.principal<JWTPrincipal>()
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
@@ -83,7 +83,7 @@ fun Route.marketsRoutes() {
                 )
             }
 
-            put("/{id}/location") {
+            put("/location") {
                 val principal = call.principal<JWTPrincipal>()
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
@@ -103,7 +103,7 @@ fun Route.marketsRoutes() {
                 )
             }
 
-            put("/{id}/image") {
+            put("/image") {
                 val principal = call.principal<JWTPrincipal>()
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)

@@ -40,16 +40,15 @@ fun Route.ownerRoutes() {
                 val ownerTokens = ownerUseCaseContainer.verifyMarketOwnerUseCase(email, password).toApiOwnerTokens()
                 call.respond(HttpStatusCode.Created, ServerResponse.success(ownerTokens, "Logged in Successfully"))
             }
-
-
-            authenticate(JWT_AUTHENTICATION) {
-                get("/Profile") {
-                    val principal = call.principal<JWTPrincipal>()
-                    val ownerId = principal?.payload?.subject?.toLongOrNull()
-                    val role = principal?.getClaim(ROLE_TYPE, String::class)
-                    val owner = ownerUseCaseContainer.getOwnerProfileUseCase(ownerId, role).toApiOwnerModel()
-                    call.respond(HttpStatusCode.Found, ServerResponse.success(owner))
-                }
+        }
+        authenticate(JWT_AUTHENTICATION) {
+            get("/Profile") {
+                val principal = call.principal<JWTPrincipal>()
+                val ownerId = principal?.payload?.subject?.toLongOrNull()
+                println("Owner Id = $ownerId")
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val owner = ownerUseCaseContainer.getOwnerProfileUseCase(ownerId, role).toApiOwnerModel()
+                call.respond(HttpStatusCode.OK, ServerResponse.success(owner))
             }
         }
 
