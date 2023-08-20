@@ -35,6 +35,7 @@ class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : Koi
                         repository.getOwnerIdByMarketId(repository.getOrderById(orderId).marketId)!!
                     }
                     sendNotificationUseCase(receiverId,orderId,newOrderState)
+                    true
                 } else {
                     false
                 }
