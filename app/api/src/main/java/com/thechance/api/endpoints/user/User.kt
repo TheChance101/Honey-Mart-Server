@@ -60,7 +60,7 @@ fun Route.userRoutes() {
                 val userId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val user = userUseCasesContainer.getUserProfileUseCase(userId, role).toApiUserModel()
-                call.respond(HttpStatusCode.Found, ServerResponse.success(user))
+                call.respond(HttpStatusCode.OK, ServerResponse.success(user))
             }
         }
     }
