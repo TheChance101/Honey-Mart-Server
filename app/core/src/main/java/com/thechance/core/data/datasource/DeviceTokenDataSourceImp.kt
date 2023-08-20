@@ -7,11 +7,11 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
 
-class DeviceTokenDataSourceImp() : DeviceTokenDataSource, KoinComponent {
+class DeviceTokenDataSourceImp : DeviceTokenDataSource, KoinComponent {
 
     override suspend fun getDeviceTokens(receiverId: Long): List<String> {
         return dbQuery {
-            DeviceTokenTable.select { DeviceTokenTable.id eq receiverId }.map {
+            DeviceTokenTable.select { DeviceTokenTable.receiverId eq receiverId }.map {
                 it[DeviceTokenTable.token]
             }.toList()
         }

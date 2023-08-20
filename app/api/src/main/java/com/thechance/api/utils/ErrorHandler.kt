@@ -202,6 +202,10 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             ServerResponse.error("Invalid Token Type", HttpStatusCode.Unauthorized.value)
         }
 
+        is InvalidDeviceTokenException -> {
+            ServerResponse.error("Invalid Device Token", HttpStatusCode.BadRequest.value)
+        }
+
         is MissingQueryParameterException -> {
             ServerResponse.error("Missing Query Parameter", HttpStatusCode.BadRequest.value)
         }

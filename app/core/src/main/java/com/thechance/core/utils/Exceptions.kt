@@ -83,4 +83,5 @@ class InvalidRuleException : Exception()
 class TokenExpiredException : Exception()
 class InvalidTokenException : Exception()
 class InvalidTokenTypeException : Exception()
+class InvalidDeviceTokenException : Exception()
 //end region
