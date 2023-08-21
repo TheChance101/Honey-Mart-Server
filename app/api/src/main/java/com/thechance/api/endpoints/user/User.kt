@@ -38,8 +38,9 @@ fun Route.userRoutes() {
                 val params = call.receiveParameters()
                 val email = params["email"]?.trim().toString()
                 val password = params["password"]?.trim().toString()
+                val deviceToken = params["deviceToken"]?.trim()
 
-                val token = userUseCasesContainer.verifyUserUseCase(email, password).toApiTokens()
+                val token = userUseCasesContainer.verifyUserUseCase(email, password,deviceToken).toApiTokens()
                 call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
             }
         }
@@ -59,7 +60,7 @@ fun Route.userRoutes() {
                 val userId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val user = userUseCasesContainer.getUserProfileUseCase(userId, role).toApiUserModel()
-                call.respond(HttpStatusCode.Found, ServerResponse.success(user))
+                call.respond(HttpStatusCode.OK, ServerResponse.success(user))
             }
         }
     }

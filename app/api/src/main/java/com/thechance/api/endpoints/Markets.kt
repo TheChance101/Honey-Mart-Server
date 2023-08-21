@@ -48,6 +48,19 @@ fun Route.marketsRoutes() {
 
 
         authenticate(JWT_AUTHENTICATION) {
+
+
+            get("/marketValidation") {
+                val principal = call.principal<JWTPrincipal>()
+                val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val isApproved = marketUseCaseContainer.checkMarketApprovedUseCase(marketOwnerId,role)
+                call.respond(
+                    HttpStatusCode.OK,
+                    ServerResponse.success(isApproved)
+                )
+            }
+
             put("/updateMarket") {
                 val principal = call.principal<JWTPrincipal>()
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()

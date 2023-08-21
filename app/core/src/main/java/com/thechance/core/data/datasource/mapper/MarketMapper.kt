@@ -14,5 +14,6 @@ internal fun ResultRow.toMarket(): Market {
         latitude = this[MarketTable.latitude],
         longitude = this[MarketTable.longitude],
         address = this[MarketTable.address],
+        isApproved = this[MarketTable.isApproved]
     )
 }

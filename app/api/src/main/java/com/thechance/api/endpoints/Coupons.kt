@@ -26,7 +26,7 @@ fun Route.couponRoutes() {
                 val coupons =
                     couponUseCaseContainer.getValidCouponsUseCase()
                         .map { it.toApiCoupon() }
-                call.respond(ServerResponse.success(coupons))
+                call.respond(HttpStatusCode.OK, ServerResponse.success(coupons))
             }
         }
         authenticate(JWT_AUTHENTICATION) {
@@ -39,7 +39,7 @@ fun Route.couponRoutes() {
                 val coupons =
                     couponUseCaseContainer.getAllCouponsForUserUseCase(userId, role)
                         .map { it.toApiUserCoupon() }
-                call.respond(ServerResponse.success(coupons))
+                call.respond(HttpStatusCode.OK, ServerResponse.success(coupons))
             }
             //get all coupons that not clipped from a specific user
             get("/allClippedUserCoupons") {
@@ -49,7 +49,7 @@ fun Route.couponRoutes() {
                 val coupons =
                     couponUseCaseContainer.getAllClippedCouponsForUserUseCase(userId, role)
                         .map { it.toApiUserCoupon() }
-                call.respond(ServerResponse.success(coupons))
+                call.respond(HttpStatusCode.OK, ServerResponse.success(coupons))
             }
             //get all coupons for specific market products
             get("/allMarketCoupons") {
@@ -59,7 +59,7 @@ fun Route.couponRoutes() {
                 val coupons =
                     couponUseCaseContainer.getAllCouponsForMarketUseCase(ownerId, role)
                         .map { it.toApiMarketCoupon() }
-                call.respond(ServerResponse.success(coupons))
+                call.respond(HttpStatusCode.OK, ServerResponse.success(coupons))
             }
 
             //clip coupon for user
@@ -71,7 +71,7 @@ fun Route.couponRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val isClipped = couponUseCaseContainer.clipCouponUseCase(userId, role, couponId)
-                call.respond(ServerResponse.success(isClipped))
+                call.respond(HttpStatusCode.OK, ServerResponse.success(isClipped))
 
             }
 

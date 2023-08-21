@@ -53,6 +53,7 @@ val marketUseCaseModule = module {
     singleOf(::UpdateMarketUseCase) { bind<UpdateMarketUseCase>() }
     singleOf(::GetCategoriesByMarketIdUseCase) { bind<GetCategoriesByMarketIdUseCase>() }
     singleOf(::GetMarketDetailsUseCase) { bind<GetMarketDetailsUseCase>() }
+    singleOf(::CheckMarketApprovedUseCase) { bind<CheckMarketApprovedUseCase>() }
     singleOf(::UpdateMarketStatusUseCase) { bind<UpdateMarketStatusUseCase>() }
 }
 

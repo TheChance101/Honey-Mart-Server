@@ -7,6 +7,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : KoinComponent {
+    private val sendNotificationUseCase: SendNotificationOnOrderStateUseCase by inject()
 
     suspend operator fun invoke(orderId: Long?, newOrderState: Int?, role: String?): Boolean {
         return when {
@@ -27,7 +28,17 @@ class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : Koi
                 } else {
                     throw InvalidUserIdException()
                 }
-                repository.updateOrderState(orderId, newOrderState)
+                if (repository.updateOrderState(orderId, newOrderState)) {
+                    val receiverId: Long = if (role == NORMAL_USER_ROLE) {
+                        repository.getOwnerIdByMarketId(repository.getOrderById(orderId).marketId)!!
+                    } else {
+                        repository.getOrderById(orderId).userId
+                    }
+                    sendNotificationUseCase(receiverId, orderId, newOrderState)
+                    true
+                } else {
+                    false
+                }
             }
         }
     }

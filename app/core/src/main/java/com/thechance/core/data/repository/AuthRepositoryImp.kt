@@ -23,6 +23,7 @@ class AuthRepositoryImp(
     private val tokenConfig: TokenConfig,
     private val deviceTokenDataSource: DeviceTokenDataSource,
     private val notificationDataSource: NotificationDataSource,
+    private val marketDataSource: MarketDataSource
     ) : AuthRepository, KoinComponent {
 
     //region user
@@ -30,6 +31,9 @@ class AuthRepositoryImp(
         val saltedHash = hashingService.generateSaltedHash(password)
         return userDataSource.createUser(saltedHash, fullName, email)
     }
+
+    override suspend fun getMarketIdByOwnerId(ownerId: Long): Long? =
+        marketDataSource.getMarketIdByOwnerId(ownerId)
 
     override suspend fun isEmailExists(email: String): Boolean = userDataSource.isEmailExists(email)
 

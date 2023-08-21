@@ -18,7 +18,8 @@ import java.util.concurrent.TimeUnit
 
 val appModules = module {
     single { CoreDataBase() }
-    single { FirebaseMessaging.getInstance() }
+    //single { FirebaseMessaging.getInstance() }
+    single<FirebaseMessaging> { FirebaseMessaging.getInstance() }
 
 
     singleOf(::TokenServiceImp) { bind<TokenService>() }
