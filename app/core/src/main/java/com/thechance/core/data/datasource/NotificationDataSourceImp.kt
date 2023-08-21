@@ -35,7 +35,7 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
                         .setNotification(
                             AndroidNotification.builder()
                                 .setIcon("stock_ticker_update")
-                                .setColor("#f45342")
+                                .setColor("#FEBC33")
                                 .build()
                         )
                         .build()
