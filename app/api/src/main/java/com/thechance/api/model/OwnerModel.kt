@@ -6,4 +6,4 @@ import kotlinx.serialization.Serializable
 data class OwnerModel(val ownerId: Long, val fullName: String, val email: String)
 
 @Serializable
-data class OwnerTokensModel(val fullName: String, val marketId: Long, val tokens: TokensModel)
+data class OwnerTokensModel(val fullName: String, val marketId: Long?, val tokens: TokensModel)

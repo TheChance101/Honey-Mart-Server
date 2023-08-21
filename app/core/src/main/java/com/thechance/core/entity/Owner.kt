@@ -5,6 +5,6 @@ import com.thechance.core.data.security.token.Tokens
 data class Owner(val ownerId: Long, val email: String, val fullName: String, val password: String, val salt: String)
 data class OwnerTokens(
     val fullName: String,
-    val marketId: Long,
+    val marketId: Long?,
     val tokens: Tokens
 )

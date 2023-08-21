@@ -21,7 +21,7 @@ class LoginMarketOwnerUseCase(private val repository: AuthRepository) : KoinComp
             if (repository.isOwnerValidPassword(owner, password)) {
                 val marketId = repository.getMarketIdByOwnerId(owner.ownerId)
                 val tokens = repository.getTokens(id = owner.ownerId, role = MARKET_OWNER_ROLE)
-                OwnerTokens(owner.fullName, marketId!!, tokens)
+                OwnerTokens(owner.fullName, marketId, tokens)
             } else {
                 throw InvalidUserNameOrPasswordException()
             }
