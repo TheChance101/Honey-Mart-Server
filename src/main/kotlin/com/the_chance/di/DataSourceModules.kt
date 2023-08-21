@@ -2,6 +2,8 @@ package com.the_chance.di
 
 import com.thechance.core.data.datasource.*
 import com.thechance.core.data.repository.dataSource.*
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val dataSourceModules = module {
@@ -12,7 +14,7 @@ val dataSourceModules = module {
     single<OwnerDataSource> { OwnerDataSourceImp() }
     single<AdminDataSource> { AdminDataSourceImp() }
     single<OrderDataSource> { OrderDataSourceImp() }
-    single<NotificationDataSource> { NotificationDataSourceImp(get()) }
+    singleOf(::NotificationDataSourceImp) { bind<NotificationDataSource>() }
     single<DeviceTokenDataSource> { DeviceTokenDataSourceImp() }
     single<CouponDataSource> { CouponDataSourceImp() }
 }

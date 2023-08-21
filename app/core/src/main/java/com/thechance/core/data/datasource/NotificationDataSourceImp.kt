@@ -1,5 +1,7 @@
 package com.thechance.core.data.datasource
 
+import com.google.firebase.messaging.AndroidConfig
+import com.google.firebase.messaging.AndroidNotification
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import com.thechance.core.data.datasource.database.tables.notification.NotificationHistoryTable
@@ -19,13 +21,34 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
     override suspend fun sendNotification(
         notification: NotificationRequest
     ): Boolean {
-        return firebaseMessaging.sendAll(notification.tokens.map {
+        val response = firebaseMessaging.sendAll(notification.tokens.map {
             Message.builder()
+                .setNotification(
+                    com.google.firebase.messaging.Notification.builder()
+                        .setTitle(notification.title)
+                        .setBody(notification.body)
+                        .build()
+                )
+                .setAndroidConfig(
+                    AndroidConfig.builder()
+                        .setTtl(3600 * 1000)
+                        .setNotification(
+                            AndroidNotification.builder()
+                                .setIcon("stock_ticker_update")
+                                .setColor("#f45342")
+                                .build()
+                        )
+                        .build()
+                )
                 .putData(TITLE, notification.title)
                 .putData(BODY, notification.body)
                 .putData(ORDER_ID, notification.orderId.toString())
-                .putData(ORDER_Status, notification.orderStatus.toString()).setToken(it).build()
-        }).failureCount == 0
+                .putData(ORDER_Status, notification.orderStatus.toString())
+                .setToken(it)
+                .build()
+        })
+        println(response.responses.map { it.isSuccessful })
+        return response.failureCount == 0
     }
 
     override suspend fun saveNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
