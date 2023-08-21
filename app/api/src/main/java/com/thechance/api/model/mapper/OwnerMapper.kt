@@ -13,5 +13,8 @@ internal fun Owner.toApiOwnerModel(): OwnerModel {
     )
 }
 internal fun OwnerTokens.toApiOwnerTokens(): OwnerTokensModel {
-    return OwnerTokensModel(this.fullName, this.tokens.toApiTokens())
+    return OwnerTokensModel(
+        this.fullName,
+        this.marketId,
+        this.tokens.toApiTokens())
 }

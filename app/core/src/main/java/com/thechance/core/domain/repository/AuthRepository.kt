@@ -65,4 +65,5 @@ interface AuthRepository {
     suspend fun getNotificationHistory(receiverId: Long): List<Notification>
     suspend fun updateNotificationState(receiverId: Long, isRead: Boolean): Boolean
     //endregion
+    suspend fun getMarketIdByOwnerId(ownerId: Long): Long?
 }
