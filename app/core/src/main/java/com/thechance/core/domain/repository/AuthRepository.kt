@@ -2,7 +2,7 @@ package com.thechance.core.domain.repository
 
 import com.thechance.core.data.security.token.Tokens
 import com.thechance.core.entity.*
-import com.thechance.core.entity.market.Market
+import com.thechance.core.entity.market.MarketRequest
 import java.util.*
 
 interface AuthRepository {
@@ -41,7 +41,7 @@ interface AuthRepository {
    //region admin
     suspend fun isValidAdmin(password: String, email: String): Boolean
     suspend fun getAdminByEmail(email: String): Admin
-    suspend fun getUnApprovedMarkets(): List<Market>
+    suspend fun getUnApprovedMarkets(): List<MarketRequest>
     suspend fun approveMarket(marketId: Long, isApproved: Boolean): Boolean
     //endregion
 

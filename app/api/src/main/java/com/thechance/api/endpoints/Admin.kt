@@ -1,8 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.model.mapper.toApiMarketModel
-import com.thechance.api.model.mapper.toApiOwnerModel
+import com.thechance.api.model.mapper.toApiMarketRequestModel
 import com.thechance.api.model.mapper.toApiTokens
 import com.thechance.core.domain.usecase.admin.AdminUseCaseContainer
 import com.thechance.core.utils.API_KEY_AUTHENTICATION
@@ -36,7 +35,7 @@ fun Route.adminRoutes() {
             get("/markets") {
                 val principal = call.principal<JWTPrincipal>()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
-                val markets = adminUseCase.getUnApprovedMarkets(role).map { it.toApiMarketModel() }
+                val markets = adminUseCase.getUnApprovedMarkets(role).map { it.toApiMarketRequestModel() }
                 call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
             }
 
@@ -46,7 +45,7 @@ fun Route.adminRoutes() {
                 val params = call.receiveParameters()
                 val marketId = call.parameters["id"]?.trim()?.toLongOrNull()
                 val isApproved = params["isApproved"]?.trim().toBoolean()
-                adminUseCase.approveMarketUseCase(marketId, isApproved,role)
+                adminUseCase.approveMarketUseCase(marketId, isApproved, role)
                 call.respond(HttpStatusCode.OK, ServerResponse.success(true, "Market updated successfully"))
             }
         }

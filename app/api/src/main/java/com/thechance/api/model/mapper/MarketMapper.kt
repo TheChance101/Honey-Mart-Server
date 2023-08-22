@@ -1,9 +1,11 @@
 package com.thechance.api.model.mapper
 
+import com.thechance.api.model.MarketRequestModel
 import com.thechance.api.model.market.MarketDetailsModel
 import com.thechance.api.model.market.MarketModel
 import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.market.MarketDetails
+import com.thechance.core.entity.market.MarketRequest
 
 
 internal fun Market.toApiMarketModel(): MarketModel {
@@ -15,6 +17,18 @@ internal fun Market.toApiMarketModel(): MarketModel {
         latitude = latitude,
         longitude = longitude,
         address = address
+    )
+}
+internal fun MarketRequest.toApiMarketRequestModel(): MarketRequestModel {
+    return MarketRequestModel(
+        marketId = marketId,
+        marketName = marketName,
+        imageUrl = imageUrl,
+        description = description,
+        address = address,
+        ownerName = ownerName,
+        ownerEmail = ownerEmail,
+        isDeleted = isDeleted
     )
 }
 
