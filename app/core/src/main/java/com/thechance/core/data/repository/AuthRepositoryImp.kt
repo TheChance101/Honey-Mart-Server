@@ -9,7 +9,7 @@ import com.thechance.core.data.security.token.TokenConfig
 import com.thechance.core.data.security.token.Tokens
 import com.thechance.core.domain.repository.AuthRepository
 import com.thechance.core.entity.*
-import com.thechance.core.entity.market.Market
+import com.thechance.core.entity.market.MarketRequest
 import com.thechance.core.utils.ROLE_TYPE
 import org.koin.core.component.KoinComponent
 import java.util.*
@@ -77,8 +77,8 @@ class AuthRepositoryImp(
 
     override suspend fun getAdminByEmail(email: String): Admin = adminDataSource.getAdminByEmail(email)
 
-    override suspend fun getUnApprovedMarkets(): List<Market> {
-        return adminDataSource.getUnApprovedMarkets()
+    override suspend fun getUnApprovedMarkets(): List<MarketRequest> {
+        return adminDataSource.getUnApprovedMarketsDetails()
     }
 
     override suspend fun approveMarket(marketId: Long, isApproved: Boolean): Boolean  {
