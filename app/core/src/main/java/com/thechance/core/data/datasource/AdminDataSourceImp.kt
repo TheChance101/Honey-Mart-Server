@@ -36,21 +36,15 @@ class AdminDataSourceImp : AdminDataSource, KoinComponent {
                 .select {
                     (MarketTable.isDeleted eq false) and (MarketTable.isApproved eq false)
                 }.map { resultRow ->
-                    val marketId = resultRow[MarketTable.id].value
-                    val marketName = resultRow[MarketTable.name]
-                    val marketImageUrl = resultRow[MarketTable.imageUrl]
-                    val marketDescription = resultRow[MarketTable.description]
-                    val marketAddress = resultRow[MarketTable.address]
-                    val marketIsDeleted = resultRow[MarketTable.isDeleted]
                     val ownerId = resultRow[MarketTable.ownerId].value
                     val ownerDetails = getOwnerDetails(ownerId)
                     MarketRequest(
-                        marketId = marketId,
-                        marketName = marketName,
-                        imageUrl = marketImageUrl,
-                        description = marketDescription,
-                        isDeleted = marketIsDeleted,
-                        address = marketAddress,
+                        marketId = resultRow[MarketTable.id].value,
+                        marketName = resultRow[MarketTable.name],
+                        imageUrl = resultRow[MarketTable.imageUrl],
+                        description = resultRow[MarketTable.description],
+                        isDeleted = resultRow[MarketTable.isDeleted],
+                        address = resultRow[MarketTable.address],
                         ownerName = ownerDetails.ownerName ?: "Unknown Owner",
                         ownerEmail = ownerDetails.ownerEmail ?: "Unknown Owner",
                     )
