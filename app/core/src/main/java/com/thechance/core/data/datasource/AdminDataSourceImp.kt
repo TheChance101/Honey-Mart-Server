@@ -1,10 +1,11 @@
 package com.thechance.core.data.datasource
 
 import com.thechance.core.data.datasource.database.tables.MarketTable
-import com.thechance.core.data.datasource.mapper.toMarket
+import com.thechance.core.data.datasource.database.tables.OwnerTable
 import com.thechance.core.data.repository.dataSource.AdminDataSource
 import com.thechance.core.entity.Admin
-import com.thechance.core.entity.market.Market
+import com.thechance.core.entity.OwnerDetails
+import com.thechance.core.entity.market.MarketRequest
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
@@ -29,13 +30,43 @@ class AdminDataSourceImp : AdminDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getUnApprovedMarkets(): List<Market> {
+    override suspend fun getUnApprovedMarketsDetails(): List<MarketRequest> {
         return dbQuery {
-            MarketTable.select {
-                (MarketTable.isDeleted eq false) and (MarketTable.isApproved eq false)
-            }.map { it.toMarket() }.toList()
+            (MarketTable innerJoin OwnerTable)
+                .select {
+                    (MarketTable.isDeleted eq false) and (MarketTable.isApproved eq false)
+                }.map { resultRow ->
+                    val marketId = resultRow[MarketTable.id].value
+                    val marketName = resultRow[MarketTable.name]
+                    val marketImageUrl = resultRow[MarketTable.imageUrl]
+                    val marketDescription = resultRow[MarketTable.description]
+                    val marketAddress = resultRow[MarketTable.address]
+                    val marketIsDeleted = resultRow[MarketTable.isDeleted]
+                    val ownerId = resultRow[MarketTable.ownerId].value
+                    val ownerDetails = getOwnerDetails(ownerId)
+                    MarketRequest(
+                        marketId = marketId,
+                        marketName = marketName,
+                        imageUrl = marketImageUrl,
+                        description = marketDescription,
+                        isDeleted = marketIsDeleted,
+                        address = marketAddress,
+                        ownerName = ownerDetails.ownerName ?: "Unknown Owner",
+                        ownerEmail = ownerDetails.ownerEmail ?: "Unknown Owner",
+                    )
+                }.toList()
         }
     }
+    private suspend fun getOwnerDetails(ownerId: Long): OwnerDetails {
+        val ownerDetails = dbQuery {
+            OwnerTable.select { OwnerTable.id eq ownerId }.singleOrNull()
+        }
+        val ownerName = ownerDetails?.get(OwnerTable.fullName)
+        val ownerEmail = ownerDetails?.get(OwnerTable.email)
+        return OwnerDetails(ownerName, ownerEmail)
+    }
+
+
 
     override suspend fun approveMarket(marketId: Long, isApproved: Boolean): Boolean = dbQuery {
         MarketTable.update({ MarketTable.id eq marketId }) { marketRow ->
