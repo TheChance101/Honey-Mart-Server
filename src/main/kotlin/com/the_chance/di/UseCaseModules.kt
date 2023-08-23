@@ -1,10 +1,7 @@
 package com.the_chance.di
 
 import com.thechance.core.domain.usecase.RefreshTokenUseCase
-import com.thechance.core.domain.usecase.admin.AdminUseCaseContainer
-import com.thechance.core.domain.usecase.admin.ApproveMarketUseCase
-import com.thechance.core.domain.usecase.admin.GetUnApprovedMarkets
-import com.thechance.core.domain.usecase.admin.VerifyAdminUseCase
+import com.thechance.core.domain.usecase.admin.*
 import com.thechance.core.domain.usecase.cart.*
 import com.thechance.core.domain.usecase.category.*
 import com.thechance.core.domain.usecase.coupon.*
@@ -98,7 +95,7 @@ val ownerUseCaseModule = module {
 
 val adminUseCaseModule = module {
     singleOf(::VerifyAdminUseCase) { bind<VerifyAdminUseCase>() }
-    singleOf(::GetUnApprovedMarkets) { bind<GetUnApprovedMarkets>() }
+    singleOf(::GetMarketsRequestsDetails) { bind<GetMarketsRequestsDetails>() }
     singleOf(::ApproveMarketUseCase) { bind<ApproveMarketUseCase>() }
     singleOf(::AdminUseCaseContainer) { bind<AdminUseCaseContainer>() }
 }

@@ -30,11 +30,11 @@ class AdminDataSourceImp : AdminDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getUnApprovedMarketsDetails(): List<MarketRequest> {
+    override suspend fun getMarketsRequestsDetails(isApproved: Boolean): List<MarketRequest> {
         return dbQuery {
             (MarketTable innerJoin OwnerTable)
                 .select {
-                    (MarketTable.isDeleted eq false) and (MarketTable.isApproved eq false)
+                    (MarketTable.isDeleted eq false) and (MarketTable.isApproved eq isApproved)
                 }.map { resultRow ->
                     val ownerId = resultRow[MarketTable.ownerId].value
                     val ownerDetails = getOwnerDetails(ownerId)
@@ -51,6 +51,7 @@ class AdminDataSourceImp : AdminDataSource, KoinComponent {
                 }.toList()
         }
     }
+
     private suspend fun getOwnerDetails(ownerId: Long): OwnerDetails {
         val ownerDetails = dbQuery {
             OwnerTable.select { OwnerTable.id eq ownerId }.singleOrNull()
