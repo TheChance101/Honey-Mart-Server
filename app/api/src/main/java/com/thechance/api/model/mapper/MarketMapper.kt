@@ -28,7 +28,6 @@ internal fun MarketRequest.toApiMarketRequestModel(): MarketRequestModel {
         address = address,
         ownerName = ownerName,
         ownerEmail = ownerEmail,
-        isDeleted = isDeleted
     )
 }
 

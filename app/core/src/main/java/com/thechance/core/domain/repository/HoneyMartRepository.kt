@@ -96,7 +96,7 @@ interface HoneyMartRepository {
 
     suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
 
-    suspend fun searchProductsByName(productName: String, page: Int): List<Product>
+    suspend fun searchProductsByName(productName: String,sortOrder: String?, page: Int): List<Product>
 
     suspend fun getMostRecentProducts(): List<Product>
 

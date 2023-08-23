@@ -7,13 +7,13 @@ import com.thechance.core.utils.AdminAccessDeniedException
 import com.thechance.core.utils.isValidRole
 import org.koin.core.component.KoinComponent
 
-class GetUnApprovedMarkets(private val repository: AuthRepository) : KoinComponent {
+class GetMarketsRequestsDetails(private val repository: AuthRepository) : KoinComponent {
 
-    suspend operator fun invoke(role:String?): List<MarketRequest> {
+    suspend operator fun invoke(role:String?,isApproved: Boolean): List<MarketRequest> {
         if (!isValidRole(ADMIN_ROLE, role)) {
             throw AdminAccessDeniedException()
         }
-        return repository.getUnApprovedMarkets()
+        return repository.getMarketsRequestsDetails(isApproved)
     }
 
 }

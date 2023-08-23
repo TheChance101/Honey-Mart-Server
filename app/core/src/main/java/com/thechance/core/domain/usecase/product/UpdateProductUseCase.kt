@@ -30,20 +30,34 @@ class UpdateProductUseCase(private val repository: HoneyMartRepository) : KoinCo
         productId: Long?, productName: String?, productPrice: Double?, description: String?, marketOwnerId: Long?,
         role: String?
     ): Exception? {
-        return if (isInvalidId(productId)) {
-            InvalidProductIdException()
-        } else if (productName == null && productPrice == null && description.isNullOrEmpty()) {
-            InvalidInputException()
-        } else if (productName != null && !isValidMarketProductName(productName)) {
-            InvalidProductNameException()
-        } else if (description != null && !isInValidDescription(description)) {
-            InvalidProductDescriptionException()
-        } else if (productPrice != null && isInvalidPrice(productPrice)) {
-            InvalidProductPriceException()
-        } else if (isInvalidId(marketOwnerId) || !isValidRole(MARKET_OWNER_ROLE, role)) {
-            InvalidOwnerIdException()
-        } else {
-            null
+        return when {
+            !isValidMarketProductName(productName) -> {
+                InvalidProductNameException()
+            }
+
+            isInValidDescription(description) -> {
+                InvalidProductDescriptionException()
+            }
+
+            isInvalidPrice(productPrice) -> {
+                InvalidProductPriceException()
+            }
+
+            isInvalidId(productId) -> {
+                InvalidProductIdException()
+            }
+
+            isInvalidId(marketOwnerId) -> {
+                InvalidOwnerIdException()
+            }
+
+            !isValidRole(MARKET_OWNER_ROLE, role) -> {
+                InvalidOwnerIdException()
+            }
+
+            else -> {
+                null
+            }
         }
     }
 

@@ -222,8 +222,8 @@ class HoneyMartRepositoryImp(
     override suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String =
         productDataSource.deleteImageFromProduct(productId, imageId)
 
-    override suspend fun searchProductsByName(productName: String, page: Int): List<Product> =
-        productDataSource.searchProductsByName(productName, page)
+    override suspend fun searchProductsByName(productName: String, sortOrder: String?, page: Int): List<Product> =
+        productDataSource.searchProductsByName(productName, sortOrder, page)
 
     override suspend fun getAllProducts(page: Int): List<Product> =
         productDataSource.getAllProducts(page)

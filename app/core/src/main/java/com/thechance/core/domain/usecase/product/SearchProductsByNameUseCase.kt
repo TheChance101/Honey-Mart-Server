@@ -9,13 +9,13 @@ import com.thechance.core.utils.isValidQuery
 import org.koin.core.component.KoinComponent
 
 class SearchProductsByNameUseCase(private val repository: HoneyMartRepository) : KoinComponent {
-    suspend operator fun invoke(productName: String?, page: Int): List<Product> {
+    suspend operator fun invoke(productName: String?, sortOrder: String?, page: Int): List<Product> {
         if (productName.isNullOrEmpty()) {
             throw MissingQueryParameterException()
         }
-        if(!isValidQuery(productName)){
+        if (!isValidQuery(productName)) {
             throw InvalidProductNameException()
         }
-        return repository.searchProductsByName(productName, page)
+        return repository.searchProductsByName(productName, sortOrder, page)
     }
 }

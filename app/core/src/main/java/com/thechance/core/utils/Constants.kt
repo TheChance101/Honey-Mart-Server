@@ -19,6 +19,9 @@ const val TOKEN_TYPE = "tokenType"
 const val ACCESS_TOKEN = "accessToken"
 const val REFRESH_TOKEN = "refreshToken"
 
+const val ASCENDING = "asc"
+const val DESCENDING = "desc"
+
 const val BASE_URL = "https://honey-mart-server-oe345.ondigitalocean.app"
 
 const val PRODUCT_IMAGES_PATH = "files/market"
