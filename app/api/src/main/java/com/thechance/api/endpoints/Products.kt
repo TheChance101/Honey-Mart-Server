@@ -65,9 +65,11 @@ fun Route.productsRoutes() {
                 val param = call.request.queryParameters
                 val query = param["query"]?.trim()
                 val page = param["page"]?.toIntOrNull() ?: 1
+                val sort = param["sort"]
+
 
                 val searchResults =
-                    productUseCasesContainer.searchProductsByNameUseCase(query, page)
+                    productUseCasesContainer.searchProductsByNameUseCase(query,sort, page)
                         .map { it.toApiProductModel() }
 
                 call.respond(ServerResponse.success(searchResults))
