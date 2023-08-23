@@ -11,9 +11,7 @@ import com.thechance.core.data.repository.dataSource.ProductDataSource
 import com.thechance.core.entity.Category
 import com.thechance.core.entity.Image
 import com.thechance.core.entity.Product
-import com.thechance.core.utils.PAGE_SIZE
-import com.thechance.core.utils.RECENT_PRODUCT
-import com.thechance.core.utils.dbQuery
+import com.thechance.core.utils.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
@@ -205,10 +203,25 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         }
     }
 
-    override suspend fun searchProductsByName(productName: String, page: Int): List<Product> = dbQuery {
+    override suspend fun searchProductsByName(
+        productName: String,
+        sortOrder: String?,
+        page: Int
+    ): List<Product> = dbQuery {
         val offset = ((page - 1) * PAGE_SIZE).toLong()
-        ProductTable.select { (ProductTable.name.lowerCase() like "%${productName.lowercase(Locale.getDefault())}%") and (ProductTable.isDeleted eq false) }
-            .limit(PAGE_SIZE, offset).map { productRow ->
+
+        val query = ProductTable
+            .select { (ProductTable.name.lowerCase() like "%${productName.lowercase(Locale.getDefault())}%") and (ProductTable.isDeleted eq false) }
+
+        val sortedQuery = when (sortOrder) {
+            ASCENDING -> query.orderBy(ProductTable.price, SortOrder.ASC)
+            DESCENDING -> query.orderBy(ProductTable.price, SortOrder.DESC)
+            else -> query
+        }
+
+        sortedQuery
+            .limit(PAGE_SIZE, offset)
+            .map { productRow ->
                 val images = getProductImages(productRow[ProductTable.id].value)
                 productRow.toProduct(images = images)
             }
