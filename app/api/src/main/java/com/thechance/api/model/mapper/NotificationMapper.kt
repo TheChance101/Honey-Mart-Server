@@ -1,6 +1,7 @@
 package com.thechance.api.model.mapper
 
 import com.thechance.api.model.NotificationModel
+import com.thechance.api.utils.convertDateToMillis
 import com.thechance.core.entity.Notification
 
 internal fun Notification.toApiNotification(): NotificationModel {
@@ -10,6 +11,6 @@ internal fun Notification.toApiNotification(): NotificationModel {
         orderId = this.orderId,
         title = this.title,
         body = this.body,
-        date = timeStamp.toString()
+        date = timeStamp.convertDateToMillis()
     )
 }

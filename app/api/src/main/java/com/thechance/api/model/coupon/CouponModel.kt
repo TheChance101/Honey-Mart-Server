@@ -8,6 +8,6 @@ data class CouponModel(
     val couponId: Long,
     val count: Int,
     val discountPercentage: Double,
-    val expirationDate: String,
+    val expirationDate: Long,
     val product: ProductModel,
 )
