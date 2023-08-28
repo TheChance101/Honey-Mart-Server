@@ -135,7 +135,7 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         }
         // Order Exceptions
         is InvalidOrderIdException -> {
-            ServerResponse.error("Invalid order ID.", 172)
+            ServerResponse.error("Invalid order ID.", 1072)
         }
 
         is InvalidStateOrderException -> {
