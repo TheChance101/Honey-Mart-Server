@@ -26,6 +26,7 @@ internal fun MarketRequest.toApiMarketRequestModel(): MarketRequestModel {
         imageUrl = imageUrl,
         description = description,
         address = address,
+        isApproved = isApproved,
         ownerName = ownerName,
         ownerEmail = ownerEmail,
     )

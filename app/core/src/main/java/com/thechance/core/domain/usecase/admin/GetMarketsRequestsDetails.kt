@@ -9,7 +9,7 @@ import org.koin.core.component.KoinComponent
 
 class GetMarketsRequestsDetails(private val repository: AuthRepository) : KoinComponent {
 
-    suspend operator fun invoke(role:String?,isApproved: Boolean): List<MarketRequest> {
+    suspend operator fun invoke(role:String?,isApproved: Boolean?): List<MarketRequest> {
         if (!isValidRole(ADMIN_ROLE, role)) {
             throw AdminAccessDeniedException()
         }
