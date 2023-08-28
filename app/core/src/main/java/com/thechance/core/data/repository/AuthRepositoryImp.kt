@@ -81,7 +81,7 @@ class AuthRepositoryImp(
 
     override suspend fun getAdminByEmail(email: String): Admin = adminDataSource.getAdminByEmail(email)
 
-    override suspend fun getMarketsRequestsDetails(isApproved: Boolean): List<MarketRequest> {
+    override suspend fun getMarketsRequestsDetails(isApproved: Boolean?): List<MarketRequest> {
         return adminDataSource.getMarketsRequestsDetails(isApproved)
     }
 

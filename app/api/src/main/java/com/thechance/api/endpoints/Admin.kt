@@ -32,13 +32,14 @@ fun Route.adminRoutes() {
 
         }
         authenticate(JWT_AUTHENTICATION) {
-                get("/markets") {
-                    val principal = call.principal<JWTPrincipal>()
-                    val role = principal?.getClaim(ROLE_TYPE, String::class)
-                    val isApproved = call.request.queryParameters["isApproved"]?.trim()?.toBoolean()
-                    val markets = adminUseCase.getMarketsRequestsDetails(role, isApproved!!).map { it.toApiMarketRequestModel() }
-                    call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
-                }
+            get("/markets") {
+                val principal = call.principal<JWTPrincipal>()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val isApprovedParam = call.request.queryParameters["isApproved"]
+                val isApproved = isApprovedParam?.trim()?.toBooleanStrictOrNull()
+                val markets = adminUseCase.getMarketsRequestsDetails(role, isApproved).map { it.toApiMarketRequestModel() }
+                call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
+            }
 
             put("/request/{id}") {
                 val principal = call.principal<JWTPrincipal>()
