@@ -54,7 +54,7 @@ class CantUpdateOrderStateException : Exception()
 
 //region Cart
 class EmptyCartException : Exception()
-class InvalidCountException : Exception()
+class CountInvalidInputException : Exception()
 class InvalidPercentage : Exception()
 //endregion
 
@@ -69,7 +69,7 @@ class InvalidCouponIdException : Exception()
 class InvalidCouponException : Exception()
 class CouponAlreadyClippedException : Exception()
 class InvalidExpirationDateException : Exception()
-
+class InvalidCountException : Exception()
 //endregion
 
 //region Exceptions
