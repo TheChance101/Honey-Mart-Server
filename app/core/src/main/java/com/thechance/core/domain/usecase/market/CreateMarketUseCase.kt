@@ -34,7 +34,7 @@ class CreateMarketUseCase(private val repository: HoneyMartRepository, private v
             }
 
             isInValidDescription(description) -> {
-                InvalidDescriptionException()
+                InvalidMarketDescriptionException()
             }
 
             !isValidRole(MARKET_OWNER_ROLE, role) -> {
