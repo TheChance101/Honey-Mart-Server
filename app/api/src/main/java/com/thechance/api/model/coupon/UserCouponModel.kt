@@ -8,7 +8,7 @@ data class UserCouponModel(
     val couponId: Long,
     val count: Int,
     val discountPercentage: Double,
-    val expirationDate: String,
+    val expirationDate: Long,
     val product: ProductModel,
     val isClipped: Boolean,
     val isUsed: Boolean

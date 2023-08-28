@@ -9,5 +9,5 @@ data class NotificationModel(
     val orderId: Long,
     val title: String,
     val body: String,
-    val date: String,
+    val date: Long,
 )

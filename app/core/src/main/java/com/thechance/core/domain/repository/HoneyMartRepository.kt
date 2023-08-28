@@ -96,7 +96,7 @@ interface HoneyMartRepository {
 
     suspend fun deleteImageFromProduct(productId: Long, imageId: Long): String
 
-    suspend fun searchProductsByName(productName: String,sortOrder: String?, page: Int): List<Product>
+    suspend fun searchProductsByName(productName: String, sortOrder: String?, page: Int): List<Product>
 
     suspend fun getMostRecentProducts(): List<Product>
 
@@ -143,5 +143,7 @@ interface HoneyMartRepository {
     suspend fun isCouponClipped(couponId: Long, userId: Long): Boolean
     suspend fun isValidCoupon(couponId: Long): Boolean
     suspend fun getAllValidCoupons(): List<Coupon>
+    suspend fun getMarketProductsWithoutValidCoupons(marketId: Long): List<Product>
+    suspend fun searchMarketProductsWithoutValidCoupons(marketId: Long, productName: String): List<Product>
     //end coupons region
 }

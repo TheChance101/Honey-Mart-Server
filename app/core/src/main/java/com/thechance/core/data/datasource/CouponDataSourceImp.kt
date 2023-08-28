@@ -19,6 +19,7 @@ import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.time.LocalDateTime
+import java.util.*
 
 class CouponDataSourceImp : CouponDataSource {
     override suspend fun addCoupon(
@@ -84,7 +85,10 @@ class CouponDataSourceImp : CouponDataSource {
     override suspend fun getCouponsForMarket(marketId: Long): List<MarketCoupon> = dbQuery {
         val currentDate = LocalDateTime.now()
         val marketProducts = ProductTable
-            .select { ProductTable.marketId eq marketId }
+            .select {
+                ProductTable.marketId eq marketId and
+                        (ProductTable.isDeleted eq false)
+            }
             .map { it[ProductTable.id].value }
         CouponTable
             .select {
@@ -97,6 +101,69 @@ class CouponDataSourceImp : CouponDataSource {
                 resultRow.toMarketCoupon(product)
             }
     }
+
+    override suspend fun getProductsWithoutValidCoupons(marketId: Long): List<Product> = dbQuery {
+        val currentDate = LocalDateTime.now()
+        val marketProducts = ProductTable
+            .select {
+                ProductTable.marketId eq marketId and
+                        (ProductTable.isDeleted eq false)
+            }
+            .map { it[ProductTable.id].value }
+
+        val productsWithValidCoupons = CouponTable
+            .slice(CouponTable.productId)
+            .select {
+                (CouponTable.count greater 0) and
+                        (CouponTable.expirationDate greater currentDate) and
+                        (CouponTable.productId inList marketProducts)
+            }
+            .map { it[CouponTable.productId] }
+
+        val productsWithoutCoupons = ProductTable
+            .select {
+                (ProductTable.id inList marketProducts) and
+                        (ProductTable.id notInList productsWithValidCoupons)
+            }
+            .map { productRow ->
+                val images = getProductImages(productRow[ProductTable.id].value)
+                productRow.toProduct(images = images)
+            }
+
+        productsWithoutCoupons
+    }
+
+    override suspend fun searchProductsWithoutValidCoupons(marketId: Long, productName: String): List<Product> =
+        dbQuery {
+            val currentDate = LocalDateTime.now()
+            val marketProducts = ProductTable
+                .select {
+                    (ProductTable.name.lowerCase() like "%${productName.lowercase(Locale.getDefault())}%") and
+                            (ProductTable.isDeleted eq false) and
+                            (ProductTable.marketId eq marketId)
+                }
+                .map { it[ProductTable.id].value }
+            val productsWithValidCoupons = CouponTable
+                .slice(CouponTable.productId)
+                .select {
+                    (CouponTable.count greater 0) and
+                            (CouponTable.expirationDate greater currentDate) and
+                            (CouponTable.productId inList marketProducts)
+                }
+                .map { it[CouponTable.productId] }
+
+            val productsWithoutCoupons = ProductTable
+                .select {
+                    (ProductTable.id inList marketProducts) and
+                            (ProductTable.id notInList productsWithValidCoupons)
+                }
+                .map { productRow ->
+                    val images = getProductImages(productRow[ProductTable.id].value)
+                    productRow.toProduct(images = images)
+                }
+
+            productsWithoutCoupons
+        }
 
     override suspend fun deleteCoupon(couponId: Long): Boolean = dbQuery {
         val rowsAffected = CouponTable.deleteWhere { CouponTable.id eq couponId }
@@ -158,7 +225,10 @@ class CouponDataSourceImp : CouponDataSource {
     }
 
     private fun getProduct(productId: Long): Product {
-        return ProductTable.select { ProductTable.id eq productId }.map { productRow ->
+        return ProductTable.select {
+            ProductTable.id eq productId and
+                    (ProductTable.isDeleted eq false)
+        }.map { productRow ->
             val images = getProductImages(productRow[ProductTable.id].value)
             productRow.toProduct(images = images)
         }.single()

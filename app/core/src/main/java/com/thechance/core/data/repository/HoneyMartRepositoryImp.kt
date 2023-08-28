@@ -322,6 +322,12 @@ class HoneyMartRepositoryImp(
     override suspend fun getAllValidCoupons(): List<Coupon> =
         couponDataSource.getAllValidCoupons()
 
+    override suspend fun getMarketProductsWithoutValidCoupons(marketId: Long): List<Product> =
+        couponDataSource.getProductsWithoutValidCoupons(marketId)
+
+    override suspend fun searchMarketProductsWithoutValidCoupons(marketId: Long, productName: String): List<Product> =
+        couponDataSource.searchProductsWithoutValidCoupons(marketId, productName)
+
     //end coupons region
 
 }

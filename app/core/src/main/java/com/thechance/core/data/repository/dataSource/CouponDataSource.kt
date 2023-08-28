@@ -1,5 +1,6 @@
 package com.thechance.core.data.repository.dataSource
 
+import com.thechance.core.entity.Product
 import com.thechance.core.entity.coupon.Coupon
 import com.thechance.core.entity.coupon.MarketCoupon
 import com.thechance.core.entity.coupon.UserCoupon
@@ -23,4 +24,6 @@ interface CouponDataSource {
     suspend fun isCouponClipped(couponId: Long, userId: Long): Boolean
     suspend fun isValidCoupon(couponId: Long): Boolean
     suspend fun getAllValidCoupons(): List<Coupon>
+    suspend fun getProductsWithoutValidCoupons(marketId: Long): List<Product>
+    suspend fun searchProductsWithoutValidCoupons(marketId: Long, productName: String): List<Product>
 }

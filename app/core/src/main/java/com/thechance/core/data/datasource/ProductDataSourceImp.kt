@@ -46,8 +46,7 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         ProductTable
             .select { ProductTable.isDeleted eq false }
             .orderBy(ProductTable.id, order = SortOrder.DESC)
-            .toList()
-            .takeLast(RECENT_PRODUCT)
+            .limit(RECENT_PRODUCT)
             .map { productRow ->
                 val images = getProductImages(productRow[ProductTable.id].value)
                 productRow.toProduct(images = images)

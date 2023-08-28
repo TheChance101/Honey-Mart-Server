@@ -3,6 +3,7 @@ package com.thechance.api.endpoints
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCoupon
 import com.thechance.api.model.mapper.toApiMarketCoupon
+import com.thechance.api.model.mapper.toApiProductModel
 import com.thechance.api.model.mapper.toApiUserCoupon
 import com.thechance.core.domain.usecase.coupon.CouponUseCaseContainer
 import com.thechance.core.utils.API_KEY_AUTHENTICATION
@@ -60,6 +61,28 @@ fun Route.couponRoutes() {
                     couponUseCaseContainer.getAllCouponsForMarketUseCase(ownerId, role)
                         .map { it.toApiMarketCoupon() }
                 call.respond(HttpStatusCode.OK, ServerResponse.success(coupons))
+            }
+            //get all market products without valid coupons
+            get("/marketProducts") {
+                val principal = call.principal<JWTPrincipal>()
+                val ownerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val products =
+                    couponUseCaseContainer.getMarketProductsWithoutValidCouponsUseCase(ownerId, role)
+                        .map { it.toApiProductModel() }
+                call.respond(HttpStatusCode.OK, ServerResponse.success(products))
+            }
+            //search market products without valid coupons
+            get("/searchMarketProducts") {
+                val principal = call.principal<JWTPrincipal>()
+                val ownerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val param = call.request.queryParameters
+                val query = param["query"]?.trim()
+                val products =
+                    couponUseCaseContainer.searchMarketProductsWithoutValidCouponsUseCase(ownerId, role, query)
+                        .map { it.toApiProductModel() }
+                call.respond(HttpStatusCode.OK, ServerResponse.success(products))
             }
 
             //clip coupon for user
