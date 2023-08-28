@@ -13,10 +13,8 @@ class InvalidExpirationDateException : Exception()
 class InvalidCouponIdException : Exception()
 class InvalidCouponException : Exception()
 class CouponAlreadyClippedException : Exception()
-class InvalidDescriptionException : Exception()
+class InvalidMarketDescriptionException : Exception()
 class InvalidProductPriceException : Exception()
-
-class InvalidCategoryNameLettersException : Exception()
 class InvalidMarketIdException : Exception()
 class InvalidCategoryIdException : Exception()
 class InvalidProductIdException : Exception()
@@ -24,8 +22,6 @@ class InvalidProductIdException : Exception()
 class InvalidImageIdException : Exception()
 
 class IdNotFoundException : Exception()
-
-class ItemNotAvailableException : Exception()
 
 //Delete
 class MarketDeletedException : Exception()

@@ -8,214 +8,185 @@ import io.ktor.server.response.*
 
 suspend fun handleException(cause: Throwable, call: ApplicationCall) {
     val messageResponse = when (cause) {
+        // User  Exceptions
         is InvalidInputException -> {
-            ServerResponse.error("All fields required.", HttpStatusCode.BadRequest.value)
-        }
-
-        is ItemNotAvailableException -> {
-            ServerResponse.error("this item not available.", HttpStatusCode.NotFound.value)
-        }
-
-        is IdNotFoundException -> {
-            ServerResponse.error("This Id not Found", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidCategoryNameException -> {
-            ServerResponse.error("error in category name", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidMarketNameException -> {
-            ServerResponse.error("error in market name", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidProductNameException -> {
-            ServerResponse.error("error in product name", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidProductDescriptionException -> {
-            ServerResponse.error("error in quantity.", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidDescriptionException -> {
-            ServerResponse.error("Invalid description.", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidProductPriceException -> {
-            ServerResponse.error("error in product price", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidCategoryNameLettersException -> {
-            ServerResponse.error("error in InvalidCategoryNameLettersException", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidMarketIdException -> {
-            ServerResponse.error("can not found market with this id", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidCategoryIdException -> {
-            ServerResponse.error("can not found category with this id", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidProductIdException -> {
-            ServerResponse.error("can not found product with this id", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidImageIdException -> {
-            ServerResponse.error("image not found", HttpStatusCode.NotFound.value)
-        }
-
-        is MarketDeletedException -> {
-            ServerResponse.error("can not found this market", HttpStatusCode.NotFound.value)
-        }
-
-        is CategoryDeletedException -> {
-            ServerResponse.error("can not found this category", HttpStatusCode.NotFound.value)
-        }
-
-        is ProductDeletedException -> {
-            ServerResponse.error("can not found this product", HttpStatusCode.NotFound.value)
-        }
-
-        is NotValidCategoryList -> {
-            ServerResponse.error("categories not valid", HttpStatusCode.BadRequest.value)
-        }
-
-        is CategoryNameNotUniqueException -> {
-            ServerResponse.error("this category name already in the market", HttpStatusCode.BadRequest.value)
+            ServerResponse.error("All fields are required.", 1002)
         }
 
         is UsernameAlreadyExistException -> {
-            ServerResponse.error("user is already exist", HttpStatusCode.Conflict.value)
+            ServerResponse.error("User already exists.", 1003)
         }
 
         is InvalidUserIdException -> {
-            ServerResponse.error("invalid user id", HttpStatusCode.BadRequest.value)
-        }
-
-        is AdminAccessDeniedException -> {
-            ServerResponse.error("access denied", HttpStatusCode.BadRequest.value)
-        }
-
-        is UnKnownUserException -> {
-            ServerResponse.error("Unknown user, please try again", HttpStatusCode.Conflict.value)
+            ServerResponse.error("Invalid user ID.", 1004)
         }
 
         is InvalidUserNameOrPasswordException -> {
-            ServerResponse.error("Invalid username or password, please try again", HttpStatusCode.Conflict.value)
-        }
-
-        is ProductAlreadyInWishListException -> {
-            ServerResponse.error("This product is  already in wish list", HttpStatusCode.Conflict.value)
+            ServerResponse.error("Invalid username or password, please try again.", 1005)
         }
 
         is InvalidEmailException -> {
-            ServerResponse.error("Email is not valid", HttpStatusCode.BadRequest.value)
+            ServerResponse.error("Invalid email address.", 1006)
         }
 
         is InvalidNameException -> {
-            ServerResponse.error("Name is not valid", HttpStatusCode.BadRequest.value)
+            ServerResponse.error("Invalid name.", 1007)
         }
 
         is EmailAlreadyExistException -> {
-            ServerResponse.error("This Email already exist", 1001)
-        }
-
-        is InvalidPasswordInputException -> {
-            ServerResponse.error(
-                "Password should be at least has one letter, one special character, one number, and a total length between 8 to 14 characters",
-                HttpStatusCode.BadRequest.value
-            )
+            ServerResponse.error("Email address already exists.", 1008)
         }
 
         is InvalidUserNameInputException -> {
             ServerResponse.error(
-                "The username must be 8 to 14 characters in length and should only include the dot (.) and underscore (_) characters.",
-                HttpStatusCode.BadRequest.value
+                "Username must be 8 to 14 characters in length and should only include the dot (.) and underscore (_) characters.",
+                1009
             )
         }
 
-        is EmptyCartException -> {
+        is InvalidPasswordInputException -> {
             ServerResponse.error(
-                "The Cart is Empty, please try again with some products",
-                HttpStatusCode.NotFound.value
+                "Password should have at least one letter, one special character, one number, and a total length between 8 to 14 characters.",
+                1010
             )
         }
 
-        is InvalidOrderIdException -> {
-            ServerResponse.error("Invalid orderId", HttpStatusCode.BadRequest.value)
+
+        is UnKnownUserException -> {
+            ServerResponse.error("Unknown user, please try again.", 1011)
+        }
+
+        // Owner Exception
+        is InvalidOwnerIdException -> {
+            ServerResponse.error("Invalid owner ID.", HttpStatusCode.BadRequest.value)
+        }
+        // Admin Exception
+        is AdminAccessDeniedException -> {
+            ServerResponse.error("Access denied.", HttpStatusCode.Forbidden.value)
+        }
+        // Market  Exceptions
+        is InvalidMarketIdException -> {
+            ServerResponse.error("Market not found with this ID.", HttpStatusCode.NotFound.value)
+        }
+
+        is InvalidMarketNameException -> {
+            ServerResponse.error("Invalid market name", HttpStatusCode.NotFound.value)
+        }
+
+        is InvalidMarketDescriptionException -> {
+            ServerResponse.error("Invalid description.", HttpStatusCode.NotFound.value)
+        }
+
+        is MarketDeletedException -> {
+            ServerResponse.error("Market not found.", HttpStatusCode.NotFound.value)
+        }
+
+        // Category Exceptions
+        is InvalidCategoryIdException -> {
+            ServerResponse.error("Category not found with this ID.", HttpStatusCode.NotFound.value)
+        }
+
+        is InvalidCategoryNameException -> {
+            ServerResponse.error("Invalid category name", HttpStatusCode.NotFound.value)
+        }
+
+        is CategoryDeletedException -> {
+            ServerResponse.error("Category not found.", HttpStatusCode.NotFound.value)
+        }
+
+        is CategoryNameNotUniqueException -> {
+            ServerResponse.error("Category name already exists in the market.", HttpStatusCode.BadRequest.value)
+        }
+
+        is NotValidCategoryList -> {
+            ServerResponse.error("Invalid Categories", HttpStatusCode.BadRequest.value)
+        }
+
+        // Product Exceptions
+        is InvalidProductIdException -> {
+            ServerResponse.error("Product not found with this ID.", HttpStatusCode.NotFound.value)
+        }
+
+        is InvalidProductNameException -> {
+            ServerResponse.error("Invalid product name.", HttpStatusCode.NotFound.value)
+        }
+
+        is InvalidProductDescriptionException -> {
+            ServerResponse.error("Invalid product description.", HttpStatusCode.NotFound.value)
+        }
+
+        is InvalidProductPriceException -> {
+            ServerResponse.error("Invalid product price.", HttpStatusCode.NotFound.value)
+        }
+
+        is ProductDeletedException -> {
+            ServerResponse.error("Product not found.", HttpStatusCode.NotFound.value)
+        }
+
+        is ProductAlreadyInWishListException -> {
+            ServerResponse.error("Product is  already exists in the WishList", HttpStatusCode.Conflict.value)
         }
 
         is ProductNotInSameCartMarketException -> {
             ServerResponse.error(
-                "this product not in same market, you should delete cart",
+                "Product not in the same market., You should delete cart",
+                HttpStatusCode.BadRequest.value
+            )
+        }
+        // Order Exceptions
+        is InvalidOrderIdException -> {
+            ServerResponse.error("Invalid order ID.", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidStateOrderException -> {
+            ServerResponse.error(
+                "Invalid order state. State must be a number from 1 to 6.",
                 HttpStatusCode.BadRequest.value
             )
         }
 
-        is InvalidStateOrderException -> {
-            ServerResponse.error("State must be number from 1 to 4", HttpStatusCode.BadRequest.value)
-        }
-
         is CantUpdateOrderStateException -> {
-            ServerResponse.error("Can't update order state", HttpStatusCode.BadRequest.value)
+            ServerResponse.error("Cannot update order state.", HttpStatusCode.BadRequest.value)
         }
 
-        is UnauthorizedException -> {
-            ServerResponse.error("Unauthorized", HttpStatusCode.Forbidden.value)
-        }
-
-        is ImageNotFoundException -> {
+        // Cart Exceptions
+        is EmptyCartException -> {
             ServerResponse.error(
-                "Image not found for userId", HttpStatusCode.BadRequest.value
+                "The cart is empty. Please try again with some products.",
+                HttpStatusCode.NotFound.value
             )
         }
 
-        is AddImageFailedException -> {
-            ServerResponse.error("Failed to Save Image", HttpStatusCode.BadRequest.value)
-        }
-
-        is InvalidOwnerIdException -> {
-            ServerResponse.error("InvalidOwnerId", HttpStatusCode.BadRequest.value)
-        }
-
-        is InvalidPageNumberException -> {
-            ServerResponse.error("Invalid Page Number", HttpStatusCode.NotFound.value)
-        }
-
-        is InvalidApiKeyException -> {
-            ServerResponse.error("Invalid Api Key", HttpStatusCode.BadRequest.value)
-        }
-
-        is InvalidRuleException -> {
-            ServerResponse.error("Invalid Token Rule", HttpStatusCode.Unauthorized.value)
-        }
-
-        is TokenExpiredException -> {
-            ServerResponse.error("Expired Token", HttpStatusCode.Unauthorized.value)
-        }
-
-        is InvalidTokenException -> {
-            ServerResponse.error("Invalid Token", HttpStatusCode.Unauthorized.value)
-        }
-
-        is InvalidTokenTypeException -> {
-            ServerResponse.error("Invalid Token Type", HttpStatusCode.Unauthorized.value)
-        }
-
-        is InvalidDeviceTokenException -> {
-            ServerResponse.error("Invalid Device Token", HttpStatusCode.BadRequest.value)
-        }
-
-        is MissingQueryParameterException -> {
-            ServerResponse.error("Missing Query Parameter", HttpStatusCode.BadRequest.value)
-        }
-
         is InvalidCountException -> {
-            ServerResponse.error("Invalid Count", HttpStatusCode.BadRequest.value)
+            ServerResponse.error("Invalid Count.", HttpStatusCode.BadRequest.value)
         }
 
         is InvalidPercentage -> {
-            ServerResponse.error("Invalid Percentage", HttpStatusCode.BadRequest.value)
+            ServerResponse.error("Invalid Percentage.", HttpStatusCode.BadRequest.value)
+        }
+        // Image Exceptions
+        is InvalidImageIdException -> {
+            ServerResponse.error("Image not found.", HttpStatusCode.NotFound.value)
+        }
+
+        is ImageNotFoundException -> {
+            ServerResponse.error("Image not found for user ID.", HttpStatusCode.BadRequest.value)
+        }
+
+        is AddImageFailedException -> {
+            ServerResponse.error("Failed to save image.", HttpStatusCode.BadRequest.value)
+        }
+        // Coupon  Exceptions
+        is InvalidCouponIdException -> {
+            ServerResponse.error("Invalid coupon ID.", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidCouponException -> {
+            ServerResponse.error("Invalid coupon.", HttpStatusCode.BadRequest.value)
+        }
+
+        is CouponAlreadyClippedException -> {
+            ServerResponse.error("Coupon already clipped.", HttpStatusCode.BadRequest.value)
         }
 
         is InvalidExpirationDateException -> {
@@ -224,17 +195,45 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
                 HttpStatusCode.BadRequest.value
             )
         }
-
-        is InvalidCouponIdException -> {
-            ServerResponse.error("Invalid Coupon Id", HttpStatusCode.BadRequest.value)
+        //other
+        is IdNotFoundException -> {
+            ServerResponse.error("ID not found", HttpStatusCode.NotFound.value)
         }
 
-        is InvalidCouponException -> {
-            ServerResponse.error("Invalid Coupon", HttpStatusCode.BadRequest.value)
+        is InvalidPageNumberException -> {
+            ServerResponse.error("Invalid Page Number", HttpStatusCode.NotFound.value)
         }
 
-        is CouponAlreadyClippedException -> {
-            ServerResponse.error("Coupon Already Clipped", HttpStatusCode.BadRequest.value)
+        is MissingQueryParameterException -> {
+            ServerResponse.error("Missing Query Parameter", HttpStatusCode.BadRequest.value)
+        }
+        // Unauthorized Exception
+        is UnauthorizedException -> {
+            ServerResponse.error("Unauthorized access.", HttpStatusCode.Forbidden.value)
+        }
+
+        is InvalidApiKeyException -> {
+            ServerResponse.error("Invalid API key.", HttpStatusCode.BadRequest.value)
+        }
+
+        is InvalidTokenException -> {
+            ServerResponse.error("Invalid token.", HttpStatusCode.Unauthorized.value)
+        }
+
+        is InvalidRuleException -> {
+            ServerResponse.error("Invalid token rule.", HttpStatusCode.Unauthorized.value)
+        }
+
+        is TokenExpiredException -> {
+            ServerResponse.error("Token expired.", HttpStatusCode.Unauthorized.value)
+        }
+
+        is InvalidTokenTypeException -> {
+            ServerResponse.error("Invalid token type.", HttpStatusCode.Unauthorized.value)
+        }
+
+        is InvalidDeviceTokenException -> {
+            ServerResponse.error("Invalid device token.", HttpStatusCode.BadRequest.value)
         }
 
         else -> {
