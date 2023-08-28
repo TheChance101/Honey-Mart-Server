@@ -7,6 +7,7 @@ import com.thechance.core.entity.Admin
 import com.thechance.core.entity.OwnerDetails
 import com.thechance.core.entity.market.MarketRequest
 import com.thechance.core.utils.dbQuery
+import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
@@ -30,11 +31,12 @@ class AdminDataSourceImp : AdminDataSource, KoinComponent {
         }
     }
 
-    override suspend fun getMarketsRequestsDetails(isApproved: Boolean): List<MarketRequest> {
+    override suspend fun getMarketsRequestsDetails(isApproved: Boolean?): List<MarketRequest> {
         return dbQuery {
             (MarketTable innerJoin OwnerTable)
                 .select {
-                    (MarketTable.isDeleted eq false) and (MarketTable.isApproved eq isApproved)
+                    (MarketTable.isDeleted eq false) and
+                            (isApproved?.let { MarketTable.isApproved eq it } ?: Op.TRUE)
                 }.map { resultRow ->
                     val ownerId = resultRow[MarketTable.ownerId].value
                     val ownerDetails = getOwnerDetails(ownerId)
@@ -43,7 +45,7 @@ class AdminDataSourceImp : AdminDataSource, KoinComponent {
                         marketName = resultRow[MarketTable.name],
                         imageUrl = resultRow[MarketTable.imageUrl],
                         description = resultRow[MarketTable.description],
-                        isDeleted = resultRow[MarketTable.isDeleted],
+                        isApproved = resultRow[MarketTable.isApproved],
                         address = resultRow[MarketTable.address],
                         ownerName = ownerDetails.ownerName ?: "Unknown Owner",
                         ownerEmail = ownerDetails.ownerEmail ?: "Unknown Owner",
@@ -51,6 +53,7 @@ class AdminDataSourceImp : AdminDataSource, KoinComponent {
                 }.toList()
         }
     }
+
 
     private suspend fun getOwnerDetails(ownerId: Long): OwnerDetails {
         val ownerDetails = dbQuery {
