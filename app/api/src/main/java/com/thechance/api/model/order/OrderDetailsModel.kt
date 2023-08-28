@@ -10,6 +10,6 @@ data class OrderDetailsModel(
     val marketId: Long,
     val products: List<ProductWithCount>,
     val totalPrice: Double,
-    val date: String,
+    val date: Long,
     val state: Int
 )

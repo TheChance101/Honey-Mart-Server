@@ -1,87 +1,90 @@
 package com.thechance.core.utils
 
+//region User
 class InvalidInputException : Exception()
-
-class UnauthorizedException : Exception()
-class InvalidCategoryNameException : Exception()
-class InvalidMarketNameException : Exception()
-class InvalidProductNameException : Exception()
-class InvalidProductDescriptionException : Exception()
-class InvalidCountException : Exception()
-class InvalidPercentage : Exception()
-class InvalidExpirationDateException : Exception()
-class InvalidCouponIdException : Exception()
-class InvalidCouponException : Exception()
-class CouponAlreadyClippedException : Exception()
-class InvalidDescriptionException : Exception()
-class InvalidProductPriceException : Exception()
-
-class InvalidCategoryNameLettersException : Exception()
-class InvalidMarketIdException : Exception()
-class InvalidCategoryIdException : Exception()
-class InvalidProductIdException : Exception()
-
-class InvalidImageIdException : Exception()
-
-class IdNotFoundException : Exception()
-
-class ItemNotAvailableException : Exception()
-
-//Delete
-class MarketDeletedException : Exception()
-
-class CategoryDeletedException : Exception()
-
-class ProductDeletedException : Exception()
-
-class NotValidCategoryList : Exception()
-
-class MissingQueryParameterException : Exception()
-
-class CategoryNameNotUniqueException : Exception()
-
-//region user
-class InvalidUserIdException : Exception()
-class AdminAccessDeniedException : Exception()
 class UsernameAlreadyExistException : Exception()
-class UnKnownUserException : Exception()
+class InvalidUserIdException : Exception()
 class InvalidUserNameOrPasswordException : Exception()
 class InvalidEmailException : Exception()
 class InvalidNameException : Exception()
 class EmailAlreadyExistException : Exception()
-
-class InvalidPasswordInputException : Exception()
 class InvalidUserNameInputException : Exception()
-class AddImageFailedException : Exception()
-class ImageNotFoundException : Exception()
-
+class InvalidPasswordInputException : Exception()
+class UnKnownUserException : Exception()
 //endregion
 
-class InvalidOrderIdException : Exception()
-class EmptyCartException : Exception()
+//region Owner
+class InvalidOwnerIdException : Exception()
+//endregion
 
+//region Admin
+class AdminAccessDeniedException : Exception()
+//endregion
+
+//region Market
+class InvalidMarketIdException : Exception()
+class InvalidMarketNameException : Exception()
+class InvalidMarketDescriptionException : Exception()
+class MarketDeletedException : Exception()
+//endregion
+
+//region Category
+class InvalidCategoryIdException : Exception()
+class InvalidCategoryNameException : Exception()
+class CategoryDeletedException : Exception()
+class CategoryNameNotUniqueException : Exception()
+class NotValidCategoryList : Exception()
+//endregion
+
+//region Product
+class InvalidProductIdException : Exception()
+class InvalidProductNameException : Exception()
+class InvalidProductDescriptionException : Exception()
+class InvalidProductPriceException : Exception()
+class ProductDeletedException : Exception()
 class ProductAlreadyInWishListException : Exception()
-
-//region cart
-class CountInvalidInputException : Exception()
-
 class ProductNotInSameCartMarketException : Exception()
 //endregion
 
-//region owner
-class InvalidOwnerIdException : Exception()
+//region Order
+class InvalidOrderIdException : Exception()
 class InvalidStateOrderException : Exception()
-
 class CantUpdateOrderStateException : Exception()
-class InvalidApiKeyException : Exception()
+//endregion
 
+//region Cart
+class EmptyCartException : Exception()
+class CountInvalidInputException : Exception()
+class InvalidPercentage : Exception()
+//endregion
+
+//region Image
+class InvalidImageIdException : Exception()
+class ImageNotFoundException : Exception()
+class AddImageFailedException : Exception()
+//endregion
+
+//region Coupon
+class InvalidCouponIdException : Exception()
+class InvalidCouponException : Exception()
+class CouponAlreadyClippedException : Exception()
+class InvalidExpirationDateException : Exception()
+class InvalidCountException : Exception()
+//endregion
+
+//region Exceptions
+class IdNotFoundException : Exception()
 class InvalidPageNumberException : Exception()
+class MissingQueryParameterException : Exception()
 
 //endregion
-//auth region
+
+//region Authentication
+class UnauthorizedException : Exception()
 class InvalidRuleException : Exception()
 class TokenExpiredException : Exception()
 class InvalidTokenException : Exception()
 class InvalidTokenTypeException : Exception()
 class InvalidDeviceTokenException : Exception()
-//end region
+class InvalidApiKeyException : Exception()
+//endregion
