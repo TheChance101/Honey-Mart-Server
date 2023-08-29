@@ -112,18 +112,26 @@ internal fun isInValidDescription(description: String?): Boolean {
 }
 
 
-//Starts with one or more digits.
-//Followed by a space.
-//Followed by one or more uppercase or lowercase letters, including spaces.
-//Followed by a comma and a space.
-//Followed by one or more uppercase or lowercase letters, including spaces.
-//Followed by a comma and a space.
-//Ends with exactly two uppercase or lowercase letters.
+/**
+ * Checks the validity of an address based on a specific pattern.
+ *
+ * This function takes a nullable String representing an address and determines if it is valid
+ * according to a predefined pattern. The address is considered valid if it meets the following criteria:
+ *  - It is not null or empty.
+ *  - It matches the pattern defined by the regular expression "^[0-9A-Za-z\\s\\.,#-]{8,}$".
+ *  - Leading and trailing whitespace in the address are ignored.
+ *
+ * @param address The address to be validated.
+ * @return `true` if the address is valid according to the specified pattern, otherwise `false`.
+ */
 internal fun isValidAddress(address: String?): Boolean {
     return if (address.isNullOrEmpty()) {
         false
     } else {
-        val pattern = Regex("^[0-9]+\\s[A-Za-z\\s]+,\\s[A-Za-z\\s]+,\\s[A-Za-z]{2}\$")
+        // Define the regular expression pattern to match the address requirements.
+        val pattern = Regex("^[0-9A-Za-z\\s\\.,#-]{8,}$")
+
+        // Use the matches() function of the pattern to check if the address matches the pattern.
         pattern.matches(address.trim())
     }
 }
