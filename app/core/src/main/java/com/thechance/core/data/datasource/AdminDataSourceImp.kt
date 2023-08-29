@@ -3,7 +3,7 @@ package com.thechance.core.data.datasource
 import com.thechance.core.data.datasource.database.tables.MarketTable
 import com.thechance.core.data.datasource.database.tables.OwnerTable
 import com.thechance.core.data.repository.dataSource.AdminDataSource
-import com.thechance.core.entity.Admin
+import com.thechance.core.entity.AdminDetails
 import com.thechance.core.entity.OwnerDetails
 import com.thechance.core.entity.market.MarketRequest
 import com.thechance.core.utils.dbQuery
@@ -15,8 +15,8 @@ import org.koin.core.component.KoinComponent
 
 class AdminDataSourceImp : AdminDataSource, KoinComponent {
 
-    override suspend fun getAdminByEmail(email: String): Admin {
-        return Admin(
+    override suspend fun getAdminByEmail(email: String): AdminDetails {
+        return AdminDetails(
             adminId = 1,
             email = System.getenv("adminEmail"),
             fullName = System.getenv("adminFullName"),
