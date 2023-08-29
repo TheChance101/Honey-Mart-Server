@@ -40,7 +40,7 @@ interface AuthRepository {
 
    //region admin
     suspend fun isValidAdmin(password: String, email: String): Boolean
-    suspend fun getAdminByEmail(email: String): Admin
+    suspend fun getAdminByEmail(email: String): AdminDetails
     suspend fun getMarketsRequestsDetails(isApproved: Boolean?): List<MarketRequest>
     suspend fun approveMarket(marketId: Long, isApproved: Boolean): Boolean
     //endregion
