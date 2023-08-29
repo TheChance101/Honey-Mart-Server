@@ -10,5 +10,6 @@ data class Market(
     val address: String,
     val latitude: Double,
     val longitude: Double,
-    val isApproved: Boolean
+    val isApproved: Boolean,
+    val marketStatus: Boolean
 )

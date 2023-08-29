@@ -45,6 +45,7 @@ class AdminDataSourceImp : AdminDataSource, KoinComponent {
                         marketName = resultRow[MarketTable.name],
                         imageUrl = resultRow[MarketTable.imageUrl],
                         description = resultRow[MarketTable.description],
+                        marketStatus = resultRow[MarketTable.status],
                         isApproved = resultRow[MarketTable.isApproved],
                         address = resultRow[MarketTable.address],
                         ownerName = ownerDetails.ownerName ?: "Unknown Owner",
@@ -63,7 +64,6 @@ class AdminDataSourceImp : AdminDataSource, KoinComponent {
         val ownerEmail = ownerDetails?.get(OwnerTable.email)
         return OwnerDetails(ownerName, ownerEmail)
     }
-
 
 
     override suspend fun approveMarket(marketId: Long, isApproved: Boolean): Boolean = dbQuery {
