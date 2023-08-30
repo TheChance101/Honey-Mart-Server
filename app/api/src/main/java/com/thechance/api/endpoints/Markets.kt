@@ -71,6 +71,7 @@ fun Route.marketsRoutes() {
                     HttpStatusCode.OK,
                     ServerResponse.success(marketInfo)
                 )
+
             }
 
             put("/updateMarket") {
