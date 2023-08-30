@@ -1,8 +1,8 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
+import com.thechance.api.model.mapper.toApiAdmin
 import com.thechance.api.model.mapper.toApiMarketRequestModel
-import com.thechance.api.model.mapper.toApiTokens
 import com.thechance.core.domain.usecase.admin.AdminUseCaseContainer
 import com.thechance.core.utils.API_KEY_AUTHENTICATION
 import com.thechance.core.utils.JWT_AUTHENTICATION
@@ -26,8 +26,8 @@ fun Route.adminRoutes() {
                 val params = call.receiveParameters()
                 val email = params["email"]?.trim().toString()
                 val password = params["password"]?.trim().toString()
-                val token = adminUseCase.verifyAdminUseCase(email, password).toApiTokens()
-                call.respond(HttpStatusCode.Created, ServerResponse.success(token, "Logged in Successfully"))
+                val admin = adminUseCase.verifyAdminUseCase(email, password).toApiAdmin()
+                call.respond(HttpStatusCode.Created, ServerResponse.success(admin, "Logged in Successfully"))
             }
 
         }

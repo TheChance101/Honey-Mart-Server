@@ -1,3 +1,8 @@
 package com.thechance.core.entity
 
-data class Admin(val adminId: Long, val email: String, val fullName: String, val password: String, var salt: String)
+import com.thechance.core.data.security.token.Tokens
+
+data class Admin(
+    val tokens: Tokens,
+    val name: String
+)
