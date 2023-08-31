@@ -99,6 +99,7 @@ val adminUseCaseModule = module {
     singleOf(::GetMarketsRequestsDetails) { bind<GetMarketsRequestsDetails>() }
     singleOf(::ApproveMarketUseCase) { bind<ApproveMarketUseCase>() }
     singleOf(::AdminUseCaseContainer) { bind<AdminUseCaseContainer>() }
+    singleOf(::AuthenticateAdminUseCase) { bind<AuthenticateAdminUseCase>() }
 }
 
 val cartUseCase = module {

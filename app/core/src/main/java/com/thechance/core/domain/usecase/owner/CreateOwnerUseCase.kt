@@ -19,7 +19,6 @@ class CreateOwnerUseCase(private val repository: AuthRepository) : KoinComponent
         }
     }
 
-
     private fun isValidInput(fullName: String?, email: String?, password: String?): Exception? {
         return when {
 
@@ -32,5 +31,4 @@ class CreateOwnerUseCase(private val repository: AuthRepository) : KoinComponent
             else -> { null }
         }
     }
-
 }
