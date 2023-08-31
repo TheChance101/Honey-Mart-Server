@@ -40,6 +40,12 @@ fun Route.adminRoutes() {
                 val markets = adminUseCase.getMarketsRequestsDetails(role, isApproved).map { it.toApiMarketRequestModel() }
                 call.respond(HttpStatusCode.OK, ServerResponse.success(markets))
             }
+            get{
+                val principal = call.principal<JWTPrincipal>()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                adminUseCase.authenticateAdminUseCase(role)
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Authentication success"))
+            }
 
             put("/request/{id}") {
                 val principal = call.principal<JWTPrincipal>()

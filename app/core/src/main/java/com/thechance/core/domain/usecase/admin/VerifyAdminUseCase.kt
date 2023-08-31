@@ -22,5 +22,4 @@ class VerifyAdminUseCase(private val repository: AuthRepository) : KoinComponent
             }
         }
     }
-
 }
