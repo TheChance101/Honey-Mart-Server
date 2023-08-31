@@ -43,6 +43,11 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
         CategoriesTable.update({ (CategoriesTable.id eq categoryId) and (CategoriesTable.isDeleted eq false) }) {
             it[isDeleted] = true
         }
+        (ProductTable innerJoin CategoryProductTable).update(
+            { CategoryProductTable.categoryId eq categoryId }
+        ) {
+            it[ProductTable.isDeleted] = true
+        }
         true
     }
 
@@ -57,7 +62,6 @@ class CategoryDataSourceImp : CategoryDataSource, KoinComponent {
         }
         true
     }
-
 
 
     override suspend fun isCategoryDeleted(categoryId: Long): Boolean? = dbQuery {
