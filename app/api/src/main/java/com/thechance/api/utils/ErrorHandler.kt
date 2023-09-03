@@ -84,6 +84,9 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is MarketAlreadyExistException -> {
             ServerResponse.error("Market already exist.", 1046)
         }
+        is MarketNotApprovedException -> {
+            ServerResponse.error("Market not approved.", 1047)
+        }
 
         // Category Exceptions
         is InvalidCategoryIdException -> {
