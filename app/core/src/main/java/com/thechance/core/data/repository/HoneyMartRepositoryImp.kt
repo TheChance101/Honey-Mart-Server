@@ -99,8 +99,13 @@ class HoneyMartRepositoryImp(
     override suspend fun getCategoriesByMarket(marketId: Long): List<Category> =
         marketDataSource.getCategoriesByMarket(marketId)
 
-    override suspend fun deleteMarket(marketId: Long): Boolean =
-        marketDataSource.deleteMarket(marketId)
+    override suspend fun deleteMarket(marketId: Long): Boolean {
+        return marketDataSource.deleteMarket(marketId)
+    }
+
+    override suspend fun restoreMarket(marketId: Long): Boolean {
+        return marketDataSource.restoreMarket(marketId)
+    }
 
     override suspend fun updateMarket(marketId: Long, marketName: String?, description: String?) =
         marketDataSource.updateMarket(marketId, marketName = marketName, description = description)

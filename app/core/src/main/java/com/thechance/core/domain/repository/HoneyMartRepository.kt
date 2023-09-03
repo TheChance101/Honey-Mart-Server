@@ -146,4 +146,5 @@ interface HoneyMartRepository {
     suspend fun getMarketProductsWithoutValidCoupons(marketId: Long): List<Product>
     suspend fun searchMarketProductsWithoutValidCoupons(marketId: Long, productName: String): List<Product>
     //end coupons region
+    suspend fun restoreMarket(marketId: Long): Boolean
 }
