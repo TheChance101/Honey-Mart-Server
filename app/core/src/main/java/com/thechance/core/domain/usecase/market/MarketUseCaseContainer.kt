@@ -11,5 +11,6 @@ data class MarketUseCaseContainer(
     val getMarketDetailsUseCase: GetMarketDetailsUseCase,
     val updateMarketStatus: UpdateMarketStatusUseCase,
     val checkMarketApprovedUseCase: CheckMarketApprovedUseCase,
-    val getMarketInfoUseCase: GetMarketInfoUseCase
+    val getMarketInfoUseCase: GetMarketInfoUseCase,
+    val restoreMarketUseCase: RestoreMarketUseCase,
 ) : KoinComponent

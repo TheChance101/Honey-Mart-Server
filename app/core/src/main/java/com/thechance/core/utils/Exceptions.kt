@@ -23,6 +23,7 @@ class AdminAccessDeniedException : Exception()
 
 //region Market
 class InvalidMarketIdException : Exception()
+class MarketAlreadyExistException : Exception()
 class InvalidMarketNameException : Exception()
 class InvalidMarketDescriptionException : Exception()
 class MarketDeletedException : Exception()

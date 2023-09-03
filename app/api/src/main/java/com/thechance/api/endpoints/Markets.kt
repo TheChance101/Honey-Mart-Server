@@ -166,6 +166,12 @@ fun Route.marketsRoutes() {
                 marketUseCaseContainer.deleteMarketUseCase(marketId)
                 call.respond(HttpStatusCode.OK, ServerResponse.success("Market Deleted Successfully"))
             }
+            //restore market
+            put("/{id}") {
+                val marketId = call.parameters["id"]?.toLongOrNull()
+                marketUseCaseContainer.restoreMarketUseCase(marketId)
+                call.respond(HttpStatusCode.OK, ServerResponse.success("Market Restored Successfully"))
+            }
 
         }
     }
