@@ -81,6 +81,10 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             ServerResponse.error("Market not found.", 1045)
         }
 
+        is MarketAlreadyExistException -> {
+            ServerResponse.error("Market already exist.", 1046)
+        }
+
         // Category Exceptions
         is InvalidCategoryIdException -> {
             ServerResponse.error("Category not found with this ID.", 1052)
@@ -195,6 +199,7 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
                 1105
             )
         }
+
         is InvalidCountException -> {
             ServerResponse.error("Invalid Count.", 1106)
         }

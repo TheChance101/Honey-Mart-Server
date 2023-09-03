@@ -79,9 +79,62 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
 
     override suspend fun deleteMarket(marketId: Long): Boolean = dbQuery {
         MarketTable.update({ MarketTable.id eq marketId }) { it[isDeleted] = true }
+        deleteMarketCategories(marketId)
         true
     }
 
+    override suspend fun deleteMarketCategories(marketId: Long): Boolean = dbQuery {
+        //Get a list of category IDs associated with the marketId
+        val categoryIdsToDelete = CategoriesTable
+            .select {
+                (CategoriesTable.marketId eq marketId) and
+                        (CategoriesTable.isDeleted eq false)
+            }.map { it[CategoriesTable.id].value }
+
+        if (categoryIdsToDelete.isNotEmpty()) {
+            //Mark categories as deleted
+            CategoriesTable.update({ CategoriesTable.id inList categoryIdsToDelete }) {
+                it[CategoriesTable.isDeleted] = true
+            }
+
+            //Mark associated products as deleted
+            (ProductTable innerJoin CategoryProductTable).update(
+                { CategoryProductTable.categoryId inList categoryIdsToDelete }
+            ) {
+                it[ProductTable.isDeleted] = true
+            }
+            true
+        } else {
+            //No categories found for the given marketId, nothing to delete
+            false
+        }
+    }
+
+    override suspend fun restoreMarket(marketId: Long): Boolean = dbQuery {
+        //Restore the market
+        val marketRestored = MarketTable.update({ MarketTable.id eq marketId }) {
+            it[isDeleted] = false
+        } > 0
+
+        if (marketRestored) {
+            //Restore associated categories
+            CategoriesTable.update({ CategoriesTable.marketId eq marketId }) {
+                it[CategoriesTable.isDeleted] = false
+            }
+
+            //Restore associated products
+            ProductTable.update(
+                { ProductTable.marketId eq marketId }
+            ) {
+                it[ProductTable.isDeleted] = false
+            }
+
+            true
+        } else {
+            //Market not found or already restored
+            false
+        }
+    }
 
     override suspend fun updateMarket(
         marketId: Long, marketName: String?, imageUrl: String?, latitude: Double?, longitude: Double?,
@@ -114,18 +167,10 @@ class MarketDataSourceImp : MarketDataSource, KoinComponent {
 
     override suspend fun getMarketId(productId: Long): Long? {
         return dbQuery {
-            val categoryId = CategoryProductTable.select { CategoryProductTable.productId eq productId }
-                .map {
-                    it[CategoryProductTable.categoryId].value
-                }.firstOrNull()
-
-            categoryId?.let {
-                val marketId = CategoriesTable.select { CategoriesTable.id eq categoryId }
-                    .map { category ->
-                        category[CategoriesTable.marketId].value
-                    }.singleOrNull()
-                marketId
-            }
+            ProductTable
+                .select { ProductTable.id eq productId }
+                .map { it[ProductTable.marketId] }
+                .firstOrNull()?.value
         }
     }
 
