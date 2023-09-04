@@ -1,10 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.model.mapper.toApiCategoryModel
-import com.thechance.api.model.mapper.toApiMarketDetailsModel
-import com.thechance.api.model.mapper.toApiMarketInfoModel
-import com.thechance.api.model.mapper.toApiMarketModel
+import com.thechance.api.model.mapper.*
 import com.thechance.api.model.market.MarketIdModel
 import com.thechance.core.domain.usecase.market.MarketUseCaseContainer
 import com.thechance.core.utils.API_KEY_AUTHENTICATION
@@ -55,10 +52,11 @@ fun Route.marketsRoutes() {
                 val principal = call.principal<JWTPrincipal>()
                 val marketOwnerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
-                val marketId = marketUseCaseContainer.checkMarketApprovedUseCase(marketOwnerId, role)
+                val marketApproval =
+                    marketUseCaseContainer.checkMarketApprovedUseCase(marketOwnerId, role).toApiMarketApprovalModel()
                 call.respond(
                     HttpStatusCode.OK,
-                    ServerResponse.success(marketId)
+                    ServerResponse.success(marketApproval)
                 )
             }
 

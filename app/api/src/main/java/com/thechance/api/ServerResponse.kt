@@ -12,13 +12,13 @@ data class ServerResponse<T>(
 
         fun error(errorMessage: String, code: Int): ServerResponse<String> {
             return ServerResponse(
-                value = "",
+                value = null,
                 isSuccess = false,
                 status = ResponseStatus(message = errorMessage, code = code)
             )
         }
 
-        fun <T> success(result: T,successMessage: String? = null): ServerResponse<T> {
+        fun <T> success(result: T, successMessage: String? = null): ServerResponse<T> {
             return ServerResponse(
                 value = result,
                 isSuccess = true,

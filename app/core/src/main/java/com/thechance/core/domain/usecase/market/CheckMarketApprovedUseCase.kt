@@ -1,11 +1,12 @@
 package com.thechance.core.domain.usecase.market
 
 import com.thechance.core.domain.repository.HoneyMartRepository
+import com.thechance.core.entity.market.MarketApproval
 import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
 
 class CheckMarketApprovedUseCase(private val repository: HoneyMartRepository) : KoinComponent {
-    suspend operator fun invoke(ownerId: Long?, role: String?): Long {
+    suspend operator fun invoke(ownerId: Long?, role: String?): MarketApproval {
         val marketId = repository.getMarketIdByOwnerId(ownerId = ownerId!!)
         return if (isInvalidId(ownerId) || !isValidRole(MARKET_OWNER_ROLE, role)) {
             throw InvalidOwnerIdException()
@@ -18,11 +19,10 @@ class CheckMarketApprovedUseCase(private val repository: HoneyMartRepository) : 
             } else if (market.isDeleted) {
                 throw MarketDeletedException()
             } else {
-                if (market.isApproved) {
-                    market.marketId
-                } else {
-                    0L
-                }
+                MarketApproval(
+                    marketId = market.marketId,
+                    isMarketApproved = market.isApproved
+                )
             }
         }
     }
