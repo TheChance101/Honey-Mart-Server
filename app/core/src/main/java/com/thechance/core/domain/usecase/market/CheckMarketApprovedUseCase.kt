@@ -21,7 +21,7 @@ class CheckMarketApprovedUseCase(private val repository: HoneyMartRepository) : 
                 if (market.isApproved) {
                     market.marketId
                 } else {
-                    throw MarketNotApprovedException()
+                    0L
                 }
             }
         }
