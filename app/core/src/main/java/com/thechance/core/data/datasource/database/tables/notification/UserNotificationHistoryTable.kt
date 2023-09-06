@@ -6,11 +6,11 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.LocalDateTime
 
-object NotificationHistoryTable : LongIdTable() {
+object UserNotificationHistoryTable : LongIdTable() {
     val title = text("title")
     val body = text("body")
     val timeStamp = datetime("timeStamp").clientDefault { LocalDateTime.now() }
-    val receiverId = reference("userId", NormalUserTable)
+    val userId = reference("userId", NormalUserTable)
     val orderId = reference("orderId",OrderTable)
     val isRead = bool("isRead").default(false)
 }
