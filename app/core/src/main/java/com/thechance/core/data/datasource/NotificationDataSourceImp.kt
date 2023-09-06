@@ -4,8 +4,10 @@ import com.google.firebase.messaging.AndroidConfig
 import com.google.firebase.messaging.AndroidNotification
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
-import com.thechance.core.data.datasource.database.tables.notification.NotificationHistoryTable
-import com.thechance.core.data.datasource.mapper.toNotification
+import com.thechance.core.data.datasource.database.tables.notification.OwnerNotificationHistoryTable
+import com.thechance.core.data.datasource.database.tables.notification.UserNotificationHistoryTable
+import com.thechance.core.data.datasource.mapper.toOwnerNotification
+import com.thechance.core.data.datasource.mapper.toUserNotification
 import com.thechance.core.data.repository.dataSource.NotificationDataSource
 import com.thechance.core.entity.Notification
 import com.thechance.core.entity.NotificationRequest
@@ -53,24 +55,30 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
 
     override suspend fun saveNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
         return dbQuery {
-            NotificationHistoryTable.insert {
+            UserNotificationHistoryTable.insert {
                 it[this.title] = title
                 it[this.body] = body
-                it[this.receiverId] = receiverId
+                it[this.userId] = receiverId
                 it[this.orderId] = orderId
             }
             true
         }
     }
 
-    override suspend fun getNotificationHistory(receiverId: Long): List<Notification> = dbQuery {
-        NotificationHistoryTable.select { NotificationHistoryTable.receiverId eq receiverId }.map {
-            it.toNotification()
+    override suspend fun getUserNotificationHistory(userId: Long): List<Notification> = dbQuery {
+        UserNotificationHistoryTable.select { UserNotificationHistoryTable.userId eq userId }.map {
+            it.toUserNotification()
+        }.toList()
+    }
+
+    override suspend fun getOwnerNotificationHistory(ownerId: Long): List<Notification> = dbQuery {
+        OwnerNotificationHistoryTable.select { OwnerNotificationHistoryTable.ownerId eq ownerId }.map {
+            it.toOwnerNotification()
         }.toList()
     }
 
     override suspend fun updateNotificationState(receiverId: Long, isRead: Boolean): Boolean = dbQuery {
-        NotificationHistoryTable.update({ NotificationHistoryTable.receiverId eq receiverId }) { notificationRow ->
+        UserNotificationHistoryTable.update({ UserNotificationHistoryTable.userId eq receiverId }) { notificationRow ->
             notificationRow[this.isRead] = isRead
         }
         true

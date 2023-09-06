@@ -7,8 +7,8 @@ import com.thechance.core.data.datasource.database.tables.category.CategoriesTab
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
 import com.thechance.core.data.datasource.database.tables.coupon.CouponTable
 import com.thechance.core.data.datasource.database.tables.coupon.CouponUserTable
-import com.thechance.core.data.datasource.database.tables.notification.DeviceTokenTable
-import com.thechance.core.data.datasource.database.tables.notification.NotificationHistoryTable
+import com.thechance.core.data.datasource.database.tables.notification.UserDeviceTokenTable
+import com.thechance.core.data.datasource.database.tables.notification.UserNotificationHistoryTable
 import com.thechance.core.data.datasource.database.tables.order.OrderProductTable
 import com.thechance.core.data.datasource.database.tables.order.OrderTable
 import com.thechance.core.data.datasource.database.tables.product.GalleryTable
@@ -40,8 +40,8 @@ class CoreDataBase {
             ProductGalleryTable,
             CouponTable,
             CouponUserTable,
-            DeviceTokenTable,
-            NotificationHistoryTable,
+            UserDeviceTokenTable,
+            UserNotificationHistoryTable,
         )
     }
 

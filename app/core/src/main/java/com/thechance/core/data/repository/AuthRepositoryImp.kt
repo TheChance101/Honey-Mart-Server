@@ -62,7 +62,7 @@ class AuthRepositoryImp(
 
     override suspend fun isOwnerEmailExists(email: String): Boolean = ownerDataSource.isOwnerEmailExists(email)
 
-    override suspend fun getMarketOwnerByEmail(email: String): Owner = ownerDataSource.getOwnerByEmail(email)
+    override suspend fun getOwnerByEmail(email: String): Owner = ownerDataSource.getOwnerByEmail(email)
 
 
     override fun isOwnerValidPassword(owner: Owner, password: String): Boolean = hashingService.verify(
@@ -122,8 +122,12 @@ class AuthRepositoryImp(
         return deviceTokenDataSource.getDeviceTokens(receiverId)
     }
 
-    override suspend fun saveDeviceTokens(receiverId: Long, token: String) {
-        deviceTokenDataSource.saveDeviceTokens(receiverId, token)
+    override suspend fun saveUserDeviceTokens(userId: Long, deviceToken: String) {
+        deviceTokenDataSource.saveUserDeviceTokens(userId, deviceToken)
+    }
+
+    override suspend fun saveOwnerDeviceTokens(ownerId: Long, deviceToken: String) {
+        deviceTokenDataSource.saveOwnerDeviceTokens(ownerId, deviceToken)
     }
 //endregion
 
@@ -143,8 +147,12 @@ class AuthRepositoryImp(
         return notificationDataSource.saveNotification(title, body, receiverId, orderId)
     }
 
-    override suspend fun getNotificationHistory(receiverId: Long): List<Notification> {
-        return notificationDataSource.getNotificationHistory(receiverId)
+    override suspend fun getUserNotificationHistory(userId: Long): List<Notification> {
+        return notificationDataSource.getUserNotificationHistory(userId)
+    }
+
+    override suspend fun getOwnerNotificationHistory(ownerId: Long): List<Notification> {
+        return notificationDataSource.getOwnerNotificationHistory(ownerId)
     }
     //end region
 }
