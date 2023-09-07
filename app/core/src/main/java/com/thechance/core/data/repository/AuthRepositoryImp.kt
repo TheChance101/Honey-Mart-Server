@@ -119,7 +119,7 @@ class AuthRepositoryImp(
 
     //region deviceTokens
     override suspend fun getDeviceTokens(receiverId: Long): List<String> {
-        return deviceTokenDataSource.getDeviceTokens(receiverId)
+        return deviceTokenDataSource.getUserDeviceTokens(receiverId)
     }
 
     override suspend fun saveUserDeviceTokens(userId: Long, deviceToken: String) {
@@ -139,12 +139,20 @@ class AuthRepositoryImp(
 
     }
 
-    override suspend fun updateNotificationState(receiverId: Long, isRead: Boolean): Boolean {
-        return notificationDataSource.updateNotificationState(receiverId,isRead)
+    override suspend fun updateUserNotificationState(userId: Long, isRead: Boolean): Boolean {
+        return notificationDataSource.updateUserNotificationState(userId,isRead)
     }
 
-    override suspend fun saveNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
-        return notificationDataSource.saveNotification(title, body, receiverId, orderId)
+    override suspend fun updateOwnerNotificationState(ownerId: Long, isRead: Boolean): Boolean {
+        return notificationDataSource.updateOwnerNotificationState(ownerId,isRead)
+    }
+
+    override suspend fun saveUserNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
+        return notificationDataSource.saveUserNotification(title, body, receiverId, orderId)
+    }
+
+    override suspend fun saveOwnerNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
+        return notificationDataSource.saveOwnerNotification(title, body, receiverId, orderId)
     }
 
     override suspend fun getUserNotificationHistory(userId: Long): List<Notification> {

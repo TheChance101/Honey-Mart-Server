@@ -12,10 +12,18 @@ import org.koin.core.component.KoinComponent
 
 class DeviceTokenDataSourceImp : DeviceTokenDataSource, KoinComponent {
 
-    override suspend fun getDeviceTokens(receiverId: Long): List<String> {
+    override suspend fun getUserDeviceTokens(userId: Long): List<String> {
         return dbQuery {
-            UserDeviceTokenTable.select { UserDeviceTokenTable.userId eq receiverId }.map {
+            UserDeviceTokenTable.select { UserDeviceTokenTable.userId eq userId }.map {
                 it[UserDeviceTokenTable.token]
+            }.toList()
+        }
+    }
+
+    override suspend fun getOwnerDeviceTokens(ownerId: Long): List<String> {
+        return dbQuery {
+            OwnerDeviceTokenTable.select { OwnerDeviceTokenTable.ownerId eq ownerId }.map {
+                it[OwnerDeviceTokenTable.token]
             }.toList()
         }
     }

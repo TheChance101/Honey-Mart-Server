@@ -16,7 +16,7 @@ class SendUserNotificationOnOrderStateUseCase(private val repository: AuthReposi
             val tokens = repository.getDeviceTokens(receiverId)
             val notification = NotificationRequest(tokens,orderId,title,body,orderState)
             return repository.sendNotification(notification).also {
-                repository.saveNotification(title, body, receiverId,orderId)
+                repository.saveUserNotification(title, body, receiverId,orderId)
             }
         } else {
             false

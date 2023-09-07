@@ -14,7 +14,7 @@ class SendOwnerNotificationUseCase(private val repository: AuthRepository) : Koi
             val tokens = repository.getDeviceTokens(receiverId)
             val notification = NotificationRequest(tokens,orderId,title,body,orderState)
             return repository.sendNotification(notification).also {
-                repository.saveNotification(title, body, receiverId,orderId)
+                repository.saveOwnerNotification(title, body, receiverId,orderId)
             }
         } else {
             false

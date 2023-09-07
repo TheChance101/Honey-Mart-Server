@@ -62,10 +62,12 @@ interface AuthRepository {
 
     //region notification
     suspend fun sendNotification(notification: NotificationRequest): Boolean
-    suspend fun saveNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean
+    suspend fun saveUserNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean
+    suspend fun saveOwnerNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean
     suspend fun getUserNotificationHistory(userId: Long): List<Notification>
     suspend fun getOwnerNotificationHistory(ownerId: Long): List<Notification>
-    suspend fun updateNotificationState(receiverId: Long, isRead: Boolean): Boolean
+    suspend fun updateUserNotificationState(userId: Long, isRead: Boolean): Boolean
+    suspend fun updateOwnerNotificationState(ownerId: Long, isRead: Boolean): Boolean
     //endregion
     suspend fun getMarketIdByOwnerId(ownerId: Long): Long?
 }

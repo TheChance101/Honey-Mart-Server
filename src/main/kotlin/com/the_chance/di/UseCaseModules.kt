@@ -118,7 +118,7 @@ val notificationUseCase = module {
     singleOf(::NotificationUseCaseContainer) { bind<NotificationUseCaseContainer>() }
     singleOf(::GetUserNotificationHistoryUseCase) { bind<GetUserNotificationHistoryUseCase>() }
     singleOf(::GetOwnerNotificationHistoryUseCase) { bind<GetOwnerNotificationHistoryUseCase>() }
-    singleOf(::UpdateNotificationState) { bind<UpdateNotificationState>() }
+    singleOf(::UpdateUserNotificationState) { bind<UpdateUserNotificationState>() }
 }
 
 val deviceTokenUseCase = module {

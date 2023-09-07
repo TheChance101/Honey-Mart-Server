@@ -53,12 +53,24 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
         return response.failureCount == 0
     }
 
-    override suspend fun saveNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
+    override suspend fun saveUserNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
         return dbQuery {
             UserNotificationHistoryTable.insert {
                 it[this.title] = title
                 it[this.body] = body
                 it[this.userId] = receiverId
+                it[this.orderId] = orderId
+            }
+            true
+        }
+    }
+
+    override suspend fun saveOwnerNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean {
+        return dbQuery {
+            OwnerNotificationHistoryTable.insert {
+                it[this.title] = title
+                it[this.body] = body
+                it[this.ownerId] = receiverId
                 it[this.orderId] = orderId
             }
             true
@@ -77,8 +89,15 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
         }.toList()
     }
 
-    override suspend fun updateNotificationState(receiverId: Long, isRead: Boolean): Boolean = dbQuery {
+    override suspend fun updateUserNotificationState(receiverId: Long, isRead: Boolean): Boolean = dbQuery {
         UserNotificationHistoryTable.update({ UserNotificationHistoryTable.userId eq receiverId }) { notificationRow ->
+            notificationRow[this.isRead] = isRead
+        }
+        true
+    }
+
+    override suspend fun updateOwnerNotificationState(receiverId: Long, isRead: Boolean): Boolean = dbQuery {
+        OwnerNotificationHistoryTable.update({ OwnerNotificationHistoryTable.ownerId eq receiverId }) { notificationRow ->
             notificationRow[this.isRead] = isRead
         }
         true
