@@ -9,14 +9,14 @@ import org.koin.core.component.KoinComponent
 
 class SendUserNotificationOnOrderStateUseCase(private val repository: AuthRepository) : KoinComponent {
 
-    suspend operator fun invoke(receiverId: Long, orderId: Long, orderState: Int): Boolean {
+    suspend operator fun invoke(userId: Long, orderId: Long, orderState: Int): Boolean {
         val pairForOrderState = orderStateContentMap[orderState]
         return if (pairForOrderState != null) {
             val (title, body) = pairForOrderState
-            val tokens = repository.getDeviceTokens(receiverId)
+            val tokens = repository.getDeviceTokens(userId)
             val notification = NotificationRequest(tokens,orderId,title,body,orderState)
             return repository.sendNotification(notification).also {
-                repository.saveUserNotification(title, body, receiverId,orderId)
+                repository.saveUserNotification(title, body, userId,orderId)
             }
         } else {
             false

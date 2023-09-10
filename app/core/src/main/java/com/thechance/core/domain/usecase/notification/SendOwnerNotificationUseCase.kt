@@ -7,14 +7,14 @@ import org.koin.core.component.KoinComponent
 
 class SendOwnerNotificationUseCase(private val repository: AuthRepository) : KoinComponent {
 
-    suspend operator fun invoke(receiverId: Long, orderId: Long, orderState: Int): Boolean {
+    suspend operator fun invoke(ownerId: Long, orderId: Long, orderState: Int): Boolean {
         val pairForOrderState = orderStateContentMap[orderState]
         return if (pairForOrderState != null) {
             val (title, body) = pairForOrderState
-            val tokens = repository.getDeviceTokens(receiverId)
+            val tokens = repository.getDeviceTokens(ownerId)
             val notification = NotificationRequest(tokens,orderId,title,body,orderState)
             return repository.sendNotification(notification).also {
-                repository.saveOwnerNotification(title, body, receiverId,orderId)
+                repository.saveOwnerNotification(title, body, ownerId,orderId)
             }
         } else {
             false

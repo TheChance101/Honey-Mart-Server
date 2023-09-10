@@ -29,12 +29,12 @@ class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : Koi
                     throw InvalidUserIdException()
                 }
                 if (repository.updateOrderState(orderId, newOrderState)) {
-                    val userId: Long = if (role == NORMAL_USER_ROLE) {
+                    val receiverId: Long = if (role == NORMAL_USER_ROLE) {
                         repository.getOwnerIdByMarketId(repository.getOrderById(orderId).marketId)!!
                     } else {
                         repository.getOrderById(orderId).userId
                     }
-                    sendNotificationUseCase(userId, orderId, newOrderState)
+                    sendNotificationUseCase(receiverId, orderId, newOrderState)
                     true
                 } else {
                     false
