@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit
 
 val appModules = module {
     single { CoreDataBase() }
-    //single { FirebaseMessaging.getInstance() }
     single<FirebaseMessaging> { FirebaseMessaging.getInstance() }
 
 
@@ -53,7 +52,8 @@ val appModules = module {
         tokenUseCase,
         notificationUseCase,
         deviceTokenUseCase,
-        couponsUseCase
+        couponsUseCase,
+        reviewsUseCase
     )
 }
 

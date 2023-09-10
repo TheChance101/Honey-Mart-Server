@@ -6,7 +6,6 @@ import com.thechance.core.entity.Owner
 import com.thechance.core.data.datasource.database.tables.OwnerTable
 import com.thechance.core.data.repository.dataSource.OwnerDataSource
 import com.thechance.core.data.security.hashing.SaltedHash
-import com.thechance.core.entity.User
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select

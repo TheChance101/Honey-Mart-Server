@@ -1,7 +1,7 @@
 package com.thechance.core.data.repository.dataSource
 
 import com.thechance.core.entity.Category
-import com.thechance.core.entity.Product
+import com.thechance.core.entity.product.Product
 
 interface ProductDataSource {
 

@@ -21,11 +21,21 @@ fun Route.notificationRoutes() {
 
     route("/notification") {
         authenticate(API_KEY_AUTHENTICATION) {
-            put("/{id}/update") {
+            put("/user/{id}/update") {
                 val params = call.receiveParameters()
                 val notificationId = call.parameters["id"]?.trim()?.toLongOrNull()
                 val isRead = params["isRead"]?.toBoolean()
-                notificationUseCase.updateNotificationState(notificationId, isRead)
+                notificationUseCase.updateUserNotificationState(notificationId, isRead)
+                call.respond(
+                    HttpStatusCode.OK,
+                    ServerResponse.success(true, "notification updated successfully")
+                )
+            }
+            put("/owner/{id}/update") {
+                val params = call.receiveParameters()
+                val notificationId = call.parameters["id"]?.trim()?.toLongOrNull()
+                val isRead = params["isRead"]?.toBoolean()
+                notificationUseCase.updateOwnerNotificationState(notificationId, isRead)
                 call.respond(
                     HttpStatusCode.OK,
                     ServerResponse.success(true, "notification updated successfully")
@@ -38,7 +48,15 @@ fun Route.notificationRoutes() {
                 val ownerId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val notifications =
-                    notificationUseCase.getNotificationHistoryUseCase(ownerId, role).map { it.toApiNotification() }
+                    notificationUseCase.getUserNotificationHistory(ownerId, role).map { it.toApiNotification() }
+                call.respond(HttpStatusCode.OK, ServerResponse.success(notifications))
+            }
+            get("/ownerNotifications") {
+                val principal = call.principal<JWTPrincipal>()
+                val ownerId = principal?.payload?.subject?.toLongOrNull()
+                val role = principal?.getClaim(ROLE_TYPE, String::class)
+                val notifications =
+                    notificationUseCase.getOwnerNotificationHistory(ownerId, role).map { it.toApiNotification() }
                 call.respond(HttpStatusCode.OK, ServerResponse.success(notifications))
             }
         }

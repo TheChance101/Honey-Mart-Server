@@ -8,7 +8,6 @@ class InvalidUserNameOrPasswordException : Exception()
 class InvalidEmailException : Exception()
 class InvalidNameException : Exception()
 class EmailAlreadyExistException : Exception()
-class InvalidUserNameInputException : Exception()
 class InvalidPasswordInputException : Exception()
 class UnKnownUserException : Exception()
 //endregion
@@ -90,3 +89,8 @@ class InvalidTokenTypeException : Exception()
 class InvalidDeviceTokenException : Exception()
 class InvalidApiKeyException : Exception()
 //endregion
+
+//region reviews
+class InvalidRatingException : Exception()
+class InvalidReviewContentException : Exception()
+//end region

@@ -11,7 +11,7 @@ import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.datasource.mapper.toUserCoupon
 import com.thechance.core.data.repository.dataSource.CouponDataSource
 import com.thechance.core.entity.Image
-import com.thechance.core.entity.Product
+import com.thechance.core.entity.product.Product
 import com.thechance.core.entity.coupon.Coupon
 import com.thechance.core.entity.coupon.MarketCoupon
 import com.thechance.core.entity.coupon.UserCoupon
