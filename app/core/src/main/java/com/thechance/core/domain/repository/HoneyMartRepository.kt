@@ -113,6 +113,7 @@ interface HoneyMartRepository {
     suspend fun getOrdersForUser(userId: Long, state: Int): List<UserOrder>
     suspend fun getOrderById(orderId: Long): OrderDetails
     suspend fun updateOrderState(orderId: Long, newOrderState: Int): Boolean
+    suspend fun getUserLatestOrderId(userId: Long): Long?
     suspend fun isOrderExist(orderId: Long): Boolean
     suspend fun getOrderState(orderId: Long): Int
     suspend fun getAllOrdersForUser(userId: Long): List<UserOrder>

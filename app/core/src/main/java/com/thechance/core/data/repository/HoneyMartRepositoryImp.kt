@@ -276,6 +276,10 @@ class HoneyMartRepositoryImp(
     override suspend fun updateOrderState(orderId: Long, newOrderState: Int) =
         orderDataSource.updateOrderState(orderId, newOrderState)
 
+    override suspend fun getUserLatestOrderId(userId: Long): Long? {
+       return orderDataSource.getUserLatestOrderId(userId)
+    }
+
 
     override suspend fun isOrderExist(orderId: Long): Boolean =
         orderDataSource.isOrderExist(orderId)

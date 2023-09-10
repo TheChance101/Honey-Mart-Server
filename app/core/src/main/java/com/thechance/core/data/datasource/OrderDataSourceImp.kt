@@ -124,4 +124,15 @@ class OrderDataSourceImp : OrderDataSource {
         }.single()
     }
 
+    override suspend fun getUserLatestOrderId(userId: Long): Long? {
+        return dbQuery {
+            OrderTable.select {
+                OrderTable.userId eq userId
+            }.orderBy(OrderTable.orderDate, SortOrder.DESC)
+                .limit(1)
+                .map { it[OrderTable.id] }
+                .singleOrNull()?.value
+        }
+    }
+
 }

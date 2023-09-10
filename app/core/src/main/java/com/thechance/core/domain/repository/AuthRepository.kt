@@ -29,7 +29,7 @@ interface AuthRepository {
 
     suspend fun isOwnerEmailExists(email: String): Boolean
 
-    suspend fun getMarketOwnerByEmail(email: String): Owner
+    suspend fun getOwnerByEmail(email: String): Owner
 
     fun isOwnerValidPassword(owner: Owner, password: String): Boolean
 
@@ -55,15 +55,19 @@ interface AuthRepository {
 
     //region deviceTokens
     suspend fun getDeviceTokens(receiverId: Long): List<String>
-    suspend fun saveDeviceTokens(receiverId: Long,token: String)
+    suspend fun saveUserDeviceTokens(userId: Long, deviceToken: String)
+    suspend fun saveOwnerDeviceTokens(ownerId: Long, deviceToken: String)
 
     //endregion
 
     //region notification
     suspend fun sendNotification(notification: NotificationRequest): Boolean
-    suspend fun saveNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean
-    suspend fun getNotificationHistory(receiverId: Long): List<Notification>
-    suspend fun updateNotificationState(receiverId: Long, isRead: Boolean): Boolean
+    suspend fun saveUserNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean
+    suspend fun saveOwnerNotification(title: String, body: String, receiverId: Long, orderId: Long): Boolean
+    suspend fun getUserNotificationHistory(userId: Long): List<Notification>
+    suspend fun getOwnerNotificationHistory(ownerId: Long): List<Notification>
+    suspend fun updateUserNotificationState(userId: Long, isRead: Boolean): Boolean
+    suspend fun updateOwnerNotificationState(ownerId: Long, isRead: Boolean): Boolean
     //endregion
     suspend fun getMarketIdByOwnerId(ownerId: Long): Long?
 }

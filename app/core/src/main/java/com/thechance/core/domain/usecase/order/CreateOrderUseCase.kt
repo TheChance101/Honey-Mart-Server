@@ -1,11 +1,14 @@
 package com.thechance.core.domain.usecase.order
 
 import com.thechance.core.domain.repository.HoneyMartRepository
+import com.thechance.core.domain.usecase.notification.SendOwnerNotificationUseCase
 import com.thechance.core.entity.Cart
 import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class CreateOrderUseCase(private val repository: HoneyMartRepository) : KoinComponent {
+    private val sendNotificationUseCase: SendOwnerNotificationUseCase by inject()
 
     suspend operator fun invoke(userId: Long?, role: String?): Boolean {
         return if (isInvalidId(userId) || !isValidRole(NORMAL_USER_ROLE, role)) {
@@ -13,10 +16,14 @@ class CreateOrderUseCase(private val repository: HoneyMartRepository) : KoinComp
         } else if (!isEmptyCart(getCartId(userId!!))) {
             val cartId = getCartId(userId)
             val cart = repository.getCart(cartId)
+            val marketId = repository.getCartMarketId(cartId)!!
+            val ownerId = repository.getOwnerIdByMarketId(marketId)!!
             val totalPrice = calculateTotalPrice(cart, userId)
             val isCreated = repository.createOrder(userId, cart, totalPrice)
             if (isCreated) {
                 repository.deleteAllProductsInCart(getCartId(userId))
+                val orderId = repository.getUserLatestOrderId(userId)!!
+                sendNotificationUseCase(ownerId, orderId, ORDER_STATUS_PENDING)
             }
             isCreated
         } else {
