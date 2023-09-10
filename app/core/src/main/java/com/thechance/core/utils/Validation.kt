@@ -111,6 +111,12 @@ internal fun isInValidDescription(description: String?): Boolean {
     } ?: true
 }
 
+internal fun isInvalidRating(rating: Int?): Boolean {
+    val minValidRating = 1
+    val maxValidRating = 5
+    return rating == null || rating < minValidRating || rating > maxValidRating
+}
+
 
 /**
  * Checks the validity of an address based on a specific pattern.
