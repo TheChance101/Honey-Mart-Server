@@ -1,7 +1,7 @@
 package com.thechance.core.data.datasource.mapper
 
 import com.thechance.core.data.datasource.database.tables.coupon.CouponTable
-import com.thechance.core.entity.Product
+import com.thechance.core.entity.product.Product
 import com.thechance.core.entity.coupon.UserCoupon
 import org.jetbrains.exposed.sql.ResultRow
 

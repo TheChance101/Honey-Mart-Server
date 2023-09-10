@@ -1,4 +1,6 @@
-package com.thechance.core.entity
+package com.thechance.core.entity.product
+
+import com.thechance.core.entity.Image
 
 data class Product(
     val id: Long,

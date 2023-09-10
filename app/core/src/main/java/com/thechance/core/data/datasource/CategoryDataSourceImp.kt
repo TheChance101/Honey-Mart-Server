@@ -1,13 +1,11 @@
 package com.thechance.core.data.datasource
 
 import com.thechance.core.data.datasource.mapper.toCategory
-import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.datasource.database.tables.category.CategoriesTable
 import com.thechance.core.data.datasource.database.tables.category.CategoryProductTable
 import com.thechance.core.data.datasource.database.tables.product.ProductTable
 import com.thechance.core.data.repository.dataSource.CategoryDataSource
 import com.thechance.core.entity.Category
-import com.thechance.core.entity.Product
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.koin.core.component.KoinComponent

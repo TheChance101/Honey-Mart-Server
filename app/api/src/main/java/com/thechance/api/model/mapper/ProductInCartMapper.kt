@@ -1,7 +1,7 @@
 package com.thechance.api.model.mapper
 
 import com.thechance.api.model.ProductWithCount
-import com.thechance.core.entity.ProductInCart
+import com.thechance.core.entity.product.ProductInCart
 
 
 internal fun ProductInCart.toApiProductWithCount(): ProductWithCount {

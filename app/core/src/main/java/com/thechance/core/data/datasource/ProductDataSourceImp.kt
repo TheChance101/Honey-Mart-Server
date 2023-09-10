@@ -10,7 +10,7 @@ import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.repository.dataSource.ProductDataSource
 import com.thechance.core.entity.Category
 import com.thechance.core.entity.Image
-import com.thechance.core.entity.Product
+import com.thechance.core.entity.product.Product
 import com.thechance.core.utils.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq

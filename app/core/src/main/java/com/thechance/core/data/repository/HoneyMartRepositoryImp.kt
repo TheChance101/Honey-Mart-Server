@@ -4,7 +4,7 @@ import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.entity.Cart
 import com.thechance.core.entity.Category
-import com.thechance.core.entity.Product
+import com.thechance.core.entity.product.Product
 import com.thechance.core.entity.review.Review
 import com.thechance.core.entity.coupon.Coupon
 import com.thechance.core.entity.coupon.MarketCoupon

@@ -2,7 +2,7 @@ package com.thechance.core.domain.usecase.product
 
 
 import com.thechance.core.domain.repository.HoneyMartRepository
-import com.thechance.core.entity.Product
+import com.thechance.core.entity.product.Product
 import com.thechance.core.utils.InvalidProductNameException
 import com.thechance.core.utils.MissingQueryParameterException
 import com.thechance.core.utils.isValidQuery
