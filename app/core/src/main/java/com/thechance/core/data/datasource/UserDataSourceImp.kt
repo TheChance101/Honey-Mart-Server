@@ -12,6 +12,8 @@ import com.thechance.core.data.datasource.mapper.toProduct
 import com.thechance.core.data.repository.dataSource.UserDataSource
 import com.thechance.core.data.security.hashing.SaltedHash
 import com.thechance.core.entity.*
+import com.thechance.core.entity.product.Product
+import com.thechance.core.entity.product.ProductInCart
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq

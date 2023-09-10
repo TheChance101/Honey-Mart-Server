@@ -1,7 +1,7 @@
 package com.thechance.core.domain.usecase.coupon
 
 import com.thechance.core.domain.repository.HoneyMartRepository
-import com.thechance.core.entity.Product
+import com.thechance.core.entity.product.Product
 import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
 

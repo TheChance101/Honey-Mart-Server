@@ -2,7 +2,8 @@ package com.thechance.core.domain.repository
 
 import com.thechance.core.entity.Cart
 import com.thechance.core.entity.Category
-import com.thechance.core.entity.Product
+import com.thechance.core.entity.product.Product
+import com.thechance.core.entity.review.Review
 import com.thechance.core.entity.coupon.Coupon
 import com.thechance.core.entity.coupon.MarketCoupon
 import com.thechance.core.entity.coupon.UserCoupon
@@ -10,6 +11,7 @@ import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.order.MarketOrder
 import com.thechance.core.entity.order.OrderDetails
 import com.thechance.core.entity.order.UserOrder
+import com.thechance.core.entity.review.ReviewStatistic
 import java.time.LocalDateTime
 
 interface HoneyMartRepository {
@@ -52,6 +54,7 @@ interface HoneyMartRepository {
     suspend fun addMarketImage(marketId: Long, imageUrl: String): Boolean
     suspend fun getMarket(marketId: Long): Market?
     suspend fun getProductsCountForMarket(marketId: Long): Int
+    suspend fun restoreMarket(marketId: Long): Boolean
     //endregion
 
 
@@ -147,5 +150,19 @@ interface HoneyMartRepository {
     suspend fun getMarketProductsWithoutValidCoupons(marketId: Long): List<Product>
     suspend fun searchMarketProductsWithoutValidCoupons(marketId: Long, productName: String): List<Product>
     //end coupons region
-    suspend fun restoreMarket(marketId: Long): Boolean
+
+    //region review
+    suspend fun addProductReview(
+        userId: Long,
+        productId: Long,
+        orderId: Long,
+        content: String,
+        rating: Int
+    ): Boolean
+
+    suspend fun getProductReviews(productId: Long, page: Int): List<Review>
+    suspend fun getReviewsStatisticsForProduct(productId: Long): ReviewStatistic
+    suspend fun updateProductReview(userId: Long, productId: Long, content: String, newRating: Int): Boolean
+    suspend fun isReviewExists(userId: Long, productId: Long): Boolean
+    //end review region
 }

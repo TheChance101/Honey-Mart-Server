@@ -37,13 +37,6 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             ServerResponse.error("Email address already exists.", 1008)
         }
 
-        is InvalidUserNameInputException -> {
-            ServerResponse.error(
-                "Username must be 8 to 14 characters in length and should only include the dot (.) and underscore (_) characters.",
-                1009
-            )
-        }
-
         is InvalidPasswordInputException -> {
             ServerResponse.error(
                 "Password should have at least one letter, one special character, one number, and a total length between 8 to 14 characters.",
@@ -84,6 +77,7 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
         is MarketAlreadyExistException -> {
             ServerResponse.error("Market already exist.", 1046)
         }
+
         is MarketNotApprovedException -> {
             ServerResponse.error("Market not approved.", 1047)
         }
@@ -248,6 +242,14 @@ suspend fun handleException(cause: Throwable, call: ApplicationCall) {
             ServerResponse.error("Missing Query Parameter", 1121)
         }
 
+        //Reviews Exceptions
+        is InvalidRatingException -> {
+            ServerResponse.error("Rating should be between 1 and 5", 1131)
+        }
+
+        is InvalidReviewContentException -> {
+            ServerResponse.error("Content length should be between 6 and 600 chars", 1132)
+        }
 
         else -> {
             ServerResponse.error(cause.message.toString(), HttpStatusCode.InternalServerError.value)

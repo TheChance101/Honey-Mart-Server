@@ -4,13 +4,15 @@ import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.entity.Cart
 import com.thechance.core.entity.Category
-import com.thechance.core.entity.Product
+import com.thechance.core.entity.product.Product
+import com.thechance.core.entity.review.Review
 import com.thechance.core.entity.coupon.Coupon
 import com.thechance.core.entity.coupon.MarketCoupon
 import com.thechance.core.entity.coupon.UserCoupon
 import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.order.MarketOrder
 import com.thechance.core.entity.order.OrderItem
+import com.thechance.core.entity.review.ReviewStatistic
 import org.koin.core.component.KoinComponent
 import java.time.LocalDateTime
 
@@ -20,7 +22,8 @@ class HoneyMartRepositoryImp(
     private val productDataSource: ProductDataSource,
     private val orderDataSource: OrderDataSource,
     private val userDataSource: UserDataSource,
-    private val couponDataSource: CouponDataSource
+    private val couponDataSource: CouponDataSource,
+    private val reviewDataSource: ReviewDataSource
 ) : HoneyMartRepository, KoinComponent {
 
     //region cart
@@ -338,5 +341,35 @@ class HoneyMartRepositoryImp(
         couponDataSource.searchProductsWithoutValidCoupons(marketId, productName)
 
     //end coupons region
+
+    //region reviews
+    override suspend fun addProductReview(
+        userId: Long,
+        productId: Long,
+        orderId: Long,
+        content: String,
+        rating: Int
+    ): Boolean = reviewDataSource
+        .addProductReview(
+            userId = userId,
+            productId = productId,
+            orderId = orderId,
+            content = content,
+            rating = rating
+        )
+
+    override suspend fun getProductReviews(productId: Long, page: Int): List<Review> =
+        reviewDataSource.getProductReviews(productId, page)
+
+    override suspend fun getReviewsStatisticsForProduct(productId: Long): ReviewStatistic =
+        reviewDataSource.getReviewsStatisticsForProduct(productId)
+
+    override suspend fun updateProductReview(userId: Long, productId: Long, content: String, newRating: Int): Boolean =
+        reviewDataSource.updateProductReview(userId, productId, content, newRating)
+
+    override suspend fun isReviewExists(userId: Long, productId: Long): Boolean =
+        reviewDataSource.isReviewExists(userId, productId)
+
+    //end reviews region
 
 }

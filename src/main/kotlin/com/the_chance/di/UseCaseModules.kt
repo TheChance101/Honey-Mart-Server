@@ -14,6 +14,9 @@ import com.thechance.core.domain.usecase.owner.GetOwnerProfileUseCase
 import com.thechance.core.domain.usecase.owner.LoginOwnerUseCase
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.domain.usecase.product.*
+import com.thechance.core.domain.usecase.review.AddProductReviewUseCase
+import com.thechance.core.domain.usecase.review.GetProductReviewsUseCase
+import com.thechance.core.domain.usecase.review.ReviewUseCaseContainer
 import com.thechance.core.domain.usecase.user.*
 import com.thechance.core.domain.usecase.wishlist.AddProductToWishListUseCase
 import com.thechance.core.domain.usecase.wishlist.DeleteProductFromWishListUseCase
@@ -137,4 +140,10 @@ val couponsUseCase = module {
     singleOf(::ClipCouponUseCase) { bind<ClipCouponUseCase>() }
     singleOf(::GetMarketProductsWithoutValidCouponsUseCase) { bind<GetMarketProductsWithoutValidCouponsUseCase>() }
     singleOf(::SearchMarketProductsWithoutValidCouponsUseCase) { bind<SearchMarketProductsWithoutValidCouponsUseCase>() }
+}
+
+val reviewsUseCase = module {
+    singleOf(::ReviewUseCaseContainer) { bind<ReviewUseCaseContainer>() }
+    singleOf(::GetProductReviewsUseCase) { bind<GetProductReviewsUseCase>() }
+    singleOf(::AddProductReviewUseCase) { bind<AddProductReviewUseCase>() }
 }

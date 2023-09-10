@@ -46,6 +46,7 @@ class CoreDataBase {
             UserNotificationHistoryTable,
             OwnerDeviceTokenTable,
             OwnerNotificationHistoryTable,
+            ProductReviewTable
         )
     }
 

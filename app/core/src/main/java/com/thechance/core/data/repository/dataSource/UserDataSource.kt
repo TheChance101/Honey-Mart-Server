@@ -2,6 +2,7 @@ package com.thechance.core.data.repository.dataSource
 
 import com.thechance.core.entity.*
 import com.thechance.core.data.security.hashing.SaltedHash
+import com.thechance.core.entity.product.Product
 
 interface UserDataSource {
     //region user

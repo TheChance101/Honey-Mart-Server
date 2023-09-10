@@ -1,6 +1,6 @@
 package com.thechance.core.entity.order
 
-import com.thechance.core.entity.ProductInCart
+import com.thechance.core.entity.product.ProductInCart
 import java.time.LocalDateTime
 
 data class OrderDetails(

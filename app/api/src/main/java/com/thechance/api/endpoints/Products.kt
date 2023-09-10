@@ -3,6 +3,7 @@ package com.thechance.api.endpoints
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCategoryModel
 import com.thechance.api.model.mapper.toApiProductModel
+import com.thechance.api.model.mapper.toApiProductWithReviews
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
 import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
@@ -33,7 +34,7 @@ fun Route.productsRoutes() {
 
         authenticate(API_KEY_AUTHENTICATION) {
             get {
-                val page = call.parameters["page"]?.toIntOrNull() ?: 1
+                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
                 val products = productUseCasesContainer.getAllProductsUseCase(page).map { it.toApiProductModel() }
                 call.respond(HttpStatusCode.OK, ServerResponse.success(products))
             }
@@ -46,11 +47,14 @@ fun Route.productsRoutes() {
                 call.respond(ServerResponse.success(categories))
             }
 
+            /**
+             * get product details by productId
+             */
             get("/{productId}") {
                 val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
                 val categories =
                     productUseCasesContainer.getProductDetailsUseCase(productId = productId)
-                        .toApiProductModel()
+                        .toApiProductWithReviews()
                 call.respond(ServerResponse.success(categories))
             }
 

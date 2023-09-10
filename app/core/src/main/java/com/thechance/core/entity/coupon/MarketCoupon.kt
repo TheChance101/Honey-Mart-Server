@@ -1,6 +1,6 @@
 package com.thechance.core.entity.coupon
 
-import com.thechance.core.entity.Product
+import com.thechance.core.entity.product.Product
 import java.time.LocalDateTime
 
 data class MarketCoupon(
@@ -8,5 +8,5 @@ data class MarketCoupon(
     val count: Int,
     val discountPercentage: Double,
     val expirationDate: LocalDateTime,
-    val product:Product,
+    val product: Product,
 )
