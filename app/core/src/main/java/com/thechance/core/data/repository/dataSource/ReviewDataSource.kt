@@ -12,6 +12,6 @@ interface ReviewDataSource {
         rating: Int
     ): Boolean
 
-    suspend fun getProductReviews(productId: Long): List<Review>
+    suspend fun getProductReviews(productId: Long, page: Int): List<Review>
     suspend fun getReviewsStatisticsForProduct(productId: Long): ReviewStatistic
 }

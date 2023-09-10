@@ -9,7 +9,7 @@ import com.thechance.core.utils.isInvalidId
 import org.koin.core.component.KoinComponent
 
 class GetProductReviewsUseCase(private val repository: HoneyMartRepository) : KoinComponent {
-    suspend operator fun invoke(productId: Long?): ReviewsWithStatistics {
+    suspend operator fun invoke(productId: Long?, page: Int): ReviewsWithStatistics {
         val isProductDeleted = if (isInvalidId(productId)) {
             throw InvalidProductIdException()
         } else {
@@ -28,7 +28,7 @@ class GetProductReviewsUseCase(private val repository: HoneyMartRepository) : Ko
             else -> {
                 ReviewsWithStatistics(
                     repository.getReviewsStatisticsForProduct(productId),
-                    repository.getProductReviews(productId)
+                    repository.getProductReviews(productId,page)
                 )
             }
         }

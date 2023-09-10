@@ -6,8 +6,10 @@ import com.thechance.core.data.datasource.mapper.toReview
 import com.thechance.core.data.repository.dataSource.ReviewDataSource
 import com.thechance.core.entity.review.Review
 import com.thechance.core.entity.review.ReviewStatistic
+import com.thechance.core.utils.PAGE_SIZE
 import com.thechance.core.utils.dbQuery
 import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.koin.core.component.KoinComponent
@@ -30,9 +32,12 @@ class ReviewDataSourceImp : ReviewDataSource, KoinComponent {
         true
     }
 
-    override suspend fun getProductReviews(productId: Long): List<Review> = dbQuery {
+    override suspend fun getProductReviews(productId: Long, page: Int): List<Review> = dbQuery {
+        val offset = ((page - 1) * PAGE_SIZE).toLong()
         ProductReviewTable.join(NormalUserTable, JoinType.FULL)
             .select { ProductReviewTable.productId eq productId }
+            .orderBy(ProductReviewTable.rating, SortOrder.DESC)
+            .limit(PAGE_SIZE, offset)
             .map {
                 it.toReview()
             }

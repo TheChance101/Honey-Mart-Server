@@ -33,7 +33,7 @@ fun Route.productsRoutes() {
 
         authenticate(API_KEY_AUTHENTICATION) {
             get {
-                val page = call.parameters["page"]?.toIntOrNull() ?: 1
+                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
                 val products = productUseCasesContainer.getAllProductsUseCase(page).map { it.toApiProductModel() }
                 call.respond(HttpStatusCode.OK, ServerResponse.success(products))
             }

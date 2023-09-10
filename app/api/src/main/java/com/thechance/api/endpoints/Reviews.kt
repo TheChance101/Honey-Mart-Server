@@ -24,8 +24,9 @@ fun Route.reviewRoutes() {
              * */
             get("/{productId}") {
                 val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
+                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
                 val reviewsWithStatistics =
-                    reviewUseCaseContainer.getProductReviewsUseCase(productId).toApiReviewsWithStatisticsModel()
+                    reviewUseCaseContainer.getProductReviewsUseCase(productId,page).toApiReviewsWithStatisticsModel()
                 call.respond(HttpStatusCode.OK, ServerResponse.success(reviewsWithStatistics))
             }
 
