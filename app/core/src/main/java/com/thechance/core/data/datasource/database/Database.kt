@@ -42,6 +42,7 @@ class CoreDataBase {
             CouponUserTable,
             DeviceTokenTable,
             NotificationHistoryTable,
+            ProductReviewTable
         )
     }
 
