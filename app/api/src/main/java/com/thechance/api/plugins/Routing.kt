@@ -32,6 +32,7 @@ fun Application.configureRouting() {
         tokenRouts()
         couponRoutes()
         notificationRoutes()
+        reviewRoutes()
     }
 
 }

@@ -7,6 +7,7 @@ import com.thechance.api.model.mapper.toApiUserOrders
 import com.thechance.core.domain.usecase.order.OrderUseCasesContainer
 import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -31,7 +32,7 @@ fun Route.orderRoutes() {
 
                 val orders =
                     orderUseCasesContainer.getOrdersForMarketUseCase(ownerId, role, orderState).toApiMarketOrders()
-                call.respond(ServerResponse.success(orders))
+                call.respond(HttpStatusCode.OK,ServerResponse.success(orders))
 
             }
 
@@ -43,7 +44,7 @@ fun Route.orderRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val orders =
                     orderUseCasesContainer.getOrdersForUserUseCase(userId, role, orderState).toApiUserOrders()
-                call.respond(ServerResponse.success(orders))
+                call.respond(HttpStatusCode.OK,ServerResponse.success(orders))
 
             }
 
@@ -54,7 +55,7 @@ fun Route.orderRoutes() {
                 val orderId = call.parameters["id"]?.trim()?.toLongOrNull()
                 val orders =
                     orderUseCasesContainer.getOrderDetailsUseCase(orderId).toApiMarketOrder()
-                call.respond(ServerResponse.success(orders))
+                call.respond(HttpStatusCode.OK,ServerResponse.success(orders))
 
             }
 
@@ -64,7 +65,7 @@ fun Route.orderRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val isCreated = orderUseCasesContainer.createOrderUseCase(userId, role)
-                call.respond(ServerResponse.success(isCreated, "Checkout Success"))
+                call.respond(HttpStatusCode.OK,ServerResponse.success(isCreated, "Checkout Success"))
 
             }
 
@@ -80,7 +81,7 @@ fun Route.orderRoutes() {
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
 
                 val updatedStatus = orderUseCasesContainer.updateOrderStateUseCase(orderId, orderState, role)
-                call.respond(ServerResponse.success(updatedStatus))
+                call.respond(HttpStatusCode.OK,ServerResponse.success(updatedStatus))
 
             }
         }
