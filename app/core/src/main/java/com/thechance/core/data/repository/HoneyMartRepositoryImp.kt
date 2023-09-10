@@ -355,10 +355,16 @@ class HoneyMartRepositoryImp(
         )
 
     override suspend fun getProductReviews(productId: Long, page: Int): List<Review> =
-        reviewDataSource.getProductReviews(productId,page)
+        reviewDataSource.getProductReviews(productId, page)
 
     override suspend fun getReviewsStatisticsForProduct(productId: Long): ReviewStatistic =
         reviewDataSource.getReviewsStatisticsForProduct(productId)
+
+    override suspend fun updateProductReview(userId: Long, productId: Long, content: String, newRating: Int): Boolean =
+        reviewDataSource.updateProductReview(userId, productId, content, newRating)
+
+    override suspend fun isReviewExists(userId: Long, productId: Long): Boolean =
+        reviewDataSource.isReviewExists(userId, productId)
 
     //end reviews region
 

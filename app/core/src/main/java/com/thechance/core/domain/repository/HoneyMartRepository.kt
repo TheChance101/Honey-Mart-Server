@@ -161,5 +161,7 @@ interface HoneyMartRepository {
 
     suspend fun getProductReviews(productId: Long, page: Int): List<Review>
     suspend fun getReviewsStatisticsForProduct(productId: Long): ReviewStatistic
+    suspend fun updateProductReview(userId: Long, productId: Long, content: String, newRating: Int): Boolean
+    suspend fun isReviewExists(userId: Long, productId: Long): Boolean
     //end review region
 }

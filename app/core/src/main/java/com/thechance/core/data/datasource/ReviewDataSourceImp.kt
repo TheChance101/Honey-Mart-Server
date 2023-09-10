@@ -8,10 +8,7 @@ import com.thechance.core.entity.review.Review
 import com.thechance.core.entity.review.ReviewStatistic
 import com.thechance.core.utils.PAGE_SIZE
 import com.thechance.core.utils.dbQuery
-import org.jetbrains.exposed.sql.JoinType
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.koin.core.component.KoinComponent
 
 class ReviewDataSourceImp : ReviewDataSource, KoinComponent {
@@ -30,6 +27,32 @@ class ReviewDataSourceImp : ReviewDataSource, KoinComponent {
             it[this.rating] = rating
         }
         true
+    }
+
+    override suspend fun updateProductReview(
+        userId: Long,
+        productId: Long,
+        content: String,
+        newRating: Int
+    ): Boolean = dbQuery {
+        val updatedRowCount = ProductReviewTable.update({
+            (ProductReviewTable.userId eq userId) and
+                    (ProductReviewTable.productId eq productId)
+        }) {
+            it[this.content] = content
+            it[this.rating] = newRating
+        }
+
+        updatedRowCount > 0 // Return true if at least one row was updated
+    }
+
+    override suspend fun isReviewExists(userId: Long, productId: Long): Boolean = dbQuery {
+        val count = ProductReviewTable.select {
+            (ProductReviewTable.userId eq userId) and
+                    (ProductReviewTable.productId eq productId)
+        }.count()
+
+        count > 0 // Return true if at least one review exists
     }
 
     override suspend fun getProductReviews(productId: Long, page: Int): List<Review> = dbQuery {
