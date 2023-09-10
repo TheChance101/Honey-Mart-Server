@@ -30,14 +30,14 @@ fun Route.ownerRoutes() {
 
                 ownerUseCaseContainer.createOwnerUseCase(fullName = name, password = password, email = email)
                 call.respond(HttpStatusCode.Created, ServerResponse.success("user created successfully"))
-
             }
 
             post("/login") {
                 val params = call.receiveParameters()
                 val email = params["email"]?.trim().toString()
                 val password = params["password"]?.trim().toString()
-                val ownerTokens = ownerUseCaseContainer.verifyMarketOwnerUseCase(email, password).toApiOwnerTokens()
+                val deviceToken = params["deviceToken"]?.trim()
+                val ownerTokens = ownerUseCaseContainer.verifyMarketOwnerUseCase(email, password,deviceToken).toApiOwnerTokens()
                 call.respond(HttpStatusCode.Created, ServerResponse.success(ownerTokens, "Logged in Successfully"))
             }
         }

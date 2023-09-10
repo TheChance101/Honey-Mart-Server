@@ -1,13 +1,13 @@
 package com.thechance.core.domain.usecase.order
 
 import com.thechance.core.domain.repository.HoneyMartRepository
-import com.thechance.core.domain.usecase.notification.SendNotificationOnOrderStateUseCase
+import com.thechance.core.domain.usecase.notification.SendUserNotificationOnOrderStateUseCase
 import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : KoinComponent {
-    private val sendNotificationUseCase: SendNotificationOnOrderStateUseCase by inject()
+    private val sendNotificationUseCase: SendUserNotificationOnOrderStateUseCase by inject()
 
     suspend operator fun invoke(orderId: Long?, newOrderState: Int?, role: String?): Boolean {
         return when {

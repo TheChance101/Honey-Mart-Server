@@ -5,16 +5,13 @@ import com.thechance.core.domain.usecase.admin.*
 import com.thechance.core.domain.usecase.cart.*
 import com.thechance.core.domain.usecase.category.*
 import com.thechance.core.domain.usecase.coupon.*
-import com.thechance.core.domain.usecase.deviceToken.SaveDeviceTokenUseCase
+import com.thechance.core.domain.usecase.deviceToken.SaveUserDeviceTokenUseCase
 import com.thechance.core.domain.usecase.market.*
-import com.thechance.core.domain.usecase.notification.GetNotificationHistoryUseCase
-import com.thechance.core.domain.usecase.notification.NotificationUseCaseContainer
-import com.thechance.core.domain.usecase.notification.SendNotificationOnOrderStateUseCase
-import com.thechance.core.domain.usecase.notification.UpdateNotificationState
+import com.thechance.core.domain.usecase.notification.*
 import com.thechance.core.domain.usecase.order.*
 import com.thechance.core.domain.usecase.owner.CreateOwnerUseCase
 import com.thechance.core.domain.usecase.owner.GetOwnerProfileUseCase
-import com.thechance.core.domain.usecase.owner.LoginMarketOwnerUseCase
+import com.thechance.core.domain.usecase.owner.LoginOwnerUseCase
 import com.thechance.core.domain.usecase.owner.OwnerUseCaseContainer
 import com.thechance.core.domain.usecase.product.*
 import com.thechance.core.domain.usecase.user.*
@@ -91,7 +88,7 @@ val userUseCaseModule = module {
 val ownerUseCaseModule = module {
     singleOf(::OwnerUseCaseContainer) { bind<OwnerUseCaseContainer>() }
     singleOf(::CreateOwnerUseCase) { bind<CreateOwnerUseCase>() }
-    singleOf(::LoginMarketOwnerUseCase) { bind<LoginMarketOwnerUseCase>() }
+    singleOf(::LoginOwnerUseCase) { bind<LoginOwnerUseCase>() }
     singleOf(::GetOwnerProfileUseCase) { bind<GetOwnerProfileUseCase>() }
 }
 
@@ -116,15 +113,18 @@ val tokenUseCase = module {
 }
 
 val notificationUseCase = module {
-    singleOf(::SendNotificationOnOrderStateUseCase) { bind<SendNotificationOnOrderStateUseCase>() }
+    singleOf(::SendUserNotificationOnOrderStateUseCase) { bind<SendUserNotificationOnOrderStateUseCase>() }
+    singleOf(::SendOwnerNotificationUseCase) { bind<SendOwnerNotificationUseCase>() }
     singleOf(::NotificationUseCaseContainer) { bind<NotificationUseCaseContainer>() }
-    singleOf(::GetNotificationHistoryUseCase) { bind<GetNotificationHistoryUseCase>() }
-    singleOf(::UpdateNotificationState) { bind<UpdateNotificationState>() }
+    singleOf(::GetUserNotificationHistoryUseCase) { bind<GetUserNotificationHistoryUseCase>() }
+    singleOf(::GetOwnerNotificationHistoryUseCase) { bind<GetOwnerNotificationHistoryUseCase>() }
+    singleOf(::UpdateUserNotificationState) { bind<UpdateUserNotificationState>() }
+    singleOf(::UpdateOwnerNotificationState) { bind<UpdateOwnerNotificationState>() }
 }
 
 val deviceTokenUseCase = module {
-    singleOf(::SaveDeviceTokenUseCase) { bind<SaveDeviceTokenUseCase>() }
-    singleOf(::SaveDeviceTokenUseCase) { bind<SaveDeviceTokenUseCase>() }
+    singleOf(::SaveUserDeviceTokenUseCase) { bind<SaveUserDeviceTokenUseCase>() }
+    singleOf(::SaveUserDeviceTokenUseCase) { bind<SaveUserDeviceTokenUseCase>() }
 }
 
 val couponsUseCase = module {

@@ -19,10 +19,10 @@ class VerifyUserUseCase(private val repository: AuthRepository) : KoinComponent 
         }
     }
 
-    private suspend fun validateUser(userName: String, password: String, deviceToken: String): Tokens {
-        return repository.getUserByEmail(userName).let { user ->
+    private suspend fun validateUser(email: String, password: String, deviceToken: String): Tokens {
+        return repository.getUserByEmail(email).let { user ->
             if (repository.isUserValidPassword(user, password)) {
-                repository.saveDeviceTokens(user.userId, deviceToken)
+                repository.saveUserDeviceTokens(user.userId, deviceToken)
                 repository.getTokens(id = user.userId, role = NORMAL_USER_ROLE)
             } else {
                 throw InvalidUserNameOrPasswordException()
