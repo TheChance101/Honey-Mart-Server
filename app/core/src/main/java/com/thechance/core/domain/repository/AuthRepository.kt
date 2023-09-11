@@ -54,7 +54,8 @@ interface AuthRepository {
     suspend fun getUser(userId: Long): User
 
     //region deviceTokens
-    suspend fun getDeviceTokens(receiverId: Long): List<String>
+    suspend fun getUserDeviceTokens(receiverId: Long): List<String>
+    suspend fun getOwnerDeviceTokens(receiverId: Long): List<String>
     suspend fun saveUserDeviceTokens(userId: Long, deviceToken: String)
     suspend fun saveOwnerDeviceTokens(ownerId: Long, deviceToken: String)
 

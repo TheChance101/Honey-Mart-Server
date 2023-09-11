@@ -11,10 +11,10 @@ class SendOwnerNotificationUseCase(private val repository: AuthRepository) : Koi
         val pairForOrderState = orderStateContentMap[orderState]
         return if (pairForOrderState != null) {
             val (title, body) = pairForOrderState
-            val tokens = repository.getDeviceTokens(ownerId)
-            val notification = NotificationRequest(tokens,orderId,title,body,orderState)
-            return repository.sendNotification(notification).also {
-                repository.saveOwnerNotification(title, body, ownerId,orderId)
+            val deviceToken = repository.getOwnerDeviceTokens(ownerId)
+            val notification = NotificationRequest(deviceToken, orderId, title, body, orderState)
+            return repository.sendNotification(notification).also { isSent ->
+                if (isSent) repository.saveOwnerNotification(title, body, ownerId, orderId)
             }
         } else {
             false
@@ -28,8 +28,10 @@ class SendOwnerNotificationUseCase(private val repository: AuthRepository) : Koi
 
     companion object {
         private const val ORDER_STATUS_PENDING_TITLE = "New Order received!"
-        private const val ORDER_STATUS_PENDING_BODY = "You have received a new order from a customer. Please review and respond as soon as possible."
+        private const val ORDER_STATUS_PENDING_BODY =
+            "You have received a new order from a customer. Please review and respond as soon as possible."
         private const val ORDER_CANCELLED_TITLE = "Order got cancelled!"
-        private const val ORDER_CANCELLED_BODY = "We regret to inform you that your recent order has been canceled. We apologize for any inconvenience this may have caused. "
+        private const val ORDER_CANCELLED_BODY =
+            "We regret to inform you that your recent order has been canceled. We apologize for any inconvenience this may have caused. "
     }
 }
