@@ -118,8 +118,12 @@ class AuthRepositoryImp(
 
 
     //region deviceTokens
-    override suspend fun getDeviceTokens(receiverId: Long): List<String> {
+    override suspend fun getUserDeviceTokens(receiverId: Long): List<String> {
         return deviceTokenDataSource.getUserDeviceTokens(receiverId)
+    }
+
+    override suspend fun getOwnerDeviceTokens(receiverId: Long): List<String> {
+        return deviceTokenDataSource.getOwnerDeviceTokens(receiverId)
     }
 
     override suspend fun saveUserDeviceTokens(userId: Long, deviceToken: String) {

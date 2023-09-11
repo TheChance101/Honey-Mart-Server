@@ -5,7 +5,7 @@ import org.koin.core.component.KoinComponent
 data class NotificationUseCaseContainer(
     val getUserNotificationHistory: GetUserNotificationHistoryUseCase,
     val getOwnerNotificationHistory: GetOwnerNotificationHistoryUseCase,
-    val sendUserNotificationOnOrderState: SendUserNotificationOnOrderStateUseCase,
+    val sendUserNotification: SendUserNotificationUseCase,
     val sendOwnerNotification: SendOwnerNotificationUseCase,
     val updateUserNotificationState: UpdateUserNotificationState,
     val updateOwnerNotificationState: UpdateOwnerNotificationState,

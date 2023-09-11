@@ -1,13 +1,13 @@
 package com.thechance.core.domain.usecase.order
 
 import com.thechance.core.domain.repository.HoneyMartRepository
-import com.thechance.core.domain.usecase.notification.SendUserNotificationOnOrderStateUseCase
+import com.thechance.core.domain.usecase.notification.NotificationUseCaseContainer
 import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : KoinComponent {
-    private val sendNotificationUseCase: SendUserNotificationOnOrderStateUseCase by inject()
+    private val sendNotification: NotificationUseCaseContainer by inject()
 
     suspend operator fun invoke(orderId: Long?, newOrderState: Int?, role: String?): Boolean {
         return when {
@@ -29,12 +29,13 @@ class UpdateOrderStateUseCase(private val repository: HoneyMartRepository) : Koi
                     throw InvalidUserIdException()
                 }
                 if (repository.updateOrderState(orderId, newOrderState)) {
-                    val receiverId: Long = if (role == NORMAL_USER_ROLE) {
-                        repository.getOwnerIdByMarketId(repository.getOrderById(orderId).marketId)!!
+                    if (role == NORMAL_USER_ROLE) {
+                        val ownerId = repository.getOwnerIdByMarketId(repository.getOrderById(orderId).marketId)!!
+                        sendNotification.sendOwnerNotification(ownerId, orderId, newOrderState)
                     } else {
-                        repository.getOrderById(orderId).userId
+                        val userId = repository.getOrderById(orderId).userId
+                        sendNotification.sendUserNotification(userId, orderId, newOrderState)
                     }
-                    sendNotificationUseCase(receiverId, orderId, newOrderState)
                     true
                 } else {
                     false

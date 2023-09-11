@@ -7,16 +7,16 @@ import com.thechance.core.utils.ORDER_STATUS_DONE
 import com.thechance.core.utils.ORDER_STATUS_IN_PROGRESS
 import org.koin.core.component.KoinComponent
 
-class SendUserNotificationOnOrderStateUseCase(private val repository: AuthRepository) : KoinComponent {
+class SendUserNotificationUseCase(private val repository: AuthRepository) : KoinComponent {
 
     suspend operator fun invoke(userId: Long, orderId: Long, orderState: Int): Boolean {
         val pairForOrderState = orderStateContentMap[orderState]
         return if (pairForOrderState != null) {
             val (title, body) = pairForOrderState
-            val tokens = repository.getDeviceTokens(userId)
-            val notification = NotificationRequest(tokens,orderId,title,body,orderState)
-            return repository.sendNotification(notification).also {
-                repository.saveUserNotification(title, body, userId,orderId)
+            val deviceToken = repository.getUserDeviceTokens(userId)
+            val notification = NotificationRequest(deviceToken, orderId, title, body, orderState)
+            return repository.sendNotification(notification).also { isSent ->
+                if (isSent) repository.saveUserNotification(title, body, userId, orderId)
             }
         } else {
             false
