@@ -116,7 +116,7 @@ val tokenUseCase = module {
 }
 
 val notificationUseCase = module {
-    singleOf(::SendUserNotificationOnOrderStateUseCase) { bind<SendUserNotificationOnOrderStateUseCase>() }
+    singleOf(::SendUserNotificationUseCase) { bind<SendUserNotificationUseCase>() }
     singleOf(::SendOwnerNotificationUseCase) { bind<SendOwnerNotificationUseCase>() }
     singleOf(::NotificationUseCaseContainer) { bind<NotificationUseCaseContainer>() }
     singleOf(::GetUserNotificationHistoryUseCase) { bind<GetUserNotificationHistoryUseCase>() }
