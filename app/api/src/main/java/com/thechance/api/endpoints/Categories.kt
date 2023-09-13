@@ -1,7 +1,7 @@
 package com.thechance.api.endpoints
 
 import com.thechance.api.ServerResponse
-import com.thechance.api.model.mapper.toApiProductModel
+import com.thechance.api.model.mapper.toApiProductWithAverageRatingModel
 import com.thechance.core.domain.usecase.category.CategoryUseCasesContainer
 import com.thechance.core.utils.API_KEY_AUTHENTICATION
 import com.thechance.core.utils.JWT_AUTHENTICATION
@@ -22,12 +22,13 @@ fun Route.categoryRoutes() {
     route("/category") {
         authenticate(API_KEY_AUTHENTICATION) {
 
-        get("/{categoryId}/allProduct") {
-            val page = call.parameters["page"]?.toIntOrNull() ?: 1
-            val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
-            val products = categoryUseCasesContainer.getAllProductsInCategoryUseCase(categoryId = categoryId, page = page)
-                .map { it.toApiProductModel() }
-            call.respond(ServerResponse.success(products))
+            get("/{categoryId}/allProduct") {
+                val page = call.parameters["page"]?.toIntOrNull() ?: 1
+                val categoryId = call.parameters["categoryId"]?.trim()?.toLongOrNull()
+                val products =
+                    categoryUseCasesContainer.getAllProductsInCategoryUseCase(categoryId = categoryId, page = page)
+                        .map { it.toApiProductWithAverageRatingModel() }
+                call.respond(ServerResponse.success(products))
 
             }
         }

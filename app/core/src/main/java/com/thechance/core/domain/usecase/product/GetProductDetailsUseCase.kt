@@ -26,9 +26,9 @@ class GetProductDetailsUseCase(private val repository: HoneyMartRepository) : Ko
                 ProductWithReviews(
                     id = product.id,
                     name = product.name,
-                    quantity = product.quantity,
+                    description = product.description,
                     price = product.price,
-                    image = product.image,
+                    image = product.images,
                     marketId = product.marketId,
                     reviews = reviewUseCaseContainer.getProductReviewsUseCase(product.id, 1)
                 )
