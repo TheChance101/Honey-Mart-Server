@@ -45,10 +45,10 @@ fun Route.notificationRoutes() {
         authenticate(JWT_AUTHENTICATION) {
             get("/userNotifications") {
                 val principal = call.principal<JWTPrincipal>()
-                val ownerId = principal?.payload?.subject?.toLongOrNull()
+                val userId = principal?.payload?.subject?.toLongOrNull()
                 val role = principal?.getClaim(ROLE_TYPE, String::class)
                 val notifications =
-                    notificationUseCase.getUserNotificationHistory(ownerId, role).map { it.toApiNotification() }
+                    notificationUseCase.getUserNotificationHistory(userId, role).map { it.toApiNotification() }
                 call.respond(HttpStatusCode.OK, ServerResponse.success(notifications))
             }
             get("/ownerNotifications") {
