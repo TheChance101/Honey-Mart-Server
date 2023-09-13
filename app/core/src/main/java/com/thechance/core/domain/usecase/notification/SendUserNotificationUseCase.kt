@@ -15,8 +15,8 @@ class SendUserNotificationUseCase(private val repository: AuthRepository) : Koin
             val (title, body) = pairForOrderState
             val deviceToken = repository.getUserDeviceTokens(userId)
             val notification = NotificationRequest(deviceToken, orderId, title, body, orderState)
-            return repository.sendNotification(notification).also { isSent ->
-                if (isSent) repository.saveUserNotification(title, body, userId, orderId)
+            return repository.sendNotification(notification).also {
+                repository.saveUserNotification(title, body, userId, orderId)
             }
         } else {
             false
