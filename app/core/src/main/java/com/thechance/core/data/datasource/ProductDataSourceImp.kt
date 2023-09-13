@@ -103,6 +103,36 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
             .map { it.toCategory() }
     }
 
+    override suspend fun getProductsInSameCategories(productId: Long, page: Int): List<Product> = dbQuery {
+        val offset = ((page - 1) * PAGE_SIZE).toLong()
+
+        // Get the categories associated with the specified product
+        val productCategories = (CategoriesTable innerJoin CategoryProductTable)
+            .select { CategoryProductTable.productId eq productId }
+            .map { it[CategoryProductTable.categoryId] }
+
+        if (productCategories.isNotEmpty()) {
+            // Query products that belong to the same categories as the specified product
+            val productsInSameCategories = (ProductTable innerJoin CategoryProductTable)
+                .select {
+                    (CategoryProductTable.categoryId inList productCategories) and
+                            (ProductTable.id neq productId)
+                }
+                .limit(n = PAGE_SIZE, offset = offset)
+                .filterNot { it[ProductTable.isDeleted] }
+                .map { productRow ->
+                    val images = getProductImages(productRow[ProductTable.id].value)
+                    productRow.toProduct(images)
+                }
+
+            productsInSameCategories
+        } else {
+            // If the product has no associated categories, return an empty list
+            emptyList()
+        }
+    }
+
+
     override suspend fun updateProduct(
         productId: Long, productName: String?, productPrice: Double?, productQuantity: String?
     ): Boolean = dbQuery {

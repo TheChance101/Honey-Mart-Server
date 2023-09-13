@@ -3,6 +3,7 @@ package com.thechance.api.endpoints
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiCategoryModel
 import com.thechance.api.model.mapper.toApiProductModel
+import com.thechance.api.model.mapper.toApiProductWithAverageRatingModel
 import com.thechance.api.model.mapper.toApiProductWithReviews
 import com.thechance.api.utils.orZero
 import com.thechance.api.utils.toLongIds
@@ -10,20 +11,13 @@ import com.thechance.core.domain.usecase.product.ProductUseCasesContainer
 import com.thechance.core.utils.API_KEY_AUTHENTICATION
 import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.call
-import io.ktor.server.auth.authenticate
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.principal
-import io.ktor.server.request.receiveMultipart
-import io.ktor.server.request.receiveParameters
-import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.delete
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.put
-import io.ktor.server.routing.route
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 
 fun Route.productsRoutes() {
@@ -64,6 +58,14 @@ fun Route.productsRoutes() {
                         .map { it.toApiProductModel() }
                 call.respond(ServerResponse.success(products))
             }
+            get("/{productId}/similarProducts") {
+                val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
+                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
+                val products =
+                    productUseCasesContainer.getSimilarProductsUseCase(productId, page)
+                        .map { it.toApiProductWithAverageRatingModel() }
+                call.respond(ServerResponse.success(products))
+            }
 
             get("/search") {
                 val param = call.request.queryParameters
@@ -73,7 +75,7 @@ fun Route.productsRoutes() {
 
 
                 val searchResults =
-                    productUseCasesContainer.searchProductsByNameUseCase(query,sort, page)
+                    productUseCasesContainer.searchProductsByNameUseCase(query, sort, page)
                         .map { it.toApiProductModel() }
 
                 call.respond(ServerResponse.success(searchResults))

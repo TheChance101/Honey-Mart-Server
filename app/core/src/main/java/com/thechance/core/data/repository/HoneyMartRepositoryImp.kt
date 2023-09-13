@@ -4,14 +4,14 @@ import com.thechance.core.data.repository.dataSource.*
 import com.thechance.core.domain.repository.HoneyMartRepository
 import com.thechance.core.entity.Cart
 import com.thechance.core.entity.Category
-import com.thechance.core.entity.product.Product
-import com.thechance.core.entity.review.Review
 import com.thechance.core.entity.coupon.Coupon
 import com.thechance.core.entity.coupon.MarketCoupon
 import com.thechance.core.entity.coupon.UserCoupon
 import com.thechance.core.entity.market.Market
 import com.thechance.core.entity.order.MarketOrder
 import com.thechance.core.entity.order.OrderItem
+import com.thechance.core.entity.product.Product
+import com.thechance.core.entity.review.Review
 import com.thechance.core.entity.review.ReviewStatistic
 import org.koin.core.component.KoinComponent
 import java.time.LocalDateTime
@@ -201,6 +201,9 @@ class HoneyMartRepositoryImp(
 
     override suspend fun getAllCategoryForProduct(productId: Long): List<Category> =
         productDataSource.getAllCategoryForProduct(productId)
+
+    override suspend fun getProductsInSameCategories(productId: Long, page: Int): List<Product> =
+        productDataSource.getProductsInSameCategories(productId, page)
 
     override suspend fun updateProduct(
         productId: Long, productName: String?, productPrice: Double?, productQuantity: String?
