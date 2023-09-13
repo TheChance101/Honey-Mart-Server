@@ -277,7 +277,7 @@ class HoneyMartRepositoryImp(
         orderDataSource.updateOrderState(orderId, newOrderState)
 
     override suspend fun getUserLatestOrderId(userId: Long): Long? {
-       return orderDataSource.getUserLatestOrderId(userId)
+        return orderDataSource.getUserLatestOrderId(userId)
     }
 
 
@@ -369,6 +369,9 @@ class HoneyMartRepositoryImp(
 
     override suspend fun isReviewExists(userId: Long, productId: Long): Boolean =
         reviewDataSource.isReviewExists(userId, productId)
+
+    override suspend fun getProductAverageRating(productId: Long): Float =
+        reviewDataSource.getProductAverageRating(productId)
 
     //end reviews region
 

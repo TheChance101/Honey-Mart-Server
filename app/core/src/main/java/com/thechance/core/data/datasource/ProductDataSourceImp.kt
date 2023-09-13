@@ -35,9 +35,9 @@ class ProductDataSourceImp : ProductDataSource, KoinComponent {
         Product(
             id = newProduct[ProductTable.id].value,
             name = newProduct[ProductTable.name],
-            quantity = newProduct[ProductTable.quantity],
+            description = newProduct[ProductTable.quantity],
             price = newProduct[ProductTable.price],
-            image = emptyList(),
+            images = emptyList(),
             marketId = newProduct[ProductTable.marketId].value
         )
     }

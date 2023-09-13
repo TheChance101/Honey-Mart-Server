@@ -91,4 +91,15 @@ class ReviewDataSourceImp : ReviewDataSource, KoinComponent {
             fiveStarsCount = fiveStarsCount
         )
     }
+
+    override suspend fun getProductAverageRating(productId: Long): Float = dbQuery {
+        val reviews = ProductReviewTable.select { ProductReviewTable.productId eq productId }.toList()
+        val reviewsCount = reviews.size
+        val totalRating = reviews.sumOf { it[ProductReviewTable.rating] }
+
+        // Calculate the average rating
+        val averageRating = if (reviewsCount > 0) totalRating.toFloat() / reviewsCount else 0f
+
+        averageRating
+    }
 }
