@@ -40,6 +40,7 @@ val productUseCaseModule = module {
     singleOf(::GetMostRecentProductsUseCase) { bind<GetMostRecentProductsUseCase>() }
     singleOf(::GetAllProductsUseCase) { bind<GetAllProductsUseCase>() }
     singleOf(::UpdateProductImageUseCase) { bind<UpdateProductImageUseCase>() }
+    singleOf(::GetSimilarProductsUseCase) { bind<GetSimilarProductsUseCase>() }
 }
 
 val marketUseCaseModule = module {

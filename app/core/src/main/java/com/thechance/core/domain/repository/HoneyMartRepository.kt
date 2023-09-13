@@ -83,6 +83,7 @@ interface HoneyMartRepository {
     suspend fun getProduct(productId: Long): Product
 
     suspend fun getAllCategoryForProduct(productId: Long): List<Category>
+    suspend fun getProductsInSameCategories(productId: Long, page: Int): List<Product>
 
     suspend fun updateProduct(
         productId: Long, productName: String?, productPrice: Double?, productQuantity: String?
@@ -164,5 +165,6 @@ interface HoneyMartRepository {
     suspend fun getReviewsStatisticsForProduct(productId: Long): ReviewStatistic
     suspend fun updateProductReview(userId: Long, productId: Long, content: String, newRating: Int): Boolean
     suspend fun isReviewExists(userId: Long, productId: Long): Boolean
+    suspend fun getProductAverageRating(productId: Long): Float
     //end review region
 }
