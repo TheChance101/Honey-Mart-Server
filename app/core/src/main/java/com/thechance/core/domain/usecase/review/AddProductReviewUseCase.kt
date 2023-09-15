@@ -15,21 +15,34 @@ class AddProductReviewUseCase(private val repository: HoneyMartRepository) : Koi
     ): Boolean {
         isValidInput(userId, productId, orderId, content, rating, role)?.let { throw it }
         val isReviewExists = repository.isReviewExists(userId!!, productId!!)
-        return if (isReviewExists) {
-            repository.updateProductReview(
-                userId = userId,
-                productId = productId,
-                content = content!!,
-                newRating = rating!!
-            )
-        } else {
-            repository.addProductReview(
-                userId = userId,
-                productId = productId,
-                orderId = orderId!!,
-                content = content!!,
-                rating = rating!!
-            )
+        val isProductDeleted = repository.isProductDeleted(productId!!)
+        return when {
+            isProductDeleted == null -> {
+                throw IdNotFoundException()
+            }
+
+            isProductDeleted -> {
+                throw ProductDeletedException()
+            }
+
+            isReviewExists -> {
+                repository.updateProductReview(
+                    userId = userId,
+                    productId = productId,
+                    content = content!!,
+                    newRating = rating!!
+                )
+            }
+
+            else -> {
+                repository.addProductReview(
+                    userId = userId,
+                    productId = productId,
+                    orderId = orderId!!,
+                    content = content!!,
+                    rating = rating!!
+                )
+            }
         }
     }
 
@@ -41,15 +54,8 @@ class AddProductReviewUseCase(private val repository: HoneyMartRepository) : Koi
         rating: Int?,
         role: String?,
     ): Exception? {
-        val isProductDeleted = repository.isProductDeleted(productId!!)
-        return when {
-            isProductDeleted == null -> {
-                throw IdNotFoundException()
-            }
 
-            isProductDeleted -> {
-                throw ProductDeletedException()
-            }
+        return when {
 
             isInvalidId(productId) -> {
                 InvalidProductIdException()
