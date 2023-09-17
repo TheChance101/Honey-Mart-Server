@@ -3,6 +3,7 @@ package com.thechance.api.endpoints
 import com.thechance.api.ServerResponse
 import com.thechance.api.model.mapper.toApiReviewsWithStatisticsModel
 import com.thechance.core.domain.usecase.review.ReviewUseCaseContainer
+import com.thechance.core.utils.API_KEY_AUTHENTICATION
 import com.thechance.core.utils.JWT_AUTHENTICATION
 import com.thechance.core.utils.ROLE_TYPE
 import io.ktor.http.*
@@ -17,8 +18,8 @@ import org.koin.ktor.ext.inject
 fun Route.reviewRoutes() {
     val reviewUseCaseContainer: ReviewUseCaseContainer by inject()
     route("/reviews") {
-        authenticate(JWT_AUTHENTICATION) {
 
+        authenticate(API_KEY_AUTHENTICATION) {
             /**
              * get reviews for product by productId
              * */
@@ -26,9 +27,11 @@ fun Route.reviewRoutes() {
                 val productId = call.parameters["productId"]?.trim()?.toLongOrNull()
                 val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
                 val reviewsWithStatistics =
-                    reviewUseCaseContainer.getProductReviewsUseCase(productId,page).toApiReviewsWithStatisticsModel()
+                    reviewUseCaseContainer.getProductReviewsUseCase(productId, page).toApiReviewsWithStatisticsModel()
                 call.respond(HttpStatusCode.OK, ServerResponse.success(reviewsWithStatistics))
             }
+        }
+        authenticate(JWT_AUTHENTICATION) {
 
             /**
              * add new review
@@ -43,12 +46,10 @@ fun Route.reviewRoutes() {
                 val content = params["content"]?.trim()
                 val rating = params["rating"]?.trim()?.toIntOrNull()
                 val isAdded = reviewUseCaseContainer.addProductReviewUseCase(
-                    userId, productId, orderId,
-                    content, rating, role
+                    userId, productId, orderId, content, rating, role
                 )
                 call.respond(
-                    HttpStatusCode.Created,
-                    ServerResponse.success(isAdded, "Review added successfully")
+                    HttpStatusCode.Created, ServerResponse.success(isAdded, "Review added successfully")
                 )
             }
         }
