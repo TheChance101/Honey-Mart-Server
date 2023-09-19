@@ -12,6 +12,7 @@ import com.thechance.core.data.repository.dataSource.NotificationDataSource
 import com.thechance.core.entity.Notification
 import com.thechance.core.entity.NotificationRequest
 import com.thechance.core.utils.dbQuery
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
@@ -78,16 +79,24 @@ class NotificationDataSourceImp(private val firebaseMessaging: FirebaseMessaging
     }
 
     override suspend fun getUserNotificationHistory(userId: Long): List<Notification> = dbQuery {
-        UserNotificationHistoryTable.select { UserNotificationHistoryTable.userId eq userId }.map {
-            it.toUserNotification()
-        }.toList()
+        UserNotificationHistoryTable
+            .select { UserNotificationHistoryTable.userId eq userId }
+            .orderBy(UserNotificationHistoryTable.timeStamp, SortOrder.DESC)
+            .map {
+                it.toUserNotification()
+            }.toList()
     }
 
+
     override suspend fun getOwnerNotificationHistory(ownerId: Long): List<Notification> = dbQuery {
-        OwnerNotificationHistoryTable.select { OwnerNotificationHistoryTable.ownerId eq ownerId }.map {
-            it.toOwnerNotification()
-        }.toList()
+        OwnerNotificationHistoryTable
+            .select { OwnerNotificationHistoryTable.ownerId eq ownerId }
+            .orderBy(OwnerNotificationHistoryTable.timeStamp, SortOrder.DESC)
+            .map {
+                it.toOwnerNotification()
+            }.toList()
     }
+
 
     override suspend fun updateUserNotificationState(receiverId: Long, isRead: Boolean): Boolean = dbQuery {
         UserNotificationHistoryTable.update({ UserNotificationHistoryTable.userId eq receiverId }) { notificationRow ->
