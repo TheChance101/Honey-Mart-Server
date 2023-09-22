@@ -125,6 +125,8 @@ Here are the main endpoints provided by the server:
 ## Screenshots
 ![postman](https://github.com/TheChance101/Honey-Mart-Server/assets/63457278/85a7ada4-029c-4c34-b853-b5ac5e92089a)
 ![project](https://github.com/TheChance101/Honey-Mart-Server/assets/63457278/124ed9da-2202-4433-b8b7-a1d02437f34c)
+## ERD
+![Untitled](https://github.com/TheChance101/Honey-Mart-Server/assets/63457278/4ead1aae-4827-461c-a333-8e862e8348cf)
 ## Contributing
 <a href="https://github.com/TheChance101/Honey-Mart-Server/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=TheChance101/Honey-Mart-Server" />
