@@ -2,7 +2,7 @@
 
 # Honey Mart Server
 
-> Honey Mart Server acts as the backend app for the Honey Mart shopping application, serving as the backend infrastructure that powers the entire shopping experience. This server application is implemented using Ktor, a lightweight yet powerful Kotlin framework for building asynchronous servers and clients, and it relies on PostgreSQL as the database to store and manage the app's data.
+> Honey Mart Server acts as the backend app for the [Honey Mart Client](https://github.com/TheChance101/Honey-Mart-Android-Client) shopping application, serving as the backend infrastructure that powers the entire shopping experience. This server application is implemented using Ktor, a lightweight yet powerful Kotlin framework for building asynchronous servers and clients, and it relies on PostgreSQL as the database to store and manage the app's data.
 
 ## Table of Contents
 - [Introduction](#introduction)
