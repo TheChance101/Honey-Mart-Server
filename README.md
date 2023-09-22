@@ -120,7 +120,7 @@ Here are the main endpoints provided by the server:
 -   **Admin**
 -   **Notifications**
 
-#### Explore [HoneyMart Postman Collection]()
+#### Explore [HoneyMart Postman Collection](https://github.com/TheChance101/Honey-Mart-Server/blob/develop/HoneyMart.postman_collection1.json)
 
 ## Screenshots
 ![postman](https://github.com/TheChance101/Honey-Mart-Server/assets/63457278/85a7ada4-029c-4c34-b853-b5ac5e92089a)
