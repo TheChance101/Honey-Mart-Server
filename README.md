@@ -15,7 +15,7 @@
 - [Usage](#usage)
 - [Endpoints](#endpoints)
 - [Screenshots](#screenshots)
-- [Contributing](#contributing)
+- [Contributers](#contributers)
 - [License](#license)
 
 ## Introduction
@@ -39,7 +39,7 @@ Before you begin, ensure you have met the following requirements:
 - **PostgreSQL**:
   - [Download PostgreSQL](https://www.postgresql.org/download/)
 
-- **Docker**:
+- **Docker** (optional):
   - [Download Docker Desktop for Windows and macOS](https://www.docker.com/products/docker-desktop)
 
 - **IntelliJ IDEA with Kotlin support**:
@@ -47,7 +47,7 @@ Before you begin, ensure you have met the following requirements:
 
 - **pgAdmin** (optional, for database management):
   - [Download pgAdmin](https://www.pgadmin.org/download/)
- - **Firebase App**:
+- **Firebase App**:
   - [Create Firebase Project](https://console.firebase.google.com/u/0/)
 
 ## Getting Started
@@ -80,7 +80,7 @@ Before you begin, ensure you have met the following requirements:
     -   User: Your PostgreSQL username
     -   Password: Your PostgreSQL password (if set)
  2. Configure Environment Variables to contain the following key-value pairs:
-   - adminEmail = Your admin email
+   	 - adminEmail = Your admin email
 	 - adminFullName = Your admin full name
 	 - adminPassword = Your admin password
 	 - databaseName = `honey_mart_db` (or your database name)
@@ -120,18 +120,18 @@ Here are the main endpoints provided by the server:
 -   **Admin**
 -   **Notifications**
 
-#### Explore [HoneyMart Postman Collection](https://elements.getpostman.com/redirect?entityId=585001-fa3932c0-4021-4696-aa82-148961fc62d5&entityType=collection)
+#### Explore [HoneyMart Postman Collection]()
 
 ## Screenshots
 ![postman](https://github.com/TheChance101/Honey-Mart-Server/assets/63457278/85a7ada4-029c-4c34-b853-b5ac5e92089a)
 ![project](https://github.com/TheChance101/Honey-Mart-Server/assets/63457278/124ed9da-2202-4433-b8b7-a1d02437f34c)
 ## ERD
 ![Untitled](https://github.com/TheChance101/Honey-Mart-Server/assets/63457278/4ead1aae-4827-461c-a333-8e862e8348cf)
-## Contributing
+## Contributers
 <a href="https://github.com/TheChance101/Honey-Mart-Server/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=TheChance101/Honey-Mart-Server" />
 </a>
 
 ## License
 	Copyright (c) 2023 The Chance
-- This project is licensed under the Apache License 2.0 - see the [LICENSE](https://github.com/M7mdSh3banX/Honey-Weather/blob/master/LICENSE) file for details.
+- This project is licensed under the Apache License 2.0 - see the [LICENSE](https://github.com/TheChance101/Honey-Mart-Server/blob/develop/LICENSE) file for details.
