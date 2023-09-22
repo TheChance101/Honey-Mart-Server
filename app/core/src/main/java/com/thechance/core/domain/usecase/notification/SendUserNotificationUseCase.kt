@@ -2,9 +2,7 @@ package com.thechance.core.domain.usecase.notification
 
 import com.thechance.core.domain.repository.AuthRepository
 import com.thechance.core.entity.NotificationRequest
-import com.thechance.core.utils.ORDER_STATUS_CANCELED_BY_OWNER
-import com.thechance.core.utils.ORDER_STATUS_DONE
-import com.thechance.core.utils.ORDER_STATUS_IN_PROGRESS
+import com.thechance.core.utils.*
 import org.koin.core.component.KoinComponent
 
 class SendUserNotificationUseCase(private val repository: AuthRepository) : KoinComponent {
@@ -17,9 +15,10 @@ class SendUserNotificationUseCase(private val repository: AuthRepository) : Koin
             if (deviceToken.isEmpty() || deviceToken.first().isEmpty()) {
                 return true
             }
-            val notification = NotificationRequest(deviceToken, orderId, title, body, orderState)
+            val titleWithOrderId = title.replace(ORDER_ID, "$orderId")
+            val notification = NotificationRequest(deviceToken, orderId, titleWithOrderId, body, orderState)
             return repository.sendNotification(notification).also {
-                repository.saveUserNotification(title, body, userId, orderId)
+                repository.saveUserNotification(titleWithOrderId, body, userId, orderId)
             }
         } else {
             false
@@ -33,14 +32,16 @@ class SendUserNotificationUseCase(private val repository: AuthRepository) : Koin
     )
 
     companion object {
-        private const val ORDER_IN_PROGRESS_TITLE = "Order in progress!"
+        private const val ORDER_ID = "orderId"
+        private const val ORDER_IN_PROGRESS_TITLE = "Order in progress! #$ORDER_ID"
         private const val ORDER_IN_PROGRESS_BODY =
-            "Your order is being prepared, you will be updated soon and will receive your order with in the mentioned days"
-        private const val ORDER_CANCELLED_TITLE = "Order got cancelled!"
+            "Your order is being prepared, and you will receive it soon."
+        private const val ORDER_CANCELLED_TITLE = "Order #$ORDER_ID got cancelled!"
         private const val ORDER_CANCELLED_BODY =
-            "We regret to inform you that your recent order has been canceled. We apologize for any inconvenience this may have caused. "
-        private const val ORDER_DONE_TITLE = "Order Is Complete!"
+            "We regret to inform you that your order has been canceled. We apologize for any inconvenience this may have caused."
+        private const val ORDER_DONE_TITLE = "Order Is Complete! #$ORDER_ID"
         private const val ORDER_DONE_BODY =
             "Thank you for your order! We're delighted to confirm that your purchase has been successfully completed."
     }
+
 }
