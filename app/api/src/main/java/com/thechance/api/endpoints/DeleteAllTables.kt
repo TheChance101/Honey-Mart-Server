@@ -11,7 +11,6 @@ import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 
 fun Route.deleteAllTables() {
-
     val deleteAllTablesUseCase: DeleteAllTablesUseCase by inject()
     authenticate(API_KEY_AUTHENTICATION) {
         delete("/deleteAllTables") {
